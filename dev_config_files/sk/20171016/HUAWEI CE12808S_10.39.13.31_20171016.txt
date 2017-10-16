@@ -1,0 +1,2402 @@
+
+!Software Version V100R005C10SPC200
+!Last configuration was updated at 2017-10-10 09:43:40+08:00 by ralj.wz
+!Last configuration was saved at 2017-09-21 09:08:29+08:00 by razf
+#
+clock timezone BeiJing add 08:00:00
+#
+sysname WZ-RA-WS-VSW1-1.MAN.CE12808S
+#
+info-center source default channel 2 log level notification
+info-center loghost 61.153.176.180 facility local3
+#
+device chassis 1 chassis-type CE12808S-FRAME
+device chassis 2 chassis-type CE12808S-FRAME
+#
+device board 1/9 board-type CE-MPUA-S
+device board 1/10 board-type CE-MPUA-S
+device board 1/6 board-type CE-L48XS-ED
+device board 1/2 board-type CE-L48XS-EC
+device board 1/5 board-type CE-L48XS-ED
+device board 1/1 board-type CE-L48XS-EC
+device board 2/9 board-type CE-MPUA-S
+device board 2/10 board-type CE-MPUA-S
+device board 2/5 board-type CE-L48XS-ED
+device board 2/1 board-type CE-L48XS-EC
+device board 2/2 board-type CE-L48XS-EC
+device board 2/6 board-type CE-L48XS-ED
+#
+drop-profile default
+#
+dcb pfc
+#
+dcb ets-profile default
+#
+ntp server disable
+ntp ipv6 server disable
+ntp access peer 2002
+ntp unicast-server 10.39.68.5 version 2 source-interface Vlanif50
+ntp unicast-server 10.39.68.6 version 2 source-interface Vlanif50 preferred
+#
+load-balance profile C1
+ ecmp local-preference enable
+#
+vlan batch 16 42 50 303 401 to 405 411 to 413 415 to 421 423 to 424 427 to 429 433
+vlan batch 439 812 834 840 842 852 902 to 903 921 925 931
+vlan batch 936 950 to 962 964 to 975 980 to 984 987 1101 to 1120 1303 1350 1441 1443 to 1445
+vlan batch 1458 to 1462 1467 1481 to 1482 1562 to 1569 1621 to 1632 1643 to 1658 1661 to 1684 1706 to 1743 1747 to 1749 1751 to 1753
+vlan batch 1761 to 1772 1775 to 1788 1797 to 1816 1822 to 1829 1850 to 1854 1856 to 1925 1931 to 1941 1943 to 1950 2309 to 2348 2409 to 2418
+vlan batch 2459 to 2478 2585 to 2624 2639 to 2640 3013 3016 3021 3032 to 3034 3049 3099 to 3100 3203
+vlan batch 3206 3222 3225 3399 3417 3431 3440 3452 3457 3461
+vlan batch 3467 3472 3474 3512 3599 3702 3800 3802 to 3810 3812 to 3815 3817 to 3824
+vlan batch 3826 to 3829 3833 3835 to 3837 3839 to 3844 3846 to 3851 3853 to 3865 3867 to 3873 3875 to 3895 3897 3899 to 3900
+vlan batch 4000
+#
+igmp snooping enable
+#
+telnet ipv6 server disable
+#
+hwtacacs enable
+#
+qos phb marking 8021p disable
+#
+diffserv domain default
+#
+hwtacacs server template tac
+ hwtacacs server authentication 61.153.176.164
+ hwtacacs server authorization 61.153.176.164
+ hwtacacs server accounting 61.153.176.164
+ hwtacacs server source-ip 10.39.13.31
+ hwtacacs server shared-key cipher %^%#bfG48&JX]%1@4\6-$BEGBQ5'H|2jg"v26SP~/`V'%^%#
+ hwtacacs server user-name domain-excluded
+#
+vlan 16
+ description Cisco3550.nm
+#
+vlan 50
+ description For_CE12808S_NetManagement
+#
+vlan 902
+ description EPON.nm
+#
+vlan 1562
+ description wansong-c220-4.shanxun.vpn
+#
+vlan 3021
+ description QQYHuanBao.vpn
+#
+vlan 3032
+ description MinAnQQY.vpn
+#
+vlan 3222
+ description Wlan(EPON)
+#
+vlan 3835
+ description test
+#
+vlan 3862
+ description ZhuangYuanLou
+#
+vlan 3865
+ description ZheJiangYaNongNongYe
+#
+vlan 3867
+ description RuiAnShiWeiShengJu
+#
+vlan 4000
+ description IPTV-mutilcast-vlan
+ igmp snooping enable
+#
+acl number 2000
+ description For Telnet
+ rule 5 permit source 61.175.206.0 0.0.0.63
+ rule 10 permit source 202.107.222.64 0.0.0.7
+ rule 15 permit source 10.31.255.0 0.0.0.31
+ rule 20 permit source 61.153.176.160 0.0.0.31
+ rule 100 deny
+#
+acl number 2001
+ description For SNMP
+ rule 5 permit source 61.153.176.160 0.0.0.31
+ rule 10 permit source 10.31.255.0 0.0.0.31
+ rule 100 deny
+#
+acl number 2002
+ rule 5 permit source 10.39.68.5 0
+ rule 10 permit source 10.39.68.6 0
+ rule 999 deny
+#
+traffic classifier IAD type or
+ if-match vlan 3599
+ if-match vlan 3600
+#
+traffic behavior IAD
+ remark 8021p 4 
+#
+traffic policy IAD
+ classifier IAD behavior IAD precedence 5
+#
+aaa
+ local-user wzdxnoc password irreversible-cipher $1a$S#|7RBY1j4$4dY*+,I8J@ap$3H)YJ-B@!np)J5Xx0d!x4Lo^biQ$
+ local-user wzdxnoc service-type telnet
+ local-user wzdxnoc level 3
+ #
+ authentication-scheme default
+ #
+ authentication-scheme t-l
+  authentication-mode hwtacacs local
+ #
+ authorization-scheme default
+ #
+ authorization-scheme tac
+  authorization-mode hwtacacs local if-authenticated
+ #
+ accounting-scheme default
+ #
+ accounting-scheme tac
+  accounting-mode hwtacacs
+ #
+ domain default
+ #
+ domain default_admin
+  authentication-scheme t-l
+  authorization-scheme tac
+  accounting-scheme tac
+  hwtacacs server tac
+ #
+ recording-scheme command
+  recording-mode hwtacacs tac
+ #
+ cmd recording-scheme command
+#
+stack
+ #
+ stack mode
+ #
+ stack member 1 domain 10
+ stack member 1 priority 150
+ #
+ stack member 2 domain 10
+#
+interface Vlanif50
+ description "Manager FOR CE12808S"
+ ip address 10.39.13.31 255.255.255.192
+#
+interface Vlanif3032
+ ip address 42.18.149.3 255.255.255.0
+#
+interface MEth0/0/0/0
+ shutdown
+ ip address 1.1.1.2 255.255.255.252
+#
+interface Eth-Trunk0
+ description uT:WZ-RA-AY-SR-1.MAN.NE80E:Eth-9
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 50 1101 to 1110
+ stp disable
+#
+interface Eth-Trunk1
+ description uT:WZ-RA-AY-SR-1.MAN.NE80E:Eth-20
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 50 1116 to 1120
+ stp disable
+#
+interface Eth-Trunk2
+ description uT:WZ-RA-WS-SR-1.MAN.NE80E:Eth-9
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 50 209 286 931 936 1111 to 1115 3012 to 3013 3016 3021 3032 to 3034
+ port trunk allow-pass vlan 3049 3099 to 3100 3399 3417 3431 3440 3452 3457 3461 3467
+ port trunk allow-pass vlan 3472 3474 3512 3599 3702 3800 3802 to 3810 3812 to 3815 3817 to 3822 3824
+ port trunk allow-pass vlan 3826 to 3829 3833 3835 to 3837 3839 to 3844 3846 to 3851 3853 to 3865 3867 to 3873 3875 to 3895 3897 3899 to 3900
+ stp disable
+#
+interface Eth-Trunk3
+ description uT:WZ-RA-WS-BAS-3.MAN.M6000:smartgroup2
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 1443 to 1445 1621 to 1630 1643 to 1658 1741 to 1742 1752 to 1753 1778 1781 to 1785 1787 to 1788 1801 to 1808 1887
+ port trunk allow-pass vlan 2309 to 2324 2585 to 2590 2639 to 2640 4000
+ stp disable
+ mode lacp-static
+#
+interface Eth-Trunk4
+ description uT:WZ-RA-WS-BAS-3.MAN.M6000:smartgroup1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 4000
+ mode lacp-static
+#
+interface Eth-Trunk5
+ description uT:WZ-RA-WS-BAS-5.MAN.ME60:Eth-1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 1102 to 1111 1303 1350 1441 1458 to 1462 1467 1481 to 1482 1562 to 1569 1631 to 1632 1706 to 1740
+ port trunk allow-pass vlan 1743 1747 to 1749 1751 1761 to 1772 1775 to 1777 1779 to 1780 1786 1809 to 1816 1886 1888 to 1925
+ port trunk allow-pass vlan 1931 to 1940 1943 to 1948 2591 to 2624
+ stp disable
+ mode lacp-static
+#
+interface Eth-Trunk6
+ description uT:WZ-RA-WS-BAS-5.MAN.ME60:Eth-0
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 1117 1661 to 1684 1797 to 1800 1822 to 1829 1850 to 1854 1856 to 1885 1941 1949 to 1950 2325 to 2348 2409 to 2418
+ port trunk allow-pass vlan 2459 to 2478 4000
+ stp disable
+ mode lacp-static
+#
+interface Eth-Trunk7
+ description pT:WZ-RA-FY-DSW1-1.MAN.8912:smartgroup3
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 303 903 931
+#
+interface Eth-Trunk8
+ description pT:WZ-RA-MY-DSW1-1.MAN.8912:sm5
+ port link-type hybrid
+ port hybrid tagged vlan 903 921 931 3021 3032 to 3033
+ undo port hybrid untagged vlan 1
+ stp disable
+#
+interface Eth-Trunk9
+ description uT:WZ-RA-AY-DSW(B)-1.MAN.9306:Eth-Trunk13
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 401 403 to 405 411 413 416 to 417 423 427 433 812 834
+ port trunk allow-pass vlan 842 852 3021 3032 to 3033
+ stp disable
+ mode lacp-static
+#
+interface Eth-Trunk11
+ description dT:WZ-RA-WS-OLT-01.EPON.C200:sm1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 50 303 401 403 417 433 834 840 931 936
+ port trunk allow-pass vlan 1102 1441 1708 1711 to 1715 1737 to 1740 1743 1761 1763 to 1770 1931 3032
+ port trunk allow-pass vlan 3099 to 3100 3417 3440 3452 3467 3472 3474 3599 3828 3833
+ port trunk allow-pass vlan 3836 3846 3856 to 3857 3861 3863 3865 3867 3869 3871 3876 to 3877
+ port trunk allow-pass vlan 3880 3882 3884 3888 3890 3897
+ stp disable
+#
+interface Eth-Trunk12
+ description dT:WZ-RA-WS-OLT-02.EPON.C220:sm1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 50 403 417 to 420 931 936 1103 1717 to 1736 1740 1771 to 1772 1775 to 1777
+ port trunk allow-pass vlan 1779 to 1780 1932 1943 to 1944 3013 3032 3049 3099 to 3100 3431 3440 3452
+ port trunk allow-pass vlan 3457 3472 3512 3599 3800 3817 3843 3850 3859 to 3860 3862
+ port trunk allow-pass vlan 3864 3868 3873 3875 3878 to 3879 3881 3883 3885 to 3887 3889 3891 to 3892
+ port trunk allow-pass vlan 3895 3899 to 3900
+ stp disable
+#
+interface Eth-Trunk13
+ description dT:WZ-RA-WS-OLT-03.EPON.C220:sm1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 50 931 936 1104 1443 to 1445 1933 3032 3099 to 3100 3599
+ stp disable
+#
+interface Eth-Trunk14
+ description dT:WZ-RA-WS-OLT-04.EPON.C220:sm1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 50 931 936 1105 1562 1785 to 1786 1934 3032 3099 to 3100 3599
+ stp disable
+#
+interface Eth-Trunk15
+ description dT:WZ-RA-WS-OLT-05.EPON.C300:sm1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 50 936 1106 1646 to 1650 1747 to 1749 1935 1945 to 1946 3032 3099 3472
+ port trunk allow-pass vlan 3599 3702 3829 3857
+ stp disable
+#
+interface Eth-Trunk16
+ description dT:WZ-RA-WS-OLT-06.EPON.C300:Eth-Trunk1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 50 403 417 433 834 840 842 936 1107 1621 to 1625
+ port trunk allow-pass vlan 1654 to 1658 1716 1936 3032 3099 3431 3452 3457 3472 3512
+ port trunk allow-pass vlan 3599 3840 to 3842 3858 3868 3876 3890
+ stp disable
+#
+interface Eth-Trunk17
+ description dT:WZ-RA-WS-OLT-07.EPON.C300:sm1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 50 417 936 1108 1350 1626 to 1632 1643 to 1645 1651 to 1653 1706 to 1707 1751
+ port trunk allow-pass vlan 1937 3032 3099 3431 3452 3472 3599
+ stp disable
+#
+interface Eth-Trunk18
+ description dT:WZ-RA-WS-OLT-08.EPON.C300:sm1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 50 403 433 936 1109 1563 to 1569 1709 to 1710 1737 1741 to 1742 1938
+ port trunk allow-pass vlan 3032 3099 3452 3472 3599 3835 3869 3877 3882
+ stp disable
+#
+interface Eth-Trunk19
+ description dT:WZ-RA-WS-OLT-09.GPON.C300
+ port link-type hybrid
+ port hybrid tagged vlan 50 936 1116 1856 to 1865 2409 to 2418 3021 3032 3472 3842 4000
+ undo port hybrid untagged vlan 1
+ stp disable
+#
+interface Eth-Trunk20
+ description dT:WZ-RA-WS-OLT-10.EPON.MA5680T:Eth-1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 50 403 936 1110 1762 1778 1781 to 1784 1787 to 1788 1939 3032
+ port trunk allow-pass vlan 3099 3452 3472 3599 3872
+ stp disable
+ mode lacp-static
+#
+interface Eth-Trunk21
+ description dT:WZ-RA-WS-OLT-11.EPON.MA5680T:Eth-1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 50 936 1111 1458 to 1462 1467 1481 to 1482 1940 1947 to 1948 3032 3099 to 3100
+ port trunk allow-pass vlan 3431 3452 3599
+ stp disable
+ mode lacp-static
+#
+interface Eth-Trunk22
+ description dT:WZ-RA-WS-OLT-12.GPON.MA5680T:Eth-1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 50 423 936 1112 1886 to 1905 2585 to 2604 3021 3472 4000
+ stp disable
+ mode lacp-static
+#
+interface Eth-Trunk23
+ description dT:WZ-RA-WS-OLT-13.GPON.C300:sm1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 50 1113 1801 to 1808 2309 to 2316 3032 3399 3472 3839 3842 3899
+ port trunk allow-pass vlan 4000
+ stp disable
+#
+interface Eth-Trunk24
+ description dT:WZ-RA-WS-OLT-14.GPON.C300:sm1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 50 1114 1809 to 1816 2317 to 2324 3021 3032 3399 3452 3472 3512
+ port trunk allow-pass vlan 3843 3850 3870 3886 4000
+ stp disable
+#
+interface Eth-Trunk25
+ description dT:WZ-RA-WS-OLT-15.10GEPON.C300:Eth-1
+ port link-type hybrid
+ port hybrid tagged vlan 50 936 1117 1797 to 1800 1822 to 1829 1850 to 1854 1941 1949 to 1950 3599
+ undo port hybrid untagged vlan 1
+ stp disable
+#
+interface Eth-Trunk26
+ description dT:WZ-RA-WS-OLT-16.MA5680T.GPON:Eth-1
+ port link-type hybrid
+ port hybrid tagged vlan 50 411 1118 1866 to 1885 2459 to 2478 3021 3032 3452 3472 3512
+ port hybrid tagged vlan 3900 4000
+ undo port hybrid untagged vlan 1
+ stp disable
+ mode lacp-static
+#
+interface Eth-Trunk27
+ description dT:WZ-RA-WS-OLT-17.GPON.C300:sm1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 50 411 1115 1906 to 1925 2605 to 2624 3452 3472 4000
+ stp disable
+#
+interface Eth-Trunk28
+ description dT:WZ-RA-WS-OLT-18.GPON.MA5800:ETH1
+ port link-type hybrid
+ port hybrid tagged vlan 50 1119 1661 to 1672 2325 to 2336 4000
+ undo port hybrid untagged vlan 1
+ stp disable
+ mode lacp-static
+#
+interface Eth-Trunk29
+ description dT:WZ-RA-WS-OLT-19.GPON.MA5800:ETH1
+ port link-type hybrid
+ port hybrid tagged vlan 50 1120 1673 to 1684 2337 to 2348 4000
+ undo port hybrid untagged vlan 1
+ stp disable
+ mode lacp-static
+#
+interface Eth-Trunk69
+ description pT:WZ-RA-WS-DSW-1.MAN.C7609:PortCh2
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 401 812 834 931
+ stp disable
+#
+interface Eth-Trunk99
+ description pT:WZ-RA-WS-DSW1-1.MAN.8912:ETH99
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 42 50 303 401 403 to 405 411 to 413 415 to 420 423 to 424 427 to 429 433
+ port trunk allow-pass vlan 439 812 834 840 842 852 931 936 950 to 962 964 to 975
+ port trunk allow-pass vlan 980 to 984 987 1101 to 1115 1303 1350 1441 1443 to 1445 1458 to 1462 1467 1481 to 1482
+ port trunk allow-pass vlan 1562 to 1569 1621 to 1632 1643 to 1658 1706 to 1743 1747 to 1749 1751 to 1753 1761 to 1772 1775 to 1788 1801 to 1816 1886 to 1925
+ port trunk allow-pass vlan 1931 to 1940 1943 to 1948 2309 to 2324 2585 to 2624 2639 to 2640 3013 3016 3021 3032 to 3034 3049
+ port trunk allow-pass vlan 3099 to 3100 3203 3206 3222 3225 3399 3417 3431 3440 3452
+ port trunk allow-pass vlan 3457 3461 3467 3472 3474 3512 3599 3702 3800 3802 to 3810
+ port trunk allow-pass vlan 3812 to 3815 3817 to 3822 3824 3826 to 3829 3833 3835 to 3837 3839 to 3844 3846 to 3851 3853 to 3865 3867 to 3873
+ port trunk allow-pass vlan 3875 to 3895 3897 3899 to 3900 4000
+ stp disable
+ mode lacp-static
+#
+interface Eth-Trunk100
+ description pT:WZ-RA-WS-DSW1-1.MAN.9312:ETH100
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 50 411 936 1116 to 1118 1797 to 1800 1822 to 1829 1850 to 1854 1856 to 1885 1941 1949 to 1950
+ port trunk allow-pass vlan 2409 to 2418 2459 to 2478 3021 3099 to 3100 3452 3472 3512 3842 3900 4000
+ stp disable
+ mode lacp-static
+#
+interface Stack-Port1/1
+#
+interface Stack-Port2/1
+#
+interface 10GE1/1/0/0
+ port mode stack 
+ stack-port 1/1
+ description pT:WZ-RA-WS-VSW1-1.MAN.CE12808S:(Local)10GE2/1/0/0
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE1/1/0/1
+ port mode stack 
+ stack-port 1/1
+ description pT:WZ-RA-WS-VSW1-1.MAN.CE12808S:(Local)10GE2/1/0/1
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE1/1/0/2
+ description uT:WZ-RA-WS-BAS-3.MAN.M6000:(Local)10GE0/0/1/1
+ eth-trunk 3
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE1/1/0/3
+ description uT:WZ-RA-WS-BAS-3.MAN.M6000:(Local)10GE0/0/0/2
+ eth-trunk 4
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE1/1/0/4
+ description uT:WZ-RA-WS-BAS-5.MAN.ME60:(Local)10GE1/0/1
+ eth-trunk 5
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE1/1/0/5
+ description uT:WZ-RA-WS-BAS-5.MAN.ME60:(Local)10GE1/1/0
+ eth-trunk 6
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE1/1/0/6
+ description uT:WZ-RA-AY-DSW(B)-1.MAN.9306:(F1504080073)10GE1/0/3
+ eth-trunk 9
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE1/1/0/7
+ description dT:WZ-RA-WS-OLT-05.EPON.C300:(Local)10GE1/19/1
+ eth-trunk 15
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE1/1/0/8
+ description dT:WZ-RA-WS-OLT-06.EPON.C300:(Local)10GE1/19/1
+ eth-trunk 16
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE1/1/0/9
+ description dT:WZ-RA-WS-OLT-07.EPON.C300:(Local)10GE1/19/1
+ eth-trunk 17
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE1/1/0/10
+ description dT:WZ-RA-WS-OLT-09.GPON.C300:(Local)10GE1/19/1
+ eth-trunk 19
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE1/1/0/11
+ description dT:WZ-RA-WS-OLT-12.GPON.MA5680T:(Local)10GE0/19/0
+ eth-trunk 22
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE1/1/0/12
+ description dT:WZ-RA-WS-OLT-13.GPON.C300:(Local)10GE1/19/1
+ eth-trunk 23
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE1/1/0/13
+ description dT:WZ-RA-WS-OLT-14.GPON.C300:(Local)10GE1/19/1
+ eth-trunk 24
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE1/1/0/14
+ description dT:WZ-RA-WS-OLT-15.10GEPON.C300:(Local)10GE1/19/1
+ eth-trunk 25
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE1/1/0/15
+ description dT:WZ-RA-WS-OLT-16.GPON.MA5680T:(Local)10GE0/19/0
+ eth-trunk 26
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE1/1/0/16
+ description dT:WZ-RA-WS-OLT-17.GPON.C300:(Local)10GE1/19/3
+ eth-trunk 27
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE1/1/0/17
+ description dT:WZ-RA-WS-OLT-18.GPON.MA5800:(local)10GE0/9/0
+ eth-trunk 28
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE1/1/0/18
+ description dT:WZ-RA-WS-OLT-19.GPON.MA5800:(local)10GE0/9/0
+ eth-trunk 29
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE1/1/0/19
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE1/1/0/20
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE1/1/0/21
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE1/1/0/22
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE1/1/0/23
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE1/1/0/24
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE1/1/0/25
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE1/1/0/26
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE1/1/0/27
+#
+interface 10GE1/1/0/28
+#
+interface 10GE1/1/0/29
+#
+interface 10GE1/1/0/30
+#
+interface 10GE1/1/0/31
+#
+interface 10GE1/1/0/32
+#
+interface 10GE1/1/0/33
+#
+interface 10GE1/1/0/34
+#
+interface 10GE1/1/0/35
+#
+interface 10GE1/1/0/36
+#
+interface 10GE1/1/0/37
+#
+interface 10GE1/1/0/38
+#
+interface 10GE1/1/0/39
+#
+interface 10GE1/1/0/40
+#
+interface 10GE1/1/0/41
+#
+interface 10GE1/1/0/42
+#
+interface 10GE1/1/0/43
+#
+interface 10GE1/1/0/44
+ device transceiver 1000BASE-X
+#
+interface 10GE1/1/0/45
+ device transceiver 1000BASE-X
+#
+interface 10GE1/1/0/46
+ device transceiver 1000BASE-X
+#
+interface 10GE1/1/0/47
+ description pT:WZ-RA-WS-DSW1-1.MAN.9312:(Local)10GE5/0/0
+ eth-trunk 100
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE1/2/0/0
+ port mode stack 
+ stack-port 1/1
+ description pT:WZ-RA-WS-VSW1-1.MAN.CE12808S:(Local)10GE2/2/0/0
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE1/2/0/1
+ port mode stack 
+ stack-port 1/1
+ description pT:WZ-RA-WS-VSW1-1.MAN.CE12808S:(Local)10GE2/2/0/1
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE1/2/0/2
+ description uT:WZ-RA-AY-SR-1.MAN.NE80E:(F1111010007)GE11/1/5
+ eth-trunk 0
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE1/2/0/3
+ description uT:WZ-RA-AY-SR-1.MAN.NE80E:(F1205170015)GE3/0/7
+ eth-trunk 1
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE1/2/0/4
+ description uT:WZ-RA-WS-SR-1.MAN.NE80E:(Local)GE5/0/9
+ eth-trunk 2
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE1/2/0/5
+ description uT:WZ-RA-WS-SR-1.MAN.NE80E:(Local)GE1/0/0
+ eth-trunk 2
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE1/2/0/6
+ description pT:WZ-RA-FY-DSW1-1.MAN.8912:(F1611140004)GE3/3
+ eth-trunk 7
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE1/2/0/7
+ description pT:WZ-RA-MY-DSW1-1.MAN.8912:(F1001190049)GE2/4
+ eth-trunk 8
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE1/2/0/8
+ description pT:WZ-RA-WS-DSW1-1.MAN.8912:(Local)GE1/2
+ eth-trunk 99
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE1/2/0/9
+ description pT:WZ-RA-WS-DSW1-1.MAN.8912:(Local)GE3/2
+ eth-trunk 99
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE1/2/0/10
+ description dT:WZ-RA-WS-OLT-01.EPON.C200:(Local)GE0/4/3
+ eth-trunk 11
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE1/2/0/11
+ description dT:WZ-RA-WS-OLT-02.EPON.C220:(Local)GE0/2/2
+ eth-trunk 12
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE1/2/0/12
+ description dT:WZ-RA-WS-OLT-02.EPON.C220:(Local)GE0/3/1
+ eth-trunk 12
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE1/2/0/13
+ description dT:WZ-RA-WS-OLT-03.EPON.C220:(Local)GE0/2/1
+ eth-trunk 13
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE1/2/0/14
+ description dT:WZ-RA-WS-OLT-03.EPON.C220:(Local)GE0/2/2
+ eth-trunk 13
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE1/2/0/15
+ description dT:WZ-RA-WS-OLT-04.EPON.C220:(Local)GE0/2/1
+ eth-trunk 14
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE1/2/0/16
+ description dT:WZ-RA-WS-OLT-04.EPON.C220:(Local)GE0/2/2
+ eth-trunk 14
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE1/2/0/17
+ description dT:WZ-RA-WS-OLT-08.EPON.C300:(Local)GE1/19/1
+ eth-trunk 18
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE1/2/0/18
+ description dT:WZ-RA-WS-OLT-08.EPON.C300:(Local)GE1/19/2
+ eth-trunk 18
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE1/2/0/19
+ description dT:WZ-RA-WS-OLT-10.EPON.MA5680T:(Local)GE0/19/0
+ eth-trunk 20
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE1/2/0/20
+ description dT:WZ-RA-WS-OLT-11.EPON.MA5680T:(Local)GE0/19/0
+ eth-trunk 21
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE1/2/0/21
+ description dT:WZ-RA-WS-OLT-11.EPON.MA5680T:(Local)GE0/19/1
+ eth-trunk 21
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE1/2/0/22
+#
+interface 10GE1/2/0/23
+#
+interface 10GE1/2/0/24
+#
+interface 10GE1/2/0/25
+#
+interface 10GE1/2/0/26
+#
+interface 10GE1/2/0/27
+#
+interface 10GE1/2/0/28
+#
+interface 10GE1/2/0/29
+#
+interface 10GE1/2/0/30
+#
+interface 10GE1/2/0/31
+#
+interface 10GE1/2/0/32
+#
+interface 10GE1/2/0/33
+#
+interface 10GE1/2/0/34
+#
+interface 10GE1/2/0/35
+#
+interface 10GE1/2/0/36
+#
+interface 10GE1/2/0/37
+#
+interface 10GE1/2/0/38
+#
+interface 10GE1/2/0/39
+#
+interface 10GE1/2/0/40
+#
+interface 10GE1/2/0/41
+#
+interface 10GE1/2/0/42
+#
+interface 10GE1/2/0/43
+#
+interface 10GE1/2/0/44
+#
+interface 10GE1/2/0/45
+#
+interface 10GE1/2/0/46
+ description dT:WZ-RA-WS-DSW-1.MAN.C7609:(Local)GE2/6
+ eth-trunk 69
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE1/2/0/47
+ device transceiver 1000BASE-X
+#
+interface 10GE1/5/0/0
+#
+interface 10GE1/5/0/1
+#
+interface 10GE1/5/0/2
+#
+interface 10GE1/5/0/3
+#
+interface 10GE1/5/0/4
+#
+interface 10GE1/5/0/5
+#
+interface 10GE1/5/0/6
+#
+interface 10GE1/5/0/7
+#
+interface 10GE1/5/0/8
+#
+interface 10GE1/5/0/9
+#
+interface 10GE1/5/0/10
+#
+interface 10GE1/5/0/11
+#
+interface 10GE1/5/0/12
+#
+interface 10GE1/5/0/13
+#
+interface 10GE1/5/0/14
+#
+interface 10GE1/5/0/15
+#
+interface 10GE1/5/0/16
+#
+interface 10GE1/5/0/17
+#
+interface 10GE1/5/0/18
+#
+interface 10GE1/5/0/19
+#
+interface 10GE1/5/0/20
+#
+interface 10GE1/5/0/21
+#
+interface 10GE1/5/0/22
+#
+interface 10GE1/5/0/23
+#
+interface 10GE1/5/0/24
+#
+interface 10GE1/5/0/25
+#
+interface 10GE1/5/0/26
+#
+interface 10GE1/5/0/27
+#
+interface 10GE1/5/0/28
+#
+interface 10GE1/5/0/29
+#
+interface 10GE1/5/0/30
+#
+interface 10GE1/5/0/31
+#
+interface 10GE1/5/0/32
+#
+interface 10GE1/5/0/33
+#
+interface 10GE1/5/0/34
+#
+interface 10GE1/5/0/35
+#
+interface 10GE1/5/0/36
+#
+interface 10GE1/5/0/37
+#
+interface 10GE1/5/0/38
+#
+interface 10GE1/5/0/39
+#
+interface 10GE1/5/0/40
+#
+interface 10GE1/5/0/41
+#
+interface 10GE1/5/0/42
+#
+interface 10GE1/5/0/43
+#
+interface 10GE1/5/0/44
+#
+interface 10GE1/5/0/45
+#
+interface 10GE1/5/0/46
+#
+interface 10GE1/5/0/47
+#
+interface 10GE1/6/0/0
+#
+interface 10GE1/6/0/1
+#
+interface 10GE1/6/0/2
+#
+interface 10GE1/6/0/3
+#
+interface 10GE1/6/0/4
+#
+interface 10GE1/6/0/5
+#
+interface 10GE1/6/0/6
+#
+interface 10GE1/6/0/7
+#
+interface 10GE1/6/0/8
+#
+interface 10GE1/6/0/9
+#
+interface 10GE1/6/0/10
+#
+interface 10GE1/6/0/11
+#
+interface 10GE1/6/0/12
+#
+interface 10GE1/6/0/13
+#
+interface 10GE1/6/0/14
+#
+interface 10GE1/6/0/15
+#
+interface 10GE1/6/0/16
+#
+interface 10GE1/6/0/17
+#
+interface 10GE1/6/0/18
+#
+interface 10GE1/6/0/19
+#
+interface 10GE1/6/0/20
+#
+interface 10GE1/6/0/21
+#
+interface 10GE1/6/0/22
+#
+interface 10GE1/6/0/23
+#
+interface 10GE1/6/0/24
+#
+interface 10GE1/6/0/25
+#
+interface 10GE1/6/0/26
+#
+interface 10GE1/6/0/27
+#
+interface 10GE1/6/0/28
+#
+interface 10GE1/6/0/29
+#
+interface 10GE1/6/0/30
+#
+interface 10GE1/6/0/31
+#
+interface 10GE1/6/0/32
+#
+interface 10GE1/6/0/33
+#
+interface 10GE1/6/0/34
+#
+interface 10GE1/6/0/35
+#
+interface 10GE1/6/0/36
+#
+interface 10GE1/6/0/37
+#
+interface 10GE1/6/0/38
+#
+interface 10GE1/6/0/39
+#
+interface 10GE1/6/0/40
+#
+interface 10GE1/6/0/41
+#
+interface 10GE1/6/0/42
+#
+interface 10GE1/6/0/43
+#
+interface 10GE1/6/0/44
+#
+interface 10GE1/6/0/45
+#
+interface 10GE1/6/0/46
+#
+interface 10GE1/6/0/47
+#
+interface 10GE2/1/0/0
+ port mode stack 
+ stack-port 2/1
+ description pT:WZ-RA-WS-VSW1-1.MAN.CE12808S:(Local)10GE1/1/0/0
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE2/1/0/1
+ port mode stack 
+ stack-port 2/1
+ description pT:WZ-RA-WS-VSW1-1.MAN.CE12808S:(Local)10GE1/1/0/1
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE2/1/0/2
+ description uT:WZ-RA-WS-BAS-3.MAN.M6000:(Local)10GE0/1/1/1
+ eth-trunk 3
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE2/1/0/3
+ description uT:WZ-RA-WS-BAS-3.MAN.M6000:(Local)10GE0/1/0/2
+ eth-trunk 4
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE2/1/0/4
+ description dT:WZ-RA-WS-BAS-5.MAN.ME60:(Local)10GE2/0/1
+ eth-trunk 5
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE2/1/0/5
+ description uT:WZ-RA-WS-BAS-5.MAN.ME60:(Local)10GE2/1/0
+ eth-trunk 6
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE2/1/0/6
+ description uT:WZ-RA-AY-DSW(B)-1.MAN.9306:(F1504080079)10GE2/0/2
+ eth-trunk 9
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE2/1/0/7
+ description dT:WZ-RA-WS-OLT-05.EPON.C300:(Local)10GE1/20/1
+ eth-trunk 15
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE2/1/0/8
+ description dT:WZ-RA-WS-OLT-06.EPON.C300:(Local)10GE1/20/1
+ eth-trunk 16
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE2/1/0/9
+ description dT:WZ-RA-WS-OLT-07.EPON.C300:(Local)10GE1/20/1
+ eth-trunk 17
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE2/1/0/10
+ description dT:WZ-RA-WS-OLT-09.GPON.C300:(Local)10GE1/20/1
+ eth-trunk 19
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE2/1/0/11
+ description dT:WZ-RA-WS-OLT-12.GPON.MA5680T:(Local)10GE0/20/0
+ eth-trunk 22
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE2/1/0/12
+ description dT:WZ-RA-WS-OLT-13.GPON.C300:(Local)10GE1/20/1
+ eth-trunk 23
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE2/1/0/13
+ description dT:WZ-RA-WS-OLT-14.GPON.C300:(Local)10GE1/20/1
+ eth-trunk 24
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE2/1/0/14
+ description dT:WZ-RA-WS-OLT-15.10GEPON.C300:(Local)10GE1/20/1
+ eth-trunk 25
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE2/1/0/15
+ description dT:WZ-RA-WS-OLT-16.GPON.MA5680T:(Local)10GE0/20/0
+ eth-trunk 26
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE2/1/0/16
+ description dT:WZ-RA-WS-OLT-17.GPON.C300:(Local)10GE1/20/3
+ eth-trunk 27
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE2/1/0/17
+ description dT:WZ-RA-WS-OLT-18.GPON.MA5800:(local)10GE0/10/0
+ eth-trunk 28
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE2/1/0/18
+ description dT:WZ-RA-WS-OLT-19.GPON.MA5800:(local)10GE0/10/0
+ eth-trunk 29
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE2/1/0/19
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE2/1/0/20
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE2/1/0/21
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE2/1/0/22
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE2/1/0/23
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE2/1/0/24
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE2/1/0/25
+#
+interface 10GE2/1/0/26
+#
+interface 10GE2/1/0/27
+#
+interface 10GE2/1/0/28
+#
+interface 10GE2/1/0/29
+#
+interface 10GE2/1/0/30
+#
+interface 10GE2/1/0/31
+#
+interface 10GE2/1/0/32
+#
+interface 10GE2/1/0/33
+#
+interface 10GE2/1/0/34
+#
+interface 10GE2/1/0/35
+#
+interface 10GE2/1/0/36
+#
+interface 10GE2/1/0/37
+#
+interface 10GE2/1/0/38
+#
+interface 10GE2/1/0/39
+#
+interface 10GE2/1/0/40
+#
+interface 10GE2/1/0/41
+#
+interface 10GE2/1/0/42
+#
+interface 10GE2/1/0/43
+#
+interface 10GE2/1/0/44
+#
+interface 10GE2/1/0/45
+ device transceiver 1000BASE-X
+#
+interface 10GE2/1/0/46
+ device transceiver 1000BASE-X
+#
+interface 10GE2/1/0/47
+ description pT:WZ-RA-WS-DSW1-1.MAN.9312:(Local)10GE5/0/3
+ eth-trunk 100
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE2/2/0/0
+ port mode stack 
+ stack-port 2/1
+ description pT:WZ-RA-WS-VSW1-1.MAN.CE12808S:(Local)10GE1/2/0/0
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE2/2/0/1
+ port mode stack 
+ stack-port 2/1
+ description pT:WZ-RA-WS-VSW1-1.MAN.CE12808S:(Local)10GE1/2/0/1
+ device transceiver 10GBASE-FIBER
+#
+interface 10GE2/2/0/2
+ description uT:WZ-RA-AY-SR-1.MAN.NE80E:(F0901220010)GE5/0/7
+ eth-trunk 0
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE2/2/0/3
+ description uT:WZ-RA-AY-SR-1.MAN.NE80E:(F0901220009)GE5/0/4
+ eth-trunk 1
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE2/2/0/4
+ description uT:WZ-RA-WS-SR-1.MAN.NE80E:(Local)GE3/0/3
+ eth-trunk 2
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE2/2/0/5
+ description uT:WZ-RA-WS-SR-1.MAN.NE80E:(Local)GE3/0/2
+ eth-trunk 2
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE2/2/0/6
+ description pT:WZ-RA-FY-DSW1-1.MAN.8912:(F0801250093)GE1/3
+ eth-trunk 7
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE2/2/0/7
+ description pT:WZ-RA-MY-DSW1-1.MAN.8912:(F0804160022)GE3/1
+ eth-trunk 8
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE2/2/0/8
+ description pT:WZ-RA-WS-DSW1-1.MAN.8912:(Local)GE2/2
+ eth-trunk 99
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE2/2/0/9
+ description pT:WZ-RA-WS-DSW1-1.MAN.8912:(Local)GE4/2
+ eth-trunk 99
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE2/2/0/10
+ description dT:WZ-RA-WS-OLT-01.EPON.C200:(Local)GE0/4/2
+ eth-trunk 11
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE2/2/0/11
+ description dT:WZ-RA-WS-OLT-02.EPON.C220:(Local)GE0/2/1
+ eth-trunk 12
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE2/2/0/12
+ description dT:WZ-RA-WS-OLT-02.EPON.C220:(Local)GE0/3/2
+ eth-trunk 12
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE2/2/0/13
+ description dT:WZ-RA-WS-OLT-03.EPON.C220:(Local)GE0/3/1
+ eth-trunk 13
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE2/2/0/14
+ description dT:WZ-RA-WS-OLT-03.EPON.C220:(Local)GE0/3/2
+ eth-trunk 13
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE2/2/0/15
+ description dT:WZ-RA-WS-OLT-04.EPON.C220:(Local)GE0/3/1
+ eth-trunk 14
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE2/2/0/16
+ description dT:WZ-RA-WS-OLT-04.EPON.C220:(Local)GE0/3/2
+ eth-trunk 14
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE2/2/0/17
+ description dT:WZ-RA-WS-OLT-08.EPON.C300:(Local)GE1/20/1
+ eth-trunk 18
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE2/2/0/18
+ description dT:WZ-RA-WS-OLT-08.EPON.C300:(Local)GE1/20/2
+ eth-trunk 18
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE2/2/0/19
+ description dT:WZ-RA-WS-OLT-10.EPON.MA5680T:(Local)GE0/20/0
+ eth-trunk 20
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE2/2/0/20
+ description dT:WZ-RA-WS-OLT-11.EPON.MA5680T:(Local)GE0/20/0
+ eth-trunk 21
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE2/2/0/21
+ description dT:WZ-RA-WS-OLT-11.EPON.MA5680T:(Local)GE0/20/1
+ eth-trunk 21
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE2/2/0/22
+#
+interface 10GE2/2/0/23
+#
+interface 10GE2/2/0/24
+#
+interface 10GE2/2/0/25
+#
+interface 10GE2/2/0/26
+#
+interface 10GE2/2/0/27
+#
+interface 10GE2/2/0/28
+#
+interface 10GE2/2/0/29
+#
+interface 10GE2/2/0/30
+#
+interface 10GE2/2/0/31
+#
+interface 10GE2/2/0/32
+#
+interface 10GE2/2/0/33
+#
+interface 10GE2/2/0/34
+#
+interface 10GE2/2/0/35
+#
+interface 10GE2/2/0/36
+#
+interface 10GE2/2/0/37
+#
+interface 10GE2/2/0/38
+#
+interface 10GE2/2/0/39
+#
+interface 10GE2/2/0/40
+#
+interface 10GE2/2/0/41
+#
+interface 10GE2/2/0/42
+#
+interface 10GE2/2/0/43
+#
+interface 10GE2/2/0/44
+#
+interface 10GE2/2/0/45
+#
+interface 10GE2/2/0/46
+ description dT:WZ-RA-WS-DSW-1.MAN.C7609:(Local)GE2/1
+ eth-trunk 69
+ qos wfq 0 to 3 5 to 7
+ qos queue 0 wfq weight 5
+ qos queue 1 wfq weight 5
+ qos queue 2 wfq weight 5
+ qos queue 3 wfq weight 5
+ qos queue 5 wfq weight 15
+ qos queue 6 wfq weight 5
+ qos queue 7 wfq weight 5
+ device transceiver 1000BASE-X
+#
+interface 10GE2/2/0/47
+ device transceiver 1000BASE-X
+#
+interface 10GE2/5/0/0
+#
+interface 10GE2/5/0/1
+#
+interface 10GE2/5/0/2
+#
+interface 10GE2/5/0/3
+#
+interface 10GE2/5/0/4
+#
+interface 10GE2/5/0/5
+#
+interface 10GE2/5/0/6
+#
+interface 10GE2/5/0/7
+#
+interface 10GE2/5/0/8
+#
+interface 10GE2/5/0/9
+#
+interface 10GE2/5/0/10
+#
+interface 10GE2/5/0/11
+#
+interface 10GE2/5/0/12
+#
+interface 10GE2/5/0/13
+#
+interface 10GE2/5/0/14
+#
+interface 10GE2/5/0/15
+#
+interface 10GE2/5/0/16
+#
+interface 10GE2/5/0/17
+#
+interface 10GE2/5/0/18
+#
+interface 10GE2/5/0/19
+#
+interface 10GE2/5/0/20
+#
+interface 10GE2/5/0/21
+#
+interface 10GE2/5/0/22
+#
+interface 10GE2/5/0/23
+#
+interface 10GE2/5/0/24
+#
+interface 10GE2/5/0/25
+#
+interface 10GE2/5/0/26
+#
+interface 10GE2/5/0/27
+#
+interface 10GE2/5/0/28
+#
+interface 10GE2/5/0/29
+#
+interface 10GE2/5/0/30
+#
+interface 10GE2/5/0/31
+#
+interface 10GE2/5/0/32
+#
+interface 10GE2/5/0/33
+#
+interface 10GE2/5/0/34
+#
+interface 10GE2/5/0/35
+#
+interface 10GE2/5/0/36
+#
+interface 10GE2/5/0/37
+#
+interface 10GE2/5/0/38
+#
+interface 10GE2/5/0/39
+#
+interface 10GE2/5/0/40
+#
+interface 10GE2/5/0/41
+#
+interface 10GE2/5/0/42
+#
+interface 10GE2/5/0/43
+#
+interface 10GE2/5/0/44
+#
+interface 10GE2/5/0/45
+#
+interface 10GE2/5/0/46
+#
+interface 10GE2/5/0/47
+#
+interface 10GE2/6/0/0
+#
+interface 10GE2/6/0/1
+#
+interface 10GE2/6/0/2
+#
+interface 10GE2/6/0/3
+#
+interface 10GE2/6/0/4
+#
+interface 10GE2/6/0/5
+#
+interface 10GE2/6/0/6
+#
+interface 10GE2/6/0/7
+#
+interface 10GE2/6/0/8
+#
+interface 10GE2/6/0/9
+#
+interface 10GE2/6/0/10
+#
+interface 10GE2/6/0/11
+#
+interface 10GE2/6/0/12
+#
+interface 10GE2/6/0/13
+#
+interface 10GE2/6/0/14
+#
+interface 10GE2/6/0/15
+#
+interface 10GE2/6/0/16
+#
+interface 10GE2/6/0/17
+#
+interface 10GE2/6/0/18
+#
+interface 10GE2/6/0/19
+#
+interface 10GE2/6/0/20
+#
+interface 10GE2/6/0/21
+#
+interface 10GE2/6/0/22
+#
+interface 10GE2/6/0/23
+#
+interface 10GE2/6/0/24
+#
+interface 10GE2/6/0/25
+#
+interface 10GE2/6/0/26
+#
+interface 10GE2/6/0/27
+#
+interface 10GE2/6/0/28
+#
+interface 10GE2/6/0/29
+#
+interface 10GE2/6/0/30
+#
+interface 10GE2/6/0/31
+#
+interface 10GE2/6/0/32
+#
+interface 10GE2/6/0/33
+#
+interface 10GE2/6/0/34
+#
+interface 10GE2/6/0/35
+#
+interface 10GE2/6/0/36
+#
+interface 10GE2/6/0/37
+#
+interface 10GE2/6/0/38
+#
+interface 10GE2/6/0/39
+#
+interface 10GE2/6/0/40
+#
+interface 10GE2/6/0/41
+#
+interface 10GE2/6/0/42
+#
+interface 10GE2/6/0/43
+#
+interface 10GE2/6/0/44
+#
+interface 10GE2/6/0/45
+#
+interface 10GE2/6/0/46
+#
+interface 10GE2/6/0/47
+#
+interface Sip1/9/0/0
+#
+interface Sip1/9/0/1
+#
+interface Sip1/10/0/0
+#
+interface Sip1/10/0/1
+#
+interface Sip2/9/0/0
+#
+interface Sip2/9/0/1
+#
+interface Sip2/10/0/0
+#
+interface Sip2/10/0/1
+#
+interface NULL0
+#
+ip route-static 0.0.0.0 0.0.0.0 10.39.13.1
+#
+snmp-agent
+snmp-agent local-engineid 800007DB0354511BD1B101
+snmp-agent community read cipher %^%#Y,#\.Z0E+Za&gz.i[kbU4XsZJ7rSiPEmp5LpD+H1{+ehGk:I3;1Nsw8aW^3%|h'BWe>j%(&eW-;ml7'Q%^%# acl 2001
+#
+snmp-agent sys-info location WZ-RA-WS-VSW1-1.MAN.CE12808S
+snmp-agent sys-info version all
+#
+snmp-agent trap source Vlanif50
+#
+snmp-agent trap enable feature-name system trap-name hwSysSlaveSwitchSuccessNotification
+snmp-agent trap enable feature-name system trap-name hwSysSlaveSwitchFailNotification
+snmp-agent trap enable feature-name vfs trap-name hwFlhSyncSuccessNotification
+snmp-agent trap enable feature-name vfs trap-name hwFlhSyncFailNotification
+snmp-agent trap enable feature-name system trap-name hwSysClockChangedNotification
+snmp-agent trap enable feature-name configuration trap-name hwcfgmaneventlog
+snmp-agent trap enable feature-name configuration trap-name hwCfgOperateCompletion
+snmp-agent trap enable feature-name snmp trap-name authenticationFailure
+snmp-agent trap enable feature-name ifnet trap-name linkdown
+snmp-agent trap enable feature-name ifnet trap-name linkup
+snmp-agent trap enable feature-name system trap-name hwSysIssuNotification
+snmp-agent trap enable feature-name system trap-name hwSysImageErrorNotification
+snmp-agent trap enable feature-name system trap-name hwPatchErrorTrap
+#
+ssh authorization-type default aaa
+#
+ssh server cipher aes256_ctr aes128_ctr aes256_cbc aes128_cbc 3des_cbc blowfish_cbc
+ssh server hmac sha2_256_96 sha2_256 sha1 sha1_96
+#
+header login information " WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!"
+#
+user-interface maximum-vty 8
+#
+user-interface con 0
+#
+user-interface vty 0 7
+ acl 2000 inbound
+ authentication-mode aaa
+ history-command max-size 20
+ idle-timeout 20 0
+ screen-length 30
+#
+port-group group1
+#
+vm-manager
+#
+admin
+ virtual-system VS1 
+  port-mode group
+  resource u4route upper-limit 60000
+  resource m4route upper-limit 1000
+  resource u6route upper-limit 16000
+  resource m6route upper-limit 100
+  resource vlan upper-limit 4063
+  resource mpls enable
+  resource trill enable
+  resource mcast enable
+  resource vpn-instance upper-limit 4096
+  resource cpu weight 5
+  resource memory ratio-threshold 100
+  assign interface 10GE1/5/0/0
+  assign interface 10GE1/5/0/1
+  assign interface 10GE1/5/0/2
+  assign interface 10GE1/5/0/3
+  assign interface 10GE1/5/0/4
+  assign interface 10GE1/5/0/5
+  assign interface 10GE1/5/0/6
+  assign interface 10GE1/5/0/7
+  assign interface 10GE1/5/0/8
+  assign interface 10GE1/5/0/9
+  assign interface 10GE1/5/0/10
+  assign interface 10GE1/5/0/11
+  assign interface 10GE1/5/0/12
+  assign interface 10GE1/5/0/13
+  assign interface 10GE1/5/0/14
+  assign interface 10GE1/5/0/15
+  assign interface 10GE1/5/0/16
+  assign interface 10GE1/5/0/17
+  assign interface 10GE1/5/0/18
+  assign interface 10GE1/5/0/19
+  assign interface 10GE1/5/0/20
+  assign interface 10GE1/5/0/21
+  assign interface 10GE1/5/0/22
+  assign interface 10GE1/5/0/23
+  assign interface 10GE1/5/0/24
+  assign interface 10GE1/5/0/25
+  assign interface 10GE1/5/0/26
+  assign interface 10GE1/5/0/27
+  assign interface 10GE1/5/0/28
+  assign interface 10GE1/5/0/29
+  assign interface 10GE1/5/0/30
+  assign interface 10GE1/5/0/31
+  assign interface 10GE1/5/0/32
+  assign interface 10GE1/5/0/33
+  assign interface 10GE1/5/0/34
+  assign interface 10GE1/5/0/35
+  assign interface 10GE1/5/0/36
+  assign interface 10GE1/5/0/37
+  assign interface 10GE1/5/0/38
+  assign interface 10GE1/5/0/39
+  assign interface 10GE1/5/0/40
+  assign interface 10GE1/5/0/41
+  assign interface 10GE1/5/0/42
+  assign interface 10GE1/5/0/43
+  assign interface 10GE1/5/0/44
+  assign interface 10GE1/5/0/45
+  assign interface 10GE1/5/0/46
+  assign interface 10GE1/5/0/47
+  assign interface 10GE1/6/0/0
+  assign interface 10GE1/6/0/1
+  assign interface 10GE1/6/0/2
+  assign interface 10GE1/6/0/3
+  assign interface 10GE1/6/0/4
+  assign interface 10GE1/6/0/5
+  assign interface 10GE1/6/0/6
+  assign interface 10GE1/6/0/7
+  assign interface 10GE1/6/0/8
+  assign interface 10GE1/6/0/9
+  assign interface 10GE1/6/0/10
+  assign interface 10GE1/6/0/11
+  assign interface 10GE1/6/0/12
+  assign interface 10GE1/6/0/13
+  assign interface 10GE1/6/0/14
+  assign interface 10GE1/6/0/15
+  assign interface 10GE1/6/0/16
+  assign interface 10GE1/6/0/17
+  assign interface 10GE1/6/0/18
+  assign interface 10GE1/6/0/19
+  assign interface 10GE1/6/0/20
+  assign interface 10GE1/6/0/21
+  assign interface 10GE1/6/0/22
+  assign interface 10GE1/6/0/23
+  assign interface 10GE1/6/0/24
+  assign interface 10GE1/6/0/25
+  assign interface 10GE1/6/0/26
+  assign interface 10GE1/6/0/27
+  assign interface 10GE1/6/0/28
+  assign interface 10GE1/6/0/29
+  assign interface 10GE1/6/0/30
+  assign interface 10GE1/6/0/31
+  assign interface 10GE1/6/0/32
+  assign interface 10GE1/6/0/33
+  assign interface 10GE1/6/0/34
+  assign interface 10GE1/6/0/35
+  assign interface 10GE1/6/0/36
+  assign interface 10GE1/6/0/37
+  assign interface 10GE1/6/0/38
+  assign interface 10GE1/6/0/39
+  assign interface 10GE1/6/0/40
+  assign interface 10GE1/6/0/41
+  assign interface 10GE1/6/0/42
+  assign interface 10GE1/6/0/43
+  assign interface 10GE1/6/0/44
+  assign interface 10GE1/6/0/45
+  assign interface 10GE1/6/0/46
+  assign interface 10GE1/6/0/47
+  assign interface 10GE2/5/0/0
+  assign interface 10GE2/5/0/1
+  assign interface 10GE2/5/0/2
+  assign interface 10GE2/5/0/3
+  assign interface 10GE2/5/0/4
+  assign interface 10GE2/5/0/5
+  assign interface 10GE2/5/0/6
+  assign interface 10GE2/5/0/7
+  assign interface 10GE2/5/0/8
+  assign interface 10GE2/5/0/9
+  assign interface 10GE2/5/0/10
+  assign interface 10GE2/5/0/11
+  assign interface 10GE2/5/0/12
+  assign interface 10GE2/5/0/13
+  assign interface 10GE2/5/0/14
+  assign interface 10GE2/5/0/15
+  assign interface 10GE2/5/0/16
+  assign interface 10GE2/5/0/17
+  assign interface 10GE2/5/0/18
+  assign interface 10GE2/5/0/19
+  assign interface 10GE2/5/0/20
+  assign interface 10GE2/5/0/21
+  assign interface 10GE2/5/0/22
+  assign interface 10GE2/5/0/23
+  assign interface 10GE2/5/0/24
+  assign interface 10GE2/5/0/25
+  assign interface 10GE2/5/0/26
+  assign interface 10GE2/5/0/27
+  assign interface 10GE2/5/0/28
+  assign interface 10GE2/5/0/29
+  assign interface 10GE2/5/0/30
+  assign interface 10GE2/5/0/31
+  assign interface 10GE2/5/0/32
+  assign interface 10GE2/5/0/33
+  assign interface 10GE2/5/0/34
+  assign interface 10GE2/5/0/35
+  assign interface 10GE2/5/0/36
+  assign interface 10GE2/5/0/37
+  assign interface 10GE2/5/0/38
+  assign interface 10GE2/5/0/39
+  assign interface 10GE2/5/0/40
+  assign interface 10GE2/5/0/41
+  assign interface 10GE2/5/0/42
+  assign interface 10GE2/5/0/43
+  assign interface 10GE2/5/0/44
+  assign interface 10GE2/5/0/45
+  assign interface 10GE2/5/0/46
+  assign interface 10GE2/5/0/47
+  assign interface 10GE2/6/0/0
+  assign interface 10GE2/6/0/1
+  assign interface 10GE2/6/0/2
+  assign interface 10GE2/6/0/3
+  assign interface 10GE2/6/0/4
+  assign interface 10GE2/6/0/5
+  assign interface 10GE2/6/0/6
+  assign interface 10GE2/6/0/7
+  assign interface 10GE2/6/0/8
+  assign interface 10GE2/6/0/9
+  assign interface 10GE2/6/0/10
+  assign interface 10GE2/6/0/11
+  assign interface 10GE2/6/0/12
+  assign interface 10GE2/6/0/13
+  assign interface 10GE2/6/0/14
+  assign interface 10GE2/6/0/15
+  assign interface 10GE2/6/0/16
+  assign interface 10GE2/6/0/17
+  assign interface 10GE2/6/0/18
+  assign interface 10GE2/6/0/19
+  assign interface 10GE2/6/0/20
+  assign interface 10GE2/6/0/21
+  assign interface 10GE2/6/0/22
+  assign interface 10GE2/6/0/23
+  assign interface 10GE2/6/0/24
+  assign interface 10GE2/6/0/25
+  assign interface 10GE2/6/0/26
+  assign interface 10GE2/6/0/27
+  assign interface 10GE2/6/0/28
+  assign interface 10GE2/6/0/29
+  assign interface 10GE2/6/0/30
+  assign interface 10GE2/6/0/31
+  assign interface 10GE2/6/0/32
+  assign interface 10GE2/6/0/33
+  assign interface 10GE2/6/0/34
+  assign interface 10GE2/6/0/35
+  assign interface 10GE2/6/0/36
+  assign interface 10GE2/6/0/37
+  assign interface 10GE2/6/0/38
+  assign interface 10GE2/6/0/39
+  assign interface 10GE2/6/0/40
+  assign interface 10GE2/6/0/41
+  assign interface 10GE2/6/0/42
+  assign interface 10GE2/6/0/43
+  assign interface 10GE2/6/0/44
+  assign interface 10GE2/6/0/45
+  assign interface 10GE2/6/0/46
+  assign interface 10GE2/6/0/47
+#
+return
+<WZ-RA-WS-VSW1-1.MAN.CE12808S>

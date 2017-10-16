@@ -1,0 +1,447 @@
+
+!Software Version V200R008C00SPC500
+#
+sysname SX-SY-DX-DSW-1.MAN.S9306
+#
+vlan batch 5 202 1405 1410 1426 1527 1547 1762 1774 1798
+vlan batch 2201 2209 2218 2224 2257 2292 2298 2301 2303 to 2305 2430 to 2431
+vlan batch 2669 2671 2679
+#
+undo authentication unified-mode
+#
+domain default_admin
+#
+telnet server enable
+telnet ipv6 server enable
+#
+undo http server enable
+undo http secure-server enable
+#
+undo management-port isolate enable
+undo management-plane isolate enable
+#
+clock timezone PRC add 08:00:00
+#
+diffserv domain default
+#
+hwtacacs-server template sxacs
+ hwtacacs-server authentication 10.249.32.12
+ hwtacacs-server authentication 75.255.254.12 secondary
+ hwtacacs-server authorization 10.249.32.12
+ hwtacacs-server authorization 75.255.254.12 secondary
+ hwtacacs-server accounting 10.249.32.12
+ hwtacacs-server accounting 75.255.254.12 secondary
+ hwtacacs-server source-ip 10.251.108.31
+ hwtacacs-server shared-key cipher %^%#D\xkNWx`t6(V[;D0$_eXl0V'R`)A*Djge!=Q=<@/%^%#
+ undo hwtacacs-server user-name domain-included
+#
+acl number 2000  
+ description For-SNMP-Control
+ rule 5 permit source 10.249.32.0 0.0.0.255 
+ rule 10 permit source 10.31.255.0 0.0.0.31 
+ rule 100 deny 
+acl number 2001  
+ description For-Telnet-Control
+ rule 5 permit source 10.248.0.0 0.7.255.255 
+ rule 10 permit source 10.31.255.0 0.0.0.31 
+ rule 100 deny 
+#
+drop-profile default
+#
+vlan 5
+ description WG-manager
+vlan 202
+ description IPTV-ZJJinShuangYuHuaGongLtd
+vlan 1405
+ description To-DaoXu-OLT3-E
+vlan 1410
+ description TO-DX-HW-OLT-Pevlan-PuTong
+vlan 1426
+ description AD-BA1ZXD005-XiaoJin
+vlan 1527
+ description LanPPPoE-DaoXu
+vlan 1547
+ description AD-BA1ZXD002-DaoXu
+vlan 1762
+ description Pvlan-ZXOLT-1
+vlan 1774
+ description EP-DaoXu-Pvlan-2
+vlan 1798
+ description EP-DaoXu-Pvlan-1
+vlan 2201
+ description EP-DaoXu-Pvlan-3
+vlan 2209
+ description EP-DaoXu-Pvlan-FTTH
+vlan 2218
+ description EP-DX-HW-OLT-1-Pvlan
+vlan 2224
+ description EP-DX-ZX-OLT-1-Pvlan
+vlan 2257
+ description EP-DX-OLT-1-Pvlan
+vlan 2292
+ description QYShanXun-EP-HW-OLT-1-Pvlan
+vlan 2298
+ description Pvlan-QYShanXun
+vlan 2301
+ description Pvlan-DaoXu6502
+vlan 2303
+ description Pvlan-ChenHai
+vlan 2304
+ description Pvlan-TunBei
+vlan 2305
+ description Pvlan-XiaoJin
+vlan 2430
+ description VP-JiaoWei
+vlan 2431
+ description VP-DaTongShangCheng
+vlan 2669
+ description DX-HWOLT-1-LAN-PEVLAN
+vlan 2671
+ description DX-OLT-3-LAN-PEVLAN
+vlan 2679
+ description DX-OLT-1-LAN-PEVLAN
+#
+aaa
+ authentication-scheme default
+  authentication-mode hwtacacs local
+  authentication-super hwtacacs super
+ authorization-scheme default
+  authorization-mode  hwtacacs local
+ accounting-scheme default
+  accounting-mode hwtacacs
+  accounting start-fail online
+ domain default
+ domain default_admin
+  hwtacacs-server sxacs
+ local-user admin password irreversible-cipher %^%#LX:.3j!Qs*upc$S6u':By8'l8Vj^9Zl|"~&7Cp9%YFi='mRG*WK':]'(x(oS%^%#
+ local-user admin service-type http
+ local-user huawei password irreversible-cipher %^%#k3If3b]BiGEgL{)EEomM=MO~F!Fu9=.cLn!G:4RU3.T*7L'hG!gF{8#UO$8I%^%#
+ local-user huawei privilege level 3
+ local-user huawei service-type telnet terminal
+#
+ntp-service unicast-server 10.251.108.1 source-interface Vlanif5 preference
+#
+interface Vlanif5
+ ip address 10.251.108.31 255.255.252.0
+#
+interface Eth-Trunk1
+ description uT:SX-SY-CX-SR-1.MAN.NE80E:ETH21(GE4/0/4,GE5/0/4)
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5 1405 1410 1762 1774 1798 2201 2224 2257 2298
+ port hybrid tagged vlan 2301 2303 to 2305 2430 to 2431
+#
+interface Eth-Trunk2
+ description uT:SX-SY-CX-BAS-2.MAN.ME60:Eth-Trunk2(10GE1/1/0,10GE2/1/0)
+ undo port hybrid vlan 1
+ mode lacp
+#
+interface Eth-Trunk3
+ description dT:SX-SY-DX-OLT-1.MAN.ZTE.C220:SG1(GE1/2/1-3,GE1/3/1-3)
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5 202 1762 1774 1798 2201 2209 2224 2257 2298
+ port hybrid tagged vlan 2679
+#
+interface Eth-Trunk4
+ description dT:SX-SY-DX-OLT-1.MAN.HW.MA5680T:LA1(GE1/17/0,GE1/18/0)
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5 1410 2218 2292 2669
+#
+interface Eth-Trunk6
+ description dT:SX-SY-DX-OLT-3.MAN.ZTE.C300:SG1(GE1/19/1,GE1/20/1)
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5 1405 2671
+#
+interface Eth-Trunk7
+ description uT:SX-SY-CX-DSW-1.MAN.H3C12510F:LA85(10GE1/0/0/16,10GE2/0/0/16)
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 202 1405 1410 1426 1527 1547 1762 1774 1798 2201
+ port hybrid tagged vlan 2209 2218 2224 2257 2292 2298 2669 2671 2679
+ mode lacp
+#
+interface Ethernet0/0/0
+#
+interface GigabitEthernet1/0/0
+ description uT:SX-SY-CX-SR-1.MAN.NE80E:(F1101130010)GE4/0/4
+ eth-trunk 1
+#
+interface GigabitEthernet1/0/1
+#
+interface GigabitEthernet1/0/2
+ description dT:SX-SY-DX-OLT-1.MAN.ZTE.C220:(Local)GE1/2/1
+ eth-trunk 3
+#
+interface GigabitEthernet1/0/3
+ shutdown
+#
+interface GigabitEthernet1/0/4
+#
+interface GigabitEthernet1/0/5
+ description dT:SX-SY-DX-OLT-1.MAN.ZTE.C220:(Local)GE1/2/2
+ eth-trunk 3
+#
+interface GigabitEthernet1/0/6
+ shutdown
+#
+interface GigabitEthernet1/0/7
+ description dT:SX-SY-DX-OLT-3.MAN.ZTE.C300:(Local)GE1/19/1
+ eth-trunk 6
+#
+interface GigabitEthernet1/0/8
+ description dT:SX-SY-DX-OLT-1.MAN.ZTE.C220:(Local)GE1/2/3
+ eth-trunk 3
+#
+interface GigabitEthernet1/0/9
+#
+interface GigabitEthernet1/0/10
+#
+interface GigabitEthernet1/0/11
+#
+interface GigabitEthernet1/0/12
+#
+interface GigabitEthernet1/0/13
+#
+interface GigabitEthernet1/0/14
+#
+interface GigabitEthernet1/0/15
+#
+interface GigabitEthernet1/0/16
+ description dT:SX-SY-DX-OLT-1.MAN.HW.MA5680T:(Local)GE1/17/0
+ eth-trunk 4
+#
+interface GigabitEthernet1/0/17
+#
+interface GigabitEthernet1/0/18
+#
+interface GigabitEthernet1/0/19
+ undo negotiation auto
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet1/0/20
+ undo negotiation auto
+ description dT:ChengHai-3928.MAN:(F3050900057)GE1/1/1
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5
+ port hybrid untagged vlan 2303 2430
+ port vlan-stacking vlan 3001 to 3050 stack-vlan 2303
+ port vlan-stacking vlan 3100 to 3200 stack-vlan 2430
+#
+interface GigabitEthernet1/0/21
+ description dT:TunBei-3928.MAN:(F3050900050)GE1/1/1
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5
+ port hybrid untagged vlan 2304
+ port vlan-stacking vlan 3001 to 3050 stack-vlan 2304
+#
+interface GigabitEthernet1/0/22
+ undo negotiation auto
+ description dT:XiaoJin-3928.MAN:(F3050900048)GE1/1/1
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5 602 1426
+ port hybrid untagged vlan 1527 2305 2430
+ port vlan-stacking vlan 600 to 800 stack-vlan 1527
+ port vlan-stacking vlan 3001 to 3050 stack-vlan 2305
+ port vlan-stacking vlan 3100 to 3200 stack-vlan 2430
+#
+interface GigabitEthernet1/0/23
+ description dT:SX-SYDaoXu-6502-1:(Local)GE1/0/48
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5 2431
+ port hybrid untagged vlan 2301
+ port vlan-stacking vlan 3001 to 3050 stack-vlan 2301
+#
+interface GigabitEthernet2/0/0
+ description uT:SX-SY-CX-SR-1.MAN.NE80E:(F3100129970)GE5/0/4
+ eth-trunk 1
+#
+interface GigabitEthernet2/0/1
+ shutdown
+#
+interface GigabitEthernet2/0/2
+ description dT:SX-SY-DX-OLT-1.MAN.ZTE.C220:(Local)GE1/3/1
+ eth-trunk 3
+#
+interface GigabitEthernet2/0/3
+#
+interface GigabitEthernet2/0/4
+#
+interface GigabitEthernet2/0/5
+ shutdown
+#
+interface GigabitEthernet2/0/6
+ description dT:SX-SY-DX-OLT-1.MAN.ZTE.C220:(Local)GE1/3/2
+ eth-trunk 3
+#
+interface GigabitEthernet2/0/7
+#
+interface GigabitEthernet2/0/8
+ description dT:SX-SY-DX-OLT-1.MAN.ZTE.C220:(Local)GE1/3/3
+ eth-trunk 3
+#
+interface GigabitEthernet2/0/9
+#
+interface GigabitEthernet2/0/10
+#
+interface GigabitEthernet2/0/11
+#
+interface GigabitEthernet2/0/12
+#
+interface GigabitEthernet2/0/13
+#
+interface GigabitEthernet2/0/14
+#
+interface GigabitEthernet2/0/15
+ undo negotiation auto
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet2/0/16
+ description dT:SX-SY-DX-OLT-1.MAN.HW.MA5680T:(Local)GE1/18/0
+ eth-trunk 4
+#
+interface GigabitEthernet2/0/17
+ shutdown
+#
+interface GigabitEthernet2/0/18
+#
+interface GigabitEthernet2/0/19
+ shutdown
+#
+interface GigabitEthernet2/0/20
+ undo negotiation auto
+ description dT:AD-BA1ZXD002-DaoXu:(Local)GE7/0/0
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5
+ port hybrid untagged vlan 1547
+ port vlan-stacking vlan 101 to 580 stack-vlan 1547
+#
+interface GigabitEthernet2/0/21
+ shutdown
+#
+interface GigabitEthernet2/0/22
+ shutdown
+#
+interface GigabitEthernet2/0/23
+ shutdown
+#
+interface GigabitEthernet3/0/0
+#
+interface GigabitEthernet3/0/1
+#
+interface GigabitEthernet3/0/2
+#
+interface GigabitEthernet3/0/3
+#
+interface GigabitEthernet3/0/4
+#
+interface GigabitEthernet3/0/5
+#
+interface GigabitEthernet3/0/6
+#
+interface GigabitEthernet3/0/7
+ description dT:SX-SY-DX-OLT-3.MAN.ZTE.C300:(Local)GE1/20/1
+ eth-trunk 6
+#
+interface GigabitEthernet3/0/8
+#
+interface GigabitEthernet3/0/9
+#
+interface GigabitEthernet3/0/10
+#
+interface GigabitEthernet3/0/11
+#
+interface GigabitEthernet3/0/12
+#
+interface GigabitEthernet3/0/13
+#
+interface GigabitEthernet3/0/14
+#
+interface GigabitEthernet3/0/15
+#
+interface GigabitEthernet3/0/16
+#
+interface GigabitEthernet3/0/17
+#
+interface GigabitEthernet3/0/18
+#
+interface GigabitEthernet3/0/19
+ description MP-DaoXuZhenXiao(RuiTuXiaoXue)-F3050900027::kehu
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 2430
+ port vlan-stacking vlan 3100 to 3200 stack-vlan 2430
+#
+interface GigabitEthernet3/0/20
+ description MP-DaoXuZhenZhong-F3050900028::kehu
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 2430
+ port vlan-stacking vlan 3100 to 3200 stack-vlan 2430
+#
+interface GigabitEthernet3/0/21
+#
+interface GigabitEthernet3/0/22
+ description MP-XiaoJinXiaoXue-F3050900044::kehu
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 2430
+ port vlan-stacking vlan 3100 to 3200 stack-vlan 2430
+#
+interface GigabitEthernet3/0/23
+#
+interface XGigabitEthernet6/0/0
+ description uT:SX-SY-CX-BAS-2.MAN.ME60:(F1405280035)10GE1/1/0
+ eth-trunk 2
+#
+interface XGigabitEthernet6/0/1
+ description uT:SX-SY-CX-BAS-2.MAN.ME60:(F1405280033)10GE2/1/0
+ eth-trunk 2
+#
+interface XGigabitEthernet6/0/2
+ description uT:SX-SY-CX-DSW-1.MAN.H3C12510F:(F1608190016)10GE1/0/0/16
+ eth-trunk 7
+#
+interface XGigabitEthernet6/0/3
+ description uT:SX-SY-CX-DSW-1.MAN.H3C12510F:(F1608190017)10GE2/0/0/16
+ eth-trunk 7
+#
+interface NULL0
+#
+ip route-static 0.0.0.0 0.0.0.0 10.251.108.1
+#
+snmp-agent
+snmp-agent local-engineid 000007DB7FFFFFFF00006A83
+snmp-agent community read cipher %^%#6eGP2(cVl,I-zD6\)P&~%]@3T3-q9RXOfZ'Br~9EB$1s50)H*,\>eDZK~}@Mg0JOAIdOo)VEh.W+@oQS%^%# acl 2000
+snmp-agent sys-info contact R&D Nanjing, Huawei Technologies co.,Ltd.
+snmp-agent sys-info location Nanjing China
+snmp-agent sys-info version all
+snmp-agent target-host trap address udp-domain 10.249.32.61 params securityname cipher %^%#I~\m@h=1t<}v6u<{z(.HM4]y&:nYQ8&c\98jVV=Z%^%#
+snmp-agent target-host trap address udp-domain 10.249.32.61 params securityname cipher %^%#Vo"i1g2#^7E0mFG(n4s4J7"R%`u7KYXeA^0dZu6!%^%# v2c
+snmp-agent trap source Vlanif5
+snmp-agent trap enable feature-name bgp
+snmp-agent trap enable feature-name ldp trap-name Session-Retry
+snmp-agent trap enable feature-name ldp trap-name Session-PVL
+snmp-agent trap enable feature-name ldp trap-name Session-Up-MIB
+snmp-agent trap enable feature-name ldp trap-name Session-Down-MIB
+snmp-agent trap enable feature-name IFNET trap-name linkDown
+snmp-agent trap enable feature-name IFNET trap-name linkUp
+snmp-agent trap enable feature-name CONFIGURATION
+snmp-agent trap enable feature-name SNMP trap-name authenticationFailure
+undo snmp-agent trap enable feature-name DLDP
+undo snmp-agent trap enable feature-name LDTTRAP
+undo snmp-agent trap enable feature-name LLDPTRAP
+snmp-agent trap enable feature-name BASETRAP
+#
+ssh server compatible-ssh1x enable
+#
+header login information " WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!"
+#
+user-interface con 0
+user-interface vty 0 4
+ acl 2001 inbound
+ authentication-mode aaa
+ user privilege level 15
+ idle-timeout 20 0
+ protocol inbound telnet
+user-interface vty 16 20
+ protocol inbound telnet
+#
+return
+<SX-SY-DX-DSW-1.MAN.S9306>

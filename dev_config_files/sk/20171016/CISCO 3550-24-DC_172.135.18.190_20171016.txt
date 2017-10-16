@@ -1,0 +1,378 @@
+
+Building configuration...
+
+Current configuration : 7163 bytes
+!
+! Last configuration change at 11:27:32 beijing Mon Oct 9 2017 by kaitong
+! NVRAM config last updated at 11:27:53 beijing Mon Oct 9 2017 by kaitong
+!
+version 12.1
+no service pad
+service tcp-keepalives-in
+service timestamps debug datetime msec localtime show-timezone
+service timestamps log datetime msec localtime show-timezone
+service password-encryption
+!
+hostname NB-A-SANGTIAN-3550-1
+!
+logging buffered 16384 debugging
+no logging console
+aaa new-model
+aaa authentication fail-message ^CC wrong username or password ^C
+aaa authentication login default group tacacs+ local
+aaa authorization config-commands
+aaa authorization exec default group tacacs+ none
+aaa authorization commands 1 default group tacacs+ none
+aaa authorization commands 15 default group tacacs+ none
+aaa accounting suppress null-username
+aaa accounting update newinfo
+aaa accounting commands 1 default start-stop group tacacs+
+aaa accounting commands 15 default start-stop group tacacs+
+enable secret 5 $1$ktRn$6Q7chKIPYk4J//lDzCyYa0
+!
+username wlwh password 7 0455090800221D1C5A58
+clock timezone beijing 8
+no errdisable detect cause pagp-flap
+no errdisable detect cause dtp-flap
+no errdisable detect cause link-flap
+no errdisable detect cause l2ptguard
+no errdisable detect cause gbic-invalid
+errdisable recovery cause loopback
+errdisable recovery interval 30
+ip subnet-zero
+no ip source-route
+ip routing
+!
+no ip domain-lookup
+vtp mode transparent
+mls qos
+!
+class-map match-all xiansu
+  match ip dscp 0
+!
+!
+policy-map rate-20M
+  class xiansu
+    police 21000000 1000000 exceed-action drop
+policy-map rate-60M
+  class xiansu
+    police 63000000 1500000 exceed-action drop
+policy-map rate-40M
+  class xiansu
+    police 42000000 1000000 exceed-action drop
+policy-map rate-50M
+  class xiansu
+    police 55000000 20000 exceed-action drop
+policy-map rate-2m
+  class xiansu
+    police 2096000 200000 exceed-action drop
+policy-map rate-6m
+  class xiansu
+    police 9696000 8000 exceed-action drop
+policy-map rate-4m
+  class xiansu
+    police 9496000 8000 exceed-action drop
+policy-map rate-8m
+  class xiansu
+    police 9896000 8000 exceed-action drop
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+!
+!
+!
+vlan 7
+ name RC-nbase-manager
+!
+vlan 8
+ name management
+!
+vlan 9
+ name xiaoqu-manage
+!
+vlan 26
+ name WH-3550manager
+!
+vlan 75
+ name WH-DLinkmanager-1
+!
+vlan 76
+ name WH-DLinkmanager-2
+!
+vlan 77
+ name WH-DLinkmanager-3
+!
+vlan 219
+ name vpn:bank-ag
+!
+vlan 223
+ name vpn:road
+!
+vlan 226
+ name alcatel-ipadsl-manage
+!
+vlan 231
+ name tian-an-vpn
+!
+vlan 245
+ name baoxianxiehui-vpn
+!
+vlan 246
+ name ip-adsl-manage
+!
+vlan 275
+ name yz-nc-bank-vpn-baizhang
+!
+vlan 285
+ name dianxindaili
+!
+vlan 305
+ name gonganju-yinzhang
+!
+vlan 314
+ name jd-weishengju
+!
+vlan 322
+ name laodongju-yibao
+!
+vlan 333
+ name nb-huanbaoju-vpn
+!
+vlan 337
+ name xinmeixin-vpn
+!
+vlan 347
+ name gongan-jiudian
+!
+vlan 361
+ name wangbajiankong-ge
+!
+vlan 366
+ name jiaojingwang
+!
+vlan 404
+ name gongguanchu-vlan
+!
+vlan 433
+ name guoji-iphotel
+!
+vlan 440
+ name haoyangguang-iphotel
+!
+vlan 452
+ name alcaterl-ipadsl-user
+!
+vlan 708
+ name huataiyinzuo-xiaoqu
+!
+vlan 710
+ name ailiu2qi-xiaoqu
+!
+vlan 712
+ name helancun-xiaoqu
+!
+vlan 728
+ name qinyuan-xiaoqu
+!
+vlan 731
+ name jiaoyudasha
+!
+vlan 732
+ name haoyangguang-xiaoqu
+!
+vlan 736
+ name fengdanxinyuan-xiaoqu
+!
+vlan 757 
+!
+vlan 848
+ name hengda-wb
+!
+vlan 852
+ name kejiqingbaosuo
+!
+vlan 866
+ name xingxing-wb
+!
+vlan 903
+ name ip-adsl-sangtian
+!
+vlan 3693
+ name tiedaoshenghuo
+!
+vlan 3771
+ name xinhuashudian
+!
+vlan 3811
+ name nonghang-internet
+!
+!
+interface FastEthernet0/1
+ switchport access vlan 7
+ switchport mode access
+!
+interface FastEthernet0/2
+ description tian-an-vpn
+ switchport access vlan 231
+ switchport mode access
+ speed 10
+ duplex full
+!
+interface FastEthernet0/3
+ description hengda-wb
+ switchport access vlan 361
+ switchport mode access
+ speed 10
+!
+interface FastEthernet0/4
+ description nongcunxiyongshebaizhangUBD72227516
+ switchport access vlan 366
+ switchport mode access
+ speed 100
+ service-policy input rate-20M
+ service-policy output rate-20M
+!
+interface FastEthernet0/5
+ description tiedaoshenghuoUBD72230517
+ switchport access vlan 3693
+ switchport mode access
+ speed 100
+ service-policy input rate-20M
+ service-policy output rate-20M
+!
+interface FastEthernet0/6
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/7
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/8
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/9
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/10
+ description nonghang-baizhangdonglu821
+ switchport access vlan 3811
+ switchport mode dynamic desirable
+ speed 100
+ service-policy input rate-20M
+ service-policy output rate-20M
+!
+interface FastEthernet0/11
+ description gongguanchu
+ switchport access vlan 404
+ switchport mode access
+ speed 10
+ duplex full
+!
+interface FastEthernet0/12
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/13
+ description hengda-wb
+ switchport access vlan 848
+ switchport mode access
+ load-interval 60
+ speed 100
+ service-policy input rate-50M
+ service-policy output rate-50M
+ storm-control broadcast level 10.00
+ storm-control multicast level 10.00
+ spanning-tree portfast
+!
+interface FastEthernet0/14
+ description daili-baizangdonglu1087
+ switchport access vlan 285
+ switchport mode access
+ load-interval 60
+ speed 100
+ service-policy input rate-20M
+ service-policy output rate-20M
+!
+interface FastEthernet0/15
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/16
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/17
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/18
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/19
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/20
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/21
+ description haoyangguang-xiaoqu
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 9,77,433,440,732,1002-1005
+ switchport mode trunk
+!
+interface FastEthernet0/22
+ description BaoShang-BANK-HaiDe
+ switchport access vlan 7
+ switchport mode access
+!
+interface FastEthernet0/23
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/24
+ description RC-manager
+ switchport access vlan 7
+ switchport mode access
+!
+interface GigabitEthernet0/1
+ description uT:NB-C-JD-7609-1-SW:()G1/11
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface GigabitEthernet0/2
+ description uT:NB-NB-SG-SR-S9306-2.MAN:(F1605300007)GE1/0/5
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan26
+ description WH-3550manager
+ ip address 172.135.18.190 255.255.255.0
+!
+interface Vlan3771
+ no ip address
+!
+ip default-gateway 172.135.18.1
+ip classless
+ip route 0.0.0.0 0.0.0.0 172.135.18.1
+no ip http server
+ip tacacs source-interface Vlan26
+!
+logging source-interface Vlan26
+logging 172.200.100.6
+snmp-server community nbroot RO
+tacacs-server host 172.200.100.249
+tacacs-server key nbnoc
+!
+line con 0
+ exec-timeout 30 0
+line vty 0 4
+ exec-timeout 30 0
+ password 7 070123031E514954
+line vty 5 15
+!
+ntp clock-period 17180671
+ntp server 172.135.18.254
+!
+end
+
+NB-A-SANGTIAN-3550-1#

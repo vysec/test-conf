@@ -1,0 +1,1339 @@
+
+!Software Version V200R008C00SPC500
+#
+sysname QZ-CS-XDL-DSW-1.MAN.S9306
+#
+super password level 3 cipher %$%$:~14A._I<PN2z$N#pHf;81>lM^9kUkkw.~j+\C%>plq"1>o8%$%$
+#
+info-center source default channel 2 log level warning trap level warning
+info-center source default channel 4 log level notification
+info-center source SHELL channel 4 log level notification
+info-center source NTP channel 4 log state off 
+info-center loghost source Vlanif20
+info-center loghost 10.192.0.11 facility local4
+info-center loghost 10.192.0.12 facility local4
+#
+vlan batch 13 to 14 16 20 to 27 29 50 to 51 245 262 274 281 502
+vlan batch 507 509 517 524 to 525 543 555 567 571 575 578
+vlan batch 581 700 901 1180 to 1195 1199 to 1200 1205 1207 to 1208 1301 to 1311 1313 to 1314 1350 to 1357
+vlan batch 1359 to 1365 1383 to 1384 1390 1393 1395 to 1396 1398 1408 1410 to 1412 1416 1435 to 1436
+vlan batch 1442 1444 1449 to 1450 1452 to 1459 1466 1469 1495 to 1512 1519 1521 to 1527 1531
+vlan batch 1536 to 1560 1564 1595 to 1598 1603 to 1610 1615 to 1618 1623 1630 1644 to 1646 1660 to 1662 1672 to 1685
+vlan batch 1687 1690 to 1691 1696 1700 to 1701 1706 1709 1714 1716 1724 to 1725 1736
+vlan batch 1755 1762 1772 1777 1780 1786 1788 to 1789 1791 1798 1804
+vlan batch 2501 to 2502 2507 to 2508 2671 3001 to 3002 3101 3103 3195 to 3200 3202 3204 to 3205 3208 to 3210
+vlan batch 3212 3217 3220 to 3222 3229 3233 to 3236 3275 3277 3279 to 3280 3300 to 3301 3305
+vlan batch 3308 to 3314 3316 to 3318 3322 3325 to 3331 3340 to 3341 3344 to 3345 3347 to 3348 3350 to 3351 3356 3399 to 3411
+vlan batch 3413 to 3416 3422 3449 3501 to 3508 3515 to 3517 3520 to 3523 3527 3529 3532 3534 to 3544
+vlan batch 3546 3550 3554 to 3555 3557 to 3558 3562 to 3563 3566 to 3568 3572 to 3573 3575 3577 3579 to 3580
+vlan batch 3582 to 3587 3589 to 3591 3595 to 3597 3601 3603 to 3605 3607 to 3611 3613 to 3617 3619 3621 3624
+vlan batch 3627 to 3644 3646 to 3649 3651 3653 to 3656 3666 to 3671 3673 to 3674 3676 to 3679 3684 to 3694 3696 to 3702 3704 to 3705
+vlan batch 3707 to 3710 3712 to 3720 3722 to 3730 3732 to 3736 3738 3741 to 3746 3760 to 3761 3766 to 3772 3774 3776 to 3780
+vlan batch 3783 3786 3788 to 3792 3794 3796 3801 to 3802 3805 to 3809 3811 to 3827 3829 to 3832 3834 to 3836
+vlan batch 3838 to 3840 3843 to 3850 3852 to 3855 3857 to 3859 3861 to 3869 3871 to 3878 3880 to 3887 3890 to 3892 3894 to 3900 3905 to 3908
+vlan batch 3975 4093
+#
+undo authentication unified-mode
+#
+set save-configuration interval 43200 delay 30
+#
+telnet server enable
+telnet ipv6 server enable
+#
+lldp enable
+#
+undo http server enable
+undo http secure-server enable
+#
+undo management-port isolate enable
+undo management-plane isolate enable
+#
+clock timezone UTC add 00:00:00
+#
+observe-port 1 interface GigabitEthernet1/0/47
+observe-port 2 interface GigabitEthernet1/0/6
+#
+diffserv domain default
+#
+hwtacacs-server template zjdx
+ hwtacacs-server authentication 70.0.0.32
+ hwtacacs-server authorization 70.0.0.32
+ hwtacacs-server accounting 70.0.0.32
+ hwtacacs-server source-ip 10.21.16.2
+ hwtacacs-server shared-key cipher %^%#h8Cc'}X)7G^Sh]!M>P<:8;~PU<lEk0CRyE$Hc23!%^%#
+ hwtacacs-server timer response-timeout 30
+ undo hwtacacs-server user-name domain-included
+#
+acl number 2000  
+ description SNMP
+ rule 10 permit source 10.192.0.0 0.0.0.255 
+ rule 20 permit source 10.31.255.0 0.0.0.255 
+ rule 30 permit source 70.0.1.0 0.0.0.127 
+ rule 100 deny 
+acl number 2001  
+ description Telnet
+ rule 10 permit source 10.10.0.0 0.0.1.255 
+ rule 20 permit source 10.192.0.0 0.0.0.31 
+ rule 30 permit source 10.21.16.0 0.0.0.255 
+ rule 40 permit source 70.0.0.0 0.0.3.255 
+ rule 50 permit source 10.31.255.0 0.0.0.255 
+ rule 60 permit source 10.13.45.0 0.0.0.255 
+ rule 100 deny 
+acl number 2002  
+ description NTP
+ rule 10 permit source 70.0.0.32 0 
+ rule 100 deny 
+#
+acl number 3000  
+ rule 1 permit icmp 
+#
+traffic classifier 22 operator or precedence 20
+ if-match source-mac 000b-0a00-8466
+traffic classifier mirror_v1716 operator or precedence 15
+traffic classifier tcAny operator or precedence 30
+ if-match any
+traffic classifier tcCritical operator or precedence 5
+ if-match vlan-id 3599 to 3600
+traffic classifier tcIAD operator or precedence 25
+ if-match cvlan-id 3599 to 3600
+traffic classifier v1603 operator or precedence 13
+ if-match vlan-id 1603 cvlan-id 324
+traffic classifier v1673 operator or precedence 11
+ if-match vlan-id 1673
+traffic classifier v1716 operator or precedence 10
+ if-match vlan-id 1716
+traffic classifier v1724 operator or precedence 12
+ if-match vlan-id 1724 cvlan-id 333
+#
+traffic behavior 22
+ permit
+traffic behavior b1
+ permit
+traffic behavior tb100m
+ permit
+ car cir 102400 pir 102400 cbs 12800000 pbs 12800000 mode color-blind green pass yellow pass red discard
+traffic behavior tb10m
+ permit
+ car cir 10240 pir 10240 cbs 1280000 pbs 1280000 mode color-blind green pass yellow pass red discard
+traffic behavior tb1m
+ permit
+ car cir 1024 pir 1024 cbs 128000 pbs 128000 mode color-blind green pass yellow pass red discard
+traffic behavior tb20m
+ permit
+ car cir 20480 pir 20480 cbs 2560000 pbs 2560000 mode color-blind green pass yellow pass red discard
+traffic behavior tb2m
+ permit
+ car cir 2048 pir 2048 cbs 256000 pbs 256000 mode color-blind green pass yellow pass red discard
+traffic behavior tb4m
+ permit
+ car cir 4096 pir 4096 cbs 512000 pbs 512000 mode color-blind green pass yellow pass red discard
+traffic behavior tb50m
+ permit
+ car cir 51200 pir 51200 cbs 6400000 pbs 6400000 mode color-blind green pass yellow pass red discard
+traffic behavior tb6m
+ permit
+ car cir 6144 pir 6144 cbs 768000 pbs 768000 mode color-blind green pass yellow pass red discard
+traffic behavior tb8m
+ permit
+ car cir 8192 pir 8192 cbs 1024000 pbs 1024000 mode color-blind green pass yellow pass red discard
+traffic behavior tbCritical
+ permit
+ remark 8021p 4
+traffic behavior tbIAD
+ permit
+ remark 8021p 4
+traffic behavior tcCritical
+ permit
+traffic behavior v1603
+ permit
+ mirroring to observe-port 1 
+traffic behavior v1673
+ permit
+traffic behavior v1716
+ permit
+traffic behavior v1724
+ permit
+ mirroring to observe-port 2 
+#
+traffic policy 100m match-order auto
+ classifier tcAny behavior tb100m
+traffic policy 10m match-order auto
+ classifier tcAny behavior tb10m
+traffic policy 1m match-order auto
+ classifier tcAny behavior tb1m
+traffic policy 20m match-order auto
+ classifier tcAny behavior tb20m
+traffic policy 22 match-order auto
+ classifier 22 behavior 22
+traffic policy 2m match-order auto
+ classifier tcAny behavior tb2m
+traffic policy 4m match-order auto
+ classifier tcAny behavior tb4m
+traffic policy 50m match-order auto
+ classifier tcAny behavior tb50m
+traffic policy 6m match-order auto
+ classifier tcAny behavior tb6m
+traffic policy 8m match-order auto
+ classifier tcAny behavior tb8m
+traffic policy mirror_v1603 match-order auto
+ classifier v1603 behavior v1603
+traffic policy mirror_v1662 match-order auto
+traffic policy mirror_v1716 match-order auto
+ classifier v1716 behavior v1716
+traffic policy p1 match-order auto
+traffic policy tpCritical match-order auto
+ classifier tcCritical behavior tbCritical
+traffic policy tpIAD match-order auto
+ classifier tcIAD behavior tbIAD
+traffic policy v1724 match-order auto
+ classifier v1724 behavior v1724
+#
+drop-profile default
+#
+vlan 13
+ description PPPOE
+vlan 14
+ description PPPOE
+vlan 16
+ description test
+vlan 20
+ description For-Management
+vlan 25
+ description Manager_HuaWei_EPON
+vlan 26
+ description CS_Manager_HuaWei_VDSL
+vlan 29
+ description WangGuan-OLT
+vlan 50
+ description CS-TianWang
+vlan 51
+ description TEMP-GAJK
+vlan 245
+ description SheBaoJu-Weishengju_Vpn
+vlan 262
+ description SheBao_RenMinYiYuan
+vlan 507
+ description RenMinYiYuan_SheBao_VPN
+vlan 509
+ description LaoDongJu-shebao
+vlan 517
+ description GongShang-Vpn
+vlan 524
+ description QiXiangJu_VPN
+vlan 525
+ description QiXiang_VPN2
+vlan 543
+ description JiaoYuWang
+vlan 555
+ description CS_YiBao_VPN
+vlan 567
+ description DianZiZhengWu_neiwang
+vlan 571
+ description Vpn_YingBoGuoGuang
+vlan 575
+ description CS_ADSL_DCN
+vlan 578
+ description VPLS_lianZhongChaoShi
+vlan 581
+ description Vpn_GuoShui
+vlan 700
+ description Interconnect
+vlan 901
+ description HuaWei_VDSL_Manager
+vlan 1180
+ description wlan_qinq_21
+vlan 1181
+ description wlan_qinq_20
+vlan 1182
+ description wlan_qinq_19
+vlan 1183
+ description wlan_qinq_18
+vlan 1184
+ description wlan_qinq_17
+vlan 1185
+ description wlan_qinq_16
+vlan 1186
+ description wlan_qinq_15
+vlan 1187
+ description wlan_qinq_14
+vlan 1188
+ description wlan_qinq_13
+vlan 1189
+ description wlan_qinq_12
+vlan 1190
+ description wlan_qinq_11
+vlan 1191
+ description wlan_qinq_10
+vlan 1192
+ description wlan_qinq_9
+vlan 1193
+ description wlan_qinq_8
+vlan 1194
+ description wlan_qinq_7
+vlan 1195
+ description wlan_qinq_6
+vlan 1199
+ description GuoJi_Wlan
+vlan 1200
+ description wlan_qinq_1
+vlan 1205
+ description BaiShiYingYe_Wlan
+vlan 1207
+ description HuiBuYingYe_Wlan
+vlan 1208
+ description DangXiao_Wlan
+vlan 1301
+ description ZhuYuan40#
+vlan 1302
+ description MeiYuan60#
+vlan 1303
+ description ZhuYuan24#
+vlan 1304
+ description MeiYuan82#
+vlan 1305
+ description MeiYuan16#
+vlan 1306
+ description ZhuYuan22#
+vlan 1307
+ description ZhuYuan14#
+vlan 1308
+ description ZhuYuan30#
+vlan 1309
+ description MeiYuan20#
+vlan 1310
+ description MeiYuan22#
+vlan 1311
+ description DongYuan16#
+vlan 1313
+ description MeiYuan9#
+vlan 1314
+ description MeiYuan54#
+vlan 1350
+ description XiKou-UT-ADSL_1
+vlan 1351
+ description XiKou-UT-ADSL
+vlan 1352
+ description ZhouJiaWu_HW2403
+vlan 1353
+ description JiuLongShan_HW2403
+vlan 1354
+ description ChenTang-ADSL
+vlan 1355
+ description QingShi-GOV_1
+vlan 1356
+ description QingShi-GOV_2
+vlan 1357
+ description XiKou-UT-ADSL_6
+vlan 1359
+ description ShuoWaShan_ZTE_ADSL
+vlan 1360
+ description YanJia_ZTE_8220
+vlan 1361
+ description YaoDian
+vlan 1362
+ description DiGe-ADSL_1
+vlan 1363
+ description DiGe-ADSL_2
+vlan 1364
+ description HongQiao-HW2403
+vlan 1365
+ description HuBian-UT-DSLAM
+vlan 1383
+ description XinDaLou_ZET9210-1
+vlan 1384
+ description XinDaLou_ZET9210-2
+vlan 1390
+ description RenMinRoad_42#
+vlan 1393
+ description WuJiaJu
+vlan 1395
+ description HuKouJiFang-Hw2403
+vlan 1396
+ description XianZhengFu_IP
+vlan 1398
+ description XinFanJia9210
+vlan 1408
+ description old_HuShiTou-9806E
+vlan 1410
+ description RenMin_ROAD
+vlan 1411
+ description YuanYangJIFang
+vlan 1412
+ description SanLiTIng
+vlan 1416
+ description DongYuan-ZTE-8220
+vlan 1435
+ description XianQU_NetBar
+vlan 1436
+ description QianKouJiFang
+vlan 1442
+ description WuJingZhongDUI
+vlan 1444
+ description TongLing-ADSL
+vlan 1449
+ description ZhouTang-ZTE-9806E
+vlan 1450
+ description HenCHangDianZi
+vlan 1452
+ description XiaXiTang-ZTE_8426
+vlan 1453
+ description ChaoHuiGuan
+vlan 1454
+ description CaoPing-HW2403
+vlan 1455
+ description PPPOE
+vlan 1456
+ description XiTangAo-ZTE_9806
+vlan 1457
+ description JiangJiaBa-ZTE_9806
+vlan 1458
+ description BaiShi-Ut-ADSL
+vlan 1459
+ description VLAN2221
+vlan 1466
+ description JiangBin-1#
+vlan 1469
+ description JiangBin_27#
+vlan 1495
+ description MeiYuan_24#
+vlan 1496
+ description LinYeJu
+vlan 1497
+ description ZhuYuan_40#
+vlan 1498
+ description MeiYuan_42#
+vlan 1499
+ description ShiYeGongShi
+vlan 1500
+ description MeiYan_6#
+vlan 1501
+ description CSHWOLT-1_PPPoE-1
+vlan 1502
+ description CSHWOLT-1_PPPoE-2
+vlan 1503
+ description To_HuaWei_HUB1
+vlan 1504
+ description To_HuaWei_HUB2
+vlan 1505
+ description To_HuaWei_HUB3
+vlan 1506
+ description To_HuaWei_HUB4
+vlan 1507
+ description To_HuaWei_HUB5
+vlan 1508
+ description To_HuaWei_HUB6
+vlan 1509
+ description To_HuaWei_HUB7
+vlan 1510
+ description To_HuaWei_HUB8
+vlan 1511
+ description To_HuaWei_HUB9
+vlan 1512
+ description To_HuaWei_HUB10
+vlan 1519
+ description DongYuan_16
+vlan 1521
+ description HuiBuGPON_FTTH_PPPoE
+vlan 1522
+ description HuiBu-OLT
+vlan 1523
+ description HuiBu-OLT
+vlan 1524
+ description HuiBu-OLT
+vlan 1525
+ description HuiBu-OLT
+vlan 1526
+ description JinMaoJu
+vlan 1527
+ description cs_tongling_ut_1_1-1#_
+vlan 1531
+ description DongLu-ZTE_8426
+vlan 1536
+ description SongFan-PPPOE-3
+vlan 1537
+ description SongFan-PPPOE-2
+vlan 1538
+ description SongFan-PPPOE-1
+vlan 1539
+ description SongFan_UT-ADSL
+vlan 1540
+ description HuiBu_ADSL
+vlan 1541
+ description DaGen-HW2403
+vlan 1542
+ description YangMeiNong-HW2403
+vlan 1543
+ description ZhenZhengFu
+vlan 1544
+ description LinWu_9806
+vlan 1545
+ description GuFengHuaTing3750
+vlan 1546
+ description ZiGangZhongXueJiFang
+vlan 1547
+ description ZhuJiaWu-9806
+vlan 1548
+ description XueTangShan-9806E
+vlan 1549
+ description HuDong-UT-ADSL_3
+vlan 1550
+ description GuoKen-UT
+vlan 1551
+ description TongGong-HW2403
+vlan 1552
+ description JianCaiYuanQu-HW2403
+vlan 1553
+ description JiangJiaBao-HW2403
+vlan 1554
+ description JiuTaiNong-HW2403
+vlan 1555
+ description NanNong-ZTE_8220
+vlan 1556
+ description FanJiaGpon_PPPoE-1
+vlan 1557
+ description FanJiaGpon_PPPoE-2
+vlan 1558
+ description FanJiaGpon_PPPoE-3
+vlan 1559
+ description FanJiaGpon_PPPoE-4
+vlan 1560
+ description WaiGang-UT-ADSL_4
+vlan 1564
+ description old_ZiGangZhongXueJiFang
+vlan 1595
+ description XiKou_GPON-FTTH
+vlan 1596
+ description XiKou_GPON-FTTH
+vlan 1597
+ description XiKou_GPON-FTTH
+vlan 1598
+ description XiKou_GPON-FTTH
+vlan 1603
+ description HuiBu-GPON-FTTH-1
+vlan 1604
+ description HuiBu-GPON-FTTH-2
+vlan 1605
+ description HuiBu-GPON-FTTH-3
+vlan 1606
+ description HuiBu-GPON-FTTH-4
+vlan 1607
+ description WaiGangGPON-FTTH-1
+vlan 1608
+ description WaiGangGPON-FTTH-2
+vlan 1609
+ description WaiGangGPON-FTTH-3
+vlan 1610
+ description WaiGangGPON-FTTH-4
+vlan 1615
+ description TongGongGPON-FTTH-1
+vlan 1616
+ description TongGongGPON-FTTH-2
+vlan 1617
+ description TongGongGPON-FTTH-3
+vlan 1618
+ description TongGongGPON-FTTH-4
+vlan 1623
+ description QiuChuan_GOV
+vlan 1644
+ description GaoGen-HW2403
+vlan 1645
+ description WangJiaYu-HW2403
+vlan 1646
+ description JinWu-HW2403
+vlan 1660
+ description FangCunGongXiaoShe
+vlan 1661
+ description XingQiao_3026
+vlan 1662
+ description BanKen_ZTE_8220
+ traffic-policy mirror_v1662 inbound
+ traffic-policy mirror_v1662 outbound
+vlan 1672
+ description FangCun_Ut_ADSL-1
+vlan 1673
+ description GuoTang
+vlan 1677
+ description ZhaoXian_HuaWei_Epon_YeWu
+vlan 1678
+ description HongQiGang_EPON
+vlan 1679
+ description CS_XianJu_EPON
+vlan 1681
+ description XianJuEPON-Wlan1
+vlan 1682
+ description XianJuEPON-Wlan2
+vlan 1683
+ description XianJuEPON-Wlan3
+vlan 1684
+ description XianJuEPON-Wlan4
+vlan 1685
+ description XianJuEPON-Wlan5
+vlan 1687
+ description XianJuEPON-Wlan6
+vlan 1690
+ description CSOLT-1_WLAN
+vlan 1691
+ description XinJinDuBinGuanWLAN
+vlan 1696
+ description HuiBuiwifi
+vlan 1700
+ description FTTH_YeWu
+vlan 1701
+ description XianJu_OLT_YeWu-1
+vlan 1706
+ description HuHui_EPON_YeWu
+vlan 1709
+ description XiKou_OLT_YeWu
+vlan 1714
+ description XanJu_OLT-2_PPPoe
+vlan 1716
+ description XianJuOLT-2_FTTH_PPPoE
+vlan 1724
+ description XianJuOLT-2_FTTH_PPPoE
+vlan 1725
+ description CSOLT-2_PPPoE
+vlan 1755
+ description XiKouGpon_YeWu
+vlan 1772
+ description XiKouGpon_YuYin
+vlan 1777
+ description HuiBuGPON_YuYin
+vlan 1780
+ description FangJiaGPON_YuYin
+vlan 1786
+ description XiKou_GPON-YuYin
+vlan 1788
+ description HuiBu-GPON-YuYin
+vlan 1789
+ description WaiGangGPON-YuYin
+vlan 1791
+ description TongGongGPON-YuYin
+vlan 1798
+ description HuHui_EPON_YuYin
+vlan 2501
+ description XianJuOLT-1-FTTO
+vlan 2502
+ description XianJuOLT-2-FTTO
+vlan 2507
+ description HuiBuOLT-FTTO
+vlan 2508
+ description description XiKouOLT-FTTO
+vlan 3001
+ description QiXiangJu_2Ceng_VPN
+vlan 3002
+ description CunZhengYingHang_VPN
+vlan 3101
+ description Manager_UT_ADSL-CS
+vlan 3103
+ description Manager_JieDian_L2Switch-CS
+vlan 3195
+ description local_VPN_ZiLaiShuiChang
+vlan 3196
+ description local_VPN_LianZhongChaoShi
+vlan 3197
+ description local_DianZiZhengWu_neiwang
+vlan 3198
+ description local_GongLuDuan_NeiWang
+vlan 3199
+ description local_CsShiDaiGuangChan_Vpn
+vlan 3200
+ description QZDX_Administrator_Group
+vlan 3202
+ description CSDX_JiFang_manager
+vlan 3204
+ description VPN_WenFeng_JinChuan_ZiGang_WeiS
+vlan 3205
+ description CaiZhengJu-XinYongSHeLinShi
+vlan 3208
+ description XingYongShe_VPN
+vlan 3209
+ description RenMingYiYuan_VPN
+vlan 3210
+ description GongAnJuXiaoFangZhiDui_VPN
+vlan 3212
+ description public_HangJingQuGaoShuShouFei_V
+vlan 3217
+ description public_Vpn_JiaoTongJu
+vlan 3220
+ description public_Vpn_QZ_GongLuGuanLiChu
+vlan 3221
+ description public_CSFaYuanDianZiZhengWu
+vlan 3222
+ description public_CSShuZiFaTing
+vlan 3229
+ description public_GongAn_JiuDian
+vlan 3233
+ description public_Vpn_TaiPingYangBaoXian
+vlan 3234
+ description public_VPN_qzdx_DianLanJianKong
+vlan 3235
+ description public_VPN_JinBaiHuiChaoShi
+vlan 3236
+ description ShiDaiGouWu_VPN
+vlan 3275
+ description public_dcn_CS_ADSL
+vlan 3300
+ description XXT-CS-FireWall-trust
+vlan 3301
+ description XXT_JiaoYuJu
+vlan 3305
+ description XXT_ChSiZhong
+vlan 3308
+ description XXT_ZhiYe_ZhongZhuan
+vlan 3309
+ description XXT_HuDong_CZ
+vlan 3310
+ description XXT_HeJia_CZ
+vlan 3311
+ description XXT_HuiBu_CZ
+vlan 3312
+ description XXT_ShiZiKou_CZ
+vlan 3313
+ description RenShouBaoXian_VPN
+vlan 3314
+ description VPN_HBJK_ChangShanShuiNi
+vlan 3316
+ description VPN_HBJK_TianMaWuShuiChuLi
+vlan 3317
+ description GeDiChuZhong_XXT
+vlan 3318
+ description XXT_QingShi_CZ
+vlan 3322
+ description XXT_TongGong_CZ
+vlan 3325
+ description ShiYanXiaoXue-XXT
+vlan 3326
+ description XXT_ErDouQiao_XX
+vlan 3327
+ description XXT_HuDong_XX
+vlan 3328
+ description XXT_HeJia_XX
+vlan 3329
+ description XXT_HuiBu_XX
+vlan 3330
+ description XXT_ShiZiKou_XX
+vlan 3331
+ description XXT_SongFan_XX
+vlan 3340
+ description GeDiXiaoXue_XXT
+vlan 3341
+ description XXT_QingShi_XX
+vlan 3344
+ description XXT_QianKou_XX
+vlan 3345
+ description XXT_BaiShi_XX
+vlan 3347
+ description XXT_LongRao_XX
+vlan 3348
+ description XXT_TongGong_XX
+vlan 3350
+ description ChangShanXianDiYiXiaoXue_XXT
+vlan 3351
+ description XXT_JinXiuXiao_JYS
+vlan 3356
+ description XXT_ZiGan_ZX
+vlan 3399
+ description XXT-CS-FireWall-untrust
+vlan 3400
+ description Hotel_CS_GuoJiDaJiuDian
+vlan 3401
+ description Hotel_CS_YouDuBinGuan
+vlan 3402
+ description Hotel_CS_LiangYou
+vlan 3403
+ description Hotel_CS_YinYuan
+vlan 3404
+ description TianHongBinGuan_GongAnVPN
+vlan 3405
+ description Hotel_CS_YouHao
+vlan 3406
+ description Hotel_CS_XiangHuaBinGuan
+vlan 3408
+ description Hotel_CS_HuangChao
+vlan 3411
+ description Hotel_CS_XinYueBinGuan
+vlan 3413
+ description JiuDian_CS_ShenLongShangWuJiuDia
+vlan 3414
+ description JiuDian_CS_TaiPingYangDaJiuDian
+vlan 3422
+ description JinBoLiHotel
+vlan 3501
+ description JinWeiYaoYe-2_EPON
+vlan 3502
+ description HB89_XueSongGaiYe_EPON
+vlan 3503
+ description CS40_1Old_ManBuZe_Netbar176
+vlan 3504
+ description CS40_1JiSu007_netbar179
+vlan 3505
+ description HuangYan_Netbar(180)
+vlan 3506
+ description CS40_1YouDu_BinGuan181
+vlan 3507
+ description CS40_1Chonglang_netbar204
+vlan 3508
+ description GongAnWangJing
+vlan 3515
+ description CS40_1NanFeng_netbar227
+vlan 3516
+ description CS40_1WangJiaXin_netbar229
+vlan 3517
+ description ChengZhongChengGongYu
+vlan 3520
+ description XueLiangChuJu
+vlan 3521
+ description FanXin_Nectbar(237)
+vlan 3522
+ description CS40_1CaiZhengJu242
+vlan 3523
+ description HaoTianJiaJu_EPON
+vlan 3527
+ description TianZiGuoYeCheJianBanGongShi_EPON
+vlan 3529
+ description CS_ZhengLi
+vlan 3532
+ description BaiShi_Beijiguan_Netbar(150)
+vlan 3534
+ description RiChengTongYe_EPON
+vlan 3535
+ description TianYinDianZi_EPON
+vlan 3536
+ description JinBoLiDaJiuDian_IP
+vlan 3537
+ description NingLongWangBa
+vlan 3538
+ description WenFaTongYe_EPON
+vlan 3539
+ description JingFengJuYeGaoFenZi_EPON
+vlan 3540
+ description CS40_2DingYangBeiLu154149
+vlan 3541
+ description liangping_netbar(208)
+vlan 3542
+ description CS40_2YiHaiDianZi156
+vlan 3544
+ description CS40_2XianQv_netbar206
+vlan 3550
+ description CS40_2FangZhiGongSi215
+vlan 3554
+ description DianXin_ZongHeWeiHuBu
+vlan 3555
+ description CS40_2CS_GongAnJu224
+vlan 3557
+ description GaoshuGonglu_GuanliJu(240)
+vlan 3558
+ description DongShengZhouCheng_EPON
+vlan 3562
+ description JunMeiFangZhi_EPON
+vlan 3563
+ description QiXiangFangZhi_EPON
+vlan 3566
+ description CS9306_3JiaoWei249
+vlan 3567
+ description XinFuDianQi_EPON
+vlan 3568
+ description LeLe_Netbar(256)
+vlan 3572
+ description YinTianHuaXian_EPON
+vlan 3573
+ description CS40_2WeiSHenJu258
+vlan 3575
+ description WenShiYangZhi_EPON
+vlan 3577
+ description HangjinQuGaoShuGongLu(282)
+vlan 3579
+ description DaZhengYiYao
+vlan 3580
+ description DingYangNanLu59_EPON
+vlan 3582
+ description XiangYangZhouCheng_EPON
+vlan 3583
+ description gongshanju&laodongju(132)
+vlan 3584
+ description qingcaodi(173)
+vlan 3585
+ description CS_GuoJiDaJiuDian(255)
+vlan 3586
+ description Network-hotel(264)
+vlan 3587
+ description GongShanXingZhenGuanli(273)
+vlan 3589
+ description CS_HuanBaoJu(332)
+vlan 3590
+ description WangXiang_Netbar(241)
+vlan 3591
+ description JinGang_Netbar(243)
+vlan 3595
+ description CS40_2QiXiangJu333
+vlan 3596
+ description CS40_2RongChengTaoCi336
+vlan 3597
+ description ZhiMingWuLiu
+vlan 3601
+ description LGS35_FeiLang_netbar259
+vlan 3603
+ description LGS35_CS_JinXueLiPing399
+vlan 3604
+ description HengChengZhouCheng_EPON
+vlan 3605
+ description CS40_2_YiSiDaDianZi
+vlan 3607
+ description CS40_2GaoSuJiaoJinDuiYiDaDui
+vlan 3608
+ description ChangFaGongSi
+vlan 3609
+ description CS40_2_ZhengHongJiXie
+vlan 3610
+ description CS40_2_ZhongShangQiChe
+vlan 3611
+ description CS40_2_HongFengGuanJian
+vlan 3613
+ description CS40_2_XiangHuaBinGuan
+vlan 3614
+ description CS40_2_ZhaoTouBiaoZhongXin
+vlan 3615
+ description MingGangShiHuiChang_EPON
+vlan 3616
+ description CS40_2_FangYongDe
+vlan 3617
+ description XinLangChaoNetbar_EPON
+vlan 3619
+ description CS40_2_ShengChangKuangYe
+vlan 3621
+ description ZX45_LiuLianFu
+vlan 3624
+ description ZX45_LiuXinDong
+vlan 3627
+ description HengChangDianZi
+vlan 3628
+ description ZX45_FeiManPiJu
+vlan 3629
+ description ShuiBaoZhan_EPON
+vlan 3630
+ description WG45_JinXiongGongSi
+vlan 3631
+ description WG45_XingQiuGongSi
+vlan 3632
+ description WG45_SiTongZhouChengGongSi
+vlan 3633
+ description WG45_ChangXinHuaGong
+vlan 3634
+ description WG45_DongFengZhouChengGongSi
+vlan 3635
+ description WG45_ChangXinJingXiHuaGong
+vlan 3636
+ description WG45_HuaXinZhouCheng
+vlan 3637
+ description WG45_HuiBuJingJiKaiFaQu
+vlan 3638
+ description WG45_YeYaJiChang
+vlan 3639
+ description WG45_WenQingZhouCheng
+vlan 3640
+ description WG45_XiaXinTeZhongZhouCheng
+vlan 3641
+ description WG45_YaXinTanSuanGai
+vlan 3642
+ description WG45_ShengYuYouSeJinShu
+vlan 3643
+ description WG45_TianMaShuiNi
+vlan 3644
+ description WG45_DaWeiFangDiChan
+vlan 3646
+ description WG45_JiangShanHuShuiNiGongSi
+vlan 3647
+ description MuYiJiaGongYiPing_EPON
+vlan 3648
+ description WG45_LianJieSuLiaoChang
+vlan 3649
+ description WG45_MaiErTaiMuYe
+vlan 3651
+ description YiRenWangBa
+vlan 3653
+ description CS40_1_ZongGongHui
+vlan 3654
+ description ChengXiaoFei
+vlan 3655
+ description LvTongZhouCheng_IP
+vlan 3656
+ description ZiJingHuaYuanXiangMuJianSheBu_EPON
+vlan 3666
+ description CS40_1_FanWenKui
+vlan 3667
+ description CS40_1_YunTaiFangZhi
+vlan 3668
+ description CS40_1_ChangShanXiaoFangDui
+vlan 3669
+ description CS40_1_ChangShanRenMinYiYuan
+vlan 3670
+ description MY40_SheBaoJu
+vlan 3671
+ description MY40_NongFaHangXingDaiZu
+vlan 3673
+ description SongFanGuoFeiHuoXingGaiYe
+vlan 3674
+ description YuTuGauiYe_epon
+vlan 3676
+ description CS_JiangShanHuYaWuKuangQu_EPON
+vlan 3677
+ description CS_ShiMuLinKuangShanJianKong_EPO
+vlan 3678
+ description JingJiangBinGuan_EPON
+vlan 3679
+ description ShiZiKouMaiWuCun
+vlan 3684
+ description ChuanShanJiaWuLiu
+vlan 3685
+ description YinTianXiaoErDaiKuan_EPON
+vlan 3686
+ description XinQiaoXiangXinQiaoCun_EPON
+vlan 3687
+ description CS_JinLinChaoShiHuoJiaChang_EPON
+vlan 3688
+ description CS_ChangShanShiYanXiaoXueFenBu_E
+vlan 3689
+ description DangAnGuan_ip_EPON
+vlan 3690
+ description ChangYunQiCheXiuLiChang_EPON
+vlan 3691
+ description JinXiangQiCheXiuLiChang_EPON
+vlan 3692
+ description FangGaiChu
+vlan 3693
+ description ShenYinWangGuoIP
+vlan 3694
+ description ChangYunWuLiu_EPON
+vlan 3696
+ description RenShouBaoXian_IP_EPON
+vlan 3697
+ description CS_TaiYuanTongYe_EPON
+vlan 3698
+ description CS_ShanMaiYeYa_EPON
+vlan 3699
+ description FuLongXieYe_epon
+vlan 3700
+ description FC45_HuaQuNanGaoSu_J6
+vlan 3701
+ description ChenJianJu_EPON
+vlan 3702
+ description GuoDingTongYe_EPON
+vlan 3704
+ description BoSiTeHuaQian_EPON
+vlan 3705
+ description FC45_KeShuoDianZi
+vlan 3707
+ description HenLiTanSuanGai_EPON
+vlan 3708
+ description ChengXinZhouCheng_EPON
+vlan 3709
+ description DangXiaoBinGuan_EPON
+vlan 3710
+ description EPON_ChongWuGongSi
+vlan 3712
+ description YingYeDianShiQiang
+vlan 3713
+ description JinBaiL_HOTEL
+vlan 3714
+ description RongShengTaoCi_IP
+vlan 3715
+ description HongXiangHuaGong_IP
+vlan 3716
+ description YongHeHuaGong_EPON
+vlan 3717
+ description FengliShangMao_IP
+vlan 3718
+ description CanJieShi_IP
+vlan 3719
+ description ShiMaoJiXie_EPON
+vlan 3720
+ description RenMinYinHang_Epon
+vlan 3722
+ description LvYeTouXianGongSi
+vlan 3723
+ description ChangShanHongYuShiCai_EPON
+vlan 3724
+ description XiTingZhuangShiYouXianGongSi_EPO
+vlan 3725
+ description LinYeGongAn_EPON
+vlan 3726
+ description FeiYangMenYe_Epon
+vlan 3727
+ description HongDingShangWuYouXianGongSi
+vlan 3728
+ description HuanLiangBanDaoTiYouXianGongSi
+vlan 3729
+ description AnBangBaoXian
+vlan 3730
+ description CN45_TianDiFangDiChan
+vlan 3732
+ description YiChangDianDongChe
+vlan 3733
+ description ShenYinWanGuo
+vlan 3734
+ description HengJiaZhouChengGOngSi
+vlan 3735
+ description XiaoGangDianNao_EPON
+vlan 3736
+ description DongHangKeYun
+vlan 3738
+ description SheJiSuo
+vlan 3741
+ description JiaMingWenTiYongPin
+vlan 3742
+ description ChangChengShanZhuang
+vlan 3743
+ description HuaLianChaoShi_WaiWang
+vlan 3744
+ description HeXunZhouCheng_EPON
+vlan 3745
+ description DongYuanQiCheXiuLiChang_EPON
+vlan 3746
+ description WangTongQiCheXiuliChang_EPON
+vlan 3760
+ description DongShengBingGuan_EPON
+vlan 3766
+ description XinRenMingYiYuan_EPON
+vlan 3767
+ description FengLiShangMao_EPON
+vlan 3768
+ description DingHangGangGou_EPON
+vlan 3769
+ description HuShanGongYuanHuZhongJu_EPON
+vlan 3770
+ description CS40_2_ZhongGuanZhouCheng
+vlan 3771
+ description CS40_2_XingYuDianZi
+vlan 3772
+ description CS40_2_JinDianGongYiPin
+vlan 3774
+ description CS40_2_JiangHaiTongYe
+vlan 3776
+ description CS40_2_OuKaiBanYe
+vlan 3777
+ description CS40_2_YongBaoTongYe
+vlan 3778
+ description CS40_2_ZhuZhaiJianZhuGongSi
+vlan 3779
+ description CS40_2_DouDouWenTiYongPing
+vlan 3780
+ description CS40_2_WeiShiLangWenTiYongPing
+vlan 3783
+ description CS40_2_YanYeGongSi
+vlan 3786
+ description CS40_2_GongYuanGuangChangGuanLiC
+vlan 3788
+ description ShiZiKouShuiKu_EPON
+vlan 3789
+ description CS40_2_XuQiang
+vlan 3790
+ description CS40_2_ChangLongDianZi
+vlan 3791
+ description CS40_2_WanGuDianZiKeJi
+vlan 3792
+ description CS40_2_ZiRanShiPin
+vlan 3794
+ description CS40_2_RenMinYiYuan-FuErBu
+vlan 3796
+ description CS40_2_ShanShenChaYou
+vlan 3801
+ description XianZhengFuBanGongShi
+vlan 3802
+ description VPLS_JSHeJiaShangShiNi
+vlan 3805
+ description CS40_2_NongYeJu
+vlan 3806
+ description EPON_YunTaiFangZhi2
+vlan 3807
+ description BeiLinFangKai_epon
+vlan 3809
+ description EPON_BeiAnKaFei
+vlan 3811
+ description EPON_ShiDaiJiLiangKeJi
+vlan 3812
+ description EPON_SanDaJiaoTongJianShe
+vlan 3813
+ description HaoMenJiaRi_HOTEL_IP
+vlan 3814
+ description TianMaShuiNiSuShe_EPON
+vlan 3815
+ description YingJueKaFei_EPON
+vlan 3816
+ description YongJinJinShu_EPON
+vlan 3817
+ description GongAnJu_EPON
+vlan 3818
+ description XinYuDianZi_EPON
+vlan 3819
+ description DongFuKuangYe_EPON
+vlan 3820
+ description YuanJianDianNao_EPON
+vlan 3821
+ description CS40_1_JianAnJianZhu
+vlan 3822
+ description CS40_1_ChangTuQiChe
+vlan 3823
+ description CS40_1_WeiErZhouCheng
+vlan 3824
+ description CS40_1_DongFangJuLongQiCheXiaoSh
+vlan 3825
+ description CS40-1_BaiYunBinGuan
+vlan 3826
+ description CS40_1_MinShengFangZhi
+vlan 3827
+ description CS40_1_HuanYuZhouCheng
+vlan 3829
+ description CS40_1_ShuangMingZhouCheng
+vlan 3830
+ description CS40_1_XingDuBiYe
+vlan 3831
+ description XinRenMingYiYuan_ZheYi_EPON
+vlan 3832
+ description HuiBuWeiShengYuan_IP
+vlan 3834
+ description XinRenMingYiYuan_ZheEr_EPON
+vlan 3835
+ description XinCanLian_EPON
+vlan 3836
+ description EPON_XinDuFangZhi
+vlan 3839
+ description ChangLinZhiYe_EPON
+vlan 3840
+ description TianLongGuiSuanNa
+vlan 3843
+ description QingShiWeiSehngYuan_IP
+vlan 3844
+ description JieMuZhouCheng_epon
+vlan 3845
+ description ZhengJiangRuiLi_epon
+vlan 3846
+ description MingDaXianYe_epon
+vlan 3847
+ description JinDunBaoAn
+vlan 3848
+ description EPON_HuaXinJiSuanJiXueXiao
+vlan 3849
+ description EPON_JinBaiHuiGouWuGuangChang
+vlan 3850
+ description WG45_NanFangTanSuanGai
+vlan 3852
+ description WG45_FangZhiYouXianGongSi
+vlan 3853
+ description JuJIa_JuJianMin_IP
+vlan 3854
+ description HeJiaWeiShengYuan
+vlan 3855
+ description TongGongWeiShengYuan
+vlan 3857
+ description CS40_1_XueFengTanSuanGai
+vlan 3858
+ description EPON_GaoSuJiaoJingDui
+vlan 3859
+ description CS40_1_ZhongGuoYinHang
+vlan 3861
+ description HuKouKangHuiMianFangChang
+vlan 3862
+ description EPON_LiJunFaLang
+vlan 3863
+ description TianZiGuoYe
+vlan 3864
+ description HengYeHunNiTu_EPON
+vlan 3865
+ description KaiTuoXiuXianJiaJuYongPingYouXianGongSi
+vlan 3866
+ description XinAnWuLiu
+vlan 3867
+ description RuiJinGaiYe
+vlan 3868
+ description ShunChangYangHu
+vlan 3869
+ description XuanGuoSheng
+vlan 3871
+ description XingZhengFuWuZhongXin_EPON
+vlan 3872
+ description YinTianHuaXian_IP_Epon
+vlan 3873
+ description EPON_Hotel_JinHaiAn
+vlan 3874
+ description ZiLaiShuiGongSi
+vlan 3875
+ description EPON_LvZhzouJieNengKeJi
+vlan 3876
+ description EPON_HongYuShengWuKeJi
+vlan 3877
+ description JiaNengZaiShengZhiYuan
+vlan 3878
+ description KaiTuoXiuXianCheJianBanGongShi_EPON
+vlan 3880
+ description JiaoTongTouZhiGroup_HangJinQuQZG
+vlan 3881
+ description EPON_HongXingYaLiuSuanNa_IP
+vlan 3882
+ description AiLiShaBiZhi_EPON
+vlan 3883
+ description FuShanFangZhi_EPON
+vlan 3884
+ description JuLiShangMao_EPON
+vlan 3885
+ description LuYouWangba
+vlan 3886
+ description ChangShengHuaGong_Epon
+vlan 3887
+ description PiErZhouCheng_EPON
+vlan 3890
+ description JinYuanShiYing_EPON
+vlan 3891
+ description ChangShanZiLaiShuiGongSi_EPON
+vlan 3892
+ description LianHeCunZhenYinHang_EPON
+vlan 3894
+ description ShenYingHuaGong_EPON
+vlan 3895
+ description DaWeiFangZhi_EPON
+vlan 3896
+ description LiMingErNongDong602
+vlan 3897
+ description HuiBuQingYangFangZhi_EPON
+vlan 3898
+ description ZiGang325Hao_EPON
+vlan 3899
+ description VPN_HBJK_HuangBaoJu
+vlan 3900
+ description VPN_HBJK_ChangShanHuaGong
+vlan 3905
+ description VPN_HBJK_TianMaShuiNi
+vlan 3906
+ description VPN_HBJK_HuYueShuiNi
+vlan 3908
+ description VPN_HBJK_TianMaWuShuiChuLi
+vlan 4093
+ description Mornitor-HotelVPN
+#
+aaa
+ authentication-scheme default
+ authentication-scheme zjdx
+  authentication-mode hwtacacs local
+ authorization-scheme default
+ authorization-scheme zjdx
+  authorization-mode  hwtacacs local
+ accounting-scheme default
+ accounting-scheme zjdx
+  accounting-mode hwtacacs
+  accounting start-fail online
+ recording-scheme zjdx
+  recording-mode hwtacacs zjdx
+ cmd recording-scheme zjdx
+ outbound recording-scheme zjdx
+ system recording-scheme zjdx
+ domain default
+ domain default_admin
+  authentication-scheme zjdx
+  accounting-scheme zjdx
+  authorization-scheme zjdx
+  hwtacacs-server zjdx
+ local-user admin password irreversible-cipher %^%#e2psN*tF:%D:C}P`(&=0/(ofA2vgFL$690-F25SB[U\S0l>7~36S5k'qR"pX%^%#
+ local-user admin service-type http
+ local-user local password irreversible-cipher %^%#sTWt-=[\Y&yKUUF\Bxf-+3-y!c1Z5K#U}E*3>tw;4-RE)X<dKIHIqMN=Z>DP%^%#
+ local-user local privilege level 3
+ local-user local service-type telnet terminal
+ local-user zjnoc password irreversible-cipher %^%#&j(xW+f(1U>

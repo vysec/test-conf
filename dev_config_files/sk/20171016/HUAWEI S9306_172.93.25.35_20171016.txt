@@ -1,0 +1,646 @@
+
+!Software Version V200R008C00SPC500
+#
+sysname NB-CX-GC-DSW-4.M2N.9306-3
+#
+super password level 3 cipher %$%$3+FI6<=e4LlcT.5URy[$vqLJ,2$d1riN:InV9<W!1@g5qLMv%$%$
+#
+vlan batch 50 93 2001 to 2099 2103 to 2104 2115 2131 to 2132 2782 to 2800 4000
+#
+undo authentication unified-mode
+#
+igmp-snooping enable
+#
+telnet server enable
+telnet ipv6 server enable
+#
+dot1x enable
+#
+undo http server enable
+undo http secure-server enable
+#
+undo management-port isolate enable
+undo management-plane isolate enable
+#
+clock timezone BJ add 08:00:00
+#
+diffserv domain default
+#
+hwtacacs-server template nbdx
+ hwtacacs-server authentication 172.200.100.249
+ hwtacacs-server authorization 172.200.100.249
+ hwtacacs-server accounting 172.200.100.249
+ hwtacacs-server source-ip 172.93.25.35
+ hwtacacs-server shared-key cipher %^%#(S"lDf(Ev/Y;W)<46$1%cBY>6}USl3KQlsTAiQJ~%^%#
+ undo hwtacacs-server user-name domain-included
+#
+acl number 2000  
+ description For_Telnet
+ rule 5 permit source 61.153.82.90 0 
+ rule 10 permit source 202.96.102.247 0 
+ rule 15 permit source 202.96.102.0 0.0.1.255 
+ rule 20 permit source 202.101.167.192 0.0.0.63 
+ rule 25 permit source 61.153.112.128 0.0.0.31 
+ rule 30 permit source 172.93.0.0 0.0.255.255 
+ rule 35 permit source 172.200.100.0 0.0.0.255 
+ rule 40 permit source 202.96.112.0 0.0.0.31 
+ rule 45 permit source 61.130.21.96 0.0.0.7 
+ rule 50 permit source 61.175.19.0 0.0.0.255 
+ rule 55 permit source 218.75.80.0 0.0.0.255 
+ rule 60 permit source 61.175.200.64 0.0.0.15 
+acl number 2015  
+ description For-SNMP
+ rule 10 permit source 172.200.100.12 0 
+ rule 20 permit source 172.200.100.6 0 
+ rule 30 permit source 172.200.100.13 0 
+ rule 40 permit source 172.200.100.7 0 
+ rule 50 permit source 172.200.100.8 0 
+ rule 60 permit source 172.200.100.9 0 
+ rule 70 permit source 172.200.100.10 0 
+ rule 80 permit source 172.200.100.11 0 
+ rule 90 permit source 172.200.100.14 0 
+ rule 100 permit source 172.200.100.15 0 
+ rule 110 permit source 172.200.100.5 0 
+ rule 120 permit source 172.200.100.4 0 
+ rule 130 permit source 172.200.100.3 0 
+ rule 1500 deny 
+#
+drop-profile default
+#
+vlan 93
+ description WH-GK93manager
+vlan 2052
+ description SB-MA5680T(GPON)-02.VLAN
+vlan 2053
+ description SB-MA5680T(GPON)-02.VLAN
+vlan 2054
+ description SB-MA5680T(GPON)-02.VLAN
+vlan 2055
+ description SB-MA5680T(GPON)-02.VLAN
+vlan 2793
+ description CX-QT-MA5680T(GPON-1).VLAN
+vlan 4000
+ igmp-snooping enable
+#
+aaa
+ authentication-scheme default
+ authentication-scheme nbdx
+  authentication-mode hwtacacs local
+ authorization-scheme default
+ authorization-scheme nbdx
+  authorization-mode  hwtacacs local
+ accounting-scheme default
+ accounting-scheme nbdx
+  accounting-mode hwtacacs
+  accounting realtime 3
+  accounting start-fail online
+ recording-scheme scheme0
+  recording-mode hwtacacs nbdx
+ cmd recording-scheme scheme0
+ outbound recording-scheme scheme0
+ domain default
+ domain default_admin
+  authentication-scheme nbdx
+  accounting-scheme nbdx
+  authorization-scheme nbdx
+  hwtacacs-server nbdx
+ local-user admin password irreversible-cipher %^%#<]G,W.=f]~CkyYJ6@cLFp)GM>D~A,@0Mz((18Ns>W/NmE`"Z^M=(vZYWg*N0%^%#
+ local-user admin privilege level 1
+ local-user admin service-type telnet
+ local-user zjnoc password irreversible-cipher %^%#[B3_J=Z|Z0tZ0M@{%kH~/#v4-=H0!#6{353ZRn6Z#CKgU'k^";20aAQ<fYM:%^%#
+ local-user zjnoc privilege level 3
+ local-user zjnoc service-type telnet terminal
+#
+ntp-service source-interface Vlanif93
+ntp-service unicast-server 172.93.1.125 preference
+ntp-service unicast-server 172.93.1.126
+#
+interface Vlanif50
+ shutdown
+ ip address 61.175.19.251 255.255.255.224
+#
+interface Vlanif93
+ description WH-GK93manager
+ ip address 172.93.25.35 255.255.255.240
+#
+interface Eth-Trunk1
+ description uT:NB-CX-GC-BAS-1.M2N.ME60:ETH-TRUNK1:8*GE(G1/0/6~9,G4/0/6~9)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 2001 to 2020 2025 to 2028 2033 to 2041 2043 2045 to 2059 2103 to 2104 2782 2784 to 2785 2790 to 2793 2795
+ port trunk allow-pass vlan 2797 to 2800 4000
+#
+interface Eth-Trunk2
+ description uT:NB-CX-BAS-1.M2N.ME60:ETH3(XG6/1/1)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 2115 2131 to 2132 2783 2786 to 2788
+ mode lacp
+#
+interface Eth-Trunk3
+ description uT:NB-CX-GC-BAS-1.M2N.ME60:eth-6(7/1/0)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 2060 to 2099
+ mode lacp
+#
+interface Eth-Trunk10
+ description dT:NB-CX-SQ-OLT-3.MA5680T(GPON-2):LINK-AGG0/19/1(G19/1,G20/1)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 2091 to 2094 2783 4000
+ mode lacp
+#
+interface Eth-Trunk43
+ description TO-NB-CX-ZQ-MA5680T(GPON)-1.OLT
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 2025 to 2028 2043 2800 4000
+#
+interface Eth-Trunk45
+ description TO-NB-CX-SQ-MA5680T(GPON)-1.OLT
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 2009 to 2012 2039 2795 4000
+#
+interface Eth-Trunk46
+ description TO-NB-CX-QT-MA5680T(GPON)-1.OLT
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 2013 to 2016 2040 2078 2793 4000
+#
+interface Eth-Trunk49
+ description TO-NB-CX-CDDQ-Alcatel7360(GPON)-1.OLT
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 2046 4000
+#
+interface Eth-Trunk57
+ description dT:NB-CX-WDZ-MA5680T(GPON)-01.OLT
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 2071 to 2072 2115 2787 4000
+#
+interface Eth-Trunk61
+ description dT:NB-CX-QT-OLT-3.MA5680T(GPON-2):LINK-AGG0/19/1(G19/1,G20/1)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 2085 to 2088 4000
+ mode lacp
+#
+interface Eth-Trunk62
+ description dT:NB-CX-GC-OLT-10(GPON-4):(LOCAL)LINK-AGG0/19/1(19/1)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 2096 to 2099 4000
+ mode lacp
+#
+interface Ethernet0/0/0
+ ip address 1.1.1.2 255.255.255.252
+#
+interface GigabitEthernet1/0/0
+ shutdown
+#
+interface GigabitEthernet1/0/1
+ shutdown
+#
+interface GigabitEthernet1/0/2
+ shutdown
+#
+interface GigabitEthernet1/0/3
+ description dT:NB-CX-ZQ-MA5680T(GPON)-1:(local)GE19/1
+ eth-trunk 43
+#
+interface GigabitEthernet1/0/4
+ shutdown
+#
+interface GigabitEthernet1/0/5
+ description dT:NB-CX-SQ-MA5680T(GPON)-1.OLT:(F1209170046)GE19/1
+ eth-trunk 45
+#
+interface GigabitEthernet1/0/6
+ description dT:NB-CX-QT-MA5680T(GPON)-1.OLT:(local)GE19/1
+ eth-trunk 46
+#
+interface GigabitEthernet1/0/7
+ shutdown
+#
+interface GigabitEthernet1/0/8
+ shutdown
+#
+interface GigabitEthernet1/0/9
+ undo negotiation auto
+ description dT:NB-CX-CDDQ-Alcatel7360(GPON)-1.OLT:(local)GE19/1
+ eth-trunk 49
+#
+interface GigabitEthernet1/0/10
+ shutdown
+#
+interface GigabitEthernet1/0/11
+ shutdown
+#
+interface GigabitEthernet1/0/12
+ shutdown
+#
+interface GigabitEthernet1/0/13
+ shutdown
+#
+interface GigabitEthernet1/0/14
+ shutdown
+#
+interface GigabitEthernet1/0/15
+ shutdown
+#
+interface GigabitEthernet1/0/16
+ shutdown
+#
+interface GigabitEthernet1/0/17
+ description dT:NB-CX-WDZ-MA5680T(GPON)-01.OLT:��F1309220084��GE19/1
+ eth-trunk 57
+#
+interface GigabitEthernet1/0/18
+ shutdown
+#
+interface GigabitEthernet1/0/19
+ description uT:NB-CX-GC-SW-ME60.M2N:(Local)GE1/0/6
+ eth-trunk 1
+#
+interface GigabitEthernet1/0/20
+ description uT:NB-CX-GC-SW-ME60.M2N:(Local)GE1/0/7
+ eth-trunk 1
+#
+interface GigabitEthernet1/0/21
+ description uT:NB-CX-GC-SW-ME60.M2N:(Local)GE1/0/8
+ eth-trunk 1
+#
+interface GigabitEthernet1/0/22
+ description uT:NB-CX-GC-SW-ME60.M2N:(Local)GE1/0/9
+ eth-trunk 1
+#
+interface GigabitEthernet1/0/23
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet2/0/0
+ shutdown
+#
+interface GigabitEthernet2/0/1
+ shutdown
+#
+interface GigabitEthernet2/0/2
+ shutdown
+#
+interface GigabitEthernet2/0/3
+ description dT:NB-CX-ZQ-MA5680T(GPON)-1:(local)GE20/1
+ eth-trunk 43
+#
+interface GigabitEthernet2/0/4
+ shutdown
+#
+interface GigabitEthernet2/0/5
+ description dT:NB-CX-SQ-MA5680T(GPON)-1.OLT:(F1209170076)GE20/1
+ eth-trunk 45
+#
+interface GigabitEthernet2/0/6
+ description dT:NB-CX-QT-MA5680T(GPON)-1.OLT:(F1210220065)GE20/1
+ eth-trunk 46
+#
+interface GigabitEthernet2/0/7
+ shutdown
+#
+interface GigabitEthernet2/0/8
+ shutdown
+#
+interface GigabitEthernet2/0/9
+ undo negotiation auto
+ description dT:NB-CX-CDDQ-Alcatel7360(GPON)-1.OLT:(local)GE20/1
+ eth-trunk 49
+#
+interface GigabitEthernet2/0/10
+ shutdown
+#
+interface GigabitEthernet2/0/11
+ shutdown
+#
+interface GigabitEthernet2/0/12
+ shutdown
+#
+interface GigabitEthernet2/0/13
+ shutdown
+#
+interface GigabitEthernet2/0/14
+ shutdown
+#
+interface GigabitEthernet2/0/15
+ shutdown
+#
+interface GigabitEthernet2/0/16
+ shutdown
+#
+interface GigabitEthernet2/0/17
+ description dT:NB-CX-WDZ-MA5680T(GPON)-01.OLT:(F1309220086)G20/1
+ eth-trunk 57
+#
+interface GigabitEthernet2/0/18
+ shutdown
+#
+interface GigabitEthernet2/0/19
+ description uT:NB-CX-GC-SW-ME60.M2N:(Local)GE4/0/6
+ eth-trunk 1
+#
+interface GigabitEthernet2/0/20
+ description uT:NB-CX-GC-SW-ME60.M2N:(Local)GE4/0/7
+ eth-trunk 1
+#
+interface GigabitEthernet2/0/21
+ description uT:NB-CX-GC-SW-ME60.M2N:(Local)GE4/0/8
+ eth-trunk 1
+#
+interface GigabitEthernet2/0/22
+ description uT:NB-CX-GC-SW-ME60.M2N:(Local)GE4/0/9
+ eth-trunk 1
+#
+interface GigabitEthernet2/0/23
+ description pT:NB-CX-GC-SW3-S9306-2.MAN:(local)GE2/0/23
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 50 93
+#
+interface GigabitEthernet3/0/0
+ shutdown
+#
+interface GigabitEthernet3/0/1
+ shutdown
+#
+interface GigabitEthernet3/0/2
+ description dT:NB-CX-QT-OLT-3.MA5680T(GPON-2):(F1503130125)GE19/1
+ eth-trunk 61
+#
+interface GigabitEthernet3/0/3
+ description dT:NB-CX-SQ-OLT-3.MA5680T(GPON-2):(F1503240027)GE19/1
+ eth-trunk 10
+#
+interface GigabitEthernet3/0/4
+ description dT:NB-CX-GC-OLT-10.MA5680T(GPON-4):(LOCAL)G19/1
+ eth-trunk 62
+#
+interface GigabitEthernet3/0/5
+#
+interface GigabitEthernet3/0/6
+#
+interface GigabitEthernet3/0/7
+#
+interface GigabitEthernet3/0/8
+#
+interface GigabitEthernet3/0/9
+#
+interface GigabitEthernet3/0/10
+#
+interface GigabitEthernet3/0/11
+#
+interface GigabitEthernet3/0/12
+#
+interface GigabitEthernet3/0/13
+#
+interface GigabitEthernet3/0/14
+#
+interface GigabitEthernet3/0/15
+#
+interface GigabitEthernet3/0/16
+#
+interface GigabitEthernet3/0/17
+#
+interface GigabitEthernet3/0/18
+#
+interface GigabitEthernet3/0/19
+#
+interface GigabitEthernet3/0/20
+#
+interface GigabitEthernet3/0/21
+#
+interface GigabitEthernet3/0/22
+#
+interface GigabitEthernet3/0/23
+#
+interface GigabitEthernet4/0/0
+ shutdown
+#
+interface GigabitEthernet4/0/1
+ shutdown
+#
+interface GigabitEthernet4/0/2
+ description dT:NB-CX-QT-OLT-3.MA5680T(GPON-2):(F1503130127)GE20/1
+ eth-trunk 61
+#
+interface GigabitEthernet4/0/3
+ description dT:NB-CX-SQ-OLT-3.MA5680T(GPON-2):(F1503240028)GE20/1
+ eth-trunk 10
+#
+interface GigabitEthernet4/0/4
+ description dT:NB-CX-GC-OLT-10.MA5680T(GPON-4):(LOCAL)G20/1
+ eth-trunk 62
+#
+interface GigabitEthernet4/0/5
+#
+interface GigabitEthernet4/0/6
+#
+interface GigabitEthernet4/0/7
+#
+interface GigabitEthernet4/0/8
+#
+interface GigabitEthernet4/0/9
+#
+interface GigabitEthernet4/0/10
+#
+interface GigabitEthernet4/0/11
+#
+interface GigabitEthernet4/0/12
+#
+interface GigabitEthernet4/0/13
+#
+interface GigabitEthernet4/0/14
+#
+interface GigabitEthernet4/0/15
+#
+interface GigabitEthernet4/0/16
+#
+interface GigabitEthernet4/0/17
+#
+interface GigabitEthernet4/0/18
+#
+interface GigabitEthernet4/0/19
+#
+interface GigabitEthernet4/0/20
+#
+interface GigabitEthernet4/0/21
+#
+interface GigabitEthernet4/0/22
+ shutdown
+#
+interface GigabitEthernet4/0/23
+#
+interface GigabitEthernet5/0/0
+#
+interface GigabitEthernet5/0/1
+#
+interface GigabitEthernet5/0/2
+#
+interface GigabitEthernet5/0/3
+#
+interface GigabitEthernet5/0/4
+#
+interface GigabitEthernet5/0/5
+#
+interface GigabitEthernet5/0/6
+#
+interface GigabitEthernet5/0/7
+#
+interface GigabitEthernet5/0/8
+#
+interface GigabitEthernet5/0/9
+#
+interface GigabitEthernet5/0/10
+#
+interface GigabitEthernet5/0/11
+#
+interface GigabitEthernet5/0/12
+#
+interface GigabitEthernet5/0/13
+#
+interface GigabitEthernet5/0/14
+#
+interface GigabitEthernet5/0/15
+#
+interface GigabitEthernet5/0/16
+#
+interface GigabitEthernet5/0/17
+#
+interface GigabitEthernet5/0/18
+#
+interface GigabitEthernet5/0/19
+#
+interface GigabitEthernet5/0/20
+#
+interface GigabitEthernet5/0/21
+#
+interface GigabitEthernet5/0/22
+#
+interface GigabitEthernet5/0/23
+#
+interface GigabitEthernet5/0/24
+#
+interface GigabitEthernet5/0/25
+#
+interface GigabitEthernet5/0/26
+#
+interface GigabitEthernet5/0/27
+#
+interface GigabitEthernet5/0/28
+#
+interface GigabitEthernet5/0/29
+#
+interface GigabitEthernet5/0/30
+#
+interface GigabitEthernet5/0/31
+#
+interface GigabitEthernet5/0/32
+#
+interface GigabitEthernet5/0/33
+#
+interface GigabitEthernet5/0/34
+#
+interface GigabitEthernet5/0/35
+#
+interface GigabitEthernet5/0/36
+#
+interface GigabitEthernet5/0/37
+#
+interface GigabitEthernet5/0/38
+#
+interface GigabitEthernet5/0/39
+#
+interface GigabitEthernet5/0/40
+#
+interface GigabitEthernet5/0/41
+#
+interface GigabitEthernet5/0/42
+#
+interface GigabitEthernet5/0/43
+#
+interface GigabitEthernet5/0/44
+#
+interface GigabitEthernet5/0/45
+#
+interface GigabitEthernet5/0/46
+#
+interface GigabitEthernet5/0/47
+#
+interface XGigabitEthernet6/0/0
+ description uT:NB-CX-BAS-1.M2N.ME60:(local)XG6/1/1
+ eth-trunk 2
+#
+interface XGigabitEthernet6/0/1
+ description uT:NB-CX-GC-BAS-1.M2N.ME60:(local)10GE7/1/0
+ eth-trunk 3
+#
+interface XGigabitEthernet6/0/2
+ shutdown
+#
+interface XGigabitEthernet6/0/3
+#
+interface NULL0
+#
+cpu-defend policy 1
+ auto-port-defend protocol arp-request arp-reply dhcp icmp ip-fragment
+#
+ip route-static 0.0.0.0 0.0.0.0 61.175.19.254
+ip route-static 172.0.0.0 255.0.0.0 172.93.25.33
+#
+snmp-agent
+snmp-agent local-engineid 000007DB7FFFFFFF0000096C
+snmp-agent community read cipher %^%#{$XP;++_QR`1c-;%3lDN2UmCF4(dVIFt_}F!1z3<>(H.NzyyYJh*3q;GMoVRbF#6<hSJ]<Dj"d.A@j~,%^%# acl 2015
+snmp-agent community read cipher %^%#vCXX2q;N67!$[PCc.2=OFY(635(A,,f'C2./w05.["'u&kar7XhwO%RJ9'83ex+E&Z6B";{quHQ%6pf"%^%# acl 2015
+snmp-agent sys-info contact R&D Nanjing, Huawei Technologies co.,Ltd.
+snmp-agent sys-info location Nanjing China
+snmp-agent sys-info version all
+snmp-agent target-host trap address udp-domain 172.200.100.12 udp-port 161 params securityname cipher %^%#b^|#P3s%2GMHN@3z0g[U4_.i:x'p*.2A2XFZk983%^%#
+snmp-agent target-host trap address udp-domain 172.200.100.13 udp-port 161 params securityname cipher %^%#2u;v00VSNBSncq3<4I\*<=6$@q9|*,wQv=MtOE@6%^%#
+snmp-agent target-host trap address udp-domain 172.200.100.5 udp-port 161 params securityname cipher %^%#43+19S7Do6cgi*P)7HtJ%D~}Xg:-KVislLF4]+)B%^%#
+snmp-agent target-host trap address udp-domain 172.200.100.6 udp-port 161 params securityname cipher %^%#,>v~4wa,.I-e0!(z>^-#!;+wBN+:zOW$>kAR%w=2%^%#
+snmp-agent target-host trap address udp-domain 61.153.112.134 udp-port 161 params securityname cipher %^%#*3ki@Re=-3.3k&+n79{H[n@QE"ZzU0h6a0%2Ony)%^%#
+undo snmp-agent trap enable feature-name L2IFPPI trap-name hwMacFlappingAlarm
+undo snmp-agent trap enable feature-name DLDP
+undo snmp-agent trap enable feature-name LDTTRAP
+undo snmp-agent trap enable feature-name LLDPTRAP
+snmp-agent trap enable feature-name BASETRAP
+#
+ssh server compatible-ssh1x enable
+#
+header login information " WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!"
+#
+cpu-defend-policy 1 global
+cpu-defend-policy 1
+#
+user-interface maximum-vty 15
+user-interface con 0
+ idle-timeout 0 0
+ screen-length 0
+user-interface vty 0 4
+ acl 2000 inbound
+ authentication-mode aaa
+ user privilege level 15
+ idle-timeout 15 0
+ protocol inbound all
+user-interface vty 5 14
+ acl 2000 inbound
+ authentication-mode none
+ user privilege level 3
+ idle-timeout 0 0
+ screen-length 0
+ protocol inbound all
+user-interface vty 16 20
+ protocol inbound telnet
+#
+port-group hybrid
+#
+return
+<NB-CX-GC-DSW-4.M2N.9306-3>

@@ -1,0 +1,1522 @@
+
+!Software Version V200R008C00SPC500
+#
+sysname NB-NH-CB-DSW-2.MAN.9306
+#
+super password level 3 cipher %$%$%Q_1(8xTv"uhDN,("np8]/.QnCv#$[SYo~1Pp8ZvgFq#/.T]%$%$
+#
+info-center source default channel 2 log level warning
+info-center loghost source Vlanif93
+info-center loghost 172.200.100.15 facility local6
+#
+vlan batch 8 14 41 to 42 45 50 75 79 93 100 189
+vlan batch 212 225 244 249 285 396 600 1000 to 1001 1302 to 1305 1314 to 1317
+vlan batch 1322 to 1325 1404 1412 1415 1418 to 1420 1433 1439 to 1444 1447 1450 1462
+vlan batch 1475 1480 1495 to 1497 1506 1508 1513 1517 to 1518 1529 1534 to 1535 1538
+vlan batch 1559 1561 to 1563 1568 1578 1585 to 1602 1608 to 1614 1616 to 1619 1638 1640 to 1641 1645
+vlan batch 1655 to 1656 1661 1675 1689 to 1691 1693 1696 1698 1700 1714 to 1723 1725 to 1728
+vlan batch 1733 to 1734 1744 to 1745 1755 1779 2555 3051 3053 to 3055 3059 to 3061 3066 3072
+vlan batch 3085 3087 to 3089 3620 3632 3730 3821 3848 3890 3927 3958
+vlan batch 3961 3963 3967 to 3969 3971 3980 3988 to 3989 3992 3998
+#
+undo authentication unified-mode
+#
+igmp-snooping enable
+#
+telnet server enable
+telnet ipv6 server enable
+#
+mac-authen
+#
+qos car qoscar1 cir 1000 pir 1024 cbs 125000 pbs 128000
+qos car 10m cir 10240 cbs 1925120
+#
+undo http server enable
+undo http secure-server enable
+#
+undo management-port isolate enable
+undo management-plane isolate enable
+#
+clock timezone PRC add 08:00:00
+#
+observe-port 1 interface GigabitEthernet3/0/25
+#
+undo mac-address flapping detection
+#
+diffserv domain default
+#
+hwtacacs-server template nbdx
+ hwtacacs-server authentication 172.200.100.249
+ hwtacacs-server authorization 172.200.100.249
+ hwtacacs-server accounting 172.200.100.249
+ hwtacacs-server source-ip 172.93.36.22
+ hwtacacs-server shared-key cipher %^%#>uTG<{aEI"Uc'%"<;$XPv9CI:27n:Yd)HC6NT&/R%^%#
+ undo hwtacacs-server user-name domain-included
+#
+acl number 2000  
+ description For_Telnet
+ rule 5 permit source 61.153.82.90 0 
+ rule 10 permit source 202.96.102.247 0 
+ rule 15 permit source 202.96.102.0 0.0.1.255 
+ rule 20 permit source 202.101.167.192 0.0.0.63 
+ rule 25 permit source 61.153.112.128 0.0.0.31 
+ rule 30 permit source 172.93.0.0 0.0.255.255 
+ rule 35 permit source 172.200.100.0 0.0.0.255 
+ rule 40 permit source 10.31.255.12 0.0.0.3 
+acl number 2015  
+ description For-SNMP
+ rule 10 permit source 172.200.100.5 0 
+ rule 20 permit source 172.200.100.6 0 
+ rule 30 permit source 172.200.100.7 0 
+ rule 40 permit source 172.200.100.8 0 
+ rule 50 permit source 172.200.100.9 0 
+ rule 60 permit source 172.200.100.10 0 
+ rule 70 permit source 172.200.100.11 0 
+ rule 80 permit source 172.200.100.12 0 
+ rule 90 permit source 172.200.100.13 0 
+ rule 100 permit source 172.200.100.14 0 
+ rule 110 permit source 172.200.100.15 0 
+ rule 120 permit source 61.153.112.148 0 
+ rule 130 permit source 61.153.112.133 0 
+ rule 140 permit source 61.153.112.150 0 
+ rule 150 permit source 61.153.82.210 0 
+ rule 160 permit source 10.31.255.0 0.0.0.31 
+ rule 170 deny 
+#
+acl number 3000  
+ rule 5 permit icmp source 172.183.140.225 0 destination 172.183.140.254 0 
+ rule 10 permit icmp source 172.183.140.254 0 destination 172.183.140.225 0 
+acl number 3333  
+ rule 5 permit ip source 10.115.150.195 0 destination 10.115.150.193 0 
+ rule 10 permit ip source 10.115.150.193 0 destination 10.115.150.195 0 
+#
+traffic classifier icmp operator or precedence 10
+ if-match acl 3000
+traffic classifier mirror operator or precedence 20
+ if-match vlan-id 1497 cvlan-id 441
+traffic classifier tcCritical operator or precedence 5
+ if-match cvlan-id 3599
+ if-match cvlan-id 3600
+traffic classifier test operator or precedence 15
+ if-match acl 3333
+#
+traffic behavior icmp
+ permit
+ statistic enable
+traffic behavior mirror
+ mirroring to observe-port 1 
+traffic behavior tcCritical
+ permit
+ remark 8021p 4
+traffic behavior test
+ permit
+ statistic enable
+#
+traffic policy icmp match-order auto
+ classifier icmp behavior icmp
+traffic policy mirror match-order auto
+ classifier mirror behavior mirror
+traffic policy tcCritical match-order auto
+ classifier tcCritical behavior tcCritical
+traffic policy test match-order auto
+ classifier test behavior test
+#
+drop-profile default
+#
+vlan 14
+ description yingyeting-DCN
+vlan 41
+ description FH_OLT_MANANGE
+vlan 75
+ description LAN-manager
+vlan 79
+ description NH-CB-HWOLT6-WLAN
+vlan 93
+ description For_S9306_NetManagement
+vlan 100
+ description pantianshou-2ssid
+vlan 189
+ description DCN
+vlan 249
+ description jiajiale-VPN
+vlan 285
+ description adsl-yingye
+vlan 1000
+ description XinYongLianShe_JianKong
+vlan 1001
+ description CunCunTongJianKong
+vlan 1302
+ description NH-CB-HWOLT7-FTTH-1302
+vlan 1303
+ description NH-CB-HWOLT7-FTTH-1303
+vlan 1304
+ description NH-CB-HWOLT7-FTTH-1304
+vlan 1305
+ description NH-CB-HWOLT7-FTTH-1305
+vlan 1314
+ description NH-CB-HWOLT6-FTTH
+vlan 1315
+ description NH-CB-HWOLT6-FTTH
+vlan 1316
+ description NH-CB-HWOLT6-FTTH
+vlan 1317
+ description NH-CB-HWOLT6-FTTH
+vlan 1322
+ description NH-CB-HWOLT5-FTTH
+vlan 1323
+ description NH-CB-HWOLT5-FTTH
+vlan 1324
+ description NHCB-HWOLT5-FTTH
+vlan 1325
+ description CB-HWOLT5-FTTH
+vlan 1404
+ description EPON-shanxun
+vlan 1412
+ description NH-HW-xiling-MA5600-DSLAM
+vlan 1415
+ description Lan-ITV
+vlan 1420
+ description NH-DaJiaHe2_7300_DSLAM
+vlan 1433
+ description NH-AL-DAJIAHE-IP-DSLAM
+vlan 1447
+ description NH-HW-QIAOTOUHU-5600-DSLAM
+vlan 1450
+ description NH-HW-JINLAN-DSLAM
+vlan 1462
+ description NH-AL-CHENGBEI-7300-3-2-DSLAM
+vlan 1475
+ description NH-HW-qiaotou-5600-2-DSLAM
+vlan 1480
+ description NH-AL-chengbei-7302-DSLAM
+vlan 1496
+ description KEJIYUANQU-MA5600-DSLAM
+vlan 1506
+ description NH-HW-GEJIA-5600-DSLAM
+vlan 1508
+ description NH-HW-XIASHAN-5600-DSLAM
+vlan 1513
+ description NH-HW-CHENGBEI-5600-1-DSLAM
+vlan 1517
+ description NH-HW-TIANAO-5600-DSLAM
+vlan 1518
+ description NH-HW-MAOYU-5600-DSLAM
+vlan 1529
+ description NH-AL-QIANHUANG-7302-DSLAM
+vlan 1534
+ description dT:NB-NH-huati17#_LAN
+vlan 1535
+ description NH-AL-TANSHUTOU2-7302-DSLAM
+vlan 1538
+ description NH-AL-JIANSHE-7302-DSLAM
+vlan 1561
+ description baiqiao-MA5100
+vlan 1568
+ description NH-HW-XIAPU-5600-DSLAM
+vlan 1578
+ description NH-HW-XUEAO-5600-DSLAM
+vlan 1616
+ description LZDS_B_DLINK
+vlan 1617
+ description LZDS_A_DLINK
+vlan 1618
+ description SDJY_NabLou_DLINK
+vlan 1619
+ description SDJY_BeiLou_DLINK
+vlan 1638
+ description NH-AL-XIASHAN-IP-DSLAM
+vlan 1640
+ description NH-AL-DAJIAHE-7302-DSLAM
+vlan 1641
+ description NH-AL-QIAOTOUHU-7302-DSLAM
+vlan 1655
+ description YUEXI-HW5100-1-DSLAM
+vlan 1661
+ description NH-AL-GUOHUA-SHUSHE-IP-DSLAM
+vlan 1689
+ description ChengBeiXD4_7300_DSLAM
+vlan 1690
+ description ChengBeiXD3_7300_DSLAM
+vlan 1691
+ description ChengBeiXD1_7300_DSLAM
+vlan 1693
+ description NH-AL-CHENGBEI-7300-3-1-DSLAM
+vlan 1696
+ description NH-AL-KEJIYUANQU-7302-DSLAM
+vlan 1698
+ description NH-AL-ZHUKOUCHU-7302-DSLAM
+vlan 1700
+ description NB-NH-HUIPU-7302-DSLAM
+vlan 1714
+ description NH-CB-FHOLT7-FTTH
+vlan 1715
+ description NH-CB-FHOLT7-FTTH
+vlan 1716
+ description NH-CB-FHOLT7-FTTH
+vlan 1717
+ description NH-CB-FHOLT7-FTTH
+vlan 1718
+ description NH-CB-FHOLT7-FTTH
+vlan 1719
+ description NH-CB-FHOLT7-FTTH
+vlan 1720
+ description NH-CB-FHOLT7-FTTH
+vlan 1721
+ description NH-CB-FHOLT7-FTTH
+vlan 1722
+ description NH-CB-FHOLT7-FTTH
+vlan 1723
+ description NH-CB-FHOLT7-FTTH
+vlan 1725
+ description NH-CB-FHOLT7-FTTH
+vlan 1726
+ description NH-CB-FHOLT7-FTTH
+vlan 1727
+ description NH-CB-FHOLT7-FTTH
+vlan 1728
+ description NH-CB-HWGPONOLT2-FTTH-1728
+vlan 1733
+ description to_NB_NH_CB_HW_EPON_7_OLT_1733
+vlan 1734
+ description NH-CB-HWGPONOLT1-FTTH-1734
+vlan 1744
+ description NHCB-HWOLT5-FTTN
+vlan 1745
+ description NH-HW-OLT5-FTTN
+vlan 1779
+ description NB-NH-CB-FH-OLT1-FTTN-vlan
+vlan 3053
+ description shequdangzhengwang
+vlan 3054
+ description fubao
+vlan 3055
+ description V-haiyuedianqi.gudingIP
+vlan 3059
+ description guoshui-vpn
+vlan 3066
+ description gongjiaogongsi-VPN
+vlan 3620
+ description ssid-2-ceshi
+vlan 3632
+ description to_nb_nh_wlan_router_lan_2
+vlan 3730
+ description maoyiju-VPN
+vlan 3963
+ description gongan-vpn
+vlan 3968
+ description V-hangzhouzhongcui
+vlan 3969
+ description V-huanbaowang
+vlan 3998
+ description xuexiaochaoshi-vpn
+#
+aaa
+ authentication-scheme default
+ authentication-scheme nbdx
+  authentication-mode hwtacacs local
+ authorization-scheme default
+ authorization-scheme nbdx
+  authorization-mode  hwtacacs local
+ accounting-scheme default
+ accounting-scheme nbdx
+  accounting-mode hwtacacs
+  accounting realtime 3
+  accounting start-fail online
+ recording-scheme scheme0
+  recording-mode hwtacacs nbdx
+ cmd recording-scheme scheme0
+ outbound recording-scheme scheme0
+ domain default
+ domain default_admin
+  authentication-scheme nbdx
+  accounting-scheme nbdx
+  authorization-scheme nbdx
+  hwtacacs-server nbdx
+ local-user admin password irreversible-cipher %^%#s-{|8'h2s!Zcw^=^IHK8#c|IBHc)~+}jJY7Sg-|A-:qfS|,9,/M4+1O)GnkH%^%#
+ local-user admin service-type telnet
+ local-user zjnoc password irreversible-cipher %^%#@P$,AS'L]DBcPv8}x51BD|t.M5e923mjDTH;=m>SX6G#F9MCXKjG8]0=v_,D%^%#
+ local-user zjnoc privilege level 3
+ local-user zjnoc service-type terminal
+#
+ntp-service source-interface Vlanif93
+ntp-service unicast-server 172.93.1.125 preference
+ntp-service unicast-server 172.93.1.126
+#
+interface Vlanif50
+#
+interface Vlanif93
+ description For_S9306_NetManagement
+ ip address 172.93.36.22 255.255.255.252
+#
+interface Eth-Trunk1
+ description uT:NB-NH-CB-BAS-3.MAN.ME60:Eth-trunk3
+ port link-type trunk
+ port trunk allow-pass vlan 93 1302 to 1305 1314 to 1317 1322 to 1325 1412 1415 1418 to 1420 1433 1439 to 1444 1447
+ port trunk allow-pass vlan 1450 1462 1475 1480 1496 to 1497 1506 1508 1513 1517 to 1518 1529
+ port trunk allow-pass vlan 1534 to 1535 1538 1559 1561 to 1563 1568 1578 1585 to 1602 1608 to 1614 1616 to 1619 1638
+ port trunk allow-pass vlan 1640 to 1641 1645 1655 to 1656 1661 1689 to 1691 1693 1696 1698 1700 1733 to 1734
+ port trunk allow-pass vlan 1744 to 1745
+ mode lacp
+#
+interface Eth-Trunk2
+ description to-huating
+ port link-type trunk
+ port trunk allow-pass vlan 16 50 75 93 212 225 1418 to 1419 1439 to 1444 1497 1534
+ port trunk allow-pass vlan 1562 to 1563 1585 to 1602 1607 to 1614 1645 3051 3061 3085 3087 3089 3963
+ port trunk allow-pass vlan 3988 3998
+#
+interface Eth-Trunk3
+ description dT:NB-NH-CB-MA5680T-E05:PPPOE
+ port link-type trunk
+ port trunk allow-pass vlan 42 600 1001 1322 to 1325 1404 1734 1744 to 1745 3054 3059 3085
+ port trunk allow-pass vlan 3087 3089 3730 3848 3958 3963 3980 3988
+ mode lacp
+#
+interface Eth-Trunk5
+ description dT:NB-NH-CB-MA5680T-E07:PPPOE
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 42 1302 to 1305 1733 3963
+ mode lacp
+#
+interface Eth-Trunk7
+ description dT:NB-NH-CB-S3952(8.204)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 8 75 212 225 1561 1616 to 1619 1656 1689 to 1691 3963
+#
+interface Eth-Trunk8
+ description dT:NB-NH-CB-MA5680T-E06:PPPOE
+ port link-type trunk
+ port trunk allow-pass vlan 42 79 100 285 1314 to 1317 1559 3085 3087 3089 3620
+ port trunk allow-pass vlan 3632 3848 3963 3988
+#
+interface Eth-Trunk9
+ description dT:NB-NH-LY-DSW-1.MAN.9306:ETH5(GE1/0/0,GE1/0/1)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ mode lacp
+#
+interface Eth-Trunk10
+ description to NB-NH-CL-S9306-1(eth-trunk6)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface Eth-Trunk11
+ description dT:NB-NH-QTH-DSW-1.MAN.9306:Eth-Trunk14
+ shutdown
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 1420 1433 1447 1450 1475 1506 1508 1538 1568 1578
+ port trunk allow-pass vlan 1638 1640 to 1641 1661
+ traffic-policy tcCritical inbound
+ mode lacp
+#
+interface Eth-Trunk12
+ traffic-policy tcCritical inbound
+#
+interface Eth-Trunk13
+#
+interface Eth-Trunk14
+ description dT:NB-NH-CB-MA5680T-G01:PPPOE
+ shutdown
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ mode lacp
+#
+interface Eth-Trunk15
+ description dT:NB-NH-CB-MA5680T-G02:PPPOE
+ shutdown
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ mode lacp
+#
+interface Ethernet0/0/0
+ shutdown
+#
+interface GigabitEthernet1/0/0
+ description dT:NB-NH-HTJY-DSW-1.MAN.8905:(F0611070014)GE2/2
+ eth-trunk 2
+#
+interface GigabitEthernet1/0/1
+ undo negotiation auto
+ description dT:NB-NH-CB-MA5680T-E05:(local)GE0/19/0
+ eth-trunk 3
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet1/0/2
+ undo negotiation auto
+ description dT:NB-NH-CB-MA5680T-E05:(local)GE0/20/0
+ eth-trunk 3
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet1/0/3
+ description dT:NB-NH-CB-MA5680T-E06:(local)GE0/9/0
+ eth-trunk 8
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet1/0/4
+ description dT:NB-NH-CB-MA5680T-E06:(local)GE0/9/1
+ eth-trunk 8
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet1/0/5
+ description dT:NB-NH-CB-4Fxi-Wlan.h3cS2000:(local)GE1/1/1
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 79
+ port vlan-stacking vlan 1602 to 1617 stack-vlan 79
+#
+interface GigabitEthernet1/0/6
+ undo negotiation auto
+ description NH-HW-KEJIYUANQU-5600-DSLAM
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 212 3085 3087 3963 3968 3988
+ port hybrid untagged vlan 1496
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1496
+ port vlan-stacking vlan 3600 stack-vlan 1496
+ port vlan-mapping vlan 212 map-vlan 212
+ port vlan-mapping vlan 3085 map-vlan 3085
+ port vlan-mapping vlan 3087 map-vlan 3087
+ port vlan-mapping vlan 3963 map-vlan 3963
+ port vlan-mapping vlan 3968 map-vlan 3968
+ port vlan-mapping vlan 3988 map-vlan 3988
+#
+interface GigabitEthernet1/0/7
+ description NH-AL-KEJIYUANQU-7302-DSLAM
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 225 3054 to 3055 3085 3087 3963 3968 to 3969 3988
+ port hybrid untagged vlan 1696
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1696
+ port vlan-stacking vlan 3600 stack-vlan 1696
+ port vlan-mapping vlan 225 map-vlan 225
+ port vlan-mapping vlan 3054 map-vlan 3054
+ port vlan-mapping vlan 3055 map-vlan 3055
+ port vlan-mapping vlan 3085 map-vlan 3085
+ port vlan-mapping vlan 3087 map-vlan 3087
+ port vlan-mapping vlan 3963 map-vlan 3963
+ port vlan-mapping vlan 3968 map-vlan 3968
+ port vlan-mapping vlan 3969 map-vlan 3969
+ port vlan-mapping vlan 3988 map-vlan 3988
+#
+interface GigabitEthernet1/0/8
+ description dT:NB-NH-CB-MA5680T-E07:(local)GE0/18/0
+ eth-trunk 5
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet1/0/9
+ description dT:NB-NH-CB-MA5680T-E07:(local)GE0/18/1
+ eth-trunk 5
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet1/0/10
+ description dT:NB-NH-CB-MA5680T-E07:(local)GE0/18/2
+ eth-trunk 5
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet1/0/11
+ description dT:NB-NH-CB-MA5680T-E07:(local)GE0/18/3
+ eth-trunk 5
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet1/0/12
+ undo negotiation auto
+ description dT:NB-NH-CB-MA5680T-E06:(local)GE0/19/0
+ eth-trunk 8
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet1/0/13
+ undo negotiation auto
+ description dT:NB-NH-CB-MA5680T-E06:(local)GE0/19/1
+ eth-trunk 8
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet1/0/14
+ shutdown
+#
+interface GigabitEthernet1/0/15
+ shutdown
+#
+interface GigabitEthernet1/0/16
+ undo negotiation auto
+ description to NB-NH-CL-SW1-S9306-1-Gi5/0/0
+ shutdown
+ eth-trunk 10
+#
+interface GigabitEthernet1/0/17
+ undo negotiation auto
+ description to NB-NH-CL-SW1-S9306-1-Gi5/0/1
+ shutdown
+ eth-trunk 10
+#
+interface GigabitEthernet1/0/18
+ undo negotiation auto
+ description dT:NB-NH-CB-MA5680T-E06:(local)GE0/20/0
+ eth-trunk 8
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet1/0/19
+ undo negotiation auto
+ description dT:NB-NH-CB-MA5680T-E06:(local)GE0/20/1
+ eth-trunk 8
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet1/0/20
+ undo negotiation auto
+#
+interface GigabitEthernet1/0/21
+ undo negotiation auto
+ description pT:NB-NH-CB-DSW-1.MAN.9312:(local)GE10/0/7
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 8 41 to 42 50 75 79 189 212 225 244 249
+ port trunk allow-pass vlan 285 600 1000 to 1001 1404 1755 3051 3053 to 3055 3059 to 3061 3066 3072
+ port trunk allow-pass vlan 3085 3087 to 3089 3632 3730 3821 3848 3890 3927 3958 3961
+ port trunk allow-pass vlan 3963 3967 to 3969 3971 3980 3988 to 3989 3992 3998
+ traffic-policy icmp inbound
+ traffic-policy icmp outbound
+#
+interface GigabitEthernet1/0/22
+ undo negotiation auto
+ description NH-HW-xiling-MA5600-DSLAM
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 212 3087 3089
+ port hybrid untagged vlan 1412
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1412
+ port vlan-stacking vlan 3600 stack-vlan 1412
+ port vlan-mapping vlan 212 map-vlan 212
+ port vlan-mapping vlan 3087 map-vlan 3087
+ port vlan-mapping vlan 3089 map-vlan 3089
+#
+interface GigabitEthernet1/0/23
+ undo negotiation auto
+#
+interface GigabitEthernet2/0/0
+ description uT:NB-NH-CB-BAS-3.MAN.ME60:(local)GE1/0/3
+ eth-trunk 1
+#
+interface GigabitEthernet2/0/1
+ description uT:NB-NH-CB-BAS-3.MAN.ME60:(local)GE2/0/2
+ eth-trunk 1
+#
+interface GigabitEthernet2/0/2
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet2/0/3
+ undo negotiation auto
+ description NH-HW-YIhuixilu-5600-DSLAM
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 212 285 3087 3963 3988
+ port hybrid untagged vlan 1495
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1495
+ port vlan-stacking vlan 3600 stack-vlan 1495
+ port vlan-mapping vlan 212 map-vlan 212
+ port vlan-mapping vlan 285 map-vlan 285
+ port vlan-mapping vlan 3087 map-vlan 3087
+ port vlan-mapping vlan 3963 map-vlan 3963
+ port vlan-mapping vlan 3988 map-vlan 3988
+#
+interface GigabitEthernet2/0/4
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 225 3060 3066 3087 3848 3958 3963 3967 3989
+#
+interface GigabitEthernet2/0/5
+ description NH-AL-TANSHUTOU2-7302-DSLAM
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 225 3060 3087 3958 3963 3989
+ port hybrid untagged vlan 1535
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1535
+ port vlan-stacking vlan 3600 stack-vlan 1535
+ port vlan-mapping vlan 225 map-vlan 225
+ port vlan-mapping vlan 3060 map-vlan 3060
+ port vlan-mapping vlan 3087 map-vlan 3087
+ port vlan-mapping vlan 3958 map-vlan 3958
+ port vlan-mapping vlan 3963 map-vlan 3963
+ port vlan-mapping vlan 3989 map-vlan 3989
+#
+interface GigabitEthernet2/0/6
+ description NB-NH-HUIPU-7302-DSLAM
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 225 3054 3087 3961 3963
+ port hybrid untagged vlan 1700
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1700
+ port vlan-stacking vlan 3600 stack-vlan 1700
+ port vlan-mapping vlan 225 map-vlan 225
+ port vlan-mapping vlan 3054 map-vlan 3054
+ port vlan-mapping vlan 3087 map-vlan 3087
+ port vlan-mapping vlan 3961 map-vlan 3961
+ port vlan-mapping vlan 3963 map-vlan 3963
+#
+interface GigabitEthernet2/0/7
+ description NH-AL-ZHUKOUCHU-7302-DSLAM
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 225 3087 3890
+ port hybrid untagged vlan 1698
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1698
+ port vlan-stacking vlan 3600 stack-vlan 1698
+ port vlan-mapping vlan 225 map-vlan 225
+ port vlan-mapping vlan 3087 map-vlan 3087
+ port vlan-mapping vlan 3890 map-vlan 3890
+#
+interface GigabitEthernet2/0/8
+ description NH-AL-QIANHUANG-7302-DSLAM
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 225 3087 3963
+ port hybrid untagged vlan 1529
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1529
+ port vlan-stacking vlan 3600 stack-vlan 1529
+ port vlan-mapping vlan 225 map-vlan 225
+ port vlan-mapping vlan 3087 map-vlan 3087
+ port vlan-mapping vlan 3963 map-vlan 3963
+#
+interface GigabitEthernet2/0/9
+ description NH-AL-CHENGBEI-7300-3-1-DSLAM
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 225 3072 3085 3087 3963 3988
+ port hybrid untagged vlan 1693
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1693
+ port vlan-stacking vlan 3600 stack-vlan 1693
+ port vlan-mapping vlan 225 map-vlan 225
+ port vlan-mapping vlan 3072 map-vlan 3072
+ port vlan-mapping vlan 3085 map-vlan 3085
+ port vlan-mapping vlan 3087 map-vlan 3087
+ port vlan-mapping vlan 3963 map-vlan 3963
+ port vlan-mapping vlan 3988 map-vlan 3988
+#
+interface GigabitEthernet2/0/10
+ description NH-AL-CHENGBEI-7300-3-2-DSLAM
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 225 3072 3085 3087 3963 3988
+ port hybrid untagged vlan 1462
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1462
+ port vlan-stacking vlan 3600 stack-vlan 1462
+ port vlan-mapping vlan 225 map-vlan 225
+ port vlan-mapping vlan 3072 map-vlan 3072
+ port vlan-mapping vlan 3085 map-vlan 3085
+ port vlan-mapping vlan 3087 map-vlan 3087
+ port vlan-mapping vlan 3963 map-vlan 3963
+ port vlan-mapping vlan 3988 map-vlan 3988
+#
+interface GigabitEthernet2/0/11
+ description NH-HW-CHENGBEI-5600-1-DSLAM
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 212 244 285 3059 3089 3848 3963 3971 3980 3988
+ port hybrid untagged vlan 1513
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1513
+ port vlan-stacking vlan 3600 stack-vlan 1513
+ port vlan-mapping vlan 212 map-vlan 212
+ port vlan-mapping vlan 244 map-vlan 244
+ port vlan-mapping vlan 285 map-vlan 285
+ port vlan-mapping vlan 3059 map-vlan 3059
+ port vlan-mapping vlan 3089 map-vlan 3089
+ port vlan-mapping vlan 3848 map-vlan 3848
+ port vlan-mapping vlan 3963 map-vlan 3963
+ port vlan-mapping vlan 3971 map-vlan 3971
+ port vlan-mapping vlan 3980 map-vlan 3980
+ port vlan-mapping vlan 3988 map-vlan 3988
+#
+interface GigabitEthernet2/0/12
+ undo negotiation auto
+ description NH-HW-TIANAO-5600-DSLAM
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 212 3087
+ port hybrid untagged vlan 1517
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1517
+ port vlan-stacking vlan 3600 stack-vlan 1517
+ port vlan-mapping vlan 212 map-vlan 212
+ port vlan-mapping vlan 3087 map-vlan 3087
+#
+interface GigabitEthernet2/0/13
+ undo negotiation auto
+ shutdown
+#
+interface GigabitEthernet2/0/14
+ undo negotiation auto
+ description NH-HW-MAOYU-5600-DSLAM
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 212 3087 to 3089
+ port hybrid untagged vlan 1518
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1518
+ port vlan-stacking vlan 3600 stack-vlan 1518
+ port vlan-mapping vlan 212 map-vlan 212
+ port vlan-mapping vlan 3087 map-vlan 3087
+ port vlan-mapping vlan 3088 map-vlan 3088
+ port vlan-mapping vlan 3089 map-vlan 3089
+#
+interface GigabitEthernet2/0/15
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 212 3087 to 3088
+ port hybrid untagged vlan 1482
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1482
+ port vlan-stacking vlan 3600 stack-vlan 1482
+ port vlan-mapping vlan 212 map-vlan 212
+ port vlan-mapping vlan 3087 map-vlan 3087
+ port vlan-mapping vlan 3088 map-vlan 3088
+#
+interface GigabitEthernet2/0/16
+ undo negotiation auto
+ description NH-HW-YUEXI-5100-1-DSLAM
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 212 249 3054 3085 3087 3089 3848 3958 3963 3988
+ port hybrid untagged vlan 1655
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1655
+ port vlan-stacking vlan 3600 stack-vlan 1655
+ port vlan-mapping vlan 212 map-vlan 212
+ port vlan-mapping vlan 249 map-vlan 249
+ port vlan-mapping vlan 3054 map-vlan 3054
+ port vlan-mapping vlan 3085 map-vlan 3085
+ port vlan-mapping vlan 3087 map-vlan 3087
+ port vlan-mapping vlan 3089 map-vlan 3089
+ port vlan-mapping vlan 3848 map-vlan 3848
+ port vlan-mapping vlan 3958 map-vlan 3958
+ port vlan-mapping vlan 3963 map-vlan 3963
+ port vlan-mapping vlan 3988 map-vlan 3988
+#
+interface GigabitEthernet2/0/17
+ description dT:NB-NH-HTJY-DSW-1.MAN.8905:(F1202080024)GE2/1
+ eth-trunk 2
+#
+interface GigabitEthernet2/0/18
+ description uT:NB-NH-CB-BAS-3.MAN.ME60:(local)GE2/1/6
+ eth-trunk 1
+#
+interface GigabitEthernet2/0/19
+ description uT:NB-NH-CB-BAS-3.MAN.ME60:(local)GE2/1/17
+ eth-trunk 1
+#
+interface GigabitEthernet2/0/20
+ undo negotiation auto
+ description dT:NB-NH-LY-DSW-1.MAN.9306:(F0611070006)GE1/0/0
+ eth-trunk 9
+#
+interface GigabitEthernet2/0/21
+ undo negotiation auto
+ description dT:NB-NH-LY-DSW-1.MAN.9306:(F1004260024)GE1/0/1
+ eth-trunk 9
+#
+interface GigabitEthernet2/0/22
+ description NH-AL-chengbei-7302-DSLAM
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 225 285 3053 3060 to 3061 3087 3089 3821 3927 3958 3963
+ port hybrid tagged vlan 3980 3989 3992
+ port hybrid untagged vlan 1480
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1480
+ port vlan-stacking vlan 3600 stack-vlan 1480
+ port vlan-mapping vlan 225 map-vlan 225
+ port vlan-mapping vlan 285 map-vlan 285
+ port vlan-mapping vlan 3053 map-vlan 3053
+ port vlan-mapping vlan 3060 map-vlan 3060
+ port vlan-mapping vlan 3061 map-vlan 3061
+ port vlan-mapping vlan 3087 map-vlan 3087
+ port vlan-mapping vlan 3089 map-vlan 3089
+ port vlan-mapping vlan 3821 map-vlan 3821
+ port vlan-mapping vlan 3927 map-vlan 3927
+ port vlan-mapping vlan 3963 map-vlan 3963
+ port vlan-mapping vlan 3980 map-vlan 3980
+ port vlan-mapping vlan 3992 map-vlan 3992
+#
+interface GigabitEthernet2/0/23
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet3/0/0
+ description pantianshou-2ssid
+ port link-type access
+ port default vlan 100
+#
+interface GigabitEthernet3/0/1
+ description ceshi
+ port link-type access
+ port default vlan 42
+#
+interface GigabitEthernet3/0/2
+ description To zhongtianxiang5hao-iptv::kehu
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 75
+ port hybrid untagged vlan 1419
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1419
+ traffic-policy tcCritical inbound
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet3/0/3
+ description To liyuqin-iptv::kehu
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 75
+ port hybrid untagged vlan 1419
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1419
+ port vlan-stacking vlan 3600 stack-vlan 1419
+ traffic-policy tcCritical inbound
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet3/0/4
+ description To heju-IPTV::kehu
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 75
+ port hybrid untagged vlan 1419
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1419
+ port vlan-stacking vlan 3600 stack-vlan 1419
+ traffic-policy tcCritical inbound
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet3/0/5
+ description To qinshuiwanchaguan-IPTV1::kehu
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 75
+ port hybrid untagged vlan 1419
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1419
+ traffic-policy tcCritical inbound
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet3/0/6
+ description To qinshuiwanchaguan-IPTV2::kehu
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 75
+ port hybrid untagged vlan 1419
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1419
+ traffic-policy tcCritical inbound
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet3/0/7
+ description To qinshuiwanchaguan-IPTV3::kehu
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 75
+ port hybrid untagged vlan 1419
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1419
+ traffic-policy tcCritical inbound
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet3/0/8
+ undo negotiation auto
+ speed 100
+ description To zhangjianpeng-ITV01::kehu
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 75
+ port hybrid untagged vlan 1404
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1404
+ port vlan-stacking vlan 3600 stack-vlan 1404
+ traffic-policy tcCritical inbound
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet3/0/9
+ description To zhangjianpeng-ITV02::kehu
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 75
+ port hybrid untagged vlan 1404
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1404
+ port vlan-stacking vlan 3600 stack-vlan 1404
+ traffic-policy tcCritical inbound
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet3/0/10
+ description To HuaDing-BinGuan-Itv-LAN::kehu
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 75
+ port hybrid untagged vlan 1415
+ port vlan-stacking vlan 101 to 1600 stack-vlan 1415
+ traffic-policy tcCritical inbound
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet3/0/11
+#
+interface GigabitEthernet3/0/12
+#
+interface GigabitEthernet3/0/13
+#
+interface GigabitEthernet3/0/14
+#
+interface GigabitEthernet3/0/15
+#
+interface GigabitEthernet3/0/16
+#
+interface GigabitEthernet3/0/17
+#
+interface GigabitEthernet3/0/18
+#
+interface GigabitEthernet3/0/19
+#
+interface GigabitEthernet3/0/20
+#
+interface GigabitEthernet3/0/21
+#
+interface GigabitEthernet3/0/22
+#
+interface GigabitEthernet3/0/23
+#
+interface GigabitEthernet3/0/24
+#
+interface GigabitEthernet3/0/25
+ description GongAn-mirror
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1497
+#
+interface GigabitEthernet3/0/26
+#
+interface GigabitEthernet3/0/27
+#
+interface GigabitEthernet3/0/28
+#
+interface GigabitEthernet3/0/29
+#
+interface GigabitEthernet3/0/30
+#
+interface GigabitEthernet3/0/31
+#
+interface GigabitEthernet3/0/32
+#
+interface GigabitEthernet3/0/33
+#
+interface GigabitEthernet3/0/34
+#
+interface GigabitEthernet3/0/35
+#
+interface GigabitEthernet3/0/36
+#
+interface GigabitEthernet3/0/37
+#
+interface GigabitEthernet3/0/38
+#
+interface GigabitEthernet3/0/39
+#
+interface GigabitEthernet3/0/40
+#
+interface GigabitEthernet3/0/41
+#
+interface GigabitEthernet3/0/42
+#
+interface GigabitEthernet3/0/43
+#
+interface GigabitEthernet3/0/44
+#
+interface GigabitEthernet3/0/45
+#
+interface GigabitEthernet3/0/46
+#
+interface GigabitEthernet3/0/47
+ traffic-policy tcCritical inbound
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet4/0/0
+ description uT:NB-NH-CB-BAS-3.MAN.ME60:(local)GE1/1/0
+ eth-trunk 1
+#
+interface GigabitEthernet4/0/1
+ description uT:NB-NH-CB-BAS-3.MAN.ME60:(local)GE1/1/1
+ eth-trunk 1
+#
+interface GigabitEthernet4/0/2
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet4/0/3
+ shutdown
+#
+interface GigabitEthernet4/0/4
+ shutdown
+#
+interface GigabitEthernet4/0/5
+ undo negotiation auto
+ description dT:NB-NH-CB-MA5680T-E05:(local)GE0/19/1
+ eth-trunk 3
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet4/0/6
+ undo negotiation auto
+ description dT:NB-NH-CB-MA5680T-E05:(local)GE0/20/1
+ eth-trunk 3
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet4/0/7
+ undo negotiation auto
+ description dT:NB-NH-CB-MA5680T-G01:PPPOE()GE18/2
+ shutdown
+ eth-trunk 14
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet4/0/8
+#
+interface GigabitEthernet4/0/9
+ undo negotiation auto
+ description dT:NB-NH-CB-MA5680T-G01:PPPOE()GE18/3
+ shutdown
+ eth-trunk 14
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet4/0/10
+#
+interface GigabitEthernet4/0/11
+ undo negotiation auto
+ description dT:NB-NH-CB-MA5680T-G02:PPPOE()GE18/2
+ shutdown
+ eth-trunk 15
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet4/0/12
+#
+interface GigabitEthernet4/0/13
+ undo negotiation auto
+ description dT:NB-NH-CB-MA5680T-G02:PPPOE()GE18/3
+ shutdown
+ eth-trunk 15
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet4/0/14
+ undo negotiation auto
+ description dT:NB-NH-QTH-DSW-1.MAN.9306:(F1212240043)GE6/0/14
+ shutdown
+ eth-trunk 11
+#
+interface GigabitEthernet4/0/15
+ undo negotiation auto
+ description dT:NB-NH-QTH-DSW-1.MAN.9306:(F1212240042)GE6/0/15
+ shutdown
+ eth-trunk 11
+#
+interface GigabitEthernet4/0/16
+ undo negotiation auto
+ description uT:NB-NH-CB-BAS-3.MAN.ME60:(local)GE1/1/3
+ eth-trunk 1
+#
+interface GigabitEthernet4/0/17
+ undo negotiation auto
+ description uT:NB-NH-CB-BAS-3.MAN.ME60:(local)GE1/1/2
+ eth-trunk 1
+#
+interface GigabitEthernet4/0/18
+ undo negotiation auto
+ description dT:NB-NH-CB-S3952(8.204):(local)GE1/1/1
+ eth-trunk 7
+#
+interface GigabitEthernet4/0/19
+ undo negotiation auto
+ description dT:NB-NH-CB-S3952(8.204):(local)GE1/1/2
+ eth-trunk 7
+#
+interface GigabitEthernet4/0/20
+ undo negotiation auto
+ description dT:NB-NH-CB-S3952(8.204):(local)GE1/1/3
+ eth-trunk 7
+#
+interface GigabitEthernet4/0/21
+ undo negotiation auto
+ description dT:NB-NH-CB-S3952(8.204):(local)GE1/1/4
+ eth-trunk 7
+#
+interface GigabitEthernet4/0/22
+ undo negotiation auto
+ description to-NB-NH-ShenZ8505:port2/1/12
+ port link-type trunk
+#
+interface GigabitEthernet4/0/23
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet5/0/0
+ undo negotiation auto
+ description dT:NB-NH-CB-MA5680T-G01:PPPOE(F1502110079)GE18/0
+ shutdown
+ eth-trunk 14
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet5/0/1
+ undo negotiation auto
+ description dT:NB-NH-CB-MA5680T-G01:PPPOE(F1502110080)GE18/1
+ shutdown
+ eth-trunk 14
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet5/0/2
+ undo negotiation auto
+ description dT:NB-NH-CB-MA5680T-G02:PPPOE(F1502110084)GE18/0
+ shutdown
+ eth-trunk 15
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet5/0/3
+ undo negotiation auto
+ description dT:NB-NH-CB-MA5680T-G02:PPPOE(F1502110082)GE18/1
+ shutdown
+ eth-trunk 15
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet5/0/4
+#
+interface GigabitEthernet5/0/5
+#
+interface GigabitEthernet5/0/6
+#
+interface GigabitEthernet5/0/7
+#
+interface GigabitEthernet5/0/8
+#
+interface GigabitEthernet5/0/9
+#
+interface GigabitEthernet5/0/10
+#
+interface GigabitEthernet5/0/11
+#
+interface GigabitEthernet5/0/12
+#
+interface GigabitEthernet5/0/13
+#
+interface GigabitEthernet5/0/14
+#
+interface GigabitEthernet5/0/15
+#
+interface GigabitEthernet5/0/16
+#
+interface GigabitEthernet5/0/17
+#
+interface GigabitEthernet5/0/18
+#
+interface GigabitEthernet5/0/19
+#
+interface GigabitEthernet5/0/20
+#
+interface GigabitEthernet5/0/21
+#
+interface GigabitEthernet5/0/22
+#
+interface GigabitEthernet5/0/23
+#
+interface GigabitEthernet5/0/24
+#
+interface GigabitEthernet5/0/25
+#
+interface GigabitEthernet5/0/26
+#
+interface GigabitEthernet5/0/27
+#
+interface GigabitEthernet5/0/28
+#
+interface GigabitEthernet5/0/29
+#
+interface GigabitEthernet5/0/30
+#
+interface GigabitEthernet5/0/31
+#
+interface GigabitEthernet5/0/32
+#
+interface GigabitEthernet5/0/33
+#
+interface GigabitEthernet5/0/34
+#
+interface GigabitEthernet5/0/35
+#
+interface GigabitEthernet5/0/36
+#
+interface GigabitEthernet5/0/37
+#
+interface GigabitEthernet5/0/38
+#
+interface GigabitEthernet5/0/39
+#
+interface GigabitEthernet5/0/40
+#
+interface GigabitEthernet5/0/41
+#
+interface GigabitEthernet5/0/42
+#
+interface GigabitEthernet5/0/43
+#
+interface GigabitEthernet5/0/44
+#
+interface GigabitEthernet5/0/45
+#
+interface GigabitEthernet5/0/46
+#
+interface GigabitEthernet5/0/47
+#
+interface XGigabitEthernet6/0/0
+ shutdown
+#
+interface XGigabitEthernet6/0/1
+#
+interface XGigabitEthernet6/0/2
+#
+interface XGigabitEthernet6/0/3
+#
+interface NULL0
+#
+cpu-defend policy 1
+ auto-port-defend protocol arp-request arp-reply dhcp icmp ip-fragment
+#
+ip route-static 10.31.255.0 255.255.255.224 172.93.36.21
+ip route-static 172.0.0.0 255.0.0.0 172.93.36.21
+#
+snmp-agent
+snmp-agent local-engineid 000007DB7FFFFFFF00000140
+snmp-agent community read cipher %^%#!}f^Dh]bXG`"G$NE>]O4ct#)H3.x{-ay*;-vh<7>'j5e,;&"T)c_A&"+ElH$G^^.-A!"$UaOkc#,~2GI%^%# acl 2015
+snmp-agent sys-info contact R&D Nanjing, Huawei Technologies co.,Ltd.
+snmp-agent sys-info location Nanjing China
+snmp-agent sys-info version all
+snmp-agent target-host trap address udp-domain 172.200.100.5 udp-port 161 params securityname cipher %^%#|E{}YGrQ*Z1;HE<WXsq9c"1;+3h(`1^#6KFtX!w.%^%#
+snmp-agent target-host trap address udp-domain 218.75.80.158 udp-port 161 params securityname cipher %^%#sl`2:@07^QQVy2=H;7uSQjdHW3~0i=8RQ^U"AV+A%^%#
+undo snmp-agent trap enable feature-name L2IFPPI trap-name hwMacFlappingAlarm
+undo snmp-agent trap enable feature-name DLDP
+undo snmp-agent trap enable feature-name LDTTRAP
+undo snmp-agent trap enable feature-name LLDPTRAP
+snmp-agent trap enable feature-name BASETRAP
+#
+ssh server compatible-ssh1x enable
+#
+header login information " WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!"
+#
+cpu-defend-policy 1 global
+cpu-defend-policy 1
+#
+user-interface con 0
+user-interface vty 0 4
+ acl 2000 inbound
+ authentication-mode aaa
+ protocol inbound all
+user-interface vty 16 20
+ protocol inbound telnet
+#
+return
+<NB-NH-CB-DSW-2.MAN.9306>

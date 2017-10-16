@@ -1,0 +1,403 @@
+
+Building configuration...
+
+Current configuration : 7957 bytes
+!
+! Last configuration change at 16:57:43 beijing Thu Oct 12 2017 by kaitong
+! NVRAM config last updated at 16:57:44 beijing Thu Oct 12 2017 by kaitong
+!
+version 12.1
+no service pad
+service tcp-keepalives-in
+service timestamps debug datetime msec localtime show-timezone
+service timestamps log datetime msec localtime show-timezone
+service password-encryption
+!
+hostname NB-A-QIWEN-3550-4
+!
+logging buffered 16384 debugging
+aaa new-model
+aaa authentication fail-message ^CC wrong username or password ^C
+aaa authentication login default group tacacs+ local
+aaa authorization config-commands
+aaa authorization exec default group tacacs+ none
+aaa authorization commands 1 default group tacacs+ none
+aaa authorization commands 15 default group tacacs+ none
+aaa accounting suppress null-username
+aaa accounting update newinfo
+aaa accounting exec default start-stop group tacacs+
+aaa accounting commands 1 default start-stop group tacacs+
+aaa accounting commands 15 default start-stop group tacacs+
+enable secret 5 $1$S8Z4$ybwK8/51uPEyUoEIqc7t5.
+!
+clock timezone beijing 8
+no errdisable detect cause pagp-flap
+no errdisable detect cause dtp-flap
+no errdisable detect cause link-flap
+no errdisable detect cause l2ptguard
+no errdisable detect cause gbic-invalid
+ip subnet-zero
+no ip source-route
+no ip igmp snooping
+!
+no ip domain-lookup
+vtp mode transparent
+mls qos
+!
+class-map match-all IPclass
+  match ip dscp 0
+!
+!
+policy-map rate-2M
+  class IPclass
+    police 2096000 200000 exceed-action drop
+policy-map rate-200M
+  class IPclass
+    police 210000000 1300000 exceed-action drop
+policy-map rate-300M
+  class IPclass
+    police 315000000 1500000 exceed-action drop
+policy-map rate-100M
+  class IPclass
+    police 95000000 200000 exceed-action drop
+policy-map rate-6M
+  class IPclass
+    police 6296000 600000 exceed-action drop
+policy-map rate-4M
+  class IPclass
+    police 4200000 300000 exceed-action drop
+policy-map rate-400M
+  class IPclass
+    police 420000000 1500000 exceed-action drop
+policy-map rate-8M
+  class IPclass
+    police 8400000 800000 exceed-action drop
+policy-map rate-20M
+  class IPclass
+    police 21000000 1000000 exceed-action drop
+policy-map rate-60M
+  class IPclass
+    police 63000000 1500000 exceed-action drop
+policy-map rate-40M
+  class IPclass
+    police 42000000 1000000 exceed-action drop
+policy-map rate-50M
+  class IPclass
+    police 55000000 20000 exceed-action drop
+policy-map rate-80M
+  class IPclass
+    police 81920000 2000000 exceed-action drop
+!
+cluster enable 2 0
+cluster member 2 mac-address 0013.c3fd.3400
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+!
+!
+!
+vlan 7
+ name NBASE-MANAGEMENGT
+!
+vlan 8
+ name Manager
+!
+vlan 9
+ name xiaoqu-manage
+!
+vlan 26
+ name WH-3550manager
+!
+vlan 75
+ name WH-DLinkmanager-1
+!
+vlan 76
+ name WH-DLinkmanager-2
+!
+vlan 77
+ name WH-DLinkmanager-3
+!
+vlan 226
+ name alcatel-manager
+!
+vlan 248
+ name laodongju-vpn
+!
+vlan 305
+ name gonganyinzhang-vpn
+!
+vlan 333
+ name huanbaoju-vpn
+!
+vlan 341
+ name lidefangchan-vpn
+!
+vlan 347
+ name gongan-jiudian
+!
+vlan 361 
+!
+vlan 394
+ name shequjingwuwang
+!
+vlan 404
+ name gongguanchu-vpn
+!
+vlan 423
+ name shiyouhuagong-vpn
+!
+vlan 427
+ name xingguangmeiqi-vpn
+!
+vlan 482
+ name sanjiang-vlan
+!
+vlan 567
+ name qiwen-ipadsl-xd4
+!
+vlan 570
+ name jinghuayuan_xd1
+!
+vlan 795
+ name hongkongluolan(6M)
+!
+vlan 835
+ name sw-tailianguojijingmao
+!
+vlan 870 
+!
+vlan 945
+ name sw-haishukaichuangxiuxian-wb
+!
+vlan 947
+ name sw-chenquneiheguanlichu1
+!
+vlan 953
+ name sw-xiangganghaohuoban
+!
+vlan 981
+ name boyangfangzhipin
+!
+vlan 1036
+ name sw-futedianqi
+!
+vlan 1054
+ name sw-xinzhihaoqiche
+!
+vlan 1198
+ name sw-keyunzhongxinzhan
+!
+vlan 1302
+ name aimeike-vpn
+!
+vlan 1309
+ name hongrun-xiehe-vpn
+!
+vlan 1311
+ name gong'anjiankong
+!
+vlan 1322
+ name haiju-iphotel
+!
+vlan 1326
+ name tiantianpiaowu-vlan
+!
+vlan 1728
+ name sw-tiantianxinqichefuwu
+!
+vlan 3670
+ name 4S
+!
+!
+interface FastEthernet0/1
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/2
+ description kaidiqiche
+ switchport access vlan 3670
+ switchport mode access
+ speed 100
+ service-policy input rate-20M
+ service-policy output rate-20M
+!
+interface FastEthernet0/3
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/4
+ description xiaocaojws
+ switchport access vlan 394
+ switchport mode access
+ speed 100
+ service-policy input rate-20M
+ service-policy output rate-20M
+!
+interface FastEthernet0/5
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/6
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/7
+ description sw-chengquneiheguanlichu1
+ switchport access vlan 947
+ switchport mode access
+ speed 10
+!
+interface FastEthernet0/8
+ description sw-futedianqi
+ switchport access vlan 1036
+ switchport mode access
+ load-interval 60
+ speed 100
+ service-policy input rate-20M
+ service-policy output rate-20M
+!
+interface FastEthernet0/9
+ description sw-tiantianxinqichefuwu
+ switchport access vlan 1728
+ switchport mode access
+ load-interval 60
+ speed 100
+!
+interface FastEthernet0/10
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/11
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/12
+ description sw-tailianguojijingmao
+ switchport access vlan 835
+ switchport mode access
+ load-interval 60
+ speed 100
+!
+interface FastEthernet0/13
+ switchport mode dynamic desirable
+ shutdown
+!
+interface FastEthernet0/14
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/15
+ description sw-haishukaichuangxiuxian-wb
+ switchport access vlan 945
+ switchport mode access
+ load-interval 60
+ speed 100
+ service-policy input rate-60M
+ service-policy output rate-60M
+!
+interface FastEthernet0/16
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/17
+ description sw-xinzhihaoqiche
+ switchport access vlan 1054
+ switchport mode access
+ load-interval 60
+ speed 100
+!
+interface FastEthernet0/18
+ description yinjianglu
+ switchport access vlan 1309
+ switchport mode access
+ load-interval 60
+ speed 10
+ service-policy input rate-2M
+ service-policy output rate-2M
+!
+interface FastEthernet0/19
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/20
+ description sw-keyunzhongxinzhan
+ switchport access vlan 1198
+ switchport mode access
+ load-interval 60
+ speed 10
+ service-policy input rate-2M
+ service-policy output rate-2M
+!
+interface FastEthernet0/21
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/22
+ description xindianjws
+ switchport access vlan 394
+ switchport mode access
+ speed 100
+ service-policy input rate-20M
+ service-policy output rate-20M
+!
+interface FastEthernet0/23
+ description keyunzhongxin-vpn
+ switchport access vlan 404
+ switchport mode access
+ load-interval 60
+ speed 10
+ service-policy input rate-2M
+ service-policy output rate-2M
+!
+interface FastEthernet0/24
+ description hongkongluolan
+ switchport access vlan 795
+ switchport mode access
+ load-interval 60
+ speed 100
+ service-policy input rate-50M
+ service-policy output rate-50M
+!
+interface GigabitEthernet0/1
+ description boyangfangzhipin
+ switchport access vlan 981
+ switchport mode access
+ load-interval 60
+ service-policy input rate-200M
+ service-policy output rate-200M
+!
+interface GigabitEthernet0/2
+ description QW-9306-1/0/5
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ speed nonegotiate
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan26
+ description WH-3550manager
+ ip address 172.135.18.123 255.255.255.0
+!
+ip default-gateway 172.135.18.1
+ip classless
+ip route 0.0.0.0 0.0.0.0 172.135.18.1
+ip http server
+ip tacacs source-interface Vlan26
+!
+ip access-list extended CMP-NAT-ACL
+ dynamic Cluster-HSRP deny   ip any any
+ dynamic Cluster-NAT permit ip any any
+!
+logging source-interface Vlan26
+logging 172.200.100.6
+snmp-server community nbroot RO
+snmp-server community nbroot@es0 RO
+tacacs-server host 172.200.100.249
+tacacs-server key nbnoc
+!
+line con 0
+ exec-timeout 0 0
+ logging synchronous
+line vty 0 4
+ password 7 0505044071141E58
+line vty 5 15
+!
+ntp clock-period 17180509
+ntp server 172.135.18.254
+!
+end
+
+NB-A-QIWEN-3550-4#

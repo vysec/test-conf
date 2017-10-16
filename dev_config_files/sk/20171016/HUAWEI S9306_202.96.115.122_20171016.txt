@@ -1,0 +1,974 @@
+
+!Software Version V200R010C00SPC600
+#
+sysname ZS-PT-PTS-ASW-1.MAN.9306
+#
+info-center source default channel 2 log level warning trap level warning
+info-center source SHELL channel 4 log level informational
+info-center loghost source Vlanif20
+info-center loghost 202.96.115.122 facility local4
+#
+vlan batch 10 20 52 to 54 58 to 60 64 91 100 110 127 305
+vlan batch 405 517 542 565 571 632 636 660 692 712
+vlan batch 721 750 916 939 941 956 969 975 983 986
+vlan batch 1379 1384 1394 1425 1502 1701 1721 1756 1761 1779
+vlan batch 1783 1790 2716 3007 3009 3029 3049 3099 3174 3523
+vlan batch 3692 3736 3780 to 3782 3833 3920 3938 3961 3964 3967 to 3970 3972
+vlan batch 3975 to 3976 3980 3992 to 3993 3995 3997
+#
+loopback-detect auto disable
+#
+undo authentication unified-mode
+#
+telnet server enable
+telnet ipv6 server enable
+#
+undo http server enable
+undo http secure-server enable
+#
+undo management-port isolate enable
+undo management-plane isolate enable
+#
+clock timezone UTC add 00:00:00
+#
+ecmp local-preference disable
+#
+undo portal url-encode enable
+#
+eth-trunk load-balance hash-mode advanced slot 5
+eth-trunk load-balance hash-mode advanced slot 6
+#
+set flow-change-ratio input-broadcast-detect disable
+#
+diffserv domain default
+#
+radius-server template default
+ radius-server shared-key cipher %^%#H\AIYSRne'pf"2D/-yj>!l[sLKsod%(]QkSgL_%V%^%#
+#
+hwtacacs-server template zsdx
+ hwtacacs-server source-ip 202.96.115.122
+#
+acl number 2000  
+ rule 5 permit source 61.175.176.224 0.0.0.31 
+ rule 10 permit source 61.175.111.64 0.0.0.31 
+ rule 15 permit source 61.174.92.0 0.0.0.255 
+ rule 20 permit source 61.174.93.0 0.0.0.255 
+ rule 25 permit source 220.187.30.192 0.0.0.63 
+ rule 30 permit source 61.153.37.224 0.0.0.15 
+ rule 35 permit source 220.187.27.216 0.0.0.7 
+#
+acl number 3000  
+ rule 0 deny tcp destination-port eq 445 
+ rule 1 deny udp destination-port eq 445 
+ rule 2 deny tcp destination-port eq 135 
+ rule 3 deny tcp destination-port eq 136 
+ rule 4 deny tcp destination-port eq 137 
+ rule 5 deny tcp destination-port eq 138 
+ rule 6 deny tcp destination-port eq 139 
+ rule 7 deny udp destination-port eq 135 
+ rule 8 deny udp destination-port eq 136 
+ rule 9 deny udp destination-port eq netbios-ns 
+ rule 10 deny udp destination-port eq netbios-dgm 
+ rule 11 deny udp destination-port eq netbios-ssn 
+ rule 12 deny udp destination-port eq 1434 
+ rule 13 deny udp destination-port eq 6667 
+ rule 14 deny udp destination-port eq 7626 
+ rule 15 deny udp destination-port eq 6789 
+ rule 16 deny udp destination-port eq 5800 
+ rule 17 deny udp destination-port eq 5900 
+ rule 18 deny tcp destination-port eq 5900 
+ rule 19 deny tcp destination-port eq 5800 
+ rule 20 deny tcp destination-port eq 1999 
+ rule 21 deny tcp destination-port eq 5554 
+ rule 22 deny tcp destination-port eq 9995 
+ rule 23 deny tcp destination-port eq 9996 
+ rule 24 deny udp destination-port eq 12345 
+ rule 25 deny udp destination-port eq 1057 
+ rule 26 deny udp destination-port eq 2616 
+#
+traffic classifier huawei operator or precedence 5
+ if-match acl 3000
+#
+traffic behavior huawei
+ deny
+#
+traffic policy huawei match-order auto
+ classifier huawei behavior huawei
+#
+drop-profile default
+#
+vlan 10
+ description js-test
+vlan 20
+ description HuaWei-SW-NetManagement
+vlan 52
+ description EPON-GL
+vlan 53
+ description PTS-SW-MGN
+vlan 58
+ description PTS-GPON-MGN
+vlan 59
+ description PTS-AG
+vlan 60
+ description PTS-GuangDian-MGN
+vlan 64
+ description OLT-MGN-PTS
+vlan 91
+ description Sw-Manager
+vlan 110
+ description gong'an
+vlan 127
+ description pts_dajiudian
+vlan 305
+ name PTS-OLT5-V305
+vlan 405
+ name PTS-OLT5-V405
+vlan 517
+ description PTS-OLT5-V517
+vlan 542
+ description PTS-OLT4-V542
+vlan 565
+ description PTS-OLT4-V565
+vlan 571
+ description PTS-OLT4-V571
+vlan 632
+ description PTS-OLT-4(P632)
+vlan 636
+ description PTS-EPON-OLT4-636
+vlan 660
+ description PTS-OLT4-V660
+vlan 692
+ description PTS-OLT4-V692
+vlan 712
+ description PTS-OLT4-V712
+vlan 721
+ description PTS-OLT3-V721
+vlan 750
+ description PTS-OLT2-V750
+vlan 916
+ description Fat-Wlan
+vlan 939
+ description RenShouBaoXian
+vlan 941
+ description PTS-QinQ-Wlan
+vlan 956
+ description zilaishui
+vlan 969
+ description shuiliju
+vlan 975
+ description shebaoju_vpn
+vlan 983
+ description HangGuanSuo
+vlan 986
+ description KeYunZhan
+vlan 1379
+ description PTS-OLT
+vlan 1384
+ description PTS-C200-V1384
+vlan 1394
+ description PTS-C200
+vlan 1425
+ description guanliju-IPTV
+vlan 1502
+ description HuLu3750-Pvlan
+vlan 1701
+ description PTS-OLT2(V1701)
+vlan 1721
+ description PTS-OLT2(V1721)
+vlan 1756
+ description PTS-OLT2(V1756)
+vlan 1761
+ description PTS-OLT1(V1761)
+vlan 1779
+ description PTS-OLT4
+vlan 1783
+ description PTS-OLT4-1783
+vlan 1790
+ description PTS-OLT-3-Gpon(V1790)
+vlan 2716
+ description PTS-HongFaShanZhuang
+vlan 3007
+ description GuanSuTangShiPin
+vlan 3009
+ description PuJiYiYuan-VPN
+vlan 3029
+ description YanChaoPeiSong
+vlan 3049
+ description PJYY-NongYiBao
+vlan 3099
+ description EPON-OLT-GL
+vlan 3174
+ description GongShangYinHangVPN2
+vlan 3523
+ description DianXinYingYe-QQY
+vlan 3692
+ description ZhiZaiLvYuFuWuZhongXin
+vlan 3736
+ description haitonghotel-lan
+vlan 3780
+ description yuanzhou_bar
+vlan 3781
+ description xilaixiaozhuang
+vlan 3782
+ description gongshanju
+vlan 3833
+ description PTS-WeiShengJianDuSuo(4M)
+vlan 3920
+ description PTS-QianHe
+vlan 3938
+ description PTS-TuWeiSZ(4M)
+vlan 3961
+ description PTS-NanPuShanZhuang
+vlan 3964
+ description PTS-HongFaShanZHuang
+vlan 3967
+ description PTS-ZhongGuoYinHang
+vlan 3968
+ description GongShangYinHang(4M)
+vlan 3969
+ description XiangSheng-Hotel-Lan
+vlan 3970
+ description LvSheShangWuJiuDian
+vlan 3972
+ description PuTuoShanXinXiZhongXin
+vlan 3975
+ description BaoTuoFanDian
+vlan 3976
+ description PTS-GongAn-JianKong(1000M)
+vlan 3980
+ description SanShengTang-Lan
+vlan 3992
+ description PTS-RenMinYinHang(10M)
+vlan 3993
+ description YinYunShanZhuang
+vlan 3995
+ description PTS-HL-YeSuJiaoTang-JAJK
+vlan 3997
+ description PTS-DianXinJu(AnBao)
+#
+aaa
+ authentication-scheme default
+ authentication-scheme radius
+  authentication-mode radius
+ authorization-scheme default
+ accounting-scheme default
+ domain default
+  authentication-scheme default
+ domain default_admin
+  authentication-scheme default
+ local-user admin password cipher %^%#SE3{-E(9x.HEVkUM<{\A]8,`$;=pXB[>-E:"6h{~%^%#
+ undo local-user admin service-type
+ local-user zjnoc password irreversible-cipher $1a$B&A^BBs"$W$zLD](VB_Q-F|Wu(w<^s1\@RrO;bC2V]\dEY][0:>$
+ local-user zjnoc privilege level 3
+ local-user zjnoc service-type telnet terminal
+ local-user zsadm password irreversible-cipher $1a$;K9#/8V-gV$x7gz=2c`rF'9Q#!-*+K)^vQh52;3,Z5-eb._9t#;$
+ local-user zsadm privilege level 15
+ local-user zsadm service-type telnet
+#
+ntp-service unicast-server 202.96.115.130 version 2 source-interface Vlanif20
+#
+interface Vlanif10
+ ip address 10.10.10.10 255.255.255.0
+#
+interface Vlanif20
+ description HuaWei-SW-NetManagement
+ ip address 202.96.115.122 255.255.255.252
+#
+interface Vlanif100
+ ip address 192.168.222.2 255.255.255.0
+#
+interface Vlanif3009
+ shutdown
+ ip address 192.168.0.2 255.255.255.0
+#
+interface Eth-Trunk0
+ description uT:ZS-PT-SJM-DSW-1.MAN.9306:ETH2(Ge2/0/0,Ge2/0/1,Ge1/0/14,Ge1/0/15)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 20 52 54 58 to 59 91 110 127 712 916 939
+ port trunk allow-pass vlan 941 956 969 975 983 986 2716 3007 3009 3029
+ port trunk allow-pass vlan 3049 3099 3174 3523
+ mode lacp
+#
+interface Eth-Trunk3
+ description dT:ZS-PT-PTS-OLT-3.MAN.GC300:SM1(XG19/1,XG20/1)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 58 721 1790
+ mode lacp
+#
+interface Eth-Trunk4
+ description dT:ZS-PT-PTS-OLT-4.MAN.C300:SM1(GE19/1,GE20/1)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 542 565 571 632 636 660 692 712 1779 1783
+ port trunk allow-pass vlan 3009 3099
+ mode lacp
+#
+interface Eth-Trunk5
+ description dT:ZS-PT-PTS-OLT-5.MAN.MA5608T:ETK1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 64 305 405 517
+ mode lacp
+#
+interface Eth-Trunk8
+ description dT:ZS-PT-PTS-OLT-2.MAN.C220:SM0(GE2/1,GE3/1,GE2/2,GE3/2)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 750 916 1701 1721 1756 3009 3099
+ mode lacp
+#
+interface Eth-Trunk15
+ description uT:ZS-PT-SJM-DSW-1.MAN.9306:ETH15(Ten4/0/03)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 20 52 to 54 58 to 60 64 91 110 127 305 405 517
+ port trunk allow-pass vlan 542 565 571 632 636 660 692 712 721 750
+ port trunk allow-pass vlan 916 939 941 956 969 975 983 986 1379 1384
+ port trunk allow-pass vlan 1394 1425 1502 1701 1721 1756 1761 1779 1783 1790
+ port trunk allow-pass vlan 2716 3007 3009 3029 3049 3099 3174 3523 3692 3736
+ port trunk allow-pass vlan 3780 to 3782 3833 3920 3938 3961 3964 3967 to 3970 3972 3975 to 3976 3980
+ port trunk allow-pass vlan 3992 to 3993 3995 3997
+ mode lacp
+#
+interface Eth-Trunk76
+#
+interface Ethernet0/0/0
+ ip address 10.11.104.2 255.255.255.0
+#
+interface GigabitEthernet1/0/0
+ undo negotiation auto
+ description uT:ZS-PT-SJM-DSW-1.MAN.9306:(BoF)Ge1/0/14
+ eth-trunk 0
+#
+interface GigabitEthernet1/0/1
+ undo negotiation auto
+ description uT:ZS-PT-SJM-DSW-1.MAN.9306:(BoF)Ge2/0/0
+ eth-trunk 0
+#
+interface GigabitEthernet1/0/2
+ undo negotiation auto
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet1/0/3
+ description dT:ZS-PT-LSha-ASW-1.MAN.3550:(F0908260011)Ge1/0/1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 54
+#
+interface GigabitEthernet1/0/4
+ undo negotiation auto
+ description dT:ZS-PT-LSXQ-ASW-1.MAN.3900:(F0902110004)Ge1/1/1
+ shutdown
+ port link-type dot1q-tunnel
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet1/0/5
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet1/0/6
+ undo negotiation auto
+ description dT:ZS-PT-PTS-OLT-2.MAN.C220:(LOCAL)GE2/1
+ eth-trunk 8
+#
+interface GigabitEthernet1/0/7
+ undo negotiation auto
+ description dT:ZS-PT-PTS-OLT-1.MAN.C200:(LOCAL)GE2/1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 52 916 941 975 1379 1384 1394 1761 3009 3049
+ port trunk allow-pass vlan 3099 3528 3530
+#
+interface GigabitEthernet1/0/8
+ undo negotiation auto
+ shutdown
+#
+interface GigabitEthernet1/0/9
+ undo negotiation auto
+ shutdown
+#
+interface GigabitEthernet1/0/10
+ undo negotiation auto
+ description dT:ZS-PT-PTS-OLT-2.MAN.C220:(LOCAL)GE2/2
+ eth-trunk 8
+#
+interface GigabitEthernet1/0/11
+ undo negotiation auto
+ shutdown
+#
+interface GigabitEthernet1/0/12
+ description PTS-GongAn-JianKong(1000M)::kehu
+ port link-type access
+ port default vlan 3976
+#
+interface GigabitEthernet1/0/13
+ undo negotiation auto
+ description PuTuoShanXinXiZhongXin(500M)::kehu
+ port link-type access
+ port default vlan 3972
+#
+interface GigabitEthernet1/0/14
+#
+interface GigabitEthernet1/0/15
+#
+interface GigabitEthernet1/0/16
+#
+interface GigabitEthernet1/0/17
+#
+interface GigabitEthernet1/0/18
+#
+interface GigabitEthernet1/0/19
+#
+interface GigabitEthernet1/0/20
+#
+interface GigabitEthernet1/0/21
+#
+interface GigabitEthernet1/0/22
+#
+interface GigabitEthernet1/0/23
+#
+interface GigabitEthernet2/0/0
+ undo negotiation auto
+ description uT:ZS-PT-SJM-DSW-1.MAN.9306:(BoF)Ge2/0/1
+ eth-trunk 0
+#
+interface GigabitEthernet2/0/1
+ undo negotiation auto
+ description uT:ZS-PT-SJM-DSW-1.MAN.9306:(BoF)Ge1/0/15
+ eth-trunk 0
+#
+interface GigabitEthernet2/0/2
+#
+interface GigabitEthernet2/0/3
+#
+interface GigabitEthernet2/0/4
+ undo negotiation auto
+ shutdown
+#
+interface GigabitEthernet2/0/5
+#
+interface GigabitEthernet2/0/6
+ undo negotiation auto
+ description dT:ZS-PT-PTS-OLT-2.MAN.C220:(LOCAL)GE3/1
+ eth-trunk 8
+#
+interface GigabitEthernet2/0/7
+ undo negotiation auto
+ description dT:PTS-OLT1-4/2
+#
+interface GigabitEthernet2/0/8
+ undo negotiation auto
+ shutdown
+#
+interface GigabitEthernet2/0/9
+#
+interface GigabitEthernet2/0/10
+ undo negotiation auto
+ description dT:ZS-PT-PTS-OLT-2.MAN.C220:(LOCAL)GE3/2
+ eth-trunk 8
+#
+interface GigabitEthernet2/0/11
+ undo negotiation auto
+ shutdown
+#
+interface GigabitEthernet2/0/12
+#
+interface GigabitEthernet2/0/13
+#
+interface GigabitEthernet2/0/14
+#
+interface GigabitEthernet2/0/15
+#
+interface GigabitEthernet2/0/16
+#
+interface GigabitEthernet2/0/17
+#
+interface GigabitEthernet2/0/18
+#
+interface GigabitEthernet2/0/19
+#
+interface GigabitEthernet2/0/20
+#
+interface GigabitEthernet2/0/21
+#
+interface GigabitEthernet2/0/22
+#
+interface GigabitEthernet2/0/23
+#
+interface GigabitEthernet3/0/0
+ undo negotiation auto
+ speed 10
+ description gongshangju(GaiEPON)
+ shutdown
+ port link-type access
+ port default vlan 3782
+#
+interface GigabitEthernet3/0/1
+ undo negotiation auto
+ speed 10
+ description ShuiLiJv-::kehu
+ port link-type access
+ port default vlan 969
+#
+interface GigabitEthernet3/0/2
+ undo negotiation auto
+ speed 10
+ shutdown
+ port link-type access
+#
+interface GigabitEthernet3/0/3
+ undo negotiation auto
+ speed 10
+ description xilaixiaozhuang::kehu
+ port link-type access
+ port default vlan 3781
+#
+interface GigabitEthernet3/0/4
+ description pts_dajiudian::kehu
+ port link-type access
+ port default vlan 127
+#
+interface GigabitEthernet3/0/5
+ description PTS-GuangDianKuang-1::kehu
+ port link-type access
+ port default vlan 60
+#
+interface GigabitEthernet3/0/6
+ description PTS-GuangDianKuang-2::kehu
+ port link-type access
+ port default vlan 60
+#
+interface GigabitEthernet3/0/7
+ undo negotiation auto
+ speed 10
+ description QianHe-Hotel::kehu
+ port link-type access
+ port default vlan 3920
+#
+interface GigabitEthernet3/0/8
+ description PTS-GuangDianKuang-3::kehu
+ port link-type access
+ port default vlan 60
+#
+interface GigabitEthernet3/0/9
+ description PTS-GuangDianKuang-4::kehu
+ port link-type dot1q-tunnel
+ port default vlan 60
+#
+interface GigabitEthernet3/0/10
+ description PTS-GuangDianKuang-5::kehu
+ port link-type access
+ port default vlan 60
+#
+interface GigabitEthernet3/0/11
+ undo negotiation auto
+ speed 10
+ description HaiTongHotel::kehu
+ port link-type access
+ port default vlan 3736
+#
+interface GigabitEthernet3/0/12
+ description dT:ZS-PT-HuL-DSW-1.MAN.3750:(Local)GE1/0/1
+ port hybrid tagged vlan 53
+ port hybrid untagged vlan 1502
+ port vlan-stacking vlan 101 to 120 stack-vlan 1502
+ port vlan-stacking vlan 3020 stack-vlan 1502
+ port vlan-stacking vlan 3995 stack-vlan 1502
+#
+interface GigabitEthernet3/0/13
+ undo negotiation auto
+ speed 100
+ description HuLu-HLHW1-1-1
+ shutdown
+#
+interface GigabitEthernet3/0/14
+ undo negotiation auto
+ speed 10
+ description SanShengTang::kehu
+ port link-type access
+ port default vlan 3980
+#
+interface GigabitEthernet3/0/15
+ undo negotiation auto
+ speed 10
+ description PTS-ZhongGuoYinHang(GaiBoHao)
+ shutdown
+ port link-type access
+ port default vlan 3967
+#
+interface GigabitEthernet3/0/16
+ undo negotiation auto
+ speed 10
+ description ZiZaiLvYuFuWuZhongXin
+ port link-type access
+ port default vlan 3692
+#
+interface GigabitEthernet3/0/17
+ description PuTuoShanZhuang-WLAN(chai)
+ shutdown
+ port link-type dot1q-tunnel
+ port default vlan 941
+#
+interface GigabitEthernet3/0/18
+ description PTS-YingYeTin-QQY::kehu
+ port link-type access
+ port default vlan 3523
+#
+interface GigabitEthernet3/0/19
+ description PuTuoShanXinXiZhongXin::kehu
+ port link-type access
+ port default vlan 3972
+#
+interface GigabitEthernet3/0/20
+ undo negotiation auto
+ speed 100
+ description BaiBuGe-Wlan
+ port link-type dot1q-tunnel
+ port default vlan 941
+#
+interface GigabitEthernet3/0/21
+ undo negotiation auto
+ speed 10
+ description LvSheShangWuJiuDian::kehu
+ port link-type access
+ port default vlan 3970
+#
+interface GigabitEthernet3/0/22
+ description HongFaShanZhuang::kehu
+ port link-type access
+ port default vlan 3964
+#
+interface GigabitEthernet3/0/23
+ description JiFangDing-Wlan::kehu
+ port link-type dot1q-tunnel
+ port default vlan 941
+#
+interface GigabitEthernet3/0/24
+ description PTSDJD-Wlan(chai)
+ shutdown
+ port link-type dot1q-tunnel
+ port default vlan 941
+#
+interface GigabitEthernet3/0/25
+ undo negotiation auto
+ speed 10
+ description PuJiYiYuan-Lan(Epon)
+ shutdown
+ port link-type access
+#
+interface GigabitEthernet3/0/26
+ undo negotiation auto
+ speed 100
+ description XiangSheng-Hotel::kehu
+ port link-type access
+ port default vlan 3969
+#
+interface GigabitEthernet3/0/27
+ undo negotiation auto
+ speed 100
+ description PuJiYiYuan-VPN::kehu
+ port link-type access
+ port default vlan 3009
+ storm-control multicast min-rate 10 max-rate 10
+ storm-control enable trap
+ storm-control enable log
+#
+interface GigabitEthernet3/0/28
+ description XiangShengDaJiuDian-Wlan(chai)
+ shutdown
+ port link-type dot1q-tunnel
+ port default vlan 941
+#
+interface GigabitEthernet3/0/29
+ description XiangShengDaJiuDian-Wlan-2(chai)
+ shutdown
+ port link-type dot1q-tunnel
+ port default vlan 941
+#
+interface GigabitEthernet3/0/30
+ description PTS-PuJiYouErYuan(Chai)
+ shutdown
+ port link-type access
+#
+interface GigabitEthernet3/0/31
+ undo negotiation auto
+ speed 10
+ description XiangShengDajiuDianGongAnVPN::kehu
+ port link-type access
+ port default vlan 110
+#
+interface GigabitEthernet3/0/32
+ description NanPuShanZhuang::kehu
+ port link-type access
+ port default vlan 3961
+#
+interface GigabitEthernet3/0/33
+ undo negotiation auto
+ speed 10
+ description PTS-TuWeiSZ(4M)::kehu
+ port link-type access
+ port default vlan 3938
+#
+interface GigabitEthernet3/0/34
+ undo negotiation auto
+ speed 10
+ description GongShangYinHang(10M)::kehu
+ port link-type access
+ port default vlan 3968
+#
+interface GigabitEthernet3/0/35
+ undo negotiation auto
+ speed 10
+ description PTS-RenMinYinHang(10M)::kehu
+ port link-type access
+ port default vlan 3992
+#
+interface GigabitEthernet3/0/36
+ description PTS-YingYeTing-Wlan
+ port link-type dot1q-tunnel
+ port default vlan 941
+#
+interface GigabitEthernet3/0/37
+ description PTS-YYT::kehu
+ shutdown
+ port link-type access
+ port default vlan 1425
+#
+interface GigabitEthernet3/0/38
+ undo negotiation auto
+ speed 100
+#
+interface GigabitEthernet3/0/39
+ description BaoTuoFanDian::kehu
+ port link-type access
+ port default vlan 3975
+#
+interface GigabitEthernet3/0/40
+ undo negotiation auto
+ speed 10
+ description PanLongFanDian(chai)
+ shutdown
+ port link-type access
+#
+interface GigabitEthernet3/0/41
+ description PTS-DianXinJu(AnBao)::kehu
+ port link-type access
+ port default vlan 3997
+#
+interface GigabitEthernet3/0/42
+ undo port hybrid vlan 1
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet3/0/43
+ description PTSHW1-1-2
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet3/0/44
+ description PTSHW1-1-2
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet3/0/45
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet3/0/46
+ undo negotiation auto
+ speed 100
+ description PTS-AG-Port1::kehu
+ port link-type access
+ port default vlan 59
+#
+interface GigabitEthernet3/0/47
+ undo negotiation auto
+ speed 100
+ description PTS-AG-Port2::kehu
+ port link-type access
+ port default vlan 59
+#
+interface XGigabitEthernet5/0/0
+ description uT:ZS-PT-SJM-DSW-1.MAN.9306:(DianLi)Ten4/0/3
+ eth-trunk 15
+#
+interface XGigabitEthernet5/0/1
+ description dT:ZS-PT-PTS-OLT-4.MAN.C300:(LOCAL)XGE20/1
+ eth-trunk 4
+#
+interface XGigabitEthernet5/0/2
+ description dT:ZS-PT-PTS-OLT-3.MAN.GC300:(LOCAL)XG20/1
+ eth-trunk 3
+#
+interface XGigabitEthernet5/0/3
+ description dT:ZS-PT-PTS-OLT-5.MAN.MA5608T:(LOCAL)19/1
+ eth-trunk 5
+#
+interface XGigabitEthernet5/0/4
+ shutdown
+#
+interface XGigabitEthernet5/0/5
+ shutdown
+#
+interface XGigabitEthernet5/0/6
+ shutdown
+#
+interface XGigabitEthernet5/0/7
+ shutdown
+#
+interface XGigabitEthernet5/0/8
+ shutdown
+#
+interface XGigabitEthernet5/0/9
+ shutdown
+#
+interface XGigabitEthernet5/0/10
+ shutdown
+#
+interface XGigabitEthernet5/0/11
+ shutdown
+#
+interface XGigabitEthernet5/0/12
+ shutdown
+#
+interface XGigabitEthernet5/0/13
+ shutdown
+#
+interface XGigabitEthernet5/0/14
+ shutdown
+#
+interface XGigabitEthernet5/0/15
+ shutdown
+#
+interface XGigabitEthernet6/0/0
+ description uT:ZS-PT-SJM-DSW-1.MAN.9306:(F1301040015)Ten4/0/3
+ eth-trunk 15
+#
+interface XGigabitEthernet6/0/1
+ description dT:ZS-PT-PTS-OLT-4.MAN.C300:(LOCAL)XGE19/1
+ eth-trunk 4
+#
+interface XGigabitEthernet6/0/2
+ description dT:ZS-PT-PTS-OLT-3.MAN.GC300:(LOCAL)XG19/1
+ eth-trunk 3
+#
+interface XGigabitEthernet6/0/3
+ description dT:ZS-PT-PTS-OLT-5.MAN.MA5608T:(LOCAL)20/1
+ eth-trunk 5
+#
+interface XGigabitEthernet6/0/4
+ shutdown
+#
+interface XGigabitEthernet6/0/5
+ shutdown
+#
+interface XGigabitEthernet6/0/6
+ shutdown
+#
+interface XGigabitEthernet6/0/7
+ shutdown
+#
+interface XGigabitEthernet6/0/8
+ shutdown
+#
+interface XGigabitEthernet6/0/9
+ shutdown
+#
+interface XGigabitEthernet6/0/10
+ shutdown
+#
+interface XGigabitEthernet6/0/11
+ shutdown
+#
+interface XGigabitEthernet6/0/12
+ shutdown
+#
+interface XGigabitEthernet6/0/13
+ shutdown
+#
+interface XGigabitEthernet6/0/14
+ shutdown
+#
+interface XGigabitEthernet6/0/15
+ shutdown
+#
+interface NULL0
+#
+ip route-static 0.0.0.0 0.0.0.0 202.96.115.121
+#
+snmp-agent
+snmp-agent local-engineid 000007DB7FFFFFFF00005975
+snmp-agent community write cipher %^%#'O3o@2OqeN8%Y7ZcFPBG5+,sG_O${VazZ;~I"DHSw)(~1KG;-$ST6+~#MmKFL*9-;TvnC7~u~hRe#4{J%^%#
+snmp-agent community read cipher %^%#'!Te'_FwH~;SBjL*Q."SqTgJ#:=Gn~G<OmJIL29!^_&GWUREZ*H&5g6MAp";14OkQ891!NpIl,4!K4&X%^%# acl 2000
+snmp-agent community read cipher %^%#[xCwKuX:E5~,a-DeOLZ=(8|vT(m{>:M{$H%FMF7HVVd&XX,^SU%FJn1It$F(cgi`Cnra:=2uJ.+2jO!E%^%#
+snmp-agent sys-info contact HuaWei HangZhou China ,TEL:800-8302118
+snmp-agent sys-info location ZhouShan Telecom,ZS-PT-PTS-DSW-S9306-1.MAN
+snmp-agent sys-info version all
+snmp-agent trap enable feature-name IFNET trap-name linkDown
+snmp-agent trap enable feature-name IFNET trap-name linkUp
+snmp-agent trap enable feature-name SNMP trap-name authenticationFailure
+undo snmp-agent trap enable feature-name DLDP
+undo snmp-agent trap enable feature-name LDTTRAP
+undo snmp-agent trap enable feature-name LLDPTRAP
+snmp-agent trap enable feature-name BASETRAP
+#
+ssh server compatible-ssh1x enable
+#
+header login information " WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!"
+#
+easy-operation dtls disable
+#
+user-interface maximum-vty 15
+user-interface con 0
+ idle-timeout 0 0
+ screen-length 30
+user-interface vty 0 14
+ acl 2000 inbound
+ authentication-mode aaa
+ user privilege level 15
+ idle-timeout 5 0
+ screen-length 20
+ protocol inbound telnet
+user-interface vty 16 20
+ protocol inbound telnet
+#
+port-group d
+#
+return
+<ZS-PT-PTS-ASW-1.MAN.9306>

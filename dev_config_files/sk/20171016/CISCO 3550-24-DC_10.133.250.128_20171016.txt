@@ -1,0 +1,302 @@
+--------------------show run--------------------
+
+Building configuration...
+
+Current configuration : 5429 bytes
+!
+! Last configuration change at 20:40:35 UTC Thu Aug 17 2017 by cisco
+! NVRAM config last updated at 10:46:30 UTC Sat Oct 8 2016 by cisco
+!
+version 12.1
+no service pad
+service timestamps debug datetime msec localtime show-timezone
+service timestamps log datetime msec localtime show-timezone
+service password-encryption
+!
+hostname KeChuangYuan3550
+!
+logging buffered 16384 debugging
+enable secret 5 $1$6uyN$y5mRWu1Bh0Q8uABTxDx4w1
+!
+username cisco privilege 0 password 7 1538132800157B766B616C7047
+errdisable recovery cause udld
+errdisable recovery cause bpduguard
+errdisable recovery cause security-violation
+errdisable recovery cause channel-misconfig
+errdisable recovery cause pagp-flap
+errdisable recovery cause dtp-flap
+errdisable recovery cause link-flap
+errdisable recovery cause l2ptguard
+errdisable recovery cause psecure-violation
+errdisable recovery cause gbic-invalid
+errdisable recovery cause dhcp-rate-limit
+errdisable recovery cause unicast-flood
+errdisable recovery cause vmps
+errdisable recovery cause loopback
+ip subnet-zero
+!
+no ip domain-lookup
+vtp mode transparent
+mls qos aggregate-policer Customer-1 2048000 1024000 exceed-action drop
+mls qos
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+no spanning-tree vlan 1,99
+!
+!
+!
+!
+vlan 99
+ name KuanDai_JiaoHuanJi_NetManager_1
+!
+vlan 1701-1705,1707-1710,3006,3029 
+!
+vlan 3743
+ name KeJIChuangYe_Fuwuzhongxin
+!
+vlan 3767
+ name tonglian_gongsi
+!
+vlan 3768
+ name KeChuangYuan_JianShe_Co.,Ltd
+!
+vlan 3769 
+!
+vlan 3797
+ name JiaKe_DianZi
+!
+vlan 3827
+ name 36Suo
+!
+vlan 3868,3942 
+!
+class-map match-all egress-1
+  match ip dscp 0
+class-map match-all 50M
+  match ip dscp 0
+class-map match-all 10M
+  match ip dscp 0
+!
+!
+policy-map 50M
+  class 50M
+    police 500000000 2000000 exceed-action drop
+policy-map 10M
+  class 10M
+    police 100000000 800000 exceed-action drop
+policy-map 4m
+  class egress-1
+    police 4096000 800000 exceed-action drop
+policy-map 2m
+  class egress-1
+    police aggregate Customer-1
+!
+!
+interface FastEthernet0/1
+ description LongWeiDianZi
+ switchport mode access
+ switchport protected
+ shutdown
+ service-policy output 2m
+!
+interface FastEthernet0/2
+ description JiaKe_DianZi_Co.,Ltd
+ switchport access vlan 3797
+ switchport mode access
+ switchport protected
+ switchport block multicast
+ switchport block unicast
+ speed 10
+!
+interface FastEthernet0/3
+ switchport mode access
+ shutdown
+!
+interface FastEthernet0/4
+ switchport mode access
+ shutdown
+!
+interface FastEthernet0/5
+ description JxTelecom_Inter+VPN 61.153.48.193/27
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 3029,3769
+ switchport mode trunk
+ no cdp enable
+!
+interface FastEthernet0/6
+ switchport mode access
+ switchport protected
+ shutdown
+!
+interface FastEthernet0/7
+ description vpn-112
+ switchport access vlan 3006
+ switchport mode access
+ switchport protected
+ switchport block multicast
+ switchport block unicast
+!
+interface FastEthernet0/8
+ switchport mode access
+ switchport protected
+ shutdown
+!
+interface FastEthernet0/9
+ switchport mode dynamic desirable
+ shutdown
+!
+interface FastEthernet0/10
+ switchport mode access
+ switchport protected
+ shutdown
+!
+interface FastEthernet0/11
+ switchport access vlan 1704
+ switchport mode access
+ shutdown
+!
+interface FastEthernet0/12
+ switchport mode access
+ shutdown
+!
+interface FastEthernet0/13
+ description 36Suo
+ switchport access vlan 3827
+ switchport mode access
+ switchport protected
+ switchport block multicast
+ switchport block unicast
+ speed 10
+!
+interface FastEthernet0/14
+ switchport mode access
+ switchport protected
+!
+interface FastEthernet0/15
+ switchport access vlan 1709
+ switchport mode access
+ switchport protected
+!
+interface FastEthernet0/16
+ description DeiyuQiCheLingBuJian
+ switchport access vlan 1702
+ switchport mode access
+ switchport protected
+!
+interface FastEthernet0/17
+ description KeJiChuangYeFuWuzhongXin 122.225.6.64-67
+ switchport access vlan 3743
+ switchport mode access
+ switchport protected
+!
+interface FastEthernet0/18
+ switchport access vlan 1710
+ switchport mode access
+ switchport protected
+ shutdown
+ service-policy input 4m
+ service-policy output 4m
+!
+interface FastEthernet0/19
+ switchport mode access
+ shutdown
+!
+interface FastEthernet0/20
+ switchport mode access
+ shutdown
+!
+interface FastEthernet0/21
+ switchport mode access
+ shutdown
+!
+interface FastEthernet0/22
+ description vpn-112
+ switchport access vlan 3006
+ switchport mode access
+ switchport protected
+ switchport block multicast
+ switchport block unicast
+!
+interface FastEthernet0/23
+ description JiazhouWenHuaChuanBo_pppoe_2M
+ switchport access vlan 1705
+ switchport mode access
+ switchport protected
+ service-policy input 2m
+ service-policy output 2m
+!
+interface FastEthernet0/24
+ switchport mode access
+ switchport protected
+ shutdown
+!
+interface GigabitEthernet0/1
+ switchport mode dynamic desirable
+!
+interface GigabitEthernet0/2
+ description uT:JX-ZR-KeChuangYuan3952:(local)GE1/1/1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan99
+ ip address 10.133.250.128 255.255.255.0
+!
+ip default-gateway 10.133.250.1
+ip classless
+no ip http server
+!
+snmp-server community jxipnet RO
+!
+line con 0
+ password 7 132D120033050A787B747B13677B4153
+ login
+line vty 0 4
+ login local
+line vty 5 15
+ login local
+!
+ntp clock-period 17180315
+ntp server 10.3.4.1
+ntp server 10.3.4.65
+mac-address-table aging-time 36000 vlan 714
+!
+end
+
+KeChuangYuan3550#
+--------------------show interfaces status--------------------
+
+
+Port      Name               Status       Vlan       Duplex  Speed Type
+Fa0/1     LongWeiDianZi      disabled     1            auto   auto 10/100BaseTX
+Fa0/2     JiaKe_DianZi_Co.,L connected    3797       a-full     10 10/100BaseTX
+Fa0/3                        disabled     1            auto   auto 10/100BaseTX
+Fa0/4                        disabled     1            auto   auto 10/100BaseTX
+Fa0/5     JxTelecom_Inter+VP connected    trunk      a-full  a-100 10/100BaseTX
+Fa0/6                        disabled     1            auto   auto 10/100BaseTX
+Fa0/7     vpn-112            connected    3006       a-full  a-100 10/100BaseTX
+Fa0/8                        disabled     1            auto   auto 10/100BaseTX
+Fa0/9                        disabled     1            auto   auto 10/100BaseTX
+Fa0/10                       disabled     1            auto   auto 10/100BaseTX
+Fa0/11                       disabled     1704         auto   auto 10/100BaseTX
+Fa0/12                       disabled     1            auto   auto 10/100BaseTX
+Fa0/13    36Suo              connected    3827       a-full     10 10/100BaseTX
+Fa0/14                       notconnect   1            auto   auto 10/100BaseTX
+Fa0/15                       notconnect   1709         auto   auto 10/100BaseTX
+Fa0/16    DeiyuQiCheLingBuJi connected    1702       a-full  a-100 10/100BaseTX
+Fa0/17    KeJiChuangYeFuWuzh notconnect   3743         auto   auto 10/100BaseTX
+Fa0/18                       disabled     1710         auto   auto 10/100BaseTX
+Fa0/19                       disabled     1            auto   auto 10/100BaseTX
+Fa0/20                       disabled     1            auto   auto 10/100BaseTX
+Fa0/21                       disabled     1            auto   a-10 10/100BaseTX
+Fa0/22    vpn-112            connected    3006       a-full  a-100 10/100BaseTX
+Fa0/23    JiazhouWenHuaChuan notconnect   1705         auto   auto 10/100BaseTX
+Fa0/24                       disabled     1            auto   auto 10/100BaseTX
+Gi0/1                        notconnect   1            auto   auto unknown
+Gi0/2     uT:JX-ZR-KeChuangY connected    trunk      a-full a-1000 1000BaseLX
+KeChuangYuan3550#

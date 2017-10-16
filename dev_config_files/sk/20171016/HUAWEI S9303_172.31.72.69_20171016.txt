@@ -1,0 +1,447 @@
+
+!Software Version V200R008C00SPC500
+#
+sysname JH-YK-XX-SW2-S9303-1.MAN
+#
+super password level 3 cipher %$%$fCB8W:4Hf@,"z{Dv!)$9A_O^%gddUKx3H74|\2>ehbN;_OaA%$%$
+#
+info-center source IP channel 3 log level error
+info-center loghost source Vlanif48
+info-center loghost 220.188.118.249 language Chinese facility local3
+#
+vlan batch 3 to 4 30 32 36 38 41 48 to 49 119 208 to 211 220 to 223
+vlan batch 232 to 239 257 to 264 273 to 275 441 445 479 496 535 547 660
+vlan batch 814 1341 1356 1362 1419 1432 to 1435 1566 to 1568 1571 1573 to 1574 1578 to 1579
+vlan batch 1581 to 1582 1590 to 1592 2699 2829 3991 to 3992
+#
+undo authentication unified-mode
+#
+telnet server enable
+telnet ipv6 server enable
+#
+undo http server enable
+undo http secure-server enable
+#
+undo management-port isolate enable
+undo management-plane isolate enable
+#
+clock timezone UTC add 00:00:00
+#
+diffserv domain default
+#
+hwtacacs-server template telnet
+ hwtacacs-server authentication 61.175.255.41
+ hwtacacs-server authorization 61.175.255.41
+ hwtacacs-server accounting 61.175.255.41
+ hwtacacs-server source-ip 172.31.72.69
+ hwtacacs-server shared-key cipher %^%#'Ma#LaWa9=a6Bz~/%&u:li{z8i|z'&T6);$<Y4m9%^%#
+ undo hwtacacs-server user-name domain-included
+#
+drop-profile default
+#
+vlan 3
+ description DSLAM-NetManagement(old1)
+vlan 4
+ description DSLAM-NetManagement(old2)
+vlan 32
+ description DSLAM-NetManagement
+vlan 36
+ description YK_WLAN_mgr
+vlan 38
+ description GuanShouFaQi-vpn
+vlan 41
+ description DongLiJianKong
+vlan 48
+ description switch-management
+vlan 49
+ description switch-management
+vlan 119
+ description To-JH-YK-QX-SW3-C3550-1.MAN
+vlan 814
+ description To-JiaoYuJu-Lease
+vlan 1341
+ description yk-LvNanZHai-2-FD
+vlan 1356
+ description YK-XiShanGongYeQu-acl
+vlan 1362
+ description YK-PanKeng-ACL-DSLAM
+vlan 1419
+ description YK-XiXi-4-ACL-DSLAM
+vlan 1432
+ description YK-XiXi-3-ACL-DSLAM
+vlan 1433
+ description YK-XiXi-2-ACL-DSLAM
+vlan 1434
+ description YK-TangXi-2-ACL-DSLAM
+vlan 1435
+ description YK-TangXi-1-ACL-DSLAM
+vlan 1566
+ description YK-XiXi-1-ACL-DSLAM
+vlan 1567
+ description YK-QingShanKou-1-UT-DSLAM
+vlan 1568
+ description YK-XiXi-1-UT-DSLAM
+vlan 1571
+ description yk-LvNanZHai-Acl-Dslam
+vlan 1573
+ description YK-QiaoXia-1-ACL-DSLAM
+vlan 1574
+ description YK-QiaoXia-2-ACL-DSLAM
+vlan 1578
+ description YK-ShiJiang-1-ACL-DSLAM
+vlan 1579
+ description YK-ShiJiang-2-ACL-DSLAM
+vlan 1581
+ description YK-ShangHuangQiao-1-UT-DSLAM
+vlan 1582
+ description YK-TangXi-1-UT-DSLAM
+vlan 1590
+ description YK-BaiYan-1-ACL-DSLAM
+vlan 1591
+ description YK-BaiYan-2-ACL-DSLAM
+vlan 1592
+ description YK-BaiYan-1-UT-DSLAM
+vlan 2699
+ description To-WuRanYuan-VPLS
+vlan 3992
+ description TianLiGongJu
+#
+aaa
+ authentication-scheme default
+ authentication-scheme telnet
+  authentication-mode hwtacacs local
+  authentication-super hwtacacs super
+ authorization-scheme default
+ authorization-scheme telnet
+  authorization-mode  hwtacacs local
+ accounting-scheme default
+ accounting-scheme telnet
+  accounting-mode hwtacacs
+ domain default
+ domain default_admin
+  authentication-scheme telnet
+  accounting-scheme telnet
+  authorization-scheme telnet
+  hwtacacs-server telnet
+ domain telnet
+  authentication-scheme telnet
+  accounting-scheme telnet
+  authorization-scheme telnet
+  hwtacacs-server telnet
+ local-user admin password cipher %^%#_7KpDJ=6l)3=|4O%4GBAp~hF9{2Z-L%(TBO(K-(B%^%#
+ undo local-user admin service-type
+#
+ntp-service unicast-server 61.175.255.59
+#
+interface Vlanif48
+ description switch-management
+ ip address 172.31.72.69 255.255.255.224
+#
+interface Eth-Trunk1
+ description to GS9306-1
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 3 to 4 30 32 36 38 41 48 to 49 660 814 1341
+ port hybrid tagged vlan 1356 1362 1419 1432 to 1435 1566 1571 1573 to 1574 1578 to 1579 1581 to 1582 1590 to 1592
+ port hybrid tagged vlan 2699 3991 to 3992
+#
+interface Ethernet0/0/0
+#
+interface GigabitEthernet1/0/0
+ description To JH-YK-GS-SW1-S8505-1.MAN Gig-2/1/3
+ eth-trunk 1
+#
+interface GigabitEthernet1/0/1
+ undo negotiation auto
+ description To YK-XiXi-5600-HW-DSLAM
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 32
+ port hybrid untagged vlan 1568
+ port vlan-stacking vlan 101 to 901 stack-vlan 1568
+ port vlan-stacking vlan 3600 stack-vlan 1568
+#
+interface GigabitEthernet1/0/2
+ description To JH-YK-GS-SW1-S8505-1.MAN Gig-2/1/17
+ eth-trunk 1
+#
+interface GigabitEthernet1/0/3
+ undo negotiation auto
+ description To YK-QingShanKou-DSLAM
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 3 30 32
+ port hybrid untagged vlan 1567
+ port vlan-stacking vlan 101 to 901 stack-vlan 1567
+ port vlan-stacking vlan 3600 stack-vlan 1567
+#
+interface GigabitEthernet1/0/4
+ description dT:JH-YK-BoYan-SW1-S3928-1.MAN:(F1102150004)GE1/1/1
+ port hybrid tagged vlan 3 to 4 30 32 38 41 48 to 49 814 1434 1581 to 1582 1590 to 1592
+#
+interface GigabitEthernet1/0/5
+ description To JH-YK-LVNANZHAI3928
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 30 32 38 41 48 to 49 1341 1571 3991
+#
+interface GigabitEthernet1/0/6
+ description To YK-XiXi-1-ACL-DSLAM(local)
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 30 32
+ port hybrid untagged vlan 1566
+ port vlan-stacking vlan 101 to 901 stack-vlan 1566
+ port vlan-stacking vlan 3600 stack-vlan 1566
+#
+interface GigabitEthernet1/0/7
+#
+interface GigabitEthernet1/0/8
+#
+interface GigabitEthernet1/0/9
+#
+interface GigabitEthernet1/0/10
+#
+interface GigabitEthernet1/0/11
+#
+interface GigabitEthernet1/0/12
+#
+interface GigabitEthernet1/0/13
+#
+interface GigabitEthernet1/0/14
+#
+interface GigabitEthernet1/0/15
+#
+interface GigabitEthernet1/0/16
+#
+interface GigabitEthernet1/0/17
+#
+interface GigabitEthernet1/0/18
+#
+interface GigabitEthernet1/0/19
+#
+interface GigabitEthernet1/0/20
+#
+interface GigabitEthernet1/0/21
+#
+interface GigabitEthernet1/0/22
+#
+interface GigabitEthernet1/0/23
+ undo negotiation auto
+ description To 6502.MAN-LinShi
+ port hybrid tagged vlan 1 to 1567 1569 to 4094
+#
+interface GigabitEthernet2/0/0
+ description To JH-YK-BoYan-SW1-S3928-1.MAN Eth-1/0/1
+ shutdown
+ port hybrid tagged vlan 3 to 4 32 38 49 814 1434 1581 to 1582 1590 to 1592
+#
+interface GigabitEthernet2/0/1
+ description dT:JH-YK-SJ-SW1-S3928-1.MAN:(F0511180053)ETH1/0/1
+ port hybrid tagged vlan 3 to 4 30 32 41 48 to 49 1573 to 1574 1578 to 1579 3992
+#
+interface GigabitEthernet2/0/2
+ undo negotiation auto
+ speed 100
+ description To YK-QingShanKou-1-UT-DSLAM
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 3 30 32
+ port hybrid untagged vlan 1567
+ port vlan-stacking vlan 101 to 901 stack-vlan 1567
+ port vlan-stacking vlan 3600 stack-vlan 1567
+#
+interface GigabitEthernet2/0/3
+ description GuLong-7325
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 32
+ port hybrid untagged vlan 1433
+ port vlan-stacking vlan 101 to 901 stack-vlan 1433
+ port vlan-stacking vlan 3600 stack-vlan 1433
+#
+interface GigabitEthernet2/0/4
+ description To YK-XiXi-3-ACL-DSLAM(XiTian)
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 32
+ port hybrid untagged vlan 1432
+ port vlan-stacking vlan 101 to 901 stack-vlan 1432
+ port vlan-stacking vlan 3600 stack-vlan 1432
+#
+interface GigabitEthernet2/0/5
+ description YK-HongTang-ACL-DSLAM
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 4 32
+ port hybrid untagged vlan 1419
+ port vlan-stacking vlan 101 to 901 stack-vlan 1419
+ port vlan-stacking vlan 3600 stack-vlan 1419
+#
+interface GigabitEthernet2/0/6
+ description To WuRanYuan-VPLS(CunZhouLvYe)::processing
+ shutdown
+ port link-type access
+ port default vlan 2699
+#
+interface GigabitEthernet2/0/7
+ description To YK-PanKeng-alc-Dslam
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 32
+ port hybrid untagged vlan 1362
+ port vlan-stacking vlan 101 to 901 stack-vlan 1362
+ port vlan-stacking vlan 3600 stack-vlan 1362
+#
+interface GigabitEthernet2/0/8
+ description To YK-XiShanGongYeQu-alc-Dslam
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 32
+ port hybrid untagged vlan 1356
+ port vlan-stacking vlan 101 to 901 stack-vlan 1356
+ port vlan-stacking vlan 3600 stack-vlan 1356
+#
+interface GigabitEthernet2/0/9
+ undo negotiation auto
+ speed 100
+ description To YK-XiXi-1-ACL-DSLAM
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 32
+ port hybrid untagged vlan 1566
+ port vlan-stacking vlan 101 to 901 stack-vlan 1566
+ port vlan-stacking vlan 3600 stack-vlan 1566
+#
+interface GigabitEthernet2/0/10
+ undo negotiation auto
+ speed 100
+ description To YK-XiXi-1-UT-DSLAM
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 32
+ port hybrid untagged vlan 1568
+ port vlan-stacking vlan 101 to 901 stack-vlan 1568
+ port vlan-stacking vlan 3600 stack-vlan 1568
+#
+interface GigabitEthernet2/0/11
+ description GuanShouFaQi-vpn
+ port link-type access
+ port default vlan 38
+#
+interface GigabitEthernet2/0/12
+ description 120JiJiuZhiHuiZhongXin
+ port link-type access
+ port default vlan 660
+#
+interface GigabitEthernet2/0/13
+#
+interface GigabitEthernet2/0/14
+#
+interface GigabitEthernet2/0/15
+#
+interface GigabitEthernet2/0/16
+#
+interface GigabitEthernet2/0/17
+#
+interface GigabitEthernet2/0/18
+#
+interface GigabitEthernet2/0/19
+#
+interface GigabitEthernet2/0/20
+#
+interface GigabitEthernet2/0/21
+#
+interface GigabitEthernet2/0/22
+#
+interface GigabitEthernet2/0/23
+#
+interface GigabitEthernet2/0/24
+ undo negotiation auto
+ speed 100
+ description XiXi-AG
+ port link-type access
+ port default vlan 2829
+#
+interface GigabitEthernet2/0/25
+ undo negotiation auto
+ speed 100
+ description XiXi-AG
+ port link-type access
+ port default vlan 2829
+#
+interface GigabitEthernet2/0/26
+ undo negotiation auto
+ speed 100
+ description XiXi-AG
+ port link-type access
+ port default vlan 2829
+#
+interface GigabitEthernet2/0/27
+#
+interface GigabitEthernet2/0/28
+#
+interface GigabitEthernet2/0/29
+#
+interface GigabitEthernet2/0/30
+#
+interface GigabitEthernet2/0/31
+#
+interface GigabitEthernet2/0/32
+#
+interface GigabitEthernet2/0/33
+#
+interface GigabitEthernet2/0/34
+#
+interface GigabitEthernet2/0/35
+#
+interface GigabitEthernet2/0/36
+#
+interface GigabitEthernet2/0/37
+#
+interface GigabitEthernet2/0/38
+#
+interface GigabitEthernet2/0/39
+#
+interface GigabitEthernet2/0/40
+#
+interface GigabitEthernet2/0/41
+#
+interface GigabitEthernet2/0/42
+#
+interface GigabitEthernet2/0/43
+ port link-type access
+#
+interface GigabitEthernet2/0/44
+#
+interface GigabitEthernet2/0/45
+#
+interface GigabitEthernet2/0/46
+ description XiXiYingYeTing
+ port link-type access
+ port default vlan 41
+#
+interface GigabitEthernet2/0/47
+ description DongLiJianKong
+ port link-type access
+ port default vlan 41
+#
+interface NULL0
+#
+ip route-static 0.0.0.0 0.0.0.0 172.31.72.65
+#
+snmp-agent
+snmp-agent local-engineid 000007DB7FFFFFFF000036A8
+snmp-agent community read cipher %^%#W!kd'MNTcUTK`VTy<S6Y}.x(DTz1L/qX:OWG[:l(B:puTt8Fm2@5E@!NNDy~&7F_'^nSfP-6v)VIs-oR%^%#
+snmp-agent sys-info contact R&D Nanjing, Huawei Technologies co.,Ltd.
+snmp-agent sys-info location Nanjing China
+snmp-agent sys-info version all
+undo snmp-agent trap enable feature-name DLDP
+undo snmp-agent trap enable feature-name LDTTRAP
+undo snmp-agent trap enable feature-name LLDPTRAP
+snmp-agent trap enable feature-name BASETRAP
+#
+ssh server compatible-ssh1x enable
+#
+user-interface con 0
+user-interface vty 0 4
+ authentication-mode aaa
+ user privilege level 1
+ screen-length 0
+ protocol inbound telnet
+user-interface vty 16 20
+ protocol inbound telnet
+#
+return
+<JH-YK-XX-SW2-S9303-1.MAN>

@@ -1,0 +1,371 @@
+
+Building configuration...
+
+Current configuration : 8230 bytes
+!
+! Last configuration change at 13:06:51 beijing Tue Oct 10 2017 by zqzc.zq
+! NVRAM config last updated at 08:56:52 beijing Fri Sep 29 2017 by kaitong
+!
+version 12.1
+no service pad
+service timestamps debug datetime msec localtime show-timezone
+service timestamps log datetime msec localtime show-timezone
+service password-encryption
+!
+hostname NB-A-ZHILAN-3550-7
+!
+no logging console
+aaa new-model
+aaa authentication fail-message ^CC wrong username or password ^C
+aaa authentication login default group tacacs+ local
+aaa authorization config-commands
+aaa authorization exec default group tacacs+ none
+aaa authorization commands 1 default group tacacs+ none
+aaa authorization commands 15 default group tacacs+ none
+aaa accounting suppress null-username
+aaa accounting update newinfo
+aaa accounting exec default start-stop group tacacs+
+aaa accounting commands 1 default start-stop group tacacs+
+aaa accounting commands 15 default start-stop group tacacs+
+enable secret 5 $1$WNCE$gZ8KMekZ8EWYG6vHy70Hp.
+!
+clock timezone beijing 8
+no errdisable detect cause pagp-flap
+no errdisable detect cause dtp-flap
+no errdisable detect cause link-flap
+no errdisable detect cause l2ptguard
+no errdisable detect cause gbic-invalid
+ip subnet-zero
+no ip source-route
+ip routing
+!
+no ip domain-lookup
+vtp mode transparent
+mls qos
+!
+class-map match-all IPclass
+  match ip dscp 0
+!
+!
+policy-map rate-2M
+  class IPclass
+    police 2096000 200000 exceed-action drop
+policy-map rate-200M
+  class IPclass
+    police 210000000 2000000 exceed-action drop
+policy-map rate-6M
+  class IPclass
+    police 6296000 600000 exceed-action drop
+policy-map rate-4M
+  class IPclass
+    police 4200000 300000 exceed-action drop
+policy-map rate-8M
+  class IPclass
+    police 8400000 800000 exceed-action drop
+policy-map rate-20M
+  class IPclass
+    police 21000000 1000000 exceed-action drop
+policy-map rate-60M
+  class IPclass
+    police 63000000 1500000 exceed-action drop
+policy-map rate-40M
+  class IPclass
+    police 42000000 1000000 exceed-action drop
+policy-map rate-50M
+  class IPclass
+    police 52496000 1500000 exceed-action drop
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+!
+!
+!
+vlan 7
+ name ruisikangda-manager
+!
+vlan 26
+ name manage
+!
+vlan 75
+ name xiaoqu-manager
+!
+vlan 315 
+!
+vlan 341
+ name lidefangchan-vpn
+!
+vlan 349
+ name gongshangyinhang
+!
+vlan 361
+ name wangbajiankong-wb
+!
+vlan 379
+ name weikejinghua
+!
+vlan 386
+ name yinzhouyinhang
+!
+vlan 394 
+!
+vlan 482
+ name sanjiang-ATM+LAN
+!
+vlan 649
+ name sw-shuiliju
+!
+vlan 741
+ name sw-jiaotongyinhang
+!
+vlan 941
+ name sw-zhonghangshaishuzhihang
+!
+vlan 993
+ name test
+!
+vlan 1026
+ name sw-caizhengshueiwuju
+!
+vlan 1060
+ name sw-haoweidangcheqiaodian
+!
+vlan 1062 
+!
+vlan 1066
+ name sw-zhongbaocaixian
+!
+vlan 1138
+ name sw-laoniandaxue
+!
+vlan 1187
+ name sw-chenshiguangchangkaifa
+!
+vlan 1332
+ name xiaonanyuan-iphotle
+!
+vlan 3691
+ name jiaotong-bank
+!
+vlan 3763
+ name ningbopaishui
+!
+!
+interface Loopback0
+ no ip address
+!
+interface Port-channel1
+ description NingBoShiGongShangJu
+ switchport access vlan 1069
+ switchport mode access
+ load-interval 30
+!
+interface FastEthernet0/1
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/2
+ description xiaonanyuan-iphotel
+ switchport access vlan 394
+ switchport mode access
+ load-interval 60
+ service-policy input rate-40M
+ service-policy output rate-40M
+ spanning-tree portfast
+!
+interface FastEthernet0/3
+ description sw-laoniandaxue
+ switchport access vlan 1138
+ switchport mode access
+ load-interval 60
+ speed 100
+ service-policy input rate-60M
+ service-policy output rate-60M
+!
+interface FastEthernet0/4
+ description yuehujinmaodashaLAN02141757
+ switchport access vlan 379
+ switchport mode access
+ speed 100
+!
+interface FastEthernet0/5
+ description sw-chenshiguangchangkaifa
+ switchport access vlan 1187
+ switchport mode access
+ shutdown
+ speed 100
+ service-policy input rate-50M
+ service-policy output rate-50M
+!
+interface FastEthernet0/6
+ description dongmenzhihang
+ switchport access vlan 349
+ switchport mode access
+ speed 10
+!
+interface FastEthernet0/7
+ switchport access vlan 1062
+ switchport mode access
+!
+interface FastEthernet0/8
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/9
+ description sw-haoweidangcheqiaodian
+ switchport access vlan 1060
+ switchport mode access
+ load-interval 60
+ speed 10
+ service-policy input rate-2M
+ service-policy output rate-2M
+!
+interface FastEthernet0/10
+ description hedakejiUBD72169406
+ switchport access vlan 3763
+ switchport mode access
+ speed 100
+ service-policy input rate-20M
+ service-policy output rate-20M
+!
+interface FastEthernet0/11
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/12
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/13
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/14
+ description sw-jiaotongyinhang
+ switchport access vlan 741
+ switchport mode access
+ speed 10
+ service-policy input rate-2M
+ service-policy output rate-2M
+!
+interface FastEthernet0/15
+ description sw-zhongbaocaixian
+ switchport access vlan 1066
+ switchport mode access
+ load-interval 60
+ speed 100
+ service-policy input rate-40M
+ service-policy output rate-40M
+!
+interface FastEthernet0/16
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/17
+ switchport mode dynamic desirable
+ shutdown
+!
+interface FastEthernet0/18
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/19
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/20
+ description sw-shuiliju
+ switchport access vlan 649
+ switchport mode access
+ load-interval 60
+ speed 100
+ service-policy input rate-20M
+ service-policy output rate-20M
+!
+interface FastEthernet0/21
+ description NanYuanFanDianVPN
+ switchport access vlan 315
+ switchport mode access
+ speed 100
+ service-policy input rate-20M
+ service-policy output rate-20M
+!
+interface FastEthernet0/22
+ switchport mode dynamic desirable
+ shutdown
+!
+interface FastEthernet0/23
+ description sw-zhonghangshaishuzhihang
+ switchport access vlan 941
+ switchport mode access
+ speed 100
+ service-policy input rate-20M
+ service-policy output rate-20M
+!
+interface FastEthernet0/24
+ switchport access vlan 7
+ switchport mode access
+!
+interface GigabitEthernet0/1
+ description uT:NB-NB-SNL-SR-2.MAN.S9306:(F1405230009)GE1/0/11
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 2-4094
+ switchport mode trunk
+!
+interface GigabitEthernet0/2
+ description sw-caizhengshueiwuju
+ switchport access vlan 1026
+ switchport mode access
+ speed nonegotiate
+ service-policy input rate-200M
+ service-policy output rate-200M
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan26
+ ip address 172.135.18.66 255.255.255.0
+!
+interface Vlan341
+ ip address 192.168.25.110 255.255.255.0
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 172.135.18.1
+no ip http server
+ip tacacs source-interface Vlan26
+!
+logging source-interface Vlan26
+logging 172.200.100.6
+access-list 112 deny   ip any 192.168.2.0 0.0.0.255
+access-list 112 deny   ip any 192.168.18.0 0.0.0.255
+access-list 112 deny   ip any 192.168.8.0 0.0.0.255
+access-list 112 deny   ip any 192.168.6.0 0.0.0.255
+access-list 112 deny   ip any 192.168.4.0 0.0.0.255
+access-list 112 deny   ip any 192.168.3.0 0.0.0.255
+access-list 112 deny   ip any 192.168.16.0 0.0.0.255
+access-list 112 deny   ip any 192.168.5.0 0.0.0.255
+access-list 112 deny   ip any 192.168.13.0 0.0.0.255
+access-list 112 deny   ip any 192.168.15.0 0.0.0.255
+access-list 112 deny   ip any 192.168.12.0 0.0.0.255
+access-list 112 deny   ip any 192.168.1.0 0.0.0.255
+access-list 112 deny   ip any 192.168.9.0 0.0.0.255
+access-list 112 deny   ip any 192.168.21.0 0.0.0.255
+access-list 112 deny   ip any 192.168.10.0 0.0.0.255
+access-list 112 deny   ip any 192.168.11.0 0.0.0.255
+access-list 112 deny   ip any 192.168.19.0 0.0.0.255
+access-list 112 deny   ip any 192.168.7.0 0.0.0.255
+access-list 112 deny   ip any 192.168.20.0 0.0.0.255
+access-list 112 deny   ip any 192.168.22.0 0.0.0.255
+access-list 112 permit ip any any
+snmp-server community nbroot RO
+tacacs-server host 172.200.100.249
+tacacs-server key nbnoc
+!
+line con 0
+ exec-timeout 0 0
+ logging synchronous
+line vty 0 4
+ exec-timeout 30 0
+ password 7 10400B56554F425A
+line vty 5 15
+!
+ntp clock-period 17180491
+ntp server 172.135.18.254
+!
+end
+
+NB-A-ZHILAN-3550-7#

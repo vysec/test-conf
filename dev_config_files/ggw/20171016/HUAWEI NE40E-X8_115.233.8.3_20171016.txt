@@ -1,0 +1,2552 @@
+
+#
+sysname HZ-HZ-WL-SR-1.M2N.NE40E
+#
+info-center source default channel 4 log level informational
+info-center loghost source LoopBack0
+info-center loghost 115.239.131.2
+info-center loghost 220.191.133.20
+#
+switchover mode nonstop-routing
+#
+ipv6
+#
+ undo dhcp through-packet
+#
+multicast routing-enable
+#
+undo telnet ipv6 server enable
+telnet server acl 2001
+#
+undo dcn
+#
+clock timezone UTC add 08:00:00
+#
+undo set power input-power
+#
+snmp-agent trap type base-trap
+#
+diffserv domain default
+diffserv domain qinq
+diffserv domain MAN-qos
+ 8021p-inbound 1 phb ef green
+ 8021p-inbound 2 phb ef green
+ 8021p-inbound 3 phb ef green
+ 8021p-inbound 6 phb af4 green
+ 8021p-inbound 7 phb ef green
+ ip-dscp-inbound 8 phb ef green
+ ip-dscp-inbound 24 phb ef green
+ ip-dscp-inbound 48 phb af4 green
+ ip-dscp-inbound 56 phb ef green
+ ip-dscp-outbound af4 green map 32
+ ip-dscp-outbound af4 yellow map 32
+ ip-dscp-outbound af4 red map 32
+ ip-dscp-outbound ef green map 40
+ mpls-exp-inbound 1 phb ef green
+ mpls-exp-inbound 2 phb ef green
+ mpls-exp-inbound 3 phb ef green
+ mpls-exp-inbound 6 phb af4 green
+ mpls-exp-inbound 7 phb ef green
+diffserv domain 5p3dbas
+diffserv domain 5p3d
+#
+port-wred 0
+ color green low-limit 30 high-limit 100 discard-percentage 10
+port-wred 1
+ color green low-limit 80 high-limit 100 discard-percentage 20
+#
+service-template template-default0
+service-template template-default1
+service-template template-default2
+service-template template-default3
+service-template template-default4
+#
+ip vpn-instance 191
+ ipv4-family
+  route-distinguisher 4809:4500020
+  apply-label per-instance
+  vpn-target 4809:4500020 export-extcommunity
+  vpn-target 4809:4500020 import-extcommunity
+#
+ip vpn-instance CDMA-RAN
+ ipv4-family
+  route-distinguisher 4134:3050
+  vpn frr route-policy vpn-frr
+  tnl-policy load-balance
+  apply-label per-instance
+  vpn-target 4134:305000 export-extcommunity
+  vpn-target 4134:305000 import-extcommunity
+#
+ip vpn-instance CDMA-RAN-ceshi
+ ipv4-family
+  route-distinguisher 4134:30503050
+  apply-label per-instance
+  vpn-target 4134:3050305000 export-extcommunity
+  vpn-target 4134:3050305000 import-extcommunity
+ ipv6-family
+  route-distinguisher 4134:30503050
+  apply-label per-instance
+  vpn-target 4134:3050305000 export-extcommunity
+  vpn-target 4134:3050305000 import-extcommunity
+#
+ip vpn-instance CTVPN193-ZJ
+ ipv4-family
+  route-distinguisher 4134:1616
+  apply-label per-instance
+  vpn-target 4134:161600 export-extcommunity
+  vpn-target 4134:161600 import-extcommunity
+#
+ip vpn-instance IPTV
+ ipv4-family
+  route-distinguisher 4809:4500000
+  tnl-policy load-balance
+  apply-label per-instance
+  vpn-target 4809:4500000 export-extcommunity
+  vpn-target 4809:4500000 import-extcommunity
+#
+ip vpn-instance NGN
+ ipv4-family
+  route-distinguisher 4809:4500010
+  apply-label per-instance
+  vpn-target 4809:4500010 export-extcommunity
+  vpn-target 4809:4500010 import-extcommunity
+#
+ip vpn-instance NMS
+ ipv4-family
+  route-distinguisher 4809:4500030
+  apply-label per-instance
+  vpn-target 4809:4500030 export-extcommunity
+  vpn-target 4809:4500030 import-extcommunity
+#
+hwtacacs-server template zjdx
+ hwtacacs-server authentication 61.153.176.183
+ hwtacacs-server authentication 202.96.102.141 secondary
+ hwtacacs-server authorization 61.153.176.183
+ hwtacacs-server authorization 202.96.102.141 secondary
+ hwtacacs-server accounting 61.153.176.183
+ hwtacacs-server accounting 202.96.102.141 secondary
+ hwtacacs-server source-ip 115.233.8.3
+ hwtacacs-server shared-key cipher @%@%NKu0$SIaF&ne1qR_p:2BU!4D@%@%
+ undo hwtacacs-server user-name domain-included
+#
+hwtacacs-server template zjdx4a
+ hwtacacs-server authentication 115.239.131.9
+ hwtacacs-server authentication 122.229.8.65 secondary
+ hwtacacs-server authorization 115.239.131.9
+ hwtacacs-server authorization 122.229.8.65 secondary
+ hwtacacs-server accounting 115.239.131.9
+ hwtacacs-server accounting 122.229.8.65 secondary
+ hwtacacs-server source-ip 115.233.8.3
+ hwtacacs-server shared-key cipher @%@%1VZ;%3(YT~.zcx;Jv:;*!qYI@%@%
+ undo hwtacacs-server user-name domain-included
+#
+bfd
+ mpls-passive
+#
+mpls lsr-id 115.233.8.3
+mpls
+ mpls te
+ mpls bfd enable
+ mpls bfd-trigger fec-list IPRAN.CX600
+ mpls bfd min-tx-interval 50 min-rx-interval 50
+ mpls rsvp-te
+ mpls rsvp-te hello
+ mpls rsvp-te hello full-gr
+ mpls te cspf
+#
+fec-list IPRAN.CX600
+ fec-node 115.233.8.131
+ fec-node 115.233.8.132
+ fec-node 115.233.8.133
+ fec-node 115.233.8.134
+ fec-node 115.233.8.135
+ fec-node 115.233.8.136
+ fec-node 115.233.8.137
+ fec-node 115.233.8.138
+#
+mpls l2vpn
+#
+vsi iptv static
+ pwsignal ldp
+  vsi-id 1
+  peer 115.233.8.5
+#
+vsi iptv_hvpls static
+ pwsignal ldp
+  vsi-id 2
+  peer 115.233.8.6
+#
+vsi vrf2-iptv-300003 static
+ pwsignal ldp
+  vsi-id 300003
+  peer 115.233.8.5
+#
+explicit-path backup
+ next hop 115.233.9.5
+ next hop 115.233.9.18
+ next hop 115.233.10.89
+ next hop 115.233.8.5
+#
+explicit-path main
+ next hop 115.233.9.173
+ next hop 115.233.9.182
+ next hop 115.233.8.5
+#
+mpls ldp
+ graceful-restart
+#
+#
+mpls ldp remote-peer 115.233.8.5
+ remote-ip 115.233.8.5
+#
+mpls ldp remote-peer 115.233.8.6
+ remote-ip 115.233.8.6
+#
+mpls ldp remote-peer jfne40e-1
+#
+acl number 2000 
+ description This acl is used restrict ntp server
+ rule 10 permit source 61.130.120.25 0 
+ rule 20 permit source 61.130.120.26 0 
+ rule 100 deny 
+#
+acl number 2001 
+ description For-Telnet-Control
+ rule 5 permit source 202.96.102.240 0 
+ rule 10 permit source 202.96.102.47 0 
+ rule 15 permit source 202.96.102.84 0 
+ rule 20 permit source 202.96.103.188 0 
+ rule 25 permit source 202.96.102.244 0 
+ rule 30 permit source 220.191.133.1 0 
+ rule 35 permit source 220.191.133.2 0 
+ rule 40 permit source 220.191.133.12 0 
+ rule 45 permit source 220.191.133.24 0 
+ rule 50 permit source 220.191.133.25 0 
+ rule 55 permit source 220.191.133.26 0 
+ rule 60 permit source 220.191.133.27 0 
+ rule 65 permit source 220.191.133.28 0 
+ rule 70 permit source 220.191.133.29 0 
+ rule 75 permit source 220.191.133.20 0 
+ rule 80 permit source 220.191.133.21 0 
+ rule 85 permit source 220.191.133.11 0 
+ rule 90 permit source 220.191.133.13 0 
+ rule 95 permit source 202.96.102.139 0 
+ rule 100 permit source 202.96.102.221 0 
+ rule 105 permit source 202.96.96.18 0 
+ rule 110 permit source 202.96.103.179 0 
+ rule 115 permit source 115.239.131.12 0 
+ rule 120 permit source 122.229.8.81 0 
+ rule 125 permit source 122.229.8.82 0 
+ rule 1000 deny 
+#
+acl number 2002 
+ description acl is used SNMP
+ rule 5 permit source 202.96.103.35 0 
+ rule 10 permit source 202.96.103.54 0 
+ rule 15 permit source 115.239.131.74 0 
+ rule 20 permit source 220.191.133.1 0 
+ rule 25 permit source 220.191.133.2 0 
+ rule 30 permit source 220.191.133.12 0 
+ rule 35 permit source 220.191.133.24 0 
+ rule 40 permit source 220.191.133.25 0 
+ rule 45 permit source 220.191.133.26 0 
+ rule 50 permit source 220.191.133.27 0 
+ rule 55 permit source 220.191.133.28 0 
+ rule 60 permit source 220.191.133.29 0 
+ rule 65 permit source 220.191.133.20 0 
+ rule 70 permit source 220.191.133.21 0 
+ rule 75 permit source 220.191.133.11 0 
+ rule 80 permit source 220.191.133.13 0 
+ rule 85 permit source 202.96.102.139 0 
+ rule 90 permit source 202.96.102.221 0 
+ rule 95 permit source 202.96.96.18 0 
+ rule 100 permit source 115.239.136.0 0.0.0.255 
+ rule 1000 deny 
+#
+acl number 2003 
+ description this acl is used Multicast Group Address
+ rule 10 permit source 233.50.200.0 0.0.0.255 
+ rule 20 permit source 233.50.201.0 0.0.0.255 
+ rule 30 permit source 233.60.200.0 0.0.0.255 
+ rule 100 deny 
+#
+acl number 2005 
+ description For-MulticastGroup4
+ rule 5 permit source 239.53.0.0 0.0.1.255 
+ rule 10 deny 
+#
+acl number 2012 
+ description To-MAN
+ rule 10 permit source 202.96.102.0 0.0.1.255 
+ rule 20 permit source 202.96.96.0 0.0.0.255 
+ rule 30 permit source 61.130.120.0 0.0.0.255 
+ rule 40 permit source 115.233.10.0 0.0.0.255 
+ rule 50 permit source 220.191.184.16 0.0.0.7 
+ rule 60 permit source 61.153.8.112 0.0.0.15 
+ rule 70 permit source 61.153.9.6 0 
+ rule 80 permit source 61.153.9.1 0 
+ rule 90 permit source 218.75.46.38 0 
+ rule 91 permit source 202.101.191.224 0.0.0.31 
+ rule 92 permit source 220.191.130.0 0.0.0.255 
+ rule 93 permit source 60.191.18.128 0.0.0.7 
+ rule 94 permit source 61.153.1.184 0.0.0.7 
+ rule 95 permit source 202.107.202.34 0 
+ rule 96 permit source 60.191.11.62 0 
+ rule 97 permit source 122.225.199.66 0 
+ rule 110 permit source 220.191.133.0 0.0.0.31 
+ rule 130 permit source 61.153.176.183 0 
+ rule 140 permit source 202.96.102.141 0 
+ rule 150 permit source 61.130.120.25 0 
+ rule 160 permit source 61.130.120.26 0 
+ rule 170 permit source 61.164.19.208 0.0.0.15 
+ rule 175 permit source 61.175.166.24 0.0.0.7 
+ rule 180 permit source 61.130.121.112 0.0.0.15 
+ rule 185 permit source 115.239.136.0 0.0.0.255 
+ rule 190 permit source 115.239.131.12 0 
+ rule 195 permit source 122.229.8.82 0 
+ rule 200 permit source 115.239.131.9 0 
+ rule 205 permit source 122.229.8.65 0 
+#
+acl number 3001 
+ rule 5 permit ip source 10.207.1.2 0 
+#
+acl number 3010 
+ description Match-any-IP
+ rule 5 permit ip 
+#
+acl number 3999 
+ description test
+ rule 5 permit udp vpn-instance IPTV source-port eq bootps destination-port eq bootps 
+#
+traffic classifier tcacl_MAN_in_deny operator or
+ if-match acl 3010
+traffic classifier hdcptest operator or
+ if-match acl 3999
+traffic classifier IPTV operator or
+ if-match acl 3001
+traffic classifier tcAny operator or
+ if-match any
+traffic classifier tcacl_MAN_in_permit operator or
+ if-match acl 2012
+#
+traffic behavior tbHigh
+ remark ip-precedence 5
+traffic behavior IPTV
+ remark dscp cs5
+traffic behavior dhcp
+traffic behavior tbacl_MAN_in_deny
+ deny
+traffic behavior tbCritical
+ remark ip-precedence 4
+traffic behavior tbacl_MAN_in_permit
+traffic behavior dhcptest
+#
+traffic policy IPTV
+ share-mode
+ classifier IPTV behavior IPTV
+traffic policy tpacl_MAN_in
+ share-mode
+ classifier tcacl_MAN_in_permit behavior tbacl_MAN_in_permit
+ classifier tcacl_MAN_in_deny behavior tbacl_MAN_in_deny
+traffic policy tpCritical
+ share-mode
+ classifier tcAny behavior tbCritical
+traffic policy tpHigh
+ share-mode
+ classifier tcAny behavior tbHigh
+#
+dhcp-server group wl-sr1 
+#
+dhcp-server group wl-sr2 
+ dhcp-server giaddr ip-address 10.192.32.2 vpn-instance IPTV
+#
+dhcp-server group zj.admin.dhcp 
+ dhcp-server 10.255.255.38 vpn-instance IPTV
+ dhcp-server source interface LoopBack1
+#
+ip pool itv-local1 bas local
+ vpn-instance IPTV
+ gateway 10.192.64.1 255.255.192.0 
+ section 0 10.192.64.2 10.192.127.255 
+ dns-server 202.101.172.35 202.101.172.46 
+ lock 
+#
+ip pool itv-local2 bas local
+ vpn-instance IPTV
+ gateway 10.192.192.1 255.255.192.0 
+ section 0 10.192.192.2 10.192.255.255 
+ dns-server 202.101.172.35 202.101.172.46 
+ lock 
+#
+ip pool itv-remote1 bas remote
+ vpn-instance IPTV
+ gateway 10.192.0.1 255.255.192.0 
+ dhcp-server group zj.admin.dhcp 
+#
+ip pool itv-remote2 bas remote
+ vpn-instance IPTV
+ gateway 10.192.128.1 255.255.192.0 
+ dhcp-server group zj.admin.dhcp 
+#
+ip pool voip-local1 bas local
+ vpn-instance 191
+ gateway 15.64.0.1 255.255.192.0 
+ section 0 15.64.0.2 15.64.63.255 
+ dns-server 122.229.2.1 122.229.2.2 
+ lease 0 0 10 
+#
+ip pool voip-local2 bas local
+ vpn-instance 191
+ gateway 15.64.64.1 255.255.192.0 
+ section 0 15.64.64.2 15.64.127.255 
+ dns-server 122.229.2.1 122.229.2.2 
+ lease 0 0 10 
+#
+ip pool voip-local1-1 bas local
+ vpn-instance 191
+ gateway 15.12.0.1 255.255.224.0 
+ section 0 15.12.0.2 15.12.31.255 
+ dns-server 122.229.2.1 122.229.2.2 
+ lease 0 0 10 
+#
+dot1x-template 1
+#
+aaa 
+ local-user zjdxnoc password irreversible-cipher $1a$Gu##@Uv5(K$>2fX~tGn9*!W8j~"Z{$NN45]~P2PGYmMEw@02<+S$
+ local-user zjdxnoc service-type telnet 
+ local-user zjdxnoc level 3 
+ local-user zjdxnoc state active 
+ authentication-scheme default0
+ authentication-scheme default1
+ authentication-scheme default
+  authentication-mode local radius
+ authentication-scheme zjdx
+  authentication-mode local hwtacacs
+ #
+ authorization-scheme default
+ authorization-scheme default0
+  authorization-mode none
+ authorization-scheme zjdx
+  authorization-mode local hwtacacs
+ #
+ accounting-scheme default0 
+ accounting-scheme default1 
+ accounting-scheme default 
+ accounting-scheme zjdx 
+  accounting-mode none 
+  accounting start-fail online 
+ #
+ domain default0 
+ domain default1 
+ domain default_admin  
+  authentication-scheme zjdx 
+  authorization-scheme zjdx 
+  accounting-scheme zjdx 
+  hwtacacs-server zjdx4a 
+ domain default 
+ domain itv1  
+  authentication-scheme default0 
+  authorization-scheme default0 
+  accounting-scheme default0  
+  ip-pool itv-remote1  
+  ip-pool itv-local1 
+  vpn-instance IPTV
+ domain itv2  
+  authentication-scheme default0 
+  authorization-scheme default0 
+  accounting-scheme default0  
+  ip-pool itv-remote2  
+  ip-pool itv-local2 
+  vpn-instance IPTV
+ domain voip1  
+  authentication-scheme default0 
+  authorization-scheme default0 
+  accounting-scheme default0  
+  ip-pool voip-local1  
+  ip-pool voip-local1-1 
+  vpn-instance 191
+ domain voip2  
+  authentication-scheme default0 
+  authorization-scheme default0 
+  accounting-scheme default0  
+  ip-pool voip-local2 
+  vpn-instance 191
+ #
+ recording-scheme zjdx
+  recording-mode hwtacacs zjdx4a 
+ #
+ system recording-scheme zjdx
+ outbound recording-scheme zjdx
+ cmd recording-scheme zjdx
+ #
+#
+multicastbandwidth
+#
+isis 100
+ is-level level-2
+ cost-style wide
+ timer lsp-generation 2 50 100 level-2
+ flash-flood level-2
+ bfd all-interfaces enable
+ network-entity 86.4771.0571.1152.3300.8003.00
+ is-name HZ-HZ-WL-SR-1.M2N.NE40E
+ import-route static route-policy rpStaticToISIS
+ default-route-advertise match default
+ preference 115
+ timer spf 1 50 100
+ traffic-eng level-2
+ log-peer-change
+ maximum load-balancing 16
+ timer lsp-max-age 65500
+ timer lsp-refresh 32768
+#
+ntp-service source-interface LoopBack0
+ntp-service access peer 2000
+ntp-service unicast-server 61.130.120.25 preference
+ntp-service unicast-server 61.130.120.26
+#
+remote-backup-service rbs-iptv
+ peer 115.233.8.4 source 115.233.8.3 port 2222
+ track interface GigabitEthernet8/1/0
+ track interface GigabitEthernet1/1/1
+ track interface GigabitEthernet2/0/1
+ track interface GigabitEthernet2/1/1
+ protect ip-vpn-instance 191 peer-ip 115.233.8.4 
+ protect ip-vpn-instance IPTV peer-ip 115.233.8.4 
+ ip-pool itv-local1
+ ip-pool itv-remote1
+ ip-pool voip-local1
+ ip-pool voip-local1-1
+#
+remote-backup-profile rbp-iptv1
+ service-type bras
+ backup-id 56 remote-backup-service rbs-iptv
+ peer-backup hot
+ vrrp-id 52 interface GigabitEthernet1/1/0.52
+#
+remote-backup-profile rbp-iptv2
+ service-type bras
+ backup-id 57 remote-backup-service rbs-iptv
+ peer-backup hot
+ vrrp-id 52 interface Eth-Trunk10.52
+#
+remote-backup-profile rbp-iptv3
+ service-type bras
+ backup-id 58 remote-backup-service rbs-iptv
+ peer-backup hot
+ vrrp-id 52 interface Eth-Trunk11.52
+#
+remote-backup-profile rbp-iptv4
+ service-type bras
+ backup-id 59 remote-backup-service rbs-iptv
+ peer-backup hot
+ vrrp-id 52 interface Eth-Trunk13.52
+#
+remote-backup-profile rbp-iptv5
+ service-type bras
+ backup-id 60 remote-backup-service rbs-iptv
+ peer-backup hot
+ vrrp-id 52 interface Eth-Trunk12.52
+#
+interface Aux0/0/1
+ link-protocol ppp
+ shutdown
+#
+interface Eth-Trunk0
+ description pT:HZ-HZ-WL-SR-2.M2N.NE40E:ETR0(GE1/0/0 GE1/0/1)
+ set flow-stat interval 30
+ mtu 1600
+ ip address 115.233.10.85 255.255.255.252
+ undo icmp redirect send
+ isis enable 100
+ isis circuit-type p2p
+ isis circuit-level level-2
+ isis cost 50
+ isis timer hello 3
+ isis small-hello
+ isis ldp-sync
+ pim sm
+ mpls
+ mpls ldp
+ control-flap
+ trust upstream MAN-qos
+ port-queue be wfq weight 20 port-wred 0 outbound
+ port-queue af4 pq shaping shaping-percentage 30 outbound
+ port-queue ef wfq weight 50 port-wred 1 outbound
+#
+interface Eth-Trunk1
+ description pT:HZ-HZ-WL-SR-NE80E-1.MAN:ETR2(GE9/0/8,GE10/0/7)
+ ip address 115.233.10.193 255.255.255.252
+ traffic-policy tpacl_MAN_in inbound
+#
+interface Eth-Trunk2
+ description pT:HZ-HZ-WL-SR-NE80E-1.MAN:ETR3(GE9/0/9,GE10/0/8)
+#
+interface Eth-Trunk2.31
+ vlan-type dot1q 31
+ description pT:HZ-HZ-WL-SR-NE80E-1.MAN:ETR3(GE9/0/9,GE10/0/8)(31)
+ ip binding vpn-instance CDMA-RAN
+ ip address 7.132.63.134 255.255.255.252
+#
+interface Eth-Trunk2.32
+ vlan-type dot1q 32
+ description pT:HZ-HZ-WL-SR-NE80E-1.MAN:ETR3(GE9/0/9,GE10/0/8)(32)
+ ip binding vpn-instance CTVPN193-ZJ
+ ip address 4.44.63.134 255.255.255.252
+#
+interface Eth-Trunk2.33
+ vlan-type dot1q 33
+ description pT:HZ-HZ-WL-SR-NE80E-1.MAN:ETR3(GE9/0/9,GE10/0/8)(33)
+ ip binding vpn-instance CTVPN193-ZJ
+ ip address 4.44.63.142 255.255.255.252
+#
+interface Eth-Trunk2.34
+ vlan-type dot1q 34
+ description pT:HZ-HZ-WL-SR-NE80E-1.MAN:ETR3(GE9/0/9,GE10/0/8)(34)
+ ip binding vpn-instance CDMA-RAN
+ ip address 7.132.63.142 255.255.255.252
+#
+interface Eth-Trunk2.101
+ vlan-type dot1q 101
+ description pT:HZ-HZ-WL-SR-NE80E-1.MAN:ETR3(GE9/0/9,GE10/0/8)(101)
+ ip binding vpn-instance NMS
+ ip address 172.29.192.6 255.255.255.252
+#
+interface Eth-Trunk2.102
+ vlan-type dot1q 102
+ description pT:HZ-HZ-WL-SR-NE80E-1.MAN:ETR3(GE9/0/9,GE10/0/8)(102)
+ ip binding vpn-instance 191
+ ip address 192.168.254.6 255.255.255.252
+#
+interface Eth-Trunk2.103
+ vlan-type dot1q 103
+ description pT:HZ-HZ-WL-SR-NE80E-1.MAN:ETR3(GE9/0/9,GE10/0/8)(103)
+ ip binding vpn-instance NGN
+ ip address 5.73.0.18 255.255.255.252
+#
+interface Eth-Trunk2.104
+ vlan-type dot1q 104
+ description pT:HZ-HZ-WL-SR-NE80E-1.MAN:ETR3(GE9/0/9,GE10/0/8)(104:IPTV)
+ ip binding vpn-instance IPTV
+ ip address 10.255.240.2 255.255.255.252
+#
+interface Eth-Trunk3
+ description pT:HZ-WL-QY-S9312-IPTV2.0:ETH-9
+ mode lacp-static
+#
+interface Eth-Trunk3.800
+ vlan-type dot1q 800
+ description pT:HZ-WL-QY-S9312-IPTV2.0:ETH-9
+ ip binding vpn-instance IPTV
+ ip address 10.255.248.1 255.255.255.252
+ traffic-policy tpHigh inbound
+#
+interface Eth-Trunk10
+ description dT:HZ-HZ-SM-DSW-1.M2N.8908:ETR1(GE2/1,GE4/1)
+ mode user-termination
+ mode lacp-static
+#
+interface Eth-Trunk10.51
+ description dT:HZ-HZ-SM-DSW-1.M2N.8908:ETR1(GE2/1,GE4/1)(51)
+ control-vid 51 dot1q-termination
+ dot1q termination vid 51
+ dot1q vrrp vid 51
+ ip binding vpn-instance NMS
+ ip address 172.29.70.252 255.255.255.0
+ vrrp vrid 51 virtual-ip 172.29.70.254
+ vrrp vrid 51 priority 120
+ arp broadcast enable
+#
+interface Eth-Trunk10.52
+ description dT:HZ-HZ-SM-DSW-1.M2N.8908:ETR1(GE2/1,GE4/1)(52)
+ control-vid 52 dot1q-termination
+ dot1q termination vid 52
+ dot1q vrrp vid 52
+ ip address 172.31.249.1 255.255.255.0
+ vrrp vrid 52 virtual-ip 172.31.249.10
+ admin-vrrp vrid 52 
+ vrrp vrid 52 track bfd-session session-name bfd-vrrp2 peer
+ arp broadcast enable
+#
+interface Eth-Trunk10.100
+ description dT:HZ-HZ-SM-DSW-1.M2N.8908:ETR1(GE2/1,GE4/1)(100)
+ user-vlan any-other
+ remote-backup-profile rbp-iptv2
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication itv2
+  basinfo-insert cn-telecom 
+  authentication-method bind
+  user detect retransmit 3 interval 30  
+  ip-trigger
+  arp-trigger
+ #
+#
+interface Eth-Trunk10.101
+ description dT:HZ-HZ-SM-DSW-1.M2N.8908:ETR1(GE2/1,GE4/1)(101)
+ user-vlan 3600 qinq 2301 2556
+ user-vlan 3600 qinq 2557 2812
+ user-vlan 3600 qinq 2813 3068
+ user-vlan 3600 qinq 3069 3324
+ user-vlan 3600 qinq 3325 3580
+ user-vlan 3600 qinq 3581 3800
+ remote-backup-profile rbp-iptv2
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication voip2
+  basinfo-insert cn-telecom 
+  authentication-method bind
+  user detect retransmit 3 interval 30  
+  ip-trigger
+  arp-trigger
+ #
+#
+interface Eth-Trunk10.303
+ description itv_test
+ user-vlan 303 
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication itv2
+  basinfo-insert cn-telecom 
+  authentication-method bind
+  user detect retransmit 3 interval 30  
+  ip-trigger
+  arp-trigger
+ #
+#
+interface Eth-Trunk10.951
+ description NGN_SM_AG
+ control-vid 95 dot1q-termination
+ dot1q termination vid 951 to 966
+ dot1q vrrp vid 951
+ ip binding vpn-instance NGN
+ ip address 5.73.1.34 255.255.255.240
+ vrrp vrid 95 virtual-ip 5.73.1.33
+ vrrp vrid 95 priority 120
+ vrrp vrid 95 preempt-mode timer delay 120
+ arp-proxy inter-sub-vlan-proxy enable
+ arp broadcast enable
+#
+interface Eth-Trunk10.4000
+ description dT:HZ-HZ-SM-DSW-1.M2N.8908:ETR1(GE2/1,GE4/1)(4000)
+ control-vid 4000 dot1q-termination
+ dot1q termination vid 4000
+ ip address 1.1.1.5 255.255.255.252
+ pim hello-option dr-priority 100
+ pim timer hello 1
+ pim timer dr-switch-delay 60
+ pim sm
+ pim bfd enable
+ igmp enable
+ arp broadcast enable
+#
+interface Eth-Trunk11
+ description dT:HZ-HZ-ZH-DSW-1.M2N.8908:ETR1(GE2/1,GE2/2,GE4/1,GE5/1)
+ mode user-termination
+ mode lacp-static
+#
+interface Eth-Trunk11.51
+ description dT:HZ-HZ-ZH-DSW-1.M2N.8908:ETR1(GE2/1,GE2/2,GE4/1,GE5/1)(51)
+ control-vid 51 dot1q-termination
+ dot1q termination vid 51
+ dot1q vrrp vid 51
+ ip binding vpn-instance NMS
+ ip address 172.29.71.252 255.255.255.0
+ vrrp vrid 51 virtual-ip 172.29.71.254
+ vrrp vrid 51 priority 120
+ arp broadcast enable
+#
+interface Eth-Trunk11.52
+ description dT:HZ-HZ-ZH-DSW-1.M2N.8908:ETR1(GE2/1,GE2/2,GE4/1,GE5/1)(52)
+ control-vid 52 dot1q-termination
+ dot1q termination vid 52
+ dot1q vrrp vid 52
+ ip address 172.31.250.1 255.255.255.0
+ vrrp vrid 52 virtual-ip 172.31.250.10
+ admin-vrrp vrid 52 
+ vrrp vrid 52 priority 130
+ vrrp vrid 52 preempt-mode timer delay 600
+ vrrp vrid 52 track interface GigabitEthernet8/1/0 reduced 20
+ vrrp vrid 52 track interface GigabitEthernet1/1/1 reduced 20
+ vrrp vrid 52 track interface GigabitEthernet2/0/1 reduced 20
+ vrrp vrid 52 track interface GigabitEthernet2/1/1 reduced 20
+ vrrp vrid 52 track bfd-session session-name bfd-vrrp3 peer
+ arp broadcast enable
+#
+interface Eth-Trunk11.100
+ description dT:HZ-HZ-ZH-DSW-1.M2N.8908:ETR1(GE2/1,GE2/2,GE4/1,GE5/1)(100)
+ user-vlan any-other
+ remote-backup-profile rbp-iptv3
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication itv1
+  basinfo-insert cn-telecom 
+  authentication-method bind
+  user detect retransmit 3 interval 30  
+  ip-trigger
+  arp-trigger
+ #
+#
+interface Eth-Trunk11.101
+ description dT:HZ-HZ-ZH-DSW-1.M2N.8908:ETR1(GE2/1,GE2/2,GE4/1,GE5/1)(101)
+ user-vlan 3600 qinq 2301 2556
+ user-vlan 3600 qinq 2557 2812
+ user-vlan 3600 qinq 2813 3068
+ user-vlan 3600 qinq 3069 3324
+ user-vlan 3600 qinq 3325 3580
+ user-vlan 3600 qinq 3581 3800
+ remote-backup-profile rbp-iptv3
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication voip1
+  basinfo-insert cn-telecom 
+  authentication-method bind
+  user detect retransmit 3 interval 30  
+  ip-trigger
+  arp-trigger
+ #
+#
+interface Eth-Trunk11.4000
+ description dT:HZ-HZ-ZH-DSW-1.M2N.8908:ETR1(GE2/1,GE2/2,GE4/1,GE5/1)(4000)
+ control-vid 4000 dot1q-termination
+ dot1q termination vid 4000
+ ip address 1.1.1.9 255.255.255.252
+ pim hello-option dr-priority 130
+ pim timer hello 1
+ pim sm
+ pim bfd enable
+ igmp enable
+ arp broadcast enable
+#
+interface Eth-Trunk12
+ description dT:HZ-HZ-WLYL-DSW-1.M2N.8908:SM1
+ mode user-termination
+ mode lacp-static
+#
+interface Eth-Trunk12.51
+ description dT:HZ-HZ-WLYL-DSW-1.M2N.8908:SM1.51
+ control-vid 51 dot1q-termination
+ dot1q termination vid 51
+ dot1q vrrp vid 51
+ ip binding vpn-instance NMS
+ ip address 172.29.73.252 255.255.255.0
+ vrrp vrid 51 virtual-ip 172.29.73.254
+ vrrp vrid 51 priority 120
+ arp broadcast enable
+#
+interface Eth-Trunk12.52
+ description dT:HZ-HZ-WLYL-DSW-1.M2N.8908:SM1.52
+ control-vid 52 dot1q-termination
+ dot1q termination vid 52
+ dot1q vrrp vid 52
+ ip address 172.31.252.1 255.255.255.0
+ vrrp vrid 52 virtual-ip 172.31.252.10
+ admin-vrrp vrid 52 
+ vrrp vrid 52 priority 130
+ vrrp vrid 52 preempt-mode timer delay 600
+ vrrp vrid 52 track interface GigabitEthernet8/1/0 reduced 20
+ vrrp vrid 52 track interface GigabitEthernet1/1/1 reduced 20
+ vrrp vrid 52 track interface GigabitEthernet2/0/1 reduced 20
+ vrrp vrid 52 track interface GigabitEthernet2/1/1 reduced 20
+ vrrp vrid 52 track bfd-session session-name bfd-vrrp5 peer
+ arp broadcast enable
+#
+interface Eth-Trunk12.100
+ description dT:HZ-HZ-WLYL-DSW-1.M2N.8908:SM1.100
+ user-vlan any-other
+ remote-backup-profile rbp-iptv5
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication itv1
+  basinfo-insert cn-telecom 
+  authentication-method bind
+  user detect retransmit 3 interval 30  
+  ip-trigger
+  arp-trigger
+ #
+#
+interface Eth-Trunk12.101
+ description dT:HZ-HZ-WLYL-DSW-1.M2N.8908:SM1.101
+ user-vlan 3600 qinq 2301 2556
+ user-vlan 3600 qinq 2557 2812
+ user-vlan 3600 qinq 2813 3068
+ user-vlan 3600 qinq 3069 3324
+ user-vlan 3600 qinq 3325 3580
+ user-vlan 3600 qinq 3581 3800
+ remote-backup-profile rbp-iptv5
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication voip1
+  basinfo-insert cn-telecom 
+  authentication-method bind
+  user detect retransmit 3 interval 30  
+  ip-trigger
+  arp-trigger
+ #
+#
+interface Eth-Trunk12.4000
+ description dT:HZ-HZ-WLYL-DSW-1.M2N.8908:SM1.4000
+ control-vid 4000 dot1q-termination
+ dot1q termination vid 4000
+ ip address 1.1.1.17 255.255.255.252
+ pim hello-option dr-priority 130
+ pim timer hello 1
+ pim sm
+ pim bfd enable
+ igmp enable
+ arp broadcast enable
+#
+interface Eth-Trunk12.37930021
+ description SuoX-MA5680T-1-MDUNMS
+ control-vid 3793 qinq-termination
+ qinq termination pe-vid 3793 ce-vid 21
+ qinq vrrp pe-vid 3793 ce-vid 21
+ ip binding vpn-instance NMS
+ ip address 71.80.185.2 255.255.255.0
+ vrrp vrid 101 virtual-ip 71.80.185.1
+ vrrp vrid 101 priority 120
+ vrrp vrid 101 preempt-mode timer delay 120
+ arp broadcast enable
+#
+interface Eth-Trunk12.37933598
+ description SuoX-MA5680T-1-MDUIAD
+ control-vid 2793 qinq-termination
+ qinq termination pe-vid 3793 ce-vid 3598
+ qinq vrrp pe-vid 3793 ce-vid 3598
+ ip binding vpn-instance 191
+ ip address 15.80.185.2 255.255.255.0
+ vrrp vrid 102 virtual-ip 15.80.185.1
+ vrrp vrid 102 priority 120
+ vrrp vrid 102 preempt-mode timer delay 120
+ arp broadcast enable
+#
+interface Eth-Trunk12.37970021
+ description WuLin-MA5680T-3-MDUNMS
+ control-vid 3797 qinq-termination
+ qinq termination pe-vid 3797 ce-vid 21
+ qinq vrrp pe-vid 3797 ce-vid 21
+ ip binding vpn-instance NMS
+ ip address 71.80.27.2 255.255.255.0
+ vrrp vrid 101 virtual-ip 71.80.27.1
+ vrrp vrid 101 priority 120
+ vrrp vrid 101 preempt-mode timer delay 120
+ arp broadcast enable
+#
+interface Eth-Trunk12.37973598
+ description WuLin-MA5680T-3-MDUIAD
+ control-vid 2797 qinq-termination
+ qinq termination pe-vid 3797 ce-vid 3598
+ qinq vrrp pe-vid 3797 ce-vid 3598
+ ip binding vpn-instance 191
+ ip address 15.80.27.2 255.255.255.0
+ vrrp vrid 102 virtual-ip 15.80.27.1
+ vrrp vrid 102 priority 120
+ vrrp vrid 102 preempt-mode timer delay 120
+ arp broadcast enable
+#
+interface Eth-Trunk12.37980021
+ description WuLin-MA5680T-4-MDUNMS
+ control-vid 3798 qinq-termination
+ qinq termination pe-vid 3798 ce-vid 21
+ qinq vrrp pe-vid 3798 ce-vid 21
+ ip binding vpn-instance NMS
+ ip address 71.80.28.2 255.255.255.0
+ vrrp vrid 101 virtual-ip 71.80.28.1
+ vrrp vrid 101 priority 120
+ vrrp vrid 101 preempt-mode timer delay 120
+ arp broadcast enable
+#
+interface Eth-Trunk12.37983598
+ description WuLin-MA5680T-4-MDUIAD
+ control-vid 2798 qinq-termination
+ qinq termination pe-vid 3798 ce-vid 3598
+ qinq vrrp pe-vid 3798 ce-vid 3598
+ ip binding vpn-instance 191
+ ip address 15.80.28.2 255.255.255.0
+ vrrp vrid 102 virtual-ip 15.80.28.1
+ vrrp vrid 102 priority 120
+ vrrp vrid 102 preempt-mode timer delay 120
+ arp broadcast enable
+#
+interface Eth-Trunk13
+ description dT:HZ-HZ-GS-DSW-1.M2N.8908:ETR1(GE2/1,GE2/2,GE4/1,GE5/1)
+ mode user-termination
+ mode lacp-static
+#
+interface Eth-Trunk13.51
+ description dT:HZ-HZ-GS-DSW-1.M2N.8908:ETR1(GE2/1,GE2/2,GE4/1,GE5/1)(51)
+ control-vid 51 dot1q-termination
+ dot1q termination vid 51
+ dot1q vrrp vid 51
+ ip binding vpn-instance NMS
+ ip address 172.29.72.252 255.255.255.0
+ vrrp vrid 51 virtual-ip 172.29.72.254
+ vrrp vrid 51 priority 120
+ arp broadcast enable
+#
+interface Eth-Trunk13.52
+ description dT:HZ-HZ-GS-DSW-1.M2N.8908:ETR1(GE2/1,GE2/2,GE4/1,GE5/1)(52)
+ control-vid 52 dot1q-termination
+ dot1q termination vid 52
+ dot1q vrrp vid 52
+ ip address 172.31.251.1 255.255.255.0
+ vrrp vrid 52 virtual-ip 172.31.251.10
+ admin-vrrp vrid 52 
+ vrrp vrid 52 track bfd-session session-name bfd-vrrp4 peer
+ arp broadcast enable
+#
+interface Eth-Trunk13.100
+ description dT:HZ-HZ-GS-DSW-1.M2N.8908:ETR1(GE2/1,GE2/2,GE4/1,GE5/1)(100)
+ user-vlan any-other
+ remote-backup-profile rbp-iptv4
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication itv2
+  basinfo-insert cn-telecom 
+  authentication-method bind
+  user detect retransmit 3 interval 30  
+  ip-trigger
+  arp-trigger
+ #
+#
+interface Eth-Trunk13.101
+ description dT:HZ-HZ-GS-DSW-1.M2N.8908:ETR1(GE2/1,GE2/2,GE4/1,GE5/1)(101)
+ user-vlan 3600 qinq 2301 2556
+ user-vlan 3600 qinq 2557 2812
+ user-vlan 3600 qinq 2813 3068
+ user-vlan 3600 qinq 3069 3324
+ user-vlan 3600 qinq 3325 3580
+ user-vlan 3600 qinq 3581 3800
+ remote-backup-profile rbp-iptv4
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication voip2
+  basinfo-insert cn-telecom 
+  authentication-method bind
+  user detect retransmit 3 interval 30  
+  ip-trigger
+  arp-trigger
+ #
+#
+interface Eth-Trunk13.951
+ description NGN_GenS_AG
+ control-vid 95 dot1q-termination
+ dot1q termination vid 951 to 966
+ dot1q vrrp vid 951
+ ip binding vpn-instance NGN
+ ip address 5.73.1.18 255.255.255.240
+ vrrp vrid 95 virtual-ip 5.73.1.17
+ vrrp vrid 95 priority 120
+ vrrp vrid 95 preempt-mode timer delay 120
+ arp-proxy inter-sub-vlan-proxy enable
+ arp broadcast enable
+#
+interface Eth-Trunk13.4000
+ description dT:HZ-HZ-GS-DSW-1.M2N.8908:ETR1(GE2/1,GE2/2,GE4/1,GE5/1)(4000)
+ control-vid 4000 dot1q-termination
+ dot1q termination vid 4000
+ ip address 1.1.1.13 255.255.255.252
+ pim hello-option dr-priority 100
+ pim timer hello 1
+ pim timer dr-switch-delay 60
+ pim sm
+ pim bfd enable
+ igmp enable
+ arp broadcast enable
+#
+interface Eth-Trunk13.38000021
+ description GenShan-C300-1-MDUNMS
+ control-vid 3800 qinq-termination
+ qinq termination pe-vid 3800 ce-vid 21
+ qinq vrrp pe-vid 3800 ce-vid 21
+ ip binding vpn-instance NMS
+ ip address 71.80.30.2 255.255.255.0
+ vrrp vrid 101 virtual-ip 71.80.30.1
+ vrrp vrid 101 priority 120
+ vrrp vrid 101 preempt-mode timer delay 120
+ arp broadcast enable
+#
+interface Eth-Trunk13.38003598
+ description GenShan-C300-1-MDUIAD
+ control-vid 2800 qinq-termination
+ qinq termination pe-vid 3800 ce-vid 3598
+ qinq vrrp pe-vid 3800 ce-vid 3598
+ ip binding vpn-instance 191
+ ip address 15.80.30.2 255.255.255.0
+ vrrp vrid 102 virtual-ip 15.80.30.1
+ vrrp vrid 102 priority 120
+ vrrp vrid 102 preempt-mode timer delay 120
+ arp broadcast enable
+#
+interface Eth-Trunk14
+ description dT:HZ-HZ-WL8F-DSW-1.M2N.9306:ETR1(GE2/0/0,GE2/0/1)
+ mode user-termination
+ mode lacp-static
+#
+interface Eth-Trunk14.51
+ description dT:HZ-HZ-WL8F-DSW-1.M2N.9306:ETR1(GE2/0/0,GE2/0/1)(51)
+ control-vid 51 dot1q-termination
+ dot1q termination vid 51
+ dot1q vrrp vid 51
+ ip binding vpn-instance NMS
+ ip address 172.29.210.252 255.255.255.0
+ vrrp vrid 51 virtual-ip 172.29.210.254
+ vrrp vrid 51 priority 120
+ arp broadcast enable
+#
+interface Eth-Trunk14.601
+ description EVDO_WULIN_4G_HW
+ control-vid 61 dot1q-termination
+ dot1q termination vid 601
+ dot1q vrrp vid 601
+ ip binding vpn-instance CDMA-RAN
+ ip address 7.136.59.66 255.255.255.192
+ ip relay address 7.140.25.18
+ dhcp select relay
+ vrrp vrid 61 virtual-ip 7.136.59.65
+ vrrp vrid 61 priority 120
+ vrrp vrid 61 preempt-mode timer delay 120
+ arp broadcast enable
+#
+interface Eth-Trunk14.801
+ description EVDO_WULIN_BBU
+ control-vid 81 dot1q-termination
+ dot1q termination vid 801 to 840
+ dot1q vrrp vid 801
+ ip binding vpn-instance CDMA-RAN
+ ip address 7.132.25.130 255.255.255.192
+ vrrp vrid 81 virtual-ip 7.132.25.129
+ vrrp vrid 81 priority 120
+ vrrp vrid 81 preempt-mode timer delay 120
+ arp broadcast enable
+#
+interface Eth-Trunk20
+ description dT:HZJF-SE2600-E1 Eth40
+ ip binding vpn-instance 191
+ ip address 15.95.253.74 255.255.255.252
+ mode lacp-static
+#
+interface Eth-Trunk22
+ description dT:HZDX-SE2600-E1 ETH40
+ ip binding vpn-instance 191
+ ip address 15.95.253.90 255.255.255.252
+ mode lacp-static
+#
+interface Eth-Trunk32
+ description pT:HZ-HZ-WL-SR-NE40E-1.CDMA:ETH32
+ mode user-termination
+ mode lacp-static
+#
+interface Eth-Trunk32.1000
+ description pT:HZ-HZ-WL-SR-NE40E-1.CDMA:ETH32
+ control-vid 1000 dot1q-termination
+ dot1q termination vid 1000
+ ip binding vpn-instance CDMA-RAN
+ ip address 7.132.63.209 255.255.255.252
+ arp broadcast enable
+#
+interface Eth-Trunk32.1001
+ description pT:HZ-HZ-WL-SR-NE40E-1.CDMA:ETH32
+ control-vid 1001 dot1q-termination
+ dot1q termination vid 1001
+ ip address 172.18.3.17 255.255.255.252
+ arp broadcast enable
+#
+interface Eth-Trunk62
+ description dT:HZ-HZ-JD-B-01.MCN.CX600:ETR1(10GE1/0/0)
+ mtu 1600
+ ip address 115.233.24.6 255.255.255.254
+ isis enable 100
+ isis circuit-type p2p
+ isis circuit-level level-2
+ isis cost 3000
+ isis small-hello
+ isis ldp-sync
+ pim sm
+ mpls
+ mpls ldp
+ mode lacp-static
+ trust upstream MAN-qos
+#
+interface Eth-Trunk63
+ description dT:HZ-HZ-WL-B-01.RAN.CX600:ETR1(10GE1/0/0)
+ mtu 1600
+ ip address 115.233.24.2 255.255.255.254
+ isis enable 100
+ isis circuit-type p2p
+ isis circuit-level level-2
+ isis cost 3000
+ isis small-hello
+ isis ldp-sync
+ pim sm
+ mpls
+ mpls ldp
+ mode lacp-static
+ trust upstream MAN-qos
+#
+interface Virtual-Template0
+ ppp authentication-mode auto 
+#
+interface GigabitEthernet0/0/0
+ speed auto
+ duplex auto
+ shutdown
+#
+interface GigabitEthernet1/0/0
+ description pT:HZ-HZ-WL-SR-2.M2N.NE40E:(local) GE1/0/0
+ undo shutdown
+ eth-trunk 0
+ undo dcn 
+#
+interface GigabitEthernet1/0/1
+ description dT:HZ-HZ-SM-DSW-1.M2N.8908:(F1109140136)GE2/1
+ undo shutdown
+ eth-trunk 10
+ undo dcn 
+#
+interface GigabitEthernet1/0/2
+ description dT:HZ-HZ-SM-DSW-1.M2N.8908:(F1109140139)GE4/1
+ undo shutdown
+ eth-trunk 10
+ undo dcn 
+#
+interface GigabitEthernet1/0/3
+ description pT:TO-DHCP-SERVER-ESN1:(local)GE1/0/49
+ undo shutdown
+ undo dcn 
+#
+interface GigabitEthernet1/0/3.51
+ vlan-type dot1q 51
+ description TO-DHCP-SERVER-ESN1:()GE1/0/49(51)
+ set flow-stat interval 10
+ ip binding vpn-instance IPTV
+ ip address 10.255.252.129 255.255.255.252
+ statistic enable
+#
+interface GigabitEthernet1/0/4
+ description dT:HZ-HZ-WL8F-DSW-1.M2N.9306:(F1307240012)GE2/0/0
+ undo shutdown
+ eth-trunk 14
+ undo dcn 
+#
+interface GigabitEthernet1/0/5
+ shutdown
+ undo dcn 
+#
+interface GigabitEthernet1/0/6
+ shutdown
+ undo dcn 
+#
+interface GigabitEthernet1/0/7
+ shutdown
+ undo dcn 
+#
+interface GigabitEthernet1/0/8
+ shutdown
+#
+interface GigabitEthernet1/0/9
+ description dT:HZ-HZ-WL-AAA6509:(F1105050071)GE3/2
+ undo shutdown
+#
+interface GigabitEthernet1/0/9.500
+ vlan-type dot1q 500
+ description dT:HZ-HZ-WL-AAA6509:(F1105050071)GE3/2(500)
+ ip binding vpn-instance IPTV
+ ip address 10.255.248.233 255.255.255.252
+#
+interface GigabitEthernet1/0/10
+ description uT:ZJ-HZ-WL-S-3.CN2:GE5/0/4
+ undo shutdown
+#
+interface GigabitEthernet1/0/10.301
+ vlan-type dot1q 301
+ description uT:ZJ-HZ-WL-S-3.CN2:GE5/0/4(301)
+ ip binding vpn-instance IPTV
+ ip address 10.255.249.2 255.255.255.252
+#
+interface GigabitEthernet1/0/11
+ description uT:ZJ-HZ-WL-S-3.CN2:GE5/0/5
+ undo shutdown
+#
+interface GigabitEthernet1/0/11.200
+ vlan-type dot1q 200
+ description uT:ZJ-HZ-WL-S-3.CN2:GE5/0/5(200)
+ ip binding vpn-instance NGN
+ ip address 5.73.0.10 255.255.255.252
+#
+interface GigabitEthernet1/0/11.300
+ vlan-type dot1q 300
+ description uT:ZJ-HZ-WL-S-3.CN2:GE5/0/5(300)
+ ip binding vpn-instance 191
+ ip address 192.168.255.130 255.255.255.252
+#
+interface GigabitEthernet1/0/12
+ description pT:HZ-HZ-WL-SR-2.M2N.NE40E:(local)GE1/0/3
+ undo shutdown
+ eth-trunk 0
+#
+interface GigabitEthernet1/0/13
+ description TO-DHCP-SERVER-SW1:(local)GE0/1/3::processing::kehu
+ undo shutdown
+#
+interface GigabitEthernet1/0/13.51
+ vlan-type dot1q 51
+ description TO-DHCP-SERVER-SW1:(local)GE0/1/1(51)
+ set flow-stat interval 10
+ ip binding vpn-instance IPTV
+ ip address 10.255.255.129 255.255.255.252
+ statistic enable
+#
+interface GigabitEthernet1/0/14
+ description pT:HZ-HZ-WL-SR-1.MAN.NE80E:(local)GE9/0/8
+ undo shutdown
+ eth-trunk 1
+#
+interface GigabitEthernet1/0/15
+ description pT:HZ-HZ-WL-SR-1.MAN.NE80E:(local)GE9/0/9
+ undo shutdown
+ eth-trunk 2
+#
+interface GigabitEthernet1/0/16
+ description pT:HZ-HZ-WL-SR-2.M2N.NE40E:(local)GE1/0/5
+ undo shutdown
+ eth-trunk 0
+#
+interface GigabitEthernet1/0/17
+ description pT:HZ-HZ-WL-DSW-1.M2N.S5300:(F1109050093)GE0/1/1
+ undo shutdown
+#
+interface GigabitEthernet1/0/17.51
+ vlan-type dot1q 51
+ description pT:HZ-HZ-WL-DSW-1.M2N.S5300:(F1109050093)GE0/1/1(51)
+ ip binding vpn-instance IPTV
+ ip address 10.255.253.2 255.255.255.240
+ vrrp vrid 51 virtual-ip 10.255.253.1
+ vrrp vrid 51 priority 120
+#
+interface GigabitEthernet1/0/17.52
+ vlan-type dot1q 52
+ description pT:HZ-HZ-WL-DSW-1.M2N.S5300:(F1109050093)GE0/1/1(51)
+ ip binding vpn-instance 191
+ ip address 192.168.254.18 255.255.255.240
+ vrrp vrid 52 virtual-ip 192.168.254.17
+ vrrp vrid 52 priority 120
+#
+interface GigabitEthernet1/0/17.53
+ vlan-type dot1q 53
+ description pT:HZ-HZ-WL-DSW-2.M2N.S5300:(F1109050095)GE0/1/1
+ ip binding vpn-instance NGN
+ ip address 5.73.0.34 255.255.255.248
+ vrrp vrid 53 virtual-ip 5.73.0.33
+ vrrp vrid 53 priority 120
+#
+interface GigabitEthernet1/0/18
+ description pT:HZ-HZ-WL-SR-1.CDMA.NE40E:(F1211010062)GE3/0/9
+ undo shutdown
+ eth-trunk 32
+#
+interface GigabitEthernet1/0/19
+ description pT:HZ-HZ-WL-SR-2.M2N.NE40E:(local)GE7/1/4
+ undo shutdown
+ eth-trunk 0
+#
+interface GigabitEthernet1/1/0
+ description dT:HZ-HZ-WL-DSW-1.M2N.8912:(local)10GE7/1
+ undo shutdown
+ mode user-termination
+ undo dcn 
+#
+interface GigabitEthernet1/1/0.51
+ description dT:HZ-HZ-WL-DSW-1.M2N.8912:(local)10GE7/1(51)
+ control-vid 51 dot1q-termination
+ dot1q termination vid 51
+ dot1q vrrp vid 51
+ ip binding vpn-instance NMS
+ ip address 172.29.0.252 255.255.255.0
+ vrrp vrid 51 virtual-ip 172.29.0.254
+ vrrp vrid 51 priority 120
+ arp broadcast enable
+#
+interface GigabitEthernet1/1/0.52
+ description dT:HZ-HZ-WL-DSW-1.M2N.8912:(local)10GE7/1(52)
+ control-vid 52 dot1q-termination
+ dot1q termination vid 52
+ dot1q vrrp vid 52
+ ip address 172.31.248.1 255.255.255.0
+ vrrp vrid 52 virtual-ip 172.31.248.10
+ admin-vrrp vrid 52 
+ vrrp vrid 52 priority 130
+ vrrp vrid 52 preempt-mode timer delay 600
+ vrrp vrid 52 track interface GigabitEthernet8/1/0 reduced 20
+ vrrp vrid 52 track interface GigabitEthernet1/1/1 reduced 20
+ vrrp vrid 52 track interface GigabitEthernet2/0/1 reduced 20
+ vrrp vrid 52 track interface GigabitEthernet2/1/1 reduced 20
+ vrrp vrid 52 track bfd-session session-name bfd-vrrp1 peer
+ arp broadcast enable
+#
+interface GigabitEthernet1/1/0.100
+ description dT:HZ-HZ-WL-DSW-1.M2N.8912:(local)10GE7/1(100)
+ user-vlan any-other
+ remote-backup-profile rbp-iptv1
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication itv1
+  basinfo-insert cn-telecom 
+  authentication-method bind
+  user detect retransmit 3 interval 30  
+  ip-trigger
+  arp-trigger
+ #
+#
+interface GigabitEthernet1/1/0.101
+ description dT:HZ-HZ-WL-DSW-1.M2N.8912:(local)10GE7/1(101)
+ user-vlan 3600 qinq 2301 2556
+ user-vlan 3600 qinq 2557 2812
+ user-vlan 3600 qinq 2813 3068
+ user-vlan 3600 qinq 3069 3324
+ user-vlan 3600 qinq 3325 3580
+ user-vlan 3600 qinq 3581 3800
+ remote-backup-profile rbp-iptv1
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication voip1
+  basinfo-insert cn-telecom 
+  authentication-method bind
+  user detect retransmit 3 interval 30  
+  ip-trigger
+  arp-trigger
+ #
+#
+interface GigabitEthernet1/1/0.951
+ description NGN_WL_AG
+ control-vid 95 dot1q-termination
+ dot1q termination vid 951 to 966
+ dot1q vrrp vid 951
+ ip binding vpn-instance NGN
+ ip address 5.73.1.50 255.255.255.240
+ vrrp vrid 95 virtual-ip 5.73.1.49
+ vrrp vrid 95 priority 120
+ vrrp vrid 95 preempt-mode timer delay 120
+ arp-proxy inter-sub-vlan-proxy enable
+ arp broadcast enable
+#
+interface GigabitEthernet1/1/0.967
+ description NGN_WL_AG2
+ control-vid 96 dot1q-termination
+ dot1q termination vid 967 to 982
+ dot1q vrrp vid 967
+ ip binding vpn-instance NGN
+ ip address 5.73.8.18 255.255.255.240
+ vrrp vrid 96 virtual-ip 5.73.8.17
+ vrrp vrid 96 priority 120
+ vrrp vrid 96 preempt-mode timer delay 120
+ arp-proxy inter-sub-vlan-proxy enable
+ arp broadcast enable
+#
+interface GigabitEthernet1/1/0.983
+ description NGN_WL_AG3
+ control-vid 97 dot1q-termination
+ dot1q termination vid 983 to 995
+ dot1q vrrp vid 983
+ ip binding vpn-instance NGN
+ ip address 5.73.8.82 255.255.255.240
+ vrrp vrid 97 virtual-ip 5.73.8.81
+ vrrp vrid 97 priority 120
+ vrrp vrid 97 preempt-mode timer delay 120
+ arp-proxy inter-sub-vlan-proxy enable
+ arp broadcast enable
+#
+interface GigabitEthernet1/1/0.4000
+ description dT:HZ-HZ-WL-DSW-1.M2N.8912:(local)10GE7/1(4000)
+ control-vid 4000 dot1q-termination
+ dot1q termination vid 4000
+ ip address 1.1.1.1 255.255.255.252
+ pim hello-option dr-priority 130
+ pim timer hello 1
+ pim sm
+ pim bfd enable
+ igmp enable
+ arp broadcast enable
+#
+interface GigabitEthernet1/1/0.37940021
+ description WuLin-C300-1-MDUNMS
+ control-vid 3794 qinq-termination
+ qinq termination pe-vid 3794 ce-vid 21
+ qinq vrrp pe-vid 3794 ce-vid 21
+ ip binding vpn-instance NMS
+ ip address 71.80.24.2 255.255.255.0
+ vrrp vrid 101 virtual-ip 71.80.24.1
+ vrrp vrid 101 priority 120
+ vrrp vrid 101 preempt-mode timer delay 120
+ arp broadcast enable
+#
+interface GigabitEthernet1/1/0.37943598
+ description WuLin-C300-1-MDUIAD
+ control-vid 2794 qinq-termination
+ qinq termination pe-vid 3794 ce-vid 3598
+ qinq vrrp pe-vid 3794 ce-vid 3598
+ ip binding vpn-instance 191
+ ip address 15.80.24.2 255.255.255.0
+ vrrp vrid 102 virtual-ip 15.80.24.1
+ vrrp vrid 102 priority 120
+ vrrp vrid 102 preempt-mode timer delay 120
+ arp broadcast enable
+#
+interface GigabitEthernet1/1/0.37950021
+ description WuLin-MA5680T-1-MDUNMS
+ control-vid 3795 qinq-termination
+ qinq termination pe-vid 3795 ce-vid 21
+ qinq vrrp pe-vid 3795 ce-vid 21
+ ip binding vpn-instance NMS
+ ip address 71.80.25.2 255.255.255.0
+ vrrp vrid 101 virtual-ip 71.80.25.1
+ vrrp vrid 101 priority 120
+ vrrp vrid 101 preempt-mode timer delay 120
+ arp broadcast enable
+#
+interface GigabitEthernet1/1/0.37953598
+ description WuLin-MA5680T-1-MDUIAD
+ control-vid 2795 qinq-termination
+ qinq termination pe-vid 3795 ce-vid 3598
+ qinq vrrp pe-vid 3795 ce-vid 3598
+ ip binding vpn-instance 191
+ ip address 15.80.25.2 255.255.255.0
+ vrrp vrid 102 virtual-ip 15.80.25.1
+ vrrp vrid 102 priority 120
+ vrrp vrid 102 preempt-mode timer delay 120
+ arp broadcast enable
+#
+interface GigabitEthernet1/1/0.37960021
+ description WuLin-MA5680T-2-MDUNMS
+ control-vid 3796 qinq-termination
+ qinq termination pe-vid 3796 ce-vid 21
+ qinq vrrp pe-vid 3796 ce-vid 21
+ ip binding vpn-instance NMS
+ ip address 71.80.26.2 255.255.255.0
+ vrrp vrid 101 virtual-ip 71.80.26.1
+ vrrp vrid 101 priority 120
+ vrrp vrid 101 preempt-mode timer delay 120
+ arp broadcast enable
+#
+interface GigabitEthernet1/1/0.37963598
+ description WuLin-MA5680T-2-MDUIAD
+ control-vid 2796 qinq-termination
+ qinq termination pe-vid 3796 ce-vid 3598
+ qinq vrrp pe-vid 3796 ce-vid 3598
+ ip binding vpn-instance 191
+ ip address 15.80.26.2 255.255.255.0
+ vrrp vrid 102 virtual-ip 15.80.26.1
+ vrrp vrid 102 priority 120
+ vrrp vrid 102 preempt-mode timer delay 120
+ arp broadcast enable
+#
+interface GigabitEthernet1/1/0.37990021
+ description SuoXiang-C300-1-MDUNMS
+ control-vid 3799 qinq-termination
+ qinq termination pe-vid 3799 ce-vid 21
+ qinq vrrp pe-vid 3799 ce-vid 21
+ ip binding vpn-instance NMS
+ ip address 71.80.29.2 255.255.255.0
+ vrrp vrid 101 virtual-ip 71.80.29.1
+ vrrp vrid 101 priority 120
+ vrrp vrid 101 preempt-mode timer delay 120
+ arp broadcast enable
+#
+interface GigabitEthernet1/1/0.37993598
+ description SuoXiang-C300-1-MDUIAD
+ control-vid 2799 qinq-termination
+ qinq termination pe-vid 3799 ce-vid 3598
+ qinq vrrp pe-vid 3799 ce-vid 3598
+ ip binding vpn-instance 191
+ ip address 15.80.29.2 255.255.255.0
+ vrrp vrid 102 virtual-ip 15.80.29.1
+ vrrp vrid 102 priority 120
+ vrrp vrid 102 preempt-mode timer delay 120
+ arp broadcast enable
+#
+interface GigabitEthernet1/1/1
+ description uT:HZ-HZ-WL-CR-1.M2N.NE5000E:(local)10GE1/0/0
+ undo shutdown
+ set flow-stat interval 30
+ mtu 1600
+ ip address 115.233.9.6 255.255.255.252
+ undo icmp redirect send
+ isis enable 100
+ isis circuit-type p2p
+ isis circuit-level level-2
+ isis cost 1500
+ isis timer hello 3
+ isis small-hello
+ isis ldp-sync
+ pim sm
+ mpls
+ mpls te
+ mpls rsvp-te
+ mpls rsvp-te hello
+ mpls ldp
+ undo dcn 
+ control-flap
+ trust upstream MAN-qos
+ port-queue be wfq weight 20 port-wred 0 outbound
+ port-queue af4 pq shaping shaping-percentage 30 outbound
+ port-queue ef wfq weight 50 port-wred 1 outbound
+#
+interface GigabitEthernet2/0/0
+ description uT:ZJ-HZ-ESN-MCE-1.MCN.NE40E:()10G5/2/0
+ undo shutdown
+ mtu 9178
+ ipv6 enable
+ ipv6 mtu 9178
+ undo dcn 
+#
+interface GigabitEthernet2/0/0.333
+ vlan-type dot1q 333
+ description uT:ZJ-HZ-ESN-MCE-1.MCN.NE40E:()10G5/2/0.333
+ ip binding vpn-instance CDMA-RAN-ceshi
+ ipv6 enable
+ ip address 10.10.11.1 255.255.255.252
+ ipv6 address 240E:27:101:5FF1::2/127
+#
+interface GigabitEthernet2/0/0.2008
+ vlan-type dot1q 2008
+ description uT:ZJ-HZ-ESN-MCE-1.MCN.NE40E:()10G5/2/0.2008
+ ip binding vpn-instance CDMA-RAN
+ ip address 7.136.255.130 255.255.255.252
+#
+interface GigabitEthernet2/0/0.4003
+ vlan-type dot1q 4003
+ description uT:ZJ-HZ-ESN-MCE-1.MCN.NE40E:()10G5/2/0.4003
+ ip binding vpn-instance CTVPN193-ZJ
+ ip address 4.44.255.138 255.255.255.252
+#
+interface GigabitEthernet2/0/1
+ description uT:HZ-HZ-WL-CR-1.M2N.NE5000E:(local)10GE5/1/1
+ undo shutdown
+ set flow-stat interval 30
+ mtu 1600
+ ip address 61.164.6.153 255.255.255.254
+ undo icmp redirect send
+ isis enable 100
+ isis circuit-type p2p
+ isis circuit-level level-2
+ isis cost 1500
+ isis timer hello 3
+ isis small-hello
+ isis ldp-sync
+ pim sm
+ mpls
+ mpls te
+ mpls rsvp-te
+ mpls rsvp-te hello
+ mpls ldp
+ undo dcn 
+ control-flap
+ trust upstream MAN-qos
+ port-queue be wfq weight 20 port-wred 0 outbound
+ port-queue af4 pq shaping shaping-percentage 30 outbound
+ port-queue ef wfq weight 50 port-wred 1 outbound
+#
+interface GigabitEthernet2/1/0
+ description dT:HZ-WL-QY-S9312-IPTV2.0:(F1512020153)10GE7/0/2
+ undo shutdown
+ eth-trunk 3
+ undo dcn 
+#
+interface GigabitEthernet2/1/1
+ description uT:HZ-HZ-JF-CR-1.M2N.NE5000E:(F1512250317)10GE5/1/1
+ undo shutdown
+ set flow-stat interval 30
+ mtu 1600
+ ip address 61.164.6.155 255.255.255.254
+ undo icmp redirect send
+ isis enable 100
+ isis circuit-type p2p
+ isis circuit-level level-2
+ isis cost 1500
+ isis timer hello 3
+ isis small-hello
+ isis ldp-sync
+ pim sm
+ mpls
+ mpls te
+ mpls rsvp-te
+ mpls rsvp-te hello
+ mpls ldp
+ undo dcn 
+ control-flap
+ trust upstream default
+ port-queue be wfq weight 20 port-wred 0 outbound
+ port-queue af4 pq shaping shaping-percentage 30 outbound
+ port-queue ef wfq weight 50 port-wred 1 outbound
+#
+interface GigabitEthernet3/0/0
+ description dT:HZ-HZ-WLYL-DSW-1.M2N.8908:(F1109200083)10GE6/1
+ undo shutdown
+ eth-trunk 12
+ undo dcn 
+#
+interface GigabitEthernet3/0/1
+ undo shutdown
+ undo dcn 
+#
+interface GigabitEthernet3/1/0
+ undo shutdown
+ undo dcn 
+#
+interface GigabitEthernet3/1/1
+ undo shutdown
+ undo dcn 
+#
+interface GigabitEthernet4/0/0
+ undo shutdown
+ undo dcn 
+#
+interface GigabitEthernet4/0/1
+ undo shutdown
+ undo dcn 
+#
+interface GigabitEthernet7/0/0
+ description dT:HZ-HZ-WL-B-01.RAN.CX600:(F1305060028)10GE1/0/0
+ undo shutdown
+ eth-trunk 63
+ undo dcn 
+#
+interface GigabitEthernet7/0/1
+ description dT:HZ-HZ-JD-B-01.MCN.CX600:(201305020108)10GE1/0/0
+ undo shutdown
+ eth-trunk 62
+ undo dcn 
+#
+interface GigabitEthernet7/1/0
+ undo shutdown
+ undo dcn 
+#
+interface GigabitEthernet7/1/1
+ undo shutdown
+ undo dcn 
+#
+interface GigabitEthernet7/1/2
+ description dT:HZ-HZ-JF-E1.M2N.E2600:(F1404080071)GE2/0/20
+ undo shutdown
+ eth-trunk 20
+ undo dcn 
+#
+interface GigabitEthernet7/1/3
+ description dT:HZ-HZ-DX-E1-M2N.E2600()2/1/8
+ undo shutdown
+ eth-trunk 22
+ undo dcn 
+#
+interface GigabitEthernet7/1/4
+ undo shutdown
+ undo dcn 
+#
+interface GigabitEthernet7/1/5
+ undo shutdown
+ undo dcn 
+#
+interface GigabitEthernet7/1/6
+ undo shutdown
+ undo dcn 
+#
+interface GigabitEthernet7/1/7
+ shutdown
+ undo dcn 
+#
+interface GigabitEthernet7/1/8
+ undo shutdown
+#
+interface GigabitEthernet7/1/9
+ undo shutdown
+#
+interface GigabitEthernet7/1/10
+ description to IMS-test::processing::kehu
+ undo shutdown
+ ip binding vpn-instance 191
+ ip address 15.95.253.241 255.255.255.252
+#
+interface GigabitEthernet7/1/11
+ description pT:to-BroadBand-AAA-9306-1::kehu
+ undo shutdown
+#
+interface GigabitEthernet7/1/11.51
+ vlan-type dot1q 51
+ description to-BroadBand-AAA-9306-1-manager
+ ip address 220.191.157.4 255.255.255.254
+#
+interface GigabitEthernet7/1/12
+ description pT:HZ-HZ-WL-SR-2.M2N.NE40E:(local)GE7/1/7
+ undo shutdown
+ eth-trunk 0
+#
+interface GigabitEthernet7/1/13
+ description pT:HZ-HZ-WL-SR-2.M2N.NE40E:(local)GE7/1/8
+ undo shutdown
+ eth-trunk 0
+#
+interface GigabitEthernet7/1/14
+ description pT:HZ-HZ-WL-SR-2.M2N.NE40E:(local)GE7/1/9
+ undo shutdown
+ eth-trunk 0
+#
+interface GigabitEthernet7/1/15
+ undo shutdown
+#
+interface GigabitEthernet7/1/16
+ undo shutdown
+#
+interface GigabitEthernet7/1/17
+ undo shutdown
+#
+interface GigabitEthernet7/1/18
+ description pT:HZ-HZ-WL-SR-1.CDMA.NE40E:(F1404040073)GE5/0/0
+ undo shutdown
+ eth-trunk 32
+#
+interface GigabitEthernet7/1/19
+ description pT:HZ-HZ-WL-SR-1.CDMA.NE40E:(F1404040074)GE6/1/11
+ undo shutdown
+ eth-trunk 32
+#
+interface GigabitEthernet8/0/0
+ description pT:HZ-HZ-WL-SR-2.M2N.NE40E:(local)GE1/0/1
+ undo shutdown
+ eth-trunk 0
+ undo dcn 
+#
+interface GigabitEthernet8/0/1
+ description dT:HZ-HZ-ZH-DSW-1.M2N.8908:(F1109260102)GE2/1
+ undo shutdown
+ eth-trunk 11
+ undo dcn 
+#
+interface GigabitEthernet8/0/2
+ description dT:HZ-HZ-ZH-DSW-1.M2N.8908:(F1109260103)GE2/2
+ undo shutdown
+ eth-trunk 11
+ undo dcn 
+#
+interface GigabitEthernet8/0/3
+ description dT:HZ-HZ-ZH-DSW-1.M2N.8908:(F1109260099)GE4/1
+ undo shutdown
+ eth-trunk 11
+ undo dcn 
+#
+interface GigabitEthernet8/0/4
+ description dT:HZ-HZ-ZH-DSW-1.M2N.8908:(F1109260100)GE5/1
+ undo shutdown
+ eth-trunk 11
+ undo dcn 
+#
+interface GigabitEthernet8/0/5
+ description dT:HZ-HZ-GenS-DSW-1.M2N.8908:(F1109280127)GE2/1
+ undo shutdown
+ eth-trunk 13
+ undo dcn 
+#
+interface GigabitEthernet8/0/6
+ description dT:HZ-HZ-GenS-DSW-1.M2N.8908:(F1109280119)GE2/2
+ undo shutdown
+ eth-trunk 13
+ undo dcn 
+#
+interface GigabitEthernet8/0/7
+ description dT:HZ-HZ-GenS-DSW-1.M2N.8908:(F1109280157)GE4/1
+ undo shutdown
+ eth-trunk 13
+ undo dcn 
+#
+interface GigabitEthernet8/0/8
+ description dT:HZ-HZ-GenS-DSW-1.M2N.8908:(F1109280156)GE5/1
+ undo shutdown
+ eth-trunk 13
+#
+interface GigabitEthernet8/0/9
+ description dT::AAA-4507:(F1105050072)GE3/16
+ undo shutdown
+#
+interface GigabitEthernet8/0/9.500
+ vlan-type dot1q 500
+ description dT::AAA-4507:(F1105050072)GE3/16(500)
+ ip binding vpn-instance IPTV
+ ip address 10.255.248.237 255.255.255.252
+ statistic enable
+#
+interface GigabitEthernet8/0/10
+ description pT:HZ-HZ-WL-SR-1.CDMA.NE40E:(F1403200024)GE8/0/9
+ undo shutdown
+ eth-trunk 32
+#
+interface GigabitEthernet8/0/11
+ description pT:HZ-HZ-WL-SR-1.CDMA.NE40E:(F1403200023)GE6/1/10
+ undo shutdown
+ eth-trunk 32
+#
+interface GigabitEthernet8/0/12
+ shutdown
+#
+interface GigabitEthernet8/0/13
+ description pT:TO-DHCP-SERVER-SW2:(F1105050070)GE0/1/3
+ undo shutdown
+#
+interface GigabitEthernet8/0/13.51
+ vlan-type dot1q 51
+ description TO-DHCP-SERVER-SW2:(F1105050070)GE0/1/1(51)
+ ip binding vpn-instance IPTV
+ ip address 10.255.255.133 255.255.255.252
+#
+interface GigabitEthernet8/0/14
+ description pT:HZ-HZ-WL-SR-1.MAN.NE80E:(local)GE10/0/7
+ undo shutdown
+ eth-trunk 1
+#
+interface GigabitEthernet8/0/15
+ description pT:HZ-HZ-WL-SR-1.MAN.NE80E:(local)GE10/0/8
+ undo shutdown
+ eth-trunk 2
+#
+interface GigabitEthernet8/0/16
+ description pT:TO-DHCP-SERVER-ESN2:(local)GE1/0/49
+ undo shutdown
+#
+interface GigabitEthernet8/0/16.51
+ vlan-type dot1q 51
+ description TO-DHCP-SERVER-ESN2:()GE1/0/49(51)
+ set flow-stat interval 10
+ ip binding vpn-instance IPTV
+ ip address 10.255.252.133 255.255.255.252
+ statistic enable
+#
+interface GigabitEthernet8/0/17
+ description dT:HZ-HZ-WL8F-DSW-1.M2N.9306:(F1307240013)GE3/0/4
+ undo shutdown
+ eth-trunk 14
+#
+interface GigabitEthernet8/0/18
+ description pT:HZ-HZ-WL-SR-1.CDMA.NE40E:(F1211010064)GE6/1/9
+ undo shutdown
+ eth-trunk 32
+#
+interface GigabitEthernet8/0/19
+ shutdown
+#
+interface GigabitEthernet8/1/0
+ description uT:HZ-HZ-JF-CR-1.M2N.NE5000E:(F1105050046)10GE1/0/0
+ undo shutdown
+ set flow-stat interval 30
+ mtu 1600
+ ip address 115.233.9.174 255.255.255.252
+ undo icmp redirect send
+ isis enable 100
+ isis circuit-type p2p
+ isis circuit-level level-2
+ isis cost 1500
+ isis timer hello 3
+ isis small-hello
+ isis ldp-sync
+ pim sm
+ mpls
+ mpls te
+ mpls rsvp-te
+ mpls rsvp-te hello
+ mpls ldp
+ undo dcn 
+ control-flap
+ trust upstream default
+ port-queue be wfq weight 20 port-wred 0 outbound
+ port-queue af4 pq shaping shaping-percentage 30 outbound
+ port-queue ef wfq weight 50 port-wred 1 outbound
+#
+interface GigabitEthernet8/1/1
+ description pT:HZ-WL-QY-S9312-IPTV2.0:(F1105050065)10GE1/0/0
+ undo shutdown
+ eth-trunk 3
+ undo dcn 
+#
+interface NULL0
+#
+interface LoopBack0
+ description For-Management
+ ip address 115.233.8.3 255.255.255.255
+ isis enable 100
+ isis circuit-level level-2
+#
+interface LoopBack1
+ description For DHCP Giddr
+ ip binding vpn-instance IPTV
+ ip address 115.233.8.3 255.255.255.255
+#
+interface LoopBack100
+ description For DHCP Giddr
+ ip binding vpn-instance IPTV
+#
+interface LoopBack101
+ description For VoIP
+ ip binding vpn-instance 191
+ ip address 115.233.8.3 255.255.255.255
+#
+interface Tunnel8/0/18
+#
+interface Tunnel8/1/0
+#
+l2tp-group default-lac
+ tunnel name HZ-HZ-WL-NE40E-SR-1.M2
+#
+l2tp-group default-lns
+ tunnel name HZ-HZ-WL-NE40E-SR-1.M2
+#
+bfd bfd-vrrp1 bind peer-ip 172.31.248.2 source-ip 172.31.248.1 auto
+ commit
+#
+bfd bfd-vrrp2 bind peer-ip 172.31.249.2 source-ip 172.31.249.1 auto
+ commit
+#
+bfd bfd-vrrp3 bind peer-ip 172.31.250.2 source-ip 172.31.250.1 auto
+ commit
+#
+bfd bfd-vrrp4 bind peer-ip 172.31.251.2 source-ip 172.31.251.1 auto
+ commit
+#
+bfd bfd-vrrp5 bind peer-ip 172.31.252.2 source-ip 172.31.252.1 auto
+ commit
+#
+bfd bfd_DX1 bind peer-ip 15.95.253.89 vpn-instance 191 interface Eth-Trunk22 source-ip 15.95.253.90 auto
+ commit
+#
+bfd bfd_itv bind peer-ip 10.255.248.2 vpn-instance IPTV interface Eth-Trunk3.800 source-ip 10.255.248.1 auto
+ commit
+#
+bfd bfd_JF1 bind peer-ip 15.95.253.73 vpn-instance 191 interface Eth-Trunk20 source-ip 15.95.253.74 auto
+ commit
+#
+bfd bfd_trunk2:1 bind peer-ip default-ip interface GigabitEthernet1/0/15
+ discriminator local 8001
+ discriminator remote 8002
+ min-tx-interval 150
+ min-rx-interval 150
+ process-interface-status
+ commit
+#
+bfd bfd_trunk2:2 bind peer-ip default-ip interface GigabitEthernet8/0/15
+ discriminator local 8003
+ discriminator remote 8004
+ min-tx-interval 150
+ min-rx-interval 150
+ process-interface-status
+ commit
+#
+bgp 64771
+ router-id 115.233.8.3
+ group pgCR internal
+ peer pgCR connect-interface LoopBack0
+ peer 115.233.8.1 as-number 64771
+ peer 115.233.8.1 group pgCR
+ peer 115.233.8.1 description To HZ-HZ-WL-CR-1.M2N.NE5000E
+ peer 115.233.8.2 as-number 64771
+ peer 115.233.8.2 group pgCR
+ peer 115.233.8.2 description To HZ-HZ-JF-CR-1.M2N.NE5000E
+ #
+ ipv4-family unicast
+  undo synchronization
+  undo peer pgCR enable
+  undo peer 115.233.8.1 enable
+  undo peer 115.233.8.2 enable
+ #
+ ipv4-family vpnv4
+  policy vpn-target
+  peer pgCR enable
+  peer pgCR route-policy hz-wl-sr1 export
+  peer 115.233.8.1 enable
+  peer 115.233.8.1 group pgCR
+  peer 115.233.8.1 next-hop-local
+  peer 115.233.8.2 enable
+  peer 115.233.8.2 group pgCR
+  peer 115.233.8.2 next-hop-local
+ #
+ ipv4-family vpn-instance 191
+  network 10.95.255.0 255.255.255.0
+  network 15.64.0.0 255.224.0.0
+  network 115.233.8.3 255.255.255.255
+  network 122.229.2.1 255.255.255.255
+  network 122.229.2.2 255.255.255.255
+  network 192.168.254.0
+  import-route direct route-policy rpVoip_direct_in
+  import-route static
+  import-route unr route-policy rpMetric_out
+  peer 15.95.253.242 as-number 65510
+  peer 15.95.253.242 substitute-as
+  peer 15.95.253.242 route-policy rpFrom_IMS import
+  peer 192.168.254.29 as-number 60000
+  peer 192.168.254.29 connect-interface GigabitEthernet1/0/17.52
+  peer 192.168.254.29 route-policy rpFrom_DNS import
+  peer 192.168.255.129 as-number 4809
+  peer 192.168.255.129 route-policy rpIAD&ITMS export
+ #
+ ipv4-family vpn-instance CDMA-RAN
+  network 7.136.0.0 255.255.0.0
+  import-route direct
+  import-route static
+  maximum load-balancing eibgp 2
+  peer 7.132.63.210 as-number 64740
+  peer 7.132.63.214 as-number 64740
+  peer 7.136.255.129 as-number 64761
+  peer 7.136.255.129 bfd min-tx-interval 150 min-rx-interval 150
+  peer 7.136.255.129 bfd enable
+  peer 7.136.255.129 route-policy rpLTE_RAN_in import
+  peer 7.136.255.129 route-policy rpLTE_RAN_out export
+  peer 7.136.255.129 advertise-community
+  peer 7.136.255.129 route-update-interval 5
+ #
+ ipv4-family vpn-instance CDMA-RAN-ceshi
+  maximum load-balancing eibgp 2
+  peer 10.10.11.2 as-number 64761
+  peer 10.10.11.2 bfd min-tx-interval 150 min-rx-interval 150
+  peer 10.10.11.2 bfd enable
+  peer 10.10.11.2 advertise-community
+  peer 10.10.11.2 route-update-interval 5
+ #
+ ipv4-family vpn-instance CTVPN193-ZJ
+  network 2.48.0.0 255.255.128.0
+  network 4.44.0.0 255.255.0.0
+  network 4.184.0.0 255.255.0.0
+  peer 4.44.255.137 as-number 64761
+  peer 4.44.255.137 bfd min-tx-interval 150 min-rx-interval 150
+  peer 4.44.255.137 bfd enable
+  peer 4.44.255.137 route-policy rpNMS_RAN_in import
+  peer 4.44.255.137 route-policy rpNMS_RAN_out export
+  peer 4.44.255.137 advertise-community
+  peer 4.44.255.137 route-update-interval 5
+ #
+ ipv4-family vpn-instance IPTV
+  network 10.255.252.0 255.255.255.0
+  network 10.255.255.0 255.255.255.0
+  network 115.233.8.3 255.255.255.255
+  network 122.229.2.1 255.255.255.255
+  network 122.229.2.2 255.255.255.255
+  network 202.101.172.0
+  import-route direct
+  import-route static
+  import-route unr route-policy rpMetric_out
+  maximum load-balancing 16
+  peer 10.255.240.1 as-number 64740
+  peer 10.255.240.1 route-policy rp_IPTV_in import
+  peer 10.255.240.1 route-policy rp_IPTV_out export
+  peer 10.255.248.234 as-number 65510
+  peer 10.255.248.238 as-number 65510
+  peer 10.255.249.1 as-number 4809
+  peer 10.255.249.1 description To ZJ-HZ-WL-S-3.CN2
+  peer 10.255.249.1 route-policy rpIPTV_CN2_in import
+  peer 10.255.249.1 route-policy rpIPTV&DHCP export
+  peer 10.255.252.130 as-number 65501
+  peer 10.255.252.130 route-policy rpFrom_DHCP_Server_ESN import
+  peer 10.255.252.130 default-route-advertise
+  peer 10.255.252.134 as-number 65501
+  peer 10.255.252.134 route-policy rpFrom_DHCP_Server_ESN import
+  peer 10.255.252.134 default-route-advertise
+  peer 10.255.255.130 as-number 65501
+  peer 10.255.255.130 route-policy rpFrom_DHCP_Server_WL import
+  peer 10.255.255.130 default-route-advertise
+  peer 10.255.255.134 as-number 65501
+  peer 10.255.255.134 route-policy rpFrom_DHCP_Server_WL import
+  peer 10.255.255.134 default-route-advertise
+ #
+ ipv4-family vpn-instance NGN
+  import-route direct
+  import-route static
+  peer 5.73.0.9 as-number 4809
+  peer 5.73.0.9 description TO-HZ-HZ-WL-S-3.CN2
+  peer 5.73.0.9 route-policy rpIMS_out export
+ #
+ ipv4-family vpn-instance NMS
+  network 0.0.0.0
+  import-route direct
+  import-route static
+ #
+ ipv6-family vpnv6
+  policy vpn-target
+  peer pgCR enable
+  peer pgCR next-hop-local
+  peer 115.233.8.1 enable
+  peer 115.233.8.1 group pgCR
+  peer 115.233.8.2 enable
+  peer 115.233.8.2 group pgCR
+ #
+ ipv6-family vpn-instance CDMA-RAN-ceshi
+  maximum load-balancing eibgp 2
+  peer 240E:27:101:5FF1::3 as-number 64761
+  peer 240E:27:101:5FF1::3 bfd min-tx-interval 150 min-rx-interval 150
+  peer 240E:27:101:5FF1::3 bfd enable
+  peer 240E:27:101:5FF1::3 advertise-community
+  peer 240E:27:101:5FF1::3 route-update-interval 5
+#
+route-policy hz-wl-sr1 permit node 0
+ if-match ip-prefix hz-wl-sr1
+ apply cost 10
+#
+route-policy hz-wl-sr1 permit node 1
+ if-match ip-prefix hz-wl-sr2
+ apply cost 20
+#
+route-policy hz-wl-sr1 permit node 2
+#
+route-policy rpStaticToISIS permit node 10
+ if-match tag 10
+#
+route-policy rpIAD&ITMS permit node 10
+ if-match ip-prefix plIAD&ITMS
+#
+route-policy rpIPTV&DHCP permit node 10
+ if-match ip-prefix plIPTV&DHCP
+#
+route-policy rpNGN_in permit node 10
+ if-match ip-prefix plDefaultRoute
+#
+route-policy rpMetric_out permit node 0
+ if-match ip-prefix plitv_remote1
+ apply cost 10
+#
+route-policy rpMetric_out permit node 1
+ if-match ip-prefix plitv_remote2
+ apply cost 20
+#
+route-policy rpMetric_out permit node 2
+ if-match ip-prefix plitv_local1
+ apply cost 10
+#
+route-policy rpMetric_out permit node 3
+ if-match ip-prefix plitv_local2
+ apply cost 20
+#
+route-policy rpMetric_out permit node 4
+ if-match ip-prefix plvoip_local1
+ apply cost 10
+#
+route-policy rpMetric_out permit node 5
+ if-match ip-prefix plvoip_local2
+ apply cost 20
+#
+route-policy vpn-frr permit node 10
+ apply backup-nexthop auto
+#
+route-policy rpIMS_out permit node 10
+ if-match ip-prefix plIMS
+#
+route-policy rpIMS_out deny node 100
+#
+route-policy rpFrom_DHCP_Server_WL permit node 0
+ if-match ip-prefix plFromDHCP_Server_WL
+ apply cost 100
+#
+route-policy rpFrom_DHCP_Server_ESN permit node 0
+ if-match ip-prefix plFromDHCP_Server_ESN
+ apply cost 100
+#
+route-policy rpLTE_RAN_in permit node 10
+ if-match ip-prefix plLTE_RAN_in
+#
+route-policy rpLTE_RAN_out permit node 10
+ if-match ip-prefix plLTE_RAN_out
+#
+route-policy rp_IPTV_in permit node 10
+ if-match ip-prefix pl_IPTV_in
+#
+route-policy rp_IPTV_out permit node 10
+ if-match ip-prefix pl_DHCPServer
+#
+route-policy rp_IPTV_out permit node 20
+ if-match ip-prefix pl_DNSServer
+#
+route-policy rp_IPTV_out permit node 30
+ if-match ip-prefix pl_IPTV_ZhiLiangJianCe
+#
+route-policy rp_IPTV_out permit node 40
+ if-match ip-prefix pl_IPTV_ZengZhiYeWu
+#
+route-policy rp_IPTV_out permit node 50
+ if-match ip-prefix pl_IPTV_ZhiFuPingTai
+#
+route-policy rp_IPTV_out permit node 60
+ if-match ip-prefix pl_IPTV_YunPingTai
+#
+route-policy rp_IPTV_out permit node 70
+ if-match ip-prefix pl_IPTV_out
+#
+route-policy rp_IPTV_out permit node 80
+ if-match ip-prefix pl_IPTV_HZ_BENDITAI
+#
+route-policy rpNMS_RAN_in permit node 10
+ if-match ip-prefix plNMS_RAN_in
+#
+route-policy rpNMS_RAN_out permit node 10
+ if-match ip-prefix plNMS_RAN_out
+#
+route-policy rpVoip_direct_in permit node 0
+ if-match ip-prefix plvoip_direct
+#
+route-policy rpFrom_IMS permit node 10
+ if-match ip-prefix plIMS_in
+#
+route-policy rpIPTV_CN2_in deny node 10
+ if-match ip-prefix pl_IPTV_CN2_in
+#
+route-policy rpIPTV_CN2_in permit node 20
+#
+route-policy rpFrom_DNS permit node 10
+ if-match ip-prefix plDNS
+ apply as-path none overwrite
+#
+igmp
+#
+pim
+ static-rp 122.229.7.137 2003
+ static-rp 115.233.6.200 2005
+ graceful-restart
+#
+ip ip-prefix hz-wl-sr1 index 10 permit 10.192.0.0 19
+ip ip-prefix hz-wl-sr2 index 10 permit 10.192.32.0 19
+ip ip-prefix plIAD&ITMS index 10 permit 15.64.0.0 11
+ip ip-prefix plIAD&ITMS index 20 permit 122.229.2.1 32
+ip ip-prefix plIAD&ITMS index 30 permit 122.229.2.2 32
+ip ip-prefix plIAD&ITMS index 40 permit 192.168.254.0 24
+ip ip-prefix plIAD&ITMS index 50 permit 15.0.0.0 12
+ip ip-prefix plIPTV&DHCP index 5 permit 10.255.255.0 24
+ip ip-prefix plIPTV&DHCP index 6 permit 10.255.252.0 24
+ip ip-prefix plIPTV&DHCP index 10 permit 10.255.255.32 27
+ip ip-prefix plIPTV&DHCP index 20 permit 122.229.2.1 32
+ip ip-prefix plIPTV&DHCP index 30 permit 122.229.2.2 32
+ip ip-prefix plIPTV&DHCP index 40 permit 122.224.212.64 26
+ip ip-prefix plIPTV&DHCP index 50 permit 122.229.2.32 28
+ip ip-prefix plIPTV&DHCP index 60 permit 10.255.255.38 32
+ip ip-prefix plIPTV&DHCP index 70 permit 10.224.0.0 11
+ip ip-prefix plIPTV&DHCP index 80 permit 10.192.0.0 11
+ip ip-prefix plIPTV&DHCP index 90 permit 183.129.173.160 27
+ip ip-prefix plIPTV&DHCP index 120 permit 202.101.166.0 24
+ip ip-prefix plIPTV&DHCP index 130 permit 60.191.70.160 27
+ip ip-prefix plIPTV&DHCP index 140 permit 122.229.5.0 24
+ip ip-prefix plIPTV&DHCP index 150 permit 10.255.240.0 20
+ip ip-prefix plIPTV&DHCP index 160 permit 60.191.98.0 28
+ip ip-prefix plIPTV&DHCP index 170 permit 122.224.128.176 29
+ip ip-prefix plIPTV&DHCP index 180 permit 183.129.253.176 29
+ip ip-prefix plIPTV&DHCP index 190 permit 115.236.63.144 29
+ip ip-prefix plDefaultRoute index 10 permit 0.0.0.0 0
+ip ip-prefix plitv_remote1 index 10 permit 10.192.0.0 18
+ip ip-prefix plitv_remote2 index 10 permit 10.192.128.0 18
+ip ip-prefix plitv_local1 index 10 permit 10.192.64.0 18
+ip ip-prefix plitv_local2 index 10 permit 10.192.192.0 18
+ip ip-prefix plvoip_local1 index 10 permit 15.64.0.0 18
+ip ip-prefix plvoip_local1 index 20 permit 15.12.0.0 19
+ip ip-prefix plvoip_local2 index 10 permit 15.64.64.0 18
+ip ip-prefix plIMS index 10 permit 5.73.0.0 16
+ip ip-prefix plIMS index 20 permit 5.74.0.0 18
+ip ip-prefix plFromDHCP_Server_WL index 10 permit 10.255.255.198 32
+ip ip-prefix plFromDHCP_Server_WL index 40 permit 10.255.255.38 32
+ip ip-prefix plFromDHCP_Server_WL index 70 permit 10.255.255.0 25
+ip ip-prefix plFromDHCP_Server_WL index 80 permit 10.255.255.128 25
+ip ip-prefix plFromDHCP_Server_ESN index 10 permit 10.255.252.38 32
+ip ip-prefix plFromDHCP_Server_ESN index 40 permit 10.255.255.38 32
+ip ip-prefix plFromDHCP_Server_ESN index 60 permit 10.255.255.7 32
+ip ip-prefix plFromDHCP_Server_ESN index 70 permit 10.255.252.0 25
+ip ip-prefix plFromDHCP_Server_ESN index 80 permit 10.255.252.128 25
+ip ip-prefix plLTE_RAN_in index 10 permit 7.140.0.0 22 greater-equal 22 less-equal 25
+ip ip-prefix plLTE_RAN_in index 20 permit 7.140.24.0 23 greater-equal 23 less-equal 24
+ip ip-prefix plLTE_RAN_in index 30 permit 172.26.128.0 24
+ip ip-prefix plLTE_RAN_in index 40 permit 6.20.30.112 29
+ip ip-prefix plLTE_RAN_in index 50 permit 7.140.26.0 24
+ip ip-prefix plLTE_RAN_in index 60 permit 7.140.24.0 21
+ip ip-prefix plLTE_RAN_out index 10 permit 7.136.0.0 16
+ip ip-prefix plLTE_RAN_out index 20 permit 12.12.12.0 24
+ip ip-prefix plLTE_RAN_out index 30 permit 11.20.0.0 21
+ip ip-prefix plLTE_RAN_out index 40 permit 11.20.8.0 21
+ip ip-prefix pl_IPTV_in index 10 permit 10.224.0.0 11
+ip ip-prefix pl_IPTV_in index 20 permit 115.233.7.0 24
+ip ip-prefix pl_IPTV_in index 30 permit 183.129.173.160 27
+ip ip-prefix pl_IPTV_in index 40 permit 202.101.166.0 24
+ip ip-prefix pl_IPTV_in index 50 permit 60.191.70.160 27
+ip ip-prefix pl_IPTV_in index 60 permit 202.96.96.0 27
+ip ip-prefix pl_IPTV_in index 70 permit 61.175.166.24 29
+ip ip-prefix pl_IPTV_in index 80 permit 61.164.17.144 29
+ip ip-prefix pl_IPTV_in index 90 permit 61.130.121.112 28
+ip ip-prefix pl_IPTV_in index 100 permit 61.153.9.0 29
+ip ip-prefix pl_IPTV_in index 110 permit 220.191.135.152 30
+ip ip-prefix pl_IPTV_in index 120 permit 122.229.5.0 24
+ip ip-prefix pl_IPTV_in index 130 permit 60.191.98.0 28
+ip ip-prefix pl_IPTV_in index 140 permit 122.224.128.176 29
+ip ip-prefix pl_IPTV_in index 150 permit 183.129.253.176 29
+ip ip-prefix pl_IPTV_in index 160 permit 115.236.63.144 29
+ip ip-prefix pl_IPTV_in index 170 permit 10.255.247.0 24
+ip ip-prefix pl_IPTV_in index 180 permit 122.229.17.0 24
+ip ip-prefix pl_IPTV_in index 190 permit 61.164.224.0 20
+ip ip-prefix pl_IPTV_in index 200 permit 183.129.172.64 27
+ip ip-prefix pl_IPTV_in index 210 permit 220.189.120.0 22
+ip ip-prefix pl_IPTV_in index 220 permit 60.191.100.160 29
+ip ip-prefix pl_IPTV_in index 230 permit 61.130.250.0 24
+ip ip-prefix pl_IPTV_in index 240 permit 0.0.0.0 0
+ip ip-prefix pl_IPTV_in index 250 permit 10.219.64.0 18
+ip ip-prefix pl_IPTV_in index 260 permit 10.219.0.0 18
+ip ip-prefix pl_IPTV_in index 270 permit 10.225.52.0 22
+ip ip-prefix pl_IPTV_out index 10 permit 10.192.0.0 11
+ip ip-prefix pl_DHCPServer index 10 permit 10.255.255.0 24
+ip ip-prefix pl_DHCPServer index 20 permit 10.255.252.0 24
+ip ip-prefix pl_DNSServer index 10 permit 122.229.2.1 32
+ip ip-prefix pl_DNSServer index 20 permit 122.229.2.2 32
+ip ip-prefix pl_IPTV_ZhiLiangJianCe index 10 permit 122.229.2.32 28
+ip ip-prefix pl_IPTV_ZhiLiangJianCe index 20 permit 122.229.17.0 24 greater-equal 24 less-equal 26
+ip ip-prefix pl_IPTV_ZengZhiYeWu index 10 permit 122.224.212.64 26
+ip ip-prefix pl_IPTV_ZhiFuPingTai index 10 permit 10.255.249.64 29 greater-equal 29 less-equal 32
+ip ip-prefix pl_IPTV_YunPingTai index 10 permit 10.255.240.0 20 greater-equal 20 less-equal 32
+ip ip-prefix plNMS_RAN_out index 10 permit 4.44.0.0 16
+ip ip-prefix plNMS_RAN_out index 20 permit 4.184.0.0 16
+ip ip-prefix plNMS_RAN_out index 30 permit 2.48.0.0 17
+ip ip-prefix plNMS_RAN_in index 10 permit 4.51.128.0 22
+ip ip-prefix plNMS_RAN_in index 20 permit 4.51.132.0 22
+ip ip-prefix plNMS_RAN_in index 30 permit 4.51.137.0 24
+ip ip-prefix pl_IPTV_HZ_BENDITAI index 10 permit 220.191.197.144 28
+ip ip-prefix plvoip_direct index 10 permit 0.0.0.0 24 greater-equal 24 less-equal 32
+ip ip-prefix plIMS_in index 10 permit 15.95.255.249 32
+ip ip-prefix pl_IPTV_CN2_in index 10 permit 10.255.247.0 24 greater-equal 26 less-equal 30
+ip ip-prefix pl_IPTV_CN2_in index 20 permit 122.229.17.0 24 greater-equal 24 less-equal 26
+ip ip-prefix pl_IPTV_CN2_in index 30 permit 61.130.250.0 24 greater-equal 26 less-equal 30
+ip ip-prefix plDNS index 10 permit 122.229.2.1 32
+ip ip-prefix plDNS index 20 permit 122.229.2.2 32
+#
+ip route-static default-preference 1
+#
+ip route-static 0.0.0.0 0.0.0.0 Eth-Trunk1 115.233.10.194 preference 60 tag 10
+ip route-static 61.130.121.75 255.255.255.255 Eth-Trunk32.1001 172.18.3.18 tag 10
+ip route-static vpn-instance 191 10.95.255.2 255.255.255.255 Eth-Trunk20 15.95.253.73 preference 60 track bfd-session bfd_JF1
+ip route-static vpn-instance 191 10.95.255.6 255.255.255.255 Eth-Trunk20 15.95.253.73 preference 60 track bfd-session bfd_JF1
+ip route-static vpn-instance 191 10.95.255.10 255.255.255.255 Eth-Trunk22 15.95.253.89 preference 60 track bfd-session bfd_DX1
+ip route-static vpn-instance 191 10.95.255.14 255.255.255.255 Eth-Trunk22 15.95.253.89 preference 60 track bfd-session bfd_DX1
+ip route-static vpn-instance 191 10.95.255.40 255.255.255.255 Eth-Trunk20 15.95.253.73 preference 60 track bfd-session bfd_JF1
+ip route-static vpn-instance 191 10.95.255.41 255.255.255.255 Eth-Trunk20 15.95.253.73 preference 60 track bfd-session bfd_JF1
+ip route-static vpn-instance 191 10.95.255.42 255.255.255.255 Eth-Trunk22 15.95.253.89 preference 60 track bfd-session bfd_DX1
+ip route-static vpn-instance 191 10.95.255.43 255.255.255.255 Eth-Trunk20 15.95.253.73 preference 60 track bfd-session bfd_JF1
+ip route-static vpn-instance 191 10.95.255.44 255.255.255.255 Eth-Trunk20 15.95.253.73 preference 60 track bfd-session bfd_JF1
+ip route-static vpn-instance 191 10.95.255.45 255.255.255.255 Eth-Trunk20 15.95.253.73 preference 60 track bfd-session bfd_JF1
+ip route-static vpn-instance 191 10.95.255.52 255.255.255.255 Eth-Trunk20 15.95.253.73 preference 60 track bfd-session bfd_JF1
+ip route-static vpn-instance 191 10.95.255.53 255.255.255.255 Eth-Trunk20 15.95.253.73 preference 60 track bfd-session bfd_JF1
+ip route-static vpn-instance 191 10.95.255.99 255.255.255.255 Eth-Trunk22 15.95.253.89 preference 60 track bfd-session bfd_DX1
+ip route-static vpn-instance 191 10.95.255.100 255.255.255.255 Eth-Trunk22 15.95.253.89 preference 60 track bfd-session bfd_DX1
+ip route-static vpn-instance 191 10.95.255.101 255.255.255.255 Eth-Trunk22 15.95.253.89 preference 60 track bfd-session bfd_DX1
+ip route-static vpn-instance 191 10.95.255.102 255.255.255.255 Eth-Trunk22 15.95.253.89 preference 60 track bfd-session bfd_DX1
+ip route-static vpn-instance 191 10.95.255.108 255.255.255.255 Eth-Trunk22 15.95.253.89 preference 60 track bfd-session bfd_DX1
+ip route-static vpn-instance 191 10.95.255.109 255.255.255.255 Eth-Trunk22 15.95.253.89 preference 60 track bfd-session bfd_DX1
+ip route-static vpn-instance 191 15.0.0.0 255.240.0.0 NULL0
+ip route-static vpn-instance 191 15.64.0.0 255.224.0.0 NULL0
+ip route-static vpn-instance 191 192.168.254.0 255.255.255.0 NULL0
+ip route-static vpn-instance CDMA-RAN 7.132.0.0 255.255.0.0 NULL0
+ip route-static vpn-instance CDMA-RAN 7.136.0.0 255.255.0.0 NULL0
+ip route-static vpn-instance CTVPN193-ZJ 2.48.0.0 255.255.128.0 NULL0
+ip route-static vpn-instance CTVPN193-ZJ 4.44.0.0 255.255.0.0 NULL0
+ip route-static vpn-instance CTVPN193-ZJ 4.184.0.0 255.255.0.0 NULL0
+ip route-static vpn-instance CTVPN193-ZJ 192.168.10.0 255.255.254.0 Eth-Trunk2.33 4.44.63.141
+ip route-static vpn-instance CTVPN193-ZJ 192.168.11.0 255.255.255.0 Eth-Trunk2.33 4.44.63.141
+ip route-static vpn-instance CTVPN193-ZJ 192.168.12.0 255.255.255.0 Eth-Trunk2.33 4.44.63.141
+ip route-static vpn-instance CTVPN193-ZJ 192.168.127.0 255.255.255.0 Eth-Trunk2.32 4.44.63.133
+ip route-static vpn-instance IPTV 10.192.0.0 255.224.0.0 NULL0 description M2N_IPTV_Address
+ip route-static vpn-instance IPTV 10.255.240.0 255.255.240.0 NULL0 preference 210 description IPTV_RESERVED_ADDRESS
+ip route-static vpn-instance IPTV 10.255.252.0 255.255.255.0 NULL0 preference 210 description DHCP-SERVER
+ip route-static vpn-instance IPTV 10.255.255.0 255.255.255.0 NULL0 preference 210 description DHCP-SERVER
+ip route-static vpn-instance IPTV 61.130.56.0 255.255.255.0 Eth-Trunk3.800 10.255.248.2 preference 60 track bfd-session bfd_itv
+ip route-static vpn-instance IPTV 115.233.4.100 255.255.255.255 Eth-Trunk3.800 10.255.248.2 preference 60 track bfd-session bfd_itv
+ip route-static vpn-instance IPTV 122.229.2.1 255.255.255.255 GigabitEthernet1/0/17.51 10.255.253.8 preference 60
+ip route-static vpn-instance IPTV 122.229.2.2 255.255.255.255 GigabitEthernet1/0/17.51 10.255.253.8 preference 60
+ip route-static vpn-instance IPTV 122.229.27.64 255.255.255.224 Eth-Trunk3.800 10.255.248.2 preference 60 track bfd-session bfd_itv
+ip route-static vpn-instance IPTV 123.58.182.91 255.255.255.255 Eth-Trunk2.104 10.255.240.1 description To:yixin
+ip route-static vpn-instance IPTV 192.168.11.0 255.255.255.0 vpn-instance NMS 172.29.192.5 preference 60
+ip route-static vpn-instance IPTV 220.191.137.0 255.255.255.0 Eth-Trunk3.800 10.255.248.2 preference 60 track bfd-session bfd_itv
+ip route-static vpn-instance IPTV 220.191.138.0 255.255.255.0 Eth-Trunk3.800 10.255.248.2 preference 60 track bfd-session bfd_itv
+ip route-static vpn-instance IPTV 220.191.139.0 255.255.255.0 Eth-Trunk3.800 10.255.248.2 preference 60 track bfd-session bfd_itv
+ip route-static vpn-instance IPTV 220.191.140.0 255.255.255.0 Eth-Trunk3.800 10.255.248.2 preference 60 track bfd-session bfd_itv
+ip route-static vpn-instance IPTV 223.252.198.0 255.255.255.0 Eth-Trunk2.104 10.255.240.1 description To:yixin
+ip route-static vpn-instance IPTV 223.252.207.0 255.255.255.0 Eth-Trunk2.104 10.255.240.1 description To:yixin
+ip route-static vpn-instance IPTV 223.252.215.0 255.255.255.0 Eth-Trunk2.104 10.255.240.1 description To:yixin
+ip route-static vpn-instance IPTV 223.252.216.0 255.255.255.0 Eth-Trunk2.104 10.255.240.1 description To:yixin
+ip route-static vpn-instance NGN 5.73.0.0 255.255.0.0 NULL0
+ip route-static vpn-instance NGN 5.74.0.0 255.255.192.0 NULL0
+ip route-static vpn-instance NGN 122.229.2.1 255.255.255.255 GigabitEthernet1/0/17.53 5.73.0.36 preference 60
+ip route-static vpn-instance NGN 122.229.2.2 255.255.255.255 GigabitEthernet1/0/17.53 5.73.0.36 preference 60
+ip route-static vpn-instance NMS 0.0.0.0 0.0.0.0 Eth-Trunk2.101 172.29.192.5 preference 60
+ip route-static vpn-instance NMS 172.28.0.0 255.255.0.0 Eth-Trunk2.101 172.29.192.5 preference 60
+#
+snmp-agent
+snmp-agent acl 2001
+snmp-agent local-engineid 000007DB7FFFFFFF00000760
+snmp-agent community read cipher %$%$]takPu>dEV\Vv]54~)a+%-9E}:o3;>5<NT@#MC2YY75$-9H%[v`d=n4wg;yJgz&Z>F^-9Q%-%$%$ mib-view iso-view
+snmp-agent sys-info contact HZ-HZ-WL
+snmp-agent sys-info location HangZhou_WuLin_Offic_5F
+snmp-agent sys-info version all
+snmp-agent mib-view included iso-view iso
+snmp-agent trap source LoopBack0
+snmp-agent trap enable feature-name bgp trap-name ESTABLISHED
+snmp-agent trap enable feature-name bgp trap-name BACKWARD
+snmp-agent trap enable feature-name bgp trap-name ROUTETHRESHOLDEXCEED
+snmp-agent trap enable feature-name bgp trap-name ROUTETHRESHOLDCLEAR
+snmp-agent trap enable feature-name bgp trap-name GRSTATUSCHANGE
+snmp-agent trap enable feature-name ISIS trap-name isisDatabaseOverload
+snmp-agent trap enable feature-name ISIS trap-name isisManualAddressDrops
+snmp-agent trap enable feature-name ISIS trap-name isisCorruptedLSPDetected
+snmp-agent trap enable feature-name ISIS trap-name isisAttemptToExceedMaxSequence
+snmp-agent trap enable feature-name ISIS trap-name isisIDLenMismatch
+snmp-agent trap enable feature-name ISIS trap-name isisMaxAreaAddressesMismatch
+snmp-agent trap enable feature-name ISIS trap-name isisOwnLSPPurge
+snmp-agent trap enable feature-name ISIS trap-name isisSequenceNumberSkip
+snmp-agent trap enable feature-name ISIS trap-name isisAuthenticationTypeFailure
+snmp-agent trap enable feature-name ISIS trap-name isisAuthenticationFailure
+snmp-agent trap enable feature-name ISIS trap-name isisVersionSkew
+snmp-agent trap enable feature-name ISIS trap-name isisAreaMismatch
+snmp-agent trap enable feature-name ISIS trap-name isisRejectedAdjacency
+snmp-agent trap enable feature-name ISIS trap-name isisOrigLSPBuffSizeMismatch
+snmp-agent trap enable feature-name ISIS trap-name isisProtocolsSupportedMismatch
+snmp-agent trap enable feature-name ISIS trap-name isisAdjacencyChange
+snmp-agent trap enable feature-name CONFIGURATION trap-name hwCfgManEventlog
+snmp-agent trap enable feature-name CONFIGURATION trap-name hwCfgOperateCompletion
+snmp-agent trap enable feature-name CONFIGURATION trap-name hwCfgB2STransferFail
+snmp-agent trap enable feature-name CONFIGURATION trap-name hwCfgB2SOperate
+snmp-agent trap enable feature-name SYSTEM trap-name hwSysReloadNotification
+snmp-agent trap enable feature-name SYSTEM trap-name hwSysClockChangedNotification
+snmp-agent trap enable feature-name SYSTEM trap-name hwPatchErrorTrap
+snmp-agent trap enable feature-name SYSTEM trap-name hwPatchActiveOverTimeTrap
+snmp-agent trap enable feature-name SYSTEM trap-name hwPatchMalfunctionComebackTrap
+snmp-agent trap enable feature-name SYSTEM trap-name hwSysSlaveSwitchFailNotification
+snmp-agent trap enable feature-name SYSTEM trap-name hwSysSlaveSwitchSuccessNotification
+#
+header login information " WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!"
+#
+tunnel-policy main
+#
+tunnel-policy load-balance
+ tunnel select-seq lsp load-balance-number 6
+#
+lldp enable 
+#
+slot 1
+ mirror to observe-index 8
+#
+user-interface maximum-vty 10
+user-interface con 0
+ authentication-mode password
+ set authentication password cipher $1a$W8\>JJ!7*9$qlj]26!K/Lo^%pIok[FTT<rX6V[9|I"6bJ!w>O4+$
+user-interface aux 0
+user-interface vty 0 4
+ acl 2001 inbound
+ authentication-mode aaa
+ user privilege level 15
+ idle-timeout 5 0
+user-interface vty 5 9
+ acl 2001 inbound
+ authentication-mode aaa
+ user privilege level 15
+ idle-timeout 5 0
+ screen-length 50
+user-interface vty 16 20
+#
+local-aaa-server 
+#
+license
+ inactive bas slot 1
+#
+soc
+#
+return
+<HZ-HZ-WL-SR-1.M2N.NE40E>

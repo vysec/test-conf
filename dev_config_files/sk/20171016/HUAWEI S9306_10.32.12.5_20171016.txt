@@ -1,0 +1,507 @@
+
+!Software Version V200R003C00SPC500
+#
+sysname HZ-HZ-LiZhi&LiYeYuan-DSW-1.XYW.9306
+#
+info-center source SHELL channel 4 log level informational
+info-center loghost source Vlanif50
+info-center loghost 10.254.0.1 facility local4
+#
+vlan batch 50 66 1701 to 1730 1739 to 1741 1752 to 1754 1761 to 1762 1764 2000 4001
+#
+domain default_admin
+#
+dot1x enable
+#
+undo http server enable
+undo http secure-server enable
+#
+undo nap slave enable
+#
+ dba-profile default0 type3 assure 40000 max 80000
+#
+diffserv domain default
+#
+radius-server template newhzdx
+ radius-server shared-key cipher %@%@Q%wO=J!,r,Jv!8UiH/0/8;G>%@%@
+ radius-server authentication 61.164.19.211 1812 weight 80
+ radius-server authentication 61.164.19.213 1812 weight 80
+ radius-server accounting 61.164.19.211 1813 weight 80
+ radius-server accounting 61.164.19.213 1813 weight 80
+ undo radius-server user-name domain-included
+ radius-server attribute translate
+ radius-attribute disable HW-Exec-Privilege receive
+#
+ line-profile default0
+#
+ service-profile default0
+#
+acl number 2001
+ rule 5 permit source 172.16.254.252 0
+ rule 10 permit source 202.96.102.253 0
+ rule 15 permit source 202.96.102.254 0
+ rule 25 permit source 192.168.208.0 0.0.0.255
+ rule 30 permit source 192.168.209.0 0.0.0.255
+ rule 35 permit source 192.168.210.0 0.0.0.255
+ rule 40 permit source 192.168.0.0 0.0.127.255
+ rule 45 permit source 10.254.0.0 0.0.0.31
+ rule 50 permit source 172.28.0.0 0.0.255.255
+ rule 51 permit source 10.10.10.34 0
+ rule 52 permit source 10.10.10.35 0
+ rule 100 deny
+#
+acl number 2006
+ rule 51 permit source 10.10.10.34 0
+ rule 52 permit source 10.10.10.35 0
+#
+acl number 2016
+ rule 1 permit source 172.16.247.0 0.0.0.31
+ rule 2 permit source 172.16.254.0 0.0.0.15
+ rule 3 permit source 10.254.0.0 0.0.0.31
+ rule 4 permit source 10.31.255.0 0.0.0.255
+ rule 5 permit source 10.254.3.0 0.0.0.255
+ rule 6 permit source 10.10.10.0 0.0.0.63
+ rule 7 permit source 192.168.100.0 0.0.0.3
+ rule 8 permit source 172.16.0.0 0.0.0.7
+ rule 9 permit source 10.20.200.14 0
+ rule 10 permit source 10.20.200.18 0
+ rule 11 permit source 192.168.1.0 0.0.0.255
+ rule 12 permit source 192.168.4.0 0.0.0.255
+ rule 13 permit source 192.168.8.0 0.0.0.255
+ rule 14 permit source 192.168.11.0 0.0.0.255
+ rule 15 permit source 192.168.119.0 0.0.0.255
+ rule 16 permit source 192.168.105.0 0.0.0.255
+ rule 17 permit source 192.168.67.0 0.0.0.255
+ rule 18 permit source 172.28.11.251 0
+ rule 19 permit source 192.168.101.0 0.0.0.255
+ rule 20 permit source 192.168.48.0 0.0.0.255
+ rule 1000 deny
+#
+drop-profile default
+#
+vlan 50
+ description manager-vlan
+vlan 4001
+ description test
+#
+aaa
+ authentication-scheme default
+ authentication-scheme hzdx
+ authentication-scheme newhzdx
+  authentication-mode radius local
+ authorization-scheme default
+ authorization-scheme hzdx
+ accounting-scheme default
+ accounting-scheme hzdx
+  accounting start-fail online
+ accounting-scheme newhzdx
+  accounting-mode radius
+ domain default
+ domain default_admin
+  authentication-scheme newhzdx
+  accounting-scheme newhzdx
+  authorization-scheme hzdx
+  radius-server newhzdx
+ local-user huawei password cipher %@%@_mDh#T|l\8!.CzMufH9LMZzO%@%@
+ local-user huawei privilege level 3
+ local-user huawei service-type telnet
+ undo local-user admin
+#
+ntp-service unicast-server 61.164.1.7
+#
+interface Vlanif50
+ description vlanif50
+ ip address 10.32.12.5 255.255.255.252
+#
+interface Vlanif66
+ description vlanif66
+ ip address 172.17.0.2 255.255.255.252
+#
+interface Eth-Trunk1
+ description uT:HZ-HZ-BJ-BAS-1.XYW.ME60:()Eth-Trunk2
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 50 66 1701 to 1730 1739 to 1741 1752 to 1754 1761 to 1762 1764 2000
+ mode lacp
+#
+interface Eth-Trunk2
+ description to ZJShangYeZhiYeJiShuXueYuan_SuShe
+ port link-type dot1q-tunnel
+ port default vlan 1764
+#
+interface Ethernet0/0/0
+ ip address 1.1.1.2 255.255.255.0
+#
+interface GigabitEthernet2/0/0
+ undo negotiation auto
+ description to 2403_(vlan 1701)
+ port link-type dot1q-tunnel
+ port default vlan 1701
+#
+interface GigabitEthernet2/0/1
+ undo negotiation auto
+ description to 2403_(vlan 1702)
+ port link-type dot1q-tunnel
+ port default vlan 1702
+#
+interface GigabitEthernet2/0/2
+ undo negotiation auto
+ description to 2403_(vlan 1703)
+ port link-type dot1q-tunnel
+ port default vlan 1703
+#
+interface GigabitEthernet2/0/3
+ undo negotiation auto
+ description to 2403_(vlan 1704)
+ port link-type dot1q-tunnel
+ port default vlan 1704
+#
+interface GigabitEthernet2/0/4
+#
+interface GigabitEthernet2/0/5
+ undo negotiation auto
+ description to 2403_(vlan 1706)
+ port link-type dot1q-tunnel
+ port default vlan 1706
+#
+interface GigabitEthernet2/0/6
+ undo negotiation auto
+ description to 2403_(vlan 1707)
+ port link-type dot1q-tunnel
+ port default vlan 1707
+#
+interface GigabitEthernet2/0/7
+ undo negotiation auto
+ description to 2403_(vlan 1708)
+ port link-type dot1q-tunnel
+ port default vlan 1708
+#
+interface GigabitEthernet2/0/8
+ undo negotiation auto
+ description to 2403_(vlan 1709)
+ port link-type dot1q-tunnel
+ port default vlan 1709
+#
+interface GigabitEthernet2/0/9
+ undo negotiation auto
+ description to 2403_(vlan 1710)
+ port link-type dot1q-tunnel
+ port default vlan 1710
+#
+interface GigabitEthernet2/0/10
+ undo negotiation auto
+ description to 2403_(vlan 1711)
+ port link-type dot1q-tunnel
+ port default vlan 1711
+#
+interface GigabitEthernet2/0/11
+#
+interface GigabitEthernet2/0/12
+ undo negotiation auto
+ description to 2403_(vlan 1713)
+ port link-type dot1q-tunnel
+ port default vlan 1713
+#
+interface GigabitEthernet2/0/13
+ undo negotiation auto
+ description to 2403_(vlan 1714)
+ port link-type dot1q-tunnel
+ port default vlan 1714
+#
+interface GigabitEthernet2/0/14
+ undo negotiation auto
+ description to 2403_(vlan 1715)
+ port link-type dot1q-tunnel
+ port default vlan 1715
+#
+interface GigabitEthernet2/0/15
+ undo negotiation auto
+ description to 2403_(vlan 1716)
+ port link-type dot1q-tunnel
+ port default vlan 1716
+#
+interface GigabitEthernet2/0/16
+ undo negotiation auto
+ description to 2403_(vlan 1717)
+ port link-type dot1q-tunnel
+ port default vlan 1717
+#
+interface GigabitEthernet2/0/17
+ undo negotiation auto
+ description to 2403_(vlan 1718)
+ port link-type dot1q-tunnel
+ port default vlan 1718
+#
+interface GigabitEthernet2/0/18
+ undo negotiation auto
+ description test
+ port link-type dot1q-tunnel
+ port default vlan 1705
+#
+interface GigabitEthernet2/0/19
+ undo negotiation auto
+ description to 2403_(vlan 1712)
+ port link-type dot1q-tunnel
+ port default vlan 1712
+#
+interface GigabitEthernet2/0/20
+#
+interface GigabitEthernet2/0/21
+ undo negotiation auto
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 50
+#
+interface GigabitEthernet2/0/22
+ undo negotiation auto
+ description uT:HZ-HZ-BJ-BAS-1.XYW.ME60:()GE3/1/6
+#
+interface GigabitEthernet2/0/23
+ undo negotiation auto
+ description uT:HZ-HZ-BJ-BAS-1.XYW.ME60:()GE3/1/7
+#
+interface GigabitEthernet3/0/0
+ undo negotiation auto
+ description to 2403_(vlan 1719)
+ port link-type dot1q-tunnel
+ port default vlan 1719
+#
+interface GigabitEthernet3/0/1
+ undo negotiation auto
+ description to 2403_(vlan 1720)
+ port link-type dot1q-tunnel
+ port default vlan 1720
+#
+interface GigabitEthernet3/0/2
+ undo negotiation auto
+ description to 2403_(vlan 1721)
+ port link-type dot1q-tunnel
+ port default vlan 1721
+#
+interface GigabitEthernet3/0/3
+ undo negotiation auto
+ description to 2403_(vlan 1722)
+ port link-type dot1q-tunnel
+ port default vlan 1722
+#
+interface GigabitEthernet3/0/4
+ undo negotiation auto
+ description to 2403_(vlan 1723)
+ port link-type dot1q-tunnel
+ port default vlan 1723
+#
+interface GigabitEthernet3/0/5
+ undo negotiation auto
+ description to 2403_(vlan 1724)
+ port link-type dot1q-tunnel
+ port default vlan 1724
+#
+interface GigabitEthernet3/0/6
+ undo negotiation auto
+ description to 2403_(vlan 1725)
+ port link-type dot1q-tunnel
+ port default vlan 1725
+#
+interface GigabitEthernet3/0/7
+ undo negotiation auto
+ description to 2403_(vlan 1726)
+ port link-type dot1q-tunnel
+ port default vlan 1726
+#
+interface GigabitEthernet3/0/8
+ undo negotiation auto
+ description to 2403_(vlan 1727)
+ port link-type dot1q-tunnel
+ port default vlan 1727
+#
+interface GigabitEthernet3/0/9
+ undo negotiation auto
+ description to 2403_(vlan 1728)
+ port link-type dot1q-tunnel
+ port default vlan 1728
+#
+interface GigabitEthernet3/0/10
+ undo negotiation auto
+ description to 2403_(vlan 1729)
+ port link-type dot1q-tunnel
+ port default vlan 1729
+#
+interface GigabitEthernet3/0/11
+ undo negotiation auto
+ description to 2403_(vlan 1730)
+ port link-type dot1q-tunnel
+ port default vlan 1730
+#
+interface GigabitEthernet3/0/12
+ undo negotiation auto
+ description lideyuan_10#
+ port link-type dot1q-tunnel
+ port default vlan 1739
+#
+interface GigabitEthernet3/0/13
+ undo negotiation auto
+ description MeiShiShangPu
+ port link-type dot1q-tunnel
+ port default vlan 1761
+#
+interface GigabitEthernet3/0/14
+ undo negotiation auto
+ description zhongxing_daoban
+ port link-type dot1q-tunnel
+ port default vlan 1752
+#
+interface GigabitEthernet3/0/15
+ undo negotiation auto
+ description zhongxing_gongyu
+ port link-type dot1q-tunnel
+ port default vlan 1753
+#
+interface GigabitEthernet3/0/16
+ undo negotiation auto
+ description ShanXunCeShi
+ port link-type dot1q-tunnel
+ port default vlan 2000
+#
+interface GigabitEthernet3/0/17
+ undo negotiation auto
+ description binjiangGuangDe
+ port link-type dot1q-tunnel
+ port default vlan 1754
+#
+interface GigabitEthernet3/0/18
+ undo negotiation auto
+ description Liyeyuan_HuoDongZhongXin
+ port link-type dot1q-tunnel
+ port default vlan 1762
+#
+interface GigabitEthernet3/0/19
+ undo negotiation auto
+ description to ZJShangYeZhiYeJiShuXueYuan_neiwang
+ port link-type dot1q-tunnel
+ port default vlan 1764
+#
+interface GigabitEthernet3/0/20
+#
+interface GigabitEthernet3/0/21
+ undo negotiation auto
+ description uT:HZ-HZ-BJ-BAS-1.XYW.ME60:()GE5/1/8
+#
+interface GigabitEthernet3/0/22
+ undo negotiation auto
+ description uT:HZ-HZ-BJ-BAS-1.XYW.ME60:()GE3/1/8
+#
+interface GigabitEthernet3/0/23
+ undo negotiation auto
+ description uT:HZ-HZ-BJ-BAS-1.XYW.ME60:()GE5/1/6
+#
+interface GigabitEthernet4/0/0
+ undo negotiation auto
+ description ZJShangYeZhiYeJiShuXueYuan_SuShe
+ eth-trunk 2
+#
+interface GigabitEthernet4/0/1
+ undo negotiation auto
+ description ZJShangYeZhiYeJiShuXueYuan_SuShe
+ eth-trunk 2
+#
+interface GigabitEthernet4/0/2
+#
+interface GigabitEthernet4/0/3
+#
+interface GigabitEthernet4/0/4
+#
+interface GigabitEthernet4/0/5
+#
+interface GigabitEthernet4/0/6
+#
+interface GigabitEthernet4/0/7
+#
+interface GigabitEthernet4/0/8
+#
+interface GigabitEthernet4/0/9
+#
+interface GigabitEthernet4/0/10
+#
+interface GigabitEthernet4/0/11
+#
+interface GigabitEthernet4/0/12
+#
+interface GigabitEthernet4/0/13
+#
+interface GigabitEthernet4/0/14
+#
+interface GigabitEthernet4/0/15
+#
+interface GigabitEthernet4/0/16
+#
+interface GigabitEthernet4/0/17
+#
+interface GigabitEthernet4/0/18
+#
+interface GigabitEthernet4/0/19
+#
+interface GigabitEthernet4/0/20
+#
+interface GigabitEthernet4/0/21
+#
+interface GigabitEthernet4/0/22
+#
+interface GigabitEthernet4/0/23
+#
+interface XGigabitEthernet1/0/0
+ description uT:HZ-HZ-BJ-BAS-1.XYW.ME60:(local)1/1/0
+ eth-trunk 1
+#
+interface XGigabitEthernet1/0/1
+#
+interface XGigabitEthernet1/0/2
+#
+interface XGigabitEthernet1/0/3
+#
+interface XGigabitEthernet6/0/0
+ description uT:HZ-HZ-BJ-BAS-1.XYW.ME60:(local)2/1/0
+ eth-trunk 1
+#
+interface XGigabitEthernet6/0/1
+#
+interface XGigabitEthernet6/0/2
+#
+interface XGigabitEthernet6/0/3
+#
+interface NULL0
+ description null0
+#
+ip route-static 0.0.0.0 0.0.0.0 10.32.12.6
+#
+snmp-agent
+snmp-agent local-engineid 000007DB7FFFFFFF00001D48
+snmp-agent community read cipher %$%$hI}R./Qy=7i`\O1U>0P4MZ#K:|zfT:^S_2wqgq+Gs6+BZ#NM&#\9ZD)+>9C'2#S63ZU~#WMZ%$%$
+snmp-agent sys-info contact HZ-CampusNet&IPhotel
+snmp-agent sys-info location Nanjing China
+snmp-agent sys-info version all
+snmp-agent trap source Vlanif50
+undo snmp-agent trap enable feature-name DLDP
+undo snmp-agent trap enable feature-name LDTTRAP
+undo snmp-agent trap enable feature-name LLDPTRAP
+snmp-agent trap enable feature-name BASETRAP
+#
+user-interface maximum-vty 15
+user-interface con 0
+ authentication-mode password
+ set authentication password cipher %@%@d`Pp$vDSdYch;x'lKW5;D`J/bYXC(Er>}N'BHM'4&uL/`J2D%@%@
+ idle-timeout 5 0
+ screen-length 50
+user-interface vty 0 4
+ acl 2016 inbound
+ authentication-mode aaa
+ user privilege level 3
+ idle-timeout 5 0
+user-interface vty 5 14
+ authentication-mode aaa
+ user privilege level 3
+ idle-timeout 5 0
+ screen-length 0
+user-interface vty 16 20
+#
+return
+<HZ-HZ-LiZhi&LiYeYuan-DSW-1.XYW.9306>

@@ -1,0 +1,373 @@
+
+!Software Version V200R003C00SPC500
+#
+sysname QZ-QZ-XDL-DSW-1.WLAN.S9303
+#
+super password level 3 cipher %$%$!5Zr&u\p+3'1&M055(,76pKu|g{g;s3UIXWjLb7tR]bVpKx6%$%$
+#
+info-center source default channel 2 log level warning trap level warning
+info-center source ARP channel 2
+info-center source IP channel 2
+info-center source SHELL channel 4 log level notification
+info-center source NTP channel 4 log state off
+info-center loghost source Vlanif29
+info-center loghost 10.192.0.11 facility local4
+info-center loghost 10.192.0.12 facility local4
+info-center loghost 10.192.0.14
+#
+vlan batch 29 to 31 33 900 to 912 1000 1489 1701 1999 3000 3201 3271
+#
+set save-configuration interval 43200 delay 30
+#
+loop-detection enable
+#
+undo http server enable
+undo http secure-server enable
+#
+undo nap slave enable
+#
+clock timezone GMT add 08:00:00
+#
+ dba-profile default0 type3 assure 40000 max 80000
+#
+diffserv domain default
+#
+hwtacacs-server template zjdx
+ hwtacacs-server authentication 70.0.0.32
+ hwtacacs-server authorization 70.0.0.32
+ hwtacacs-server accounting 70.0.0.32
+ hwtacacs-server source-ip 10.20.145.4
+ hwtacacs-server shared-key cipher %@%@1a86E`g5k@>oT;Pl/~%G6pNM%@%@
+ hwtacacs-server timer response-timeout 30
+ undo hwtacacs-server user-name domain-included
+#
+ line-profile default0
+#
+ service-profile default0
+#
+acl number 2000
+ description SNMP
+ rule 10 permit source 10.192.0.0 0.0.0.255
+ rule 20 permit source 10.31.255.0 0.0.0.255
+ rule 30 permit source 70.0.1.0 0.0.0.127
+ rule 100 deny
+#
+acl number 2001
+ description Telnet
+ rule 10 permit source 10.10.0.0 0.0.1.255
+ rule 20 permit source 10.192.0.0 0.0.0.31
+ rule 30 permit source 10.20.145.0 0.0.0.255
+ rule 40 permit source 10.31.255.0 0.0.0.255
+ rule 50 permit source 70.0.0.0 0.0.3.255
+ rule 100 deny
+#
+acl number 2002
+ description NTP
+ rule 10 permit source 70.0.0.32 0
+ rule 100 deny
+#
+traffic classifier ChangShan operator or precedence 20
+ if-match vlan-id 1101 to 1400
+traffic classifier JiangShan operator or precedence 15
+ if-match vlan-id 501 to 800
+traffic classifier KaiHua operator or precedence 25
+ if-match vlan-id 1401 to 1700
+traffic classifier LongYou operator or precedence 10
+ if-match vlan-id 801 to 1100
+traffic classifier QuZhou operator or precedence 5
+ if-match vlan-id 101 to 500
+traffic classifier tcIAD operator or precedence 30
+ if-match cvlan-id 3599 to 3600
+#
+traffic behavior ChangShan
+ permit
+ nest top-most vlan-id 904
+traffic behavior JiangShan
+ permit
+ nest top-most vlan-id 903
+traffic behavior KaiHua
+ permit
+ nest top-most vlan-id 905
+traffic behavior LongYou
+ permit
+ nest top-most vlan-id 902
+traffic behavior QuZhou
+ permit
+ nest top-most vlan-id 901
+traffic behavior tbIAD
+ permit
+ remark 8021p 4
+#
+traffic policy QuZhou
+ classifier QuZhou behavior QuZhou
+ classifier LongYou behavior LongYou
+ classifier JiangShan behavior JiangShan
+ classifier ChangShan behavior ChangShan
+ classifier KaiHua behavior KaiHua
+traffic policy tpIAD
+ classifier tcIAD behavior tbIAD
+#
+drop-profile default
+#
+vlan 29
+ description For-Management
+vlan 30
+ description AC-H3C
+vlan 31
+ description AC-NETGEAR
+vlan 33
+ description AC-H3C-2
+vlan 911
+ description For-QZXYWuXianShanXun
+vlan 1489
+ description XueYuan_ShanXun
+vlan 1701
+ description test
+vlan 1999
+ description iwifi_test
+vlan 3201
+ description QZDX_NetMonitor_Group
+vlan 3271
+ description DCN_WLAN_dhcp
+#
+aaa
+ authentication-scheme default
+ authentication-scheme zjdx
+  authentication-mode local hwtacacs
+ authorization-scheme default
+ authorization-scheme zjdx
+  authorization-mode local hwtacacs
+ accounting-scheme default
+ accounting-scheme zjdx
+  accounting-mode hwtacacs
+  accounting start-fail online
+ recording-scheme zjdx
+  recording-mode hwtacacs zjdx
+ cmd recording-scheme zjdx
+ outbound recording-scheme zjdx
+ system recording-scheme zjdx
+ domain default
+ domain default_admin
+  authentication-scheme zjdx
+  accounting-scheme zjdx
+  authorization-scheme zjdx
+  hwtacacs-server zjdx
+ local-user local password cipher %@%@s7YeOv=M&+tOe`0q\(A'kF~X%@%@
+ local-user local privilege level 3
+ local-user local service-type telnet terminal
+ local-user zjnoc password cipher %@%@+.6S4&`I\(Nziw@6^0&E6pNT%@%@
+ local-user zjnoc privilege level 3
+ local-user zjnoc service-type telnet terminal
+ local-user wangyou password irreversible-cipher %@%@;qH;V^c0XF/1L9E%r$_#2RqHGLNIBr"{l:5_&a%~O^oFRqK2%@%@
+ undo local-user admin
+#
+ntp-service access peer 2002
+ntp-service unicast-server 70.0.0.32 version 2 source-interface Vlanif29 preference
+#
+interface Vlanif29
+ description For-Management
+ ip address 10.20.145.4 255.255.255.240
+#
+interface Eth-Trunk1
+ description uT:QZ-QZ-XDL-BAS-4.MAN.M6000:LAG1(GE0/0/0/11)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 901 to 905 907 to 910 912 3201
+ mode lacp
+#
+interface Eth-Trunk2
+ description uT:QZ-QZ-XDL-BAS-5.MAN.M6000:LAG1(GE0/0/0/11)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 907 to 910 912
+ mode lacp
+#
+interface Eth-Trunk3
+ description uT:QZ-QZ-XDL-BAS-6.MAN.ME60:LAG3(GE1/1/0,GE1/1/1)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 911 3000
+ mode lacp
+#
+interface Ethernet0/0/0
+#
+interface GigabitEthernet1/0/0
+ shutdown
+#
+interface GigabitEthernet1/0/1
+ description uT:QZ-QZ-XDL-SR-1.MAN.7750:(local)GE5/2/8
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 29 to 31 33 900 1701 1999 3271
+#
+interface GigabitEthernet1/0/2
+ description TO_XDL_WLAN_S9303_2 G1/0/2
+ port link-type trunk
+ port trunk allow-pass vlan 29 to 31 33
+#
+interface GigabitEthernet1/0/3
+ description WLAN-Shi-MAIN
+ port hybrid tagged vlan 29 to 30 1999 3271
+ port hybrid untagged vlan 901 to 905 907 to 910 912 1489
+ port vlan-stacking vlan 101 to 500 stack-vlan 901
+ port vlan-stacking vlan 801 to 1100 stack-vlan 902
+ port vlan-stacking vlan 501 to 800 stack-vlan 903
+ port vlan-stacking vlan 1101 to 1400 stack-vlan 904
+ port vlan-stacking vlan 1401 to 1700 stack-vlan 905
+ port vlan-stacking vlan 2001 to 2500 stack-vlan 907
+ port vlan-stacking vlan 2801 to 3000 stack-vlan 908
+ port vlan-stacking vlan 1710 to 1850 stack-vlan 909
+ port vlan-stacking vlan 1851 to 1998 stack-vlan 910
+ port vlan-stacking vlan 2000 stack-vlan 910
+ port vlan-stacking vlan 2501 to 2700 stack-vlan 912
+ port vlan-stacking vlan 2701 to 2800 stack-vlan 912
+ port vlan-stacking vlan 1701 to 1709 stack-vlan 1489
+#
+interface GigabitEthernet1/0/4
+ description WLAN-MAIN-BELL
+ port hybrid tagged vlan 29 31 1999
+ port hybrid untagged vlan 901 to 910 912
+ port vlan-stacking vlan 101 to 500 stack-vlan 901
+ port vlan-stacking vlan 801 to 1100 stack-vlan 902
+ port vlan-stacking vlan 501 to 800 stack-vlan 903
+ port vlan-stacking vlan 1101 to 1400 stack-vlan 904
+ port vlan-stacking vlan 1401 to 1700 stack-vlan 905
+ port vlan-stacking vlan 2001 to 2500 stack-vlan 907
+ port vlan-stacking vlan 2801 to 3000 stack-vlan 908
+ port vlan-stacking vlan 1710 to 1850 stack-vlan 909
+ port vlan-stacking vlan 1851 to 1998 stack-vlan 910
+ port vlan-stacking vlan 2000 stack-vlan 910
+ port vlan-stacking vlan 2501 to 2700 stack-vlan 912
+ port vlan-stacking vlan 2701 to 2800 stack-vlan 912
+#
+interface GigabitEthernet1/0/5
+ undo negotiation auto
+ description uT:QZ-QZ-XDL-BAS-6.MAN.ME60:(Local)GE1/1/0
+ eth-trunk 3
+#
+interface GigabitEthernet1/0/6
+ undo negotiation auto
+ description uT:QZ-QZ-XDL-BAS-6.MAN.ME60:(Local)GE1/1/1
+ eth-trunk 3
+#
+interface GigabitEthernet1/0/7
+ description description To_XDL1440-2 G2/1
+ shutdown
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 12 900 906 1201 to 1205
+#
+interface GigabitEthernet1/0/8
+ shutdown
+#
+interface GigabitEthernet1/0/9
+ description WLAN-MAIN-BELL_ShiQu
+ port hybrid tagged vlan 29 31 1999
+ port hybrid untagged vlan 901 to 910 912
+ port vlan-stacking vlan 101 to 500 stack-vlan 901
+ port vlan-stacking vlan 801 to 1100 stack-vlan 902
+ port vlan-stacking vlan 501 to 800 stack-vlan 903
+ port vlan-stacking vlan 1101 to 1400 stack-vlan 904
+ port vlan-stacking vlan 1401 to 1700 stack-vlan 905
+ port vlan-stacking vlan 2001 to 2500 stack-vlan 907
+ port vlan-stacking vlan 2801 to 3000 stack-vlan 908
+ port vlan-stacking vlan 1710 to 1850 stack-vlan 909
+ port vlan-stacking vlan 1851 to 1998 stack-vlan 910
+ port vlan-stacking vlan 2000 stack-vlan 910
+ port vlan-stacking vlan 2501 to 2700 stack-vlan 912
+ port vlan-stacking vlan 2701 to 2800 stack-vlan 912
+#
+interface GigabitEthernet1/0/10
+ shutdown
+#
+interface GigabitEthernet1/0/11
+#
+interface GigabitEthernet1/0/12
+ shutdown
+#
+interface GigabitEthernet1/0/13
+ port link-type access
+ port default vlan 900
+#
+interface GigabitEthernet1/0/14
+ description to QZ_XDL_WLAN_AC_H3C_WX6108E-1:GE2/1
+ port hybrid tagged vlan 29 33 1999 3271
+ port hybrid untagged vlan 901 to 912 1489
+ port vlan-stacking vlan 107 to 500 stack-vlan 901
+ port vlan-stacking vlan 801 to 1100 stack-vlan 902
+ port vlan-stacking vlan 501 to 800 stack-vlan 903
+ port vlan-stacking vlan 1101 to 1400 stack-vlan 904
+ port vlan-stacking vlan 1401 to 1700 stack-vlan 905
+ port vlan-stacking vlan 2001 to 2500 stack-vlan 907
+ port vlan-stacking vlan 2801 to 3000 stack-vlan 908
+ port vlan-stacking vlan 1710 to 1850 stack-vlan 909
+ port vlan-stacking vlan 1851 to 1998 stack-vlan 910
+ port vlan-stacking vlan 2000 stack-vlan 910
+ port vlan-stacking vlan 101 to 106 stack-vlan 911
+ port vlan-stacking vlan 2501 to 2700 stack-vlan 912
+ port vlan-stacking vlan 2701 to 2800 stack-vlan 912
+ port vlan-stacking vlan 1701 to 1709 stack-vlan 1489
+#
+interface GigabitEthernet1/0/15
+#
+interface GigabitEthernet1/0/16
+#
+interface GigabitEthernet1/0/17
+#
+interface GigabitEthernet1/0/18
+#
+interface GigabitEthernet1/0/19
+#
+interface GigabitEthernet1/0/20
+ undo negotiation auto
+ description uT:QZ-QZ-XDL-BAS-4.MAN.M6000:(local)GE0/0/0/11
+ eth-trunk 1 mode passive
+#
+interface GigabitEthernet1/0/21
+ undo negotiation auto
+ description uT:QZ-QZ-XDL-BAS-5.MAN.M6000:(local)GE0/0/0/11
+ eth-trunk 2 mode passive
+#
+interface GigabitEthernet1/0/22
+ undo negotiation auto
+ description uT:QZ-QZ-XDL-BAS-10.MAN.7750:(local)GE6/1/20
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 1489
+#
+interface GigabitEthernet1/0/23
+ description WLAN_QuZhouRenMingYiYuan
+ port hybrid untagged vlan 901
+ port vlan-stacking vlan 456 stack-vlan 901
+#
+interface NULL0
+#
+ip route-static 0.0.0.0 0.0.0.0 10.20.145.1
+#
+snmp-agent
+snmp-agent local-engineid 000007DB7FFFFFFF000037FF
+snmp-agent community read cipher %$%$2q*N3notm+)O}(K40F<=6pYI(!|M3hf`@Il5VI8:a{E1pYL68}j*>&>_6RHc'I1~|5OQYU6p%$%$ acl 2000
+snmp-agent sys-info contact QZ-QZ-XDL
+snmp-agent sys-info location QZ-QZ-XDL-DSW-2.WLAN
+snmp-agent sys-info version all
+snmp-agent target-host trap address udp-domain 10.192.0.11 params securityname cipher %@%@#m'sSjv"1B]|QYB(O72P6pZa%@%@ v2c
+snmp-agent target-host trap address udp-domain 10.192.0.12 params securityname cipher %@%@;I2J$UAb(Lo2h:ADB;\R6pZT%@%@ v2c
+snmp-agent trap source Vlanif29
+snmp-agent trap enable
+#
+header login information " WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!"
+#
+user-interface con 0
+user-interface vty 0 4
+ acl 2001 inbound
+ authentication-mode aaa
+ user privilege level 15
+ idle-timeout 5 0
+user-interface vty 16 20
+#
+assistant task savelogfile
+ if-match timer cron * 0 0/1 * * * *
+ perform 1 batch-file savelogfile.bat
+#
+return
+<QZ-QZ-XDL-DSW-1.WLAN.S9303>

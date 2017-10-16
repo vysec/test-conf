@@ -1,0 +1,259 @@
+
+Building configuration...
+
+Current configuration : 6323 bytes
+!
+version 12.2
+no service pad
+service tcp-keepalives-in
+service tcp-keepalives-out
+service timestamps debug datetime
+service timestamps log datetime
+service password-encryption
+!
+hostname LS-SC-NanJianYan-DSW-1.MAN.C3550
+!
+logging buffered 16384 debugging
+no logging console
+enable secret 5 $1$OP2c$dn.5sh6PiQg4EJ0OaDl8G.
+!
+username admin privilege 15 password 7 08365F1F0E1B0D1D1609
+aaa new-model
+aaa authentication login default group tacacs+ local
+aaa authentication login telnet group tacacs+ local
+aaa authentication enable default group tacacs+ enable
+aaa authorization config-commands
+aaa authorization exec default group tacacs+ local 
+aaa authorization exec telnet group tacacs+ local 
+aaa authorization commands 0 telnet group tacacs+ local 
+aaa authorization commands 1 telnet group tacacs+ local 
+aaa authorization commands 15 default group tacacs+ local 
+aaa authorization commands 15 telnet group tacacs+ local 
+aaa authorization network default group tacacs+ local 
+aaa accounting exec default start-stop group tacacs+
+aaa accounting commands 15 default start-stop group tacacs+
+!
+aaa session-id common
+clock timezone Beijing 8
+no errdisable detect cause loopback
+ip subnet-zero
+no ip source-route
+ip routing
+!
+vtp mode transparent
+!
+!
+!
+no file verify auto
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+vlan 29
+ name Cisco-Manager
+!
+vlan 40
+ name WG-Iwifi
+!
+vlan 87
+ name WG-WLAN
+!
+vlan 1657
+ name GuanYan-ZTE9806e-1-1
+!
+vlan 2374
+ name PPPOE-NanJianYan
+!
+vlan 3471
+ name VPN-DongLiJianKong
+!
+vlan 3939
+ name IP-NanJianYan-QuanQiuYan
+!
+interface Loopback0
+ ip address 10.10.252.137 255.255.255.255
+!
+interface FastEthernet0/1
+ description VPN-NanJianYanDongLiJianKong
+ switchport access vlan 3471
+ switchport mode access
+ shutdown
+!
+interface FastEthernet0/2
+ switchport mode access
+ shutdown
+!
+interface FastEthernet0/3
+ description TO-DSLAM-GuanYan-9806E-1-1
+ switchport access vlan 1657
+ switchport mode dot1q-tunnel
+ no cdp enable
+!
+interface FastEthernet0/4
+ switchport mode access
+!
+interface FastEthernet0/5
+ switchport mode access
+!
+interface FastEthernet0/6
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/7
+ switchport trunk encapsulation dot1q
+ switchport mode access
+!
+interface FastEthernet0/8
+ description IP-2HaoLou
+ switchport access vlan 3939
+ switchport mode access
+!
+interface FastEthernet0/9
+ description IP-NanJianYan-QuanQiuYan
+ switchport access vlan 3939
+ switchport mode access
+!
+interface FastEthernet0/10
+ switchport mode access
+!
+interface FastEthernet0/11
+ switchport mode access
+!
+interface FastEthernet0/12
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/13
+ description TO-WLAN-AP
+ switchport access vlan 87
+ switchport mode access
+!
+interface FastEthernet0/14
+ description TO-WLAN-AP
+ switchport access vlan 87
+ switchport mode access
+!
+interface FastEthernet0/15
+ description TO-WLAN-Iwifi-JiFang
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 40
+ switchport mode trunk
+ speed 100
+!
+interface FastEthernet0/16
+ description TO-WLAN-Iwifi-JieDaiZhongXin
+ switchport access vlan 40
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 40
+ switchport mode trunk
+!
+interface FastEthernet0/17
+ description TO-WLAN-Iwifi-CanTing
+ switchport access vlan 40
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 40
+ switchport mode trunk
+!
+interface FastEthernet0/18
+ description TO-WLAN-Iwifi-SheYingChanglang
+ switchport access vlan 40
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 40
+ switchport mode trunk
+!
+interface FastEthernet0/19
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/20
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/21
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/22
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/23
+ description PPPOE-TEST
+ switchport access vlan 2374
+ switchport mode access
+!
+interface FastEthernet0/24
+ switchport trunk encapsulation dot1q
+ switchport mode dynamic desirable
+!
+interface GigabitEthernet0/1
+ description uT:LS-SC-ShiLian-DSW-1.MAN.8905:(F0907300002)GE2/21
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 29,40,87,1657,2374,3471,3939
+ switchport mode trunk
+ speed nonegotiate
+!
+interface GigabitEthernet0/2
+ switchport trunk encapsulation dot1q
+ switchport mode access
+ speed nonegotiate
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan29
+ description Cisco-Manager                                     
+ ip address 10.10.70.137 255.255.255.128
+ no ip redirects
+ no ip unreachables
+ no ip proxy-arp
+ no ip route-cache cef
+ no ip route-cache
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 10.10.70.129
+no ip http server
+!
+logging trap debugging
+logging source-interface Loopback0
+logging 10.10.1.130
+snmp-server group v3group v3 auth read NO_BAD_SNMP write NO_BAD_SNMP 
+snmp-server view NO_BAD_SNMP iso included
+snmp-server view NO_BAD_SNMP internet included
+snmp-server view NO_BAD_SNMP transmission.94 excluded
+snmp-server view NO_BAD_SNMP mib-2.34.9 excluded
+snmp-server view NO_BAD_SNMP ciscoMgmt.35 excluded
+snmp-server view NO_BAD_SNMP ciscoMgmt.95 excluded
+snmp-server view NO_BAD_SNMP ciscoMgmt.130 excluded
+snmp-server view NO_BAD_SNMP ciscoMgmt.219 excluded
+snmp-server view NO_BAD_SNMP ciscoMgmt.252 excluded
+snmp-server view NO_BAD_SNMP ciscoMgmt.254 excluded
+snmp-server view NO_BAD_SNMP ciscoExperiment.997 excluded
+snmp-server community ls578@zjnoc RO
+snmp-server community mycomm view NO_BAD_SNMP RO
+tacacs-server host 10.10.1.238
+tacacs-server directed-request
+tacacs-server key 7 06111C704B4C050309150A
+radius-server source-ports 1645-1646
+!
+control-plane
+!
+banner login ^C WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!  ^C
+!
+line con 0
+line vty 0 4
+ exec-timeout 3 0
+ password 7 140D180406247A78713B30
+ authorization commands 0 telnet
+ authorization commands 1 telnet
+ authorization commands 15 telnet
+ authorization exec telnet
+ login authentication telnet
+line vty 5 15
+ password 7 083B46410339554447180F
+ authorization commands 0 telnet
+ authorization commands 1 telnet
+ authorization commands 15 telnet
+ authorization exec telnet
+!
+ntp clock-period 17180281
+ntp server 10.10.1.138
+end
+
+LS-SC-NanJianYan-DSW-1.MAN.C3550#

@@ -1,0 +1,546 @@
+
+!Software Version V200R010C00SPC600
+#
+sysname JH-LX-ZG-SW2-S9306-1.MAN
+#
+info-center source IP channel 3 log level error
+info-center loghost source Vlanif49
+info-center loghost 220.188.118.249 language Chinese facility local3
+#
+vlan batch 30 32 36 38 to 39 41 to 42 46 49 to 50 951 1023 1399 to 1402
+vlan batch 1407 to 1408 1437 1439 1528 to 1537 1771 to 1800 2320 2373 2600 2765 2781
+vlan batch 2793 3009 3201 3212 3220 3904 3945 to 3946 3963 3986 to 3987 4000
+#
+loopback-detect auto disable
+#
+undo authentication unified-mode
+#
+telnet server enable
+telnet ipv6 server enable
+#
+undo http server enable
+undo http secure-server enable
+#
+undo management-port isolate enable
+undo management-plane isolate enable
+#
+clock timezone UTC add 00:00:00
+#
+ecmp local-preference disable
+#
+undo portal url-encode enable
+#
+set flow-change-ratio input-broadcast-detect disable
+#
+diffserv domain default
+#
+radius-server template default
+ radius-server shared-key cipher %^%#dH&JUtw!'%g:N}#W2R{)Ki,lX~_@e5hsKcHd4-5,%^%#
+radius-server template telnet
+ radius-server shared-key cipher %^%#!W<W<Nb`lXhq#`MTTd4PiE4-.^a40Hp_]o2r9"h;%^%#
+ undo radius-server user-name domain-included
+#
+hwtacacs-server template telnet
+ hwtacacs-server authentication 61.175.255.41
+ hwtacacs-server authorization 61.175.255.41
+ hwtacacs-server accounting 61.175.255.41
+ hwtacacs-server source-ip 172.31.120.76
+ hwtacacs-server shared-key cipher %^%#T;5'M@%u[66/%gRQEv'IWD-@R}_DuAM]J*U7l"a%%^%#
+ undo hwtacacs-server user-name domain-included
+#
+drop-profile default
+#
+vlan 32
+ description DSLAM-NetManagement
+vlan 38
+ description JH-GuangShouFaQiManage-VPN
+vlan 46
+ description Swtich-Managerment-2
+vlan 49
+ description switch-management
+vlan 50
+ description SWITCH-NetManagement
+vlan 1399
+ description lx-WuTaiRen-DSLAM
+vlan 1400
+ description lx-houlunfang-DSLAM
+vlan 1401
+ description LX-XY-QianZhai-ALC-DSLAM
+vlan 1402
+ description lx-ShouFeiZhan-ALC-DSLAM
+vlan 1437
+ description lx-ShuangTangXia-ALC-7325
+vlan 1439
+ description lx-GuTang-ALC-7325
+vlan 1528
+ description LX-ZHuGe-AL7302FD-DSLAM
+vlan 1529
+ description LX-ChuanTangXia-1-ACL-DSLAM
+vlan 1530
+ description LX-SHuangPai-1-UT-DSLAM
+vlan 1531
+ description LX-GuanCun-1-ACL-DSLAM
+vlan 1532
+ description LX-GeTangZHu-1-UT-DSLAM
+vlan 1533
+ description LX-WengJia-1-UT-DSLAM
+vlan 1534
+ description LX-YinTang-1-UT-DSLAM
+vlan 1535
+ description LX-CHangLe-1-UT-DSLAM
+vlan 1536
+ description LX-FanSuo-1-ACL-DSLAM
+vlan 1537
+ description LX-ShangXu-1-ACL-DSLAM
+vlan 3009
+ description LX_JiaoYuWang_VPN
+vlan 3201
+ description HBJK_LanXiYingRanChang_VPN
+vlan 4000
+ description lx-ZhuGeCun-QQY
+#
+aaa
+ authentication-scheme default
+ authentication-scheme radius
+  authentication-mode radius
+ authentication-scheme telent
+  authentication-mode hwtacacs local
+ authorization-scheme default
+ authorization-scheme telnet
+  authorization-mode hwtacacs local
+ accounting-scheme default
+ accounting-scheme telnet
+  accounting start-fail online
+ domain default
+  authentication-scheme default
+ domain default_admin
+  authentication-scheme telent
+  accounting-scheme telnet
+  authorization-scheme telnet
+  hwtacacs-server telnet
+ local-user admin password irreversible-cipher $1a$wi<T5Furh>$}ZK@83{3R7tbftId4L<@WQi,>RoBuX^MD4$Jc0q<$
+ local-user admin privilege level 3
+ local-user admin service-type http
+ local-user aaa@huawei.com password cipher %^%#R%W_5KF4j)<T;@S`:DP(*<`B/D2P{3m>$B%djt})%^%#
+ local-user aaa@huawei.com service-type telnet terminal ssh ftp ppp web x25-pad bind 8021x http
+#
+ntp-service unicast-server 61.175.255.59
+#
+interface Vlanif42
+ ip address 172.22.218.107 255.255.255.0
+#
+interface Vlanif49
+ description switch-mangement
+ ip address 172.31.120.76 255.255.255.224
+#
+interface Vlanif1023
+ ip address 172.18.0.1 255.255.255.252
+#
+interface Eth-Trunk1
+ description dt:JH-LX-ZG-OLT.MAN-MA5680T-1(LOCAL)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 39 42 951 1777 to 1800 2320 2373 2600 2793 3904
+ mode lacp
+#
+interface Eth-Trunk2
+ description dt:JH-LX-ZG-OLT.MAN-MA5680T-2(LOCAL)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 39 42 1771 to 1776 2320 2781 3904
+ mode lacp
+#
+interface Eth-Trunk3
+ description dt:JH-LX-ZG-OLT.MAN-MA5680T-3(LOCAL)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 39 42 1407 to 1408 2765
+ mode lacp
+#
+interface Eth-Trunk9
+ description uT:JH-LX-CX-BAS-1.MAN.ME60:Eth-Trunk15(7/1/2)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 42 1407 1771 1773 1775 1777 1779 1781 1783 1785
+ port trunk allow-pass vlan 1787 1789 1791 1793 1795 1797
+ mode lacp
+#
+interface Eth-Trunk19
+ description uT:JH-LX-CX-BAS-2.MAN.ME60:(7/1/5)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 1408 1772 1774 1776 1778 1780 1782 1784 1786 1788
+ port trunk allow-pass vlan 1790 1792 1794 1796 1798 to 1800
+ mode lacp
+#
+interface Ethernet0/0/0
+#
+interface GigabitEthernet3/0/0
+ undo negotiation auto
+ speed 100
+ description To LX-YinTang-ALC-7325-DSLAM
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 30 32
+ port hybrid untagged vlan 1534
+ port vlan-stacking vlan 101 to 901 stack-vlan 1534
+ port vlan-stacking vlan 3600 stack-vlan 1534
+#
+interface GigabitEthernet3/0/1
+ undo negotiation auto
+ speed 100
+ description To LX-GeTangZHu-HW3928
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 30 32 46 49 to 50 1399 to 1400 1532 3201
+#
+interface GigabitEthernet3/0/2
+ undo negotiation auto
+ speed 100
+ description lx-ShouFeiZhan-ALC-7325
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 30 32
+ port hybrid untagged vlan 1402
+ port vlan-stacking vlan 101 to 901 stack-vlan 1402
+ port vlan-stacking vlan 3600 stack-vlan 1402
+#
+interface GigabitEthernet3/0/3
+ description Lx_Jingyuan_Weave.Co
+ shutdown
+ port link-type access
+ port default vlan 3986
+#
+interface GigabitEthernet3/0/4
+ description xintiandi_netbar
+ shutdown
+ port link-type access
+ port default vlan 3945
+#
+interface GigabitEthernet3/0/5
+ description zg_lima_shuini
+ port link-type access
+ port default vlan 3987
+#
+interface GigabitEthernet3/0/6
+ description huanbao_lima
+ port link-type access
+ port default vlan 3212
+#
+interface GigabitEthernet3/0/7
+ undo negotiation auto
+ speed 100
+ description To-LX-ZhuGe-YingYeTing-WLN
+ port link-type access
+ port default vlan 36
+#
+interface GigabitEthernet3/0/8
+ description lx-ShuangPaiXiaoXue-QQY
+ shutdown
+ port link-type access
+ port default vlan 3963
+#
+interface GigabitEthernet3/0/9
+ undo negotiation auto
+ speed 100
+ description LX_JiaoYuWang_VPN
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 3009
+#
+interface GigabitEthernet3/0/10
+#
+interface GigabitEthernet3/0/11
+ description lx-ZhuGeCun-QQY-BMQ
+ port link-type access
+ port default vlan 4000
+#
+interface GigabitEthernet3/0/12
+ undo negotiation auto
+ speed 100
+ description lx-ZhuGeCun-QQY
+ port link-type access
+ port default vlan 4000
+#
+interface GigabitEthernet3/0/13
+ description SanYangWangBa
+ port link-type access
+ port default vlan 3946
+#
+interface GigabitEthernet3/0/14
+#
+interface GigabitEthernet3/0/15
+#
+interface GigabitEthernet3/0/16
+#
+interface GigabitEthernet3/0/17
+#
+interface GigabitEthernet3/0/18
+#
+interface GigabitEthernet3/0/19
+#
+interface GigabitEthernet3/0/20
+#
+interface GigabitEthernet3/0/21
+#
+interface GigabitEthernet3/0/22
+#
+interface GigabitEthernet3/0/23
+#
+interface GigabitEthernet3/0/24
+#
+interface GigabitEthernet3/0/25
+#
+interface GigabitEthernet3/0/26
+#
+interface GigabitEthernet3/0/27
+#
+interface GigabitEthernet3/0/28
+#
+interface GigabitEthernet3/0/29
+#
+interface GigabitEthernet3/0/30
+#
+interface GigabitEthernet3/0/31
+#
+interface GigabitEthernet3/0/32
+#
+interface GigabitEthernet3/0/33
+#
+interface GigabitEthernet3/0/34
+#
+interface GigabitEthernet3/0/35
+#
+interface GigabitEthernet3/0/36
+#
+interface GigabitEthernet3/0/37
+#
+interface GigabitEthernet3/0/38
+#
+interface GigabitEthernet3/0/39
+#
+interface GigabitEthernet3/0/40
+#
+interface GigabitEthernet3/0/41
+#
+interface GigabitEthernet3/0/42
+#
+interface GigabitEthernet3/0/43
+#
+interface GigabitEthernet3/0/44
+#
+interface GigabitEthernet3/0/45
+#
+interface GigabitEthernet3/0/46
+#
+interface GigabitEthernet3/0/47
+#
+interface GigabitEthernet6/0/0
+ undo negotiation auto
+ description uT:JH-LX-CX-BAS-1.MAN.ME60:(F1406030035)GE7/1/2
+ eth-trunk 9
+#
+interface GigabitEthernet6/0/1
+ undo negotiation auto
+ description uT:JH-LX-CX-BAS-2.MAN.ME60:(F1406030038)GE7/1/5
+ eth-trunk 19
+#
+interface GigabitEthernet6/0/2
+ undo negotiation auto
+#
+interface GigabitEthernet6/0/3
+#
+interface GigabitEthernet6/0/4
+ undo negotiation auto
+ description pt:JH-LX-YC-SW2-S9306-1.MAN:(F0805120011):GE6/0/7
+ port link-type trunk
+ port trunk allow-pass vlan 30 32 36 38 to 39 41 46 49 to 50 951 1399 to 1402 1437
+ port trunk allow-pass vlan 1439 1528 to 1537 2320 2373 2600 2765 2781 2793 3009 3201
+ port trunk allow-pass vlan 3212 3220 3904 3945 to 3946 3963 3986 to 3987 4000
+#
+interface GigabitEthernet6/0/5
+ undo negotiation auto
+ description To LX-WengJia-MA5600
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 30 32
+ port hybrid untagged vlan 1533
+ port vlan-stacking vlan 101 to 901 stack-vlan 1533
+ port vlan-stacking vlan 3600 stack-vlan 1533
+#
+interface GigabitEthernet6/0/6
+ undo negotiation auto
+ description To LX-SHuangPai-HW-MA5600-DSLAM
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 30 32
+ port hybrid untagged vlan 1530
+ port vlan-stacking vlan 101 to 901 stack-vlan 1530
+ port vlan-stacking vlan 3600 stack-vlan 1530
+#
+interface GigabitEthernet6/0/7
+ undo negotiation auto
+ description To LX-CHangLe-1-MA5600
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 30 32
+ port hybrid untagged vlan 1535
+ port vlan-stacking vlan 101 to 901 stack-vlan 1535
+ port vlan-stacking vlan 3600 stack-vlan 1535
+#
+interface GigabitEthernet6/0/8
+ undo negotiation auto
+ description dt:JH-LX-ZG-DSLAM.MAN:(LOCAL)GE0/8/0
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 30 32
+ port hybrid untagged vlan 1528
+ port vlan-stacking vlan 101 to 901 stack-vlan 1528
+ port vlan-stacking vlan 3600 stack-vlan 1528
+#
+interface GigabitEthernet6/0/9
+ undo negotiation auto
+ description To LX-ZhuGe-AL7302FD
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 30 32
+ port hybrid untagged vlan 1528
+ port vlan-stacking vlan 101 to 901 stack-vlan 1528
+ port vlan-stacking vlan 3600 stack-vlan 1528
+#
+interface GigabitEthernet6/0/10
+ undo negotiation auto
+ description dt:JH-LX-ZG-OLT.MAN-MA5680T-1:(LOCAL)GE0/19/0
+ eth-trunk 1
+#
+interface GigabitEthernet6/0/11
+ undo negotiation auto
+ description dt:JH-LX-ZG-OLT.MAN-MA5680T-1:(LOCAL)GE0/19/1
+ eth-trunk 1
+#
+interface GigabitEthernet6/0/12
+ description dt:JH-LX-ZG-OLT.MAN-MA5680T-2:(LOCAL)GE0/19/0
+ eth-trunk 2
+#
+interface GigabitEthernet6/0/13
+ undo negotiation auto
+ description ut:JH-LX-CX-BAS-1.MAN.ME60:(F1602050013)GE1/1/5
+ eth-trunk 9
+#
+interface GigabitEthernet6/0/14
+ undo negotiation auto
+ description ut:JH-LX-CX-BAS-2.MAN.ME60:(F1602050012)GE1/1/5
+ eth-trunk 19
+#
+interface GigabitEthernet6/0/15
+ undo negotiation auto
+ description dt:JH-LX-ZG-OLT.MAN-MA5680T-2:(LOCAL)GE0/19/1
+ eth-trunk 2
+#
+interface GigabitEthernet6/0/16
+ description dt:JH-LX-ZG-OLT.MAN-MA5680T-1:(LOCAL)GE0/20/0
+ eth-trunk 1
+#
+interface GigabitEthernet6/0/17
+ description dt:JH-LX-ZG-OLT.MAN-MA5680T-1:(LOCAL)GE0/20/1
+ eth-trunk 1
+#
+interface GigabitEthernet6/0/18
+ undo negotiation auto
+ description ut:JH-LX-CX-BAS-1.MAN.ME60:(F1701223468)GE1/1/6
+ eth-trunk 9
+#
+interface GigabitEthernet6/0/19
+ undo negotiation auto
+ description ut:JH-LX-CX-BAS-2.MAN.ME60:(F1701223469)GE1/1/6
+ eth-trunk 19
+#
+interface GigabitEthernet6/0/20
+ description dt:JH-LX-OLT.MAN-MA5680T-3:(LOCAL):GE0/19/0
+ eth-trunk 3
+#
+interface GigabitEthernet6/0/21
+ description dt:JH-LX-OLT.MAN-MA5680T-3:(LOCAL):GE0/19/1
+ eth-trunk 3
+#
+interface GigabitEthernet6/0/22
+#
+interface GigabitEthernet6/0/23
+#
+interface GigabitEthernet6/0/24
+#
+interface GigabitEthernet6/0/25
+#
+interface GigabitEthernet6/0/26
+#
+interface GigabitEthernet6/0/27
+#
+interface GigabitEthernet6/0/28
+#
+interface GigabitEthernet6/0/29
+#
+interface GigabitEthernet6/0/30
+#
+interface GigabitEthernet6/0/31
+#
+interface GigabitEthernet6/0/32
+#
+interface GigabitEthernet6/0/33
+#
+interface GigabitEthernet6/0/34
+#
+interface GigabitEthernet6/0/35
+#
+interface GigabitEthernet6/0/36
+#
+interface GigabitEthernet6/0/37
+#
+interface GigabitEthernet6/0/38
+#
+interface GigabitEthernet6/0/39
+#
+interface GigabitEthernet6/0/40
+#
+interface GigabitEthernet6/0/41
+#
+interface GigabitEthernet6/0/42
+#
+interface GigabitEthernet6/0/43
+#
+interface GigabitEthernet6/0/44
+#
+interface GigabitEthernet6/0/45
+#
+interface GigabitEthernet6/0/46
+#
+interface GigabitEthernet6/0/47
+#
+interface NULL0
+#
+ip route-static 0.0.0.0 0.0.0.0 172.31.120.65
+#
+snmp-agent
+snmp-agent local-engineid 800007DB03D4B110ABED20
+snmp-agent community read cipher %^%#1.0f2-,u10'JM6;eBMk2@!w71R6nTM>kEn<S'|B'Q]1%$!JdZH2+.7JQ^1@Ioo3P3#^K*XQxaOEjRp/V%^%#
+snmp-agent sys-info version all
+#
+ssh server compatible-ssh1x enable
+#
+easy-operation dtls disable
+#
+user-interface maximum-vty 15
+user-interface con 0
+ authentication-mode password
+ set authentication password cipher %^%#b_NjVawhv%YEH@V@(nv8T_aC8%)A{>GxluXT7}5;z<`SLo8ED04S'_Di0M'C%^%#
+ idle-timeout 0 0
+ screen-length 0
+user-interface vty 0 4
+ authentication-mode aaa
+ user privilege level 1
+ idle-timeout 0 0
+ screen-length 50
+ protocol inbound telnet
+user-interface vty 5 14
+ authentication-mode aaa
+ user privilege level 3
+ idle-timeout 0 0
+ screen-length 0
+ protocol inbound telnet
+user-interface vty 16 20
+ protocol inbound telnet
+#
+return
+<JH-LX-ZG-SW2-S9306-1.MAN>

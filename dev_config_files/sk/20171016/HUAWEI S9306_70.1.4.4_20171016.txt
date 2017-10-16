@@ -1,0 +1,1669 @@
+
+!Software Version V200R008C00SPC500
+#
+sysname QZ-QZ-SJ-DSW-1.MAN.S9306
+#
+super password level 3 cipher %$%$e{Wu+ZhskC"{\9&@0q-=PCP;\+!C1I2:$RyQ)KNY{-VCCP>P%$%$
+#
+info-center source default channel 2 log level warning trap level warning
+info-center source default channel 4 log level notification
+info-center source SHELL channel 4 log level notification
+info-center source NTP channel 4 log state off 
+info-center loghost source Vlanif20
+info-center loghost 10.192.0.11 facility local4
+info-center loghost 10.192.0.12 facility local4
+#
+vlan batch 16 20 to 29 489 503 509 530 543 561 701 to 710 715 to 717
+vlan batch 723 727 729 to 730 737 to 738 741 743 745 747 751 755
+vlan batch 765 769 772 to 773 775 777 779 781 to 785 787 to 797 804 to 805 836
+vlan batch 840 843 851 860 to 869 880 to 881 883 885 998 1198 1207
+vlan batch 1214 1220 to 1221 1223 1294 1330 to 1336 1351 to 1353 1500 1536 to 1538 1573 to 1582 1602
+vlan batch 1604 1626 to 1631 1716 to 1718 1723 to 1735 1771 1784 1797 to 1799 2501 to 2503 2556 to 2558 2646 to 2648
+vlan batch 2653 to 2665 3152 3206 3209 to 3210 3213 3220 to 3221 3239 3273 3283 3290
+vlan batch 3292 3405 3416 3542 3544 to 3545 3547 to 3553 3556 to 3557 3559 to 3560 3563 to 3564 3566
+vlan batch 3571 to 3574 3576 to 3577 3580 3587 3670 3674 3676 3679 3720 3723
+vlan batch 3725 to 3727 3729 to 3730 3732 3738 to 3749 3751 to 3755 3757 to 3759 3800 3802 3807 3809
+vlan batch 3821 to 3827 3829 3831 to 3833 3835 to 3837 3839 3858 to 3859 3880 3901 to 3905 3907 to 3910 3992
+#
+undo authentication unified-mode
+#
+set save-configuration interval 43200 delay 30
+#
+telnet server enable
+telnet ipv6 server enable
+#
+qos car 4m cir 4096 cbs 512000
+#
+lldp enable
+#
+undo http server enable
+undo http secure-server enable
+#
+undo management-port isolate enable
+undo management-plane isolate enable
+#
+clock timezone GMT add 08:00:00
+#
+observe-port 1 interface GigabitEthernet3/0/36
+#
+diffserv domain default
+#
+hwtacacs-server template zjdx
+ hwtacacs-server authentication 70.0.0.32
+ hwtacacs-server authorization 70.0.0.32
+ hwtacacs-server accounting 70.0.0.32
+ hwtacacs-server source-ip 70.1.4.4
+ hwtacacs-server shared-key cipher %^%#sdev"{PVR.[P@nHvU!k&^mEOQU,zA2yv9pKG3p2R%^%#
+ hwtacacs-server timer response-timeout 30
+ undo hwtacacs-server user-name domain-included
+#
+acl number 2000  
+ description SNMP
+ rule 10 permit source 10.192.0.0 0.0.0.255 
+ rule 20 permit source 10.31.255.0 0.0.0.255 
+ rule 30 permit source 70.0.1.0 0.0.0.127 
+ rule 100 deny 
+acl number 2001  
+ description Telnet
+ rule 10 permit source 10.10.0.0 0.0.1.255 
+ rule 20 permit source 10.192.0.0 0.0.0.31 
+ rule 30 permit source 70.1.4.0 0.0.0.255 
+ rule 40 permit source 10.31.255.0 0.0.0.255 
+ rule 50 permit source 70.0.0.0 0.0.3.255 
+ rule 100 deny 
+acl number 2002  
+ description NTP
+ rule 10 permit source 70.0.0.32 0 
+ rule 100 deny 
+#
+traffic classifier c1 operator or precedence 15
+ if-match vlan-id 1573 cvlan-id 462
+traffic classifier tcAny operator or precedence 10
+ if-match any
+traffic classifier tcIAD operator or precedence 5
+ if-match cvlan-id 3599 to 3600
+#
+traffic behavior b1
+ permit
+ mirroring to observe-port 1 
+traffic behavior tb100m
+ permit
+ car cir 102400 pir 102400 cbs 12800000 pbs 12800000 mode color-blind green pass yellow pass red discard
+traffic behavior tb10m
+ permit
+ car cir 10240 pir 10240 cbs 1280000 pbs 1280000 mode color-blind green pass yellow pass red discard
+traffic behavior tb1m
+ permit
+ car cir 1024 pir 1024 cbs 128000 pbs 128000 mode color-blind green pass yellow pass red discard
+traffic behavior tb20m
+ permit
+ car cir 20480 pir 20480 cbs 2560000 pbs 2560000 mode color-blind green pass yellow pass red discard
+traffic behavior tb2m
+ permit
+ car cir 2048 pir 2048 cbs 256000 pbs 256000 mode color-blind green pass yellow pass red discard
+traffic behavior tb4m
+ permit
+ car cir 4096 pir 4096 cbs 512000 pbs 512000 mode color-blind green pass yellow pass red discard
+traffic behavior tb50m
+ permit
+ car cir 51200 pir 51200 cbs 6400000 pbs 6400000 mode color-blind green pass yellow pass red discard
+traffic behavior tb6m
+ permit
+ car cir 6144 pir 6144 cbs 768000 pbs 768000 mode color-blind green pass yellow pass red discard
+traffic behavior tb8m
+ permit
+ car cir 8192 pir 8192 cbs 1024000 pbs 1024000 mode color-blind green pass yellow pass red discard
+traffic behavior tbIAD
+ permit
+ remark 8021p 4
+#
+traffic policy 100m match-order auto
+ classifier tcAny behavior tb100m
+traffic policy 10m match-order auto
+ classifier tcAny behavior tb10m
+traffic policy 1m match-order auto
+ classifier tcAny behavior tb1m
+traffic policy 20m match-order auto
+ classifier tcAny behavior tb20m
+traffic policy 2m match-order auto
+ classifier tcAny behavior tb2m
+traffic policy 4m match-order auto
+ classifier tcAny behavior tb4m
+traffic policy 50m match-order auto
+ classifier tcAny behavior tb50m
+traffic policy 6m match-order auto
+ classifier tcAny behavior tb6m
+traffic policy 8m match-order auto
+ classifier tcAny behavior tb8m
+traffic policy p1 match-order auto
+ classifier c1 behavior b1
+traffic policy tpIAD match-order auto
+ classifier tcIAD behavior tbIAD
+#
+drop-profile default
+#
+vlan 16
+ description TEMP
+vlan 20
+ description For-Management
+vlan 21
+ description UT_ADSL_Manager-XDL
+vlan 22
+ description XDL_ZTE_ADSL_Manager
+vlan 23
+ description Manager_JieDian_L2Switch-XDL
+vlan 24
+ description Manager_ShouFaQi-XDL
+vlan 25
+ description QinQ_Switch_MGR
+vlan 26
+ description Manager_LouDao_Switch-XDL
+vlan 27
+ description Manager_DongLiJianKong_XDL
+vlan 28
+ description Wlan_MAG
+vlan 29
+ description For-ONU-Management
+vlan 489
+ description DCN
+vlan 503
+ description VPN_SB-QuJiangQuSheBaoJu
+vlan 509
+ description Vpn_QJ_NongCunYiLiao
+vlan 530
+ description DCN
+vlan 543
+ description Vpn_QuJiangJiaoYuWang
+vlan 561
+ description Vpn_GuoShui_ShiJu
+vlan 701
+ description DZZW_QJNongYeJu
+vlan 702
+ description DZZW_QJ-XinWenZhongXin
+vlan 703
+ description DZZW_QJLinYeJu
+vlan 704
+ description QJFaYuanDuZe_5701UBD16285822
+vlan 705
+ description DZZW_QJJingJiKaiFaGuanWeiHui
+vlan 706
+ description DZZW_ZhangTanNiHongSheQu_5701LAN09674940
+vlan 707
+ description DZZW_QJChengJianJu
+vlan 708
+ description DZZW_QJFaYuan
+vlan 709
+ description DZZW_ZhangTanXiaFeiSheQu_5701LAN09674946
+vlan 710
+ description DZZW_QJGongAnChongYangLu
+vlan 715
+ description (5701UBD17149200)DZZW_QJCanLian
+vlan 716
+ description DZZW_ZhangTanZhenLinJiangJuWeiHui
+vlan 717
+ description DZZW_QJZhiJianJu
+vlan 723
+ description DZZW_QJDangXiao
+vlan 727
+ description DZZW_ZhangTanJieDao
+vlan 730
+ description DZZW_QJGongAnJu
+vlan 737
+ description DZZW_HengLuXiang
+vlan 738
+ description DZZW_ShiBinYiGuan
+vlan 741
+ description DZZW_QJJianSheJu
+vlan 743
+ description DZZW_QJJianChaYuan
+vlan 745
+ description DZZW_QJLiangShiJu
+vlan 747
+ description DZZW_QJGuiHuaJu
+vlan 751
+ description DZZW_QJZongHeZhiFaJu
+vlan 755
+ description DZZW_QJRenWuBu
+vlan 765
+ description DZZW_ZhangTangGongLuShouFeiZhan
+vlan 769
+ description DZZW_QuJiangQuDiYiChuZhong_5701UBD18794092
+vlan 772
+ description DZZW_QuJiangQuHuanBaoJu
+vlan 773
+ description DZZW_QJShangFangZhengFu
+vlan 775
+ description DZZW_QJHuiPingXiang
+vlan 777
+ description DZZW_QJXiaChuangXiang
+vlan 779
+ description DZZW_QJDuZeZhengFu
+vlan 781
+ description DZZW_QJLianHuaZhengFu
+vlan 782
+ description QJDanXiao_VPN3
+vlan 783
+ description DZZW_QJZhouJiaXiang
+vlan 784
+ description DZZW_QJ_CanLian
+vlan 785
+ description DZZW_QJShuangQiaoXiang
+vlan 787
+ description DZZW_QJTaiZhenXiang
+vlan 788
+ description DZZW_QJJiaoTongJu
+vlan 789
+ description DZZW_QJYunXiXiang
+vlan 790
+ description DZZW_QJ-GongShangJu
+vlan 791
+ description DZZW_QJFuShiJieDao
+vlan 792
+ description DZZW_QJXinFangJu
+vlan 793
+ description DZZW_QJShuiLiJu
+vlan 794
+ description DZZW_QJHuanBaoJu
+vlan 795
+ description DZZW_QJGuoTuJu
+vlan 796
+ description QJ_GuoTuJu_VPN3
+vlan 797
+ description DZZW_QJJiuYeJu
+vlan 804
+ description QJDZZW_QuJiangQuQinShaoGong
+vlan 805
+ description QuJiangQu_Vprn
+vlan 836
+ description DZZW_QJDuZeZhongXinWeiShengYuan_5701LAN09507803
+vlan 840
+ description DZZW_QJGaoJiaZhen
+vlan 851
+ description DZZW_QJCaiZhengJu_5701UBD20976962
+vlan 860
+ description DZZW_QJLinYeJu_5701LAN13998456
+vlan 861
+ description DZZW_QJDangXiao_5701UBD16014770
+vlan 862
+ description DZZW_KJHSSanZhong_5701UBD16640722
+vlan 863
+ description DZZW_QJJiBingYuFang_5701UBD16405484
+vlan 864
+ description DZZW_QJZhiLiangJiShuJianDu_5701UBD16774502
+vlan 865
+ description DZZW_QJ_MinZhengJu_5701UBD19348557
+vlan 866
+ description QJWeiShengJianDu_5701UBD18438468
+vlan 867
+ description DZZW_QJRenMinYiYuan_5701LAN09490650
+vlan 869
+ description DZZW_QJGuanDian_5701LAN00257213
+vlan 880
+ description (5701UBD21284599)DZZW_QJCaiZhengJu_VPN
+vlan 881
+ description (5701UBD21434115)QJChengZhongCun
+vlan 883
+ description (5701UBD22297100)DZZW_QJFuLiCaiPiao
+vlan 998
+ description XDL_EPON-ShenJia_WLAN
+vlan 1198
+ description Wlan_QuJiangFaYuan
+vlan 1207
+ description Wlan-ShenXiaoDaJiuDian
+vlan 1214
+ description Wlan-QuJiangQuZhengFu
+vlan 1220
+ description ShenJiaYingYeTing-Wlan
+vlan 1221
+ description DuZe_ShenJia-Wlan
+vlan 1223
+ description WLAN_PanShiJiaJv
+vlan 1294
+ description Wlan_ShengXiaoHotel
+vlan 1330
+ description ShenJia_Dslam_PPoE-1
+vlan 1331
+ description ShenJia_Lan_PPoE-1
+vlan 1332
+ description ShenJia_Dslam_PPoE-2
+vlan 1333
+ description ShenJia_Dslam_PPoE-3
+vlan 1334
+ description ShenJia_Dslam_PPoE-4
+vlan 1335
+ description ZhenXingJie_Dslam_PPPoE-1
+vlan 1336
+ description ZhenXingJie_Dslam_PPPoE-2
+vlan 1351
+ description SJ-OLT-6.GB5680T-PPP-1#
+vlan 1352
+ description SJ-OLT-6.GB5680T-PPP-2#
+vlan 1353
+ description SJ-OLT-6.GB5680T-PPP-3#
+vlan 1500
+ description XZ-BAS-7750-TEST
+vlan 1536
+ description QZ-QZ-SJ-OLT-7.MAN.GH5516-1#
+vlan 1537
+ description QZ-QZ-SJ-OLT-7.MAN.GH5516-2#
+vlan 1538
+ description QZ-QZ-SJ-OLT-7.MAN.GH5516-3#
+vlan 1573
+ description GPON_PPPoE-1
+vlan 1574
+ description GPON_PPPoE-2
+vlan 1575
+ description GPON_PPPoE-3
+vlan 1576
+ description GPON_PPPoE-4
+vlan 1577
+ description GPON_PPPoE-5
+vlan 1578
+ description QZ-QZ-SJ-OLT-5.MAN.G5680T-1#
+vlan 1579
+ description QZ-QZ-SJ-OLT-5.MAN.G5680T-2#
+vlan 1580
+ description QZ-QZ-SJ-OLT-5.MAN.G5680T-3#
+vlan 1581
+ description QZ-QZ-SJ-OLT-5.MAN.G5680T-4#
+vlan 1582
+ description QZ-QZ-SJ-OLT-5.MAN.G5680T-5#
+vlan 1602
+ description ShenJia_HuaWeiEpon_FTTH
+vlan 1628
+ description FTTB
+vlan 1716
+ description SJ_HWEPON_0/16/3
+vlan 1717
+ description ShenJia-OLT-PPPoE
+vlan 1723
+ description XDL-EPON-ShenJia-PPPOE-1#
+vlan 1724
+ description XDL-EPON-ShenJia-PPPOE-2#
+vlan 1725
+ description XDL-EPON-ShenJia-PPPOE-3#
+vlan 1726
+ description XDL-EPON-ShenJia-PPPOE-4#
+vlan 1727
+ description XDL-EPON-ShenJia-PPPOE-5#
+vlan 1728
+ description XDL-EPON-ShenJia-PPPOE-6#
+vlan 1729
+ description XDL-EPON-ShenJia-PPPOE-7#
+vlan 1730
+ description XDL-EPON-ShenJia-PPPOE-8#
+vlan 1731
+ description XDL-EPON-ShenJia-PPPOE-11#
+vlan 1732
+ description XDL-EPON-ShenJia-PPPOE-12#
+vlan 1733
+ description XDL-EPON-ShenJia-PPPOE-13#
+vlan 1734
+ description XDL-EPON-ShenJia-PPPOE-14#
+vlan 1735
+ description XDL-EPON-ShenJia-PPPOE-15#
+vlan 1771
+ description SJ-OLT-6.GB5680T-PSTN
+vlan 1784
+ description GPON_Tel
+vlan 1797
+ description QZ-QZ-SJ-OLT-5.MAN.G5680T-PSTN
+vlan 1798
+ description Epon_HuaWei
+vlan 1799
+ description EPON_ShengJia_2
+vlan 2501
+ description SJ-OLT-6.GB5680T-LAN-1#
+vlan 2502
+ description SJ-OLT-6.GB5680T-LAN-2#
+vlan 2503
+ description SJ-OLT-6.GB5680T-LAN-3#
+vlan 2556
+ description OLT-2
+vlan 2646
+ description XDL-EPON-ShenJia-LAN-16#
+vlan 2648
+ description XDL-EPON-ShenJia-LAN-18#
+vlan 2653
+ description XDL-EPON-ShenJia-LAN-1#
+vlan 2654
+ description XDL-EPON-ShenJia-LAN-2#
+vlan 2655
+ description XDL-EPON-ShenJia-LAN-3#
+vlan 2656
+ description XDL-EPON-ShenJia-LAN-4#
+vlan 2657
+ description XDL-EPON-ShenJia-LAN-5#
+vlan 2658
+ description XDL-EPON-ShenJia-LAN-6#
+vlan 2659
+ description XDL-EPON-ShenJia-LAN-7#
+vlan 2660
+ description XDL-EPON-ShenJia-LAN-8#
+vlan 2661
+ description XDL-EPON-ShenJia-LAN-11#
+vlan 2662
+ description XDL-EPON-ShenJia-LAN-12#
+vlan 2663
+ description XDL-EPON-ShenJia-LAN-13#
+vlan 2664
+ description XDL-EPON-ShenJia-LAN-14#
+vlan 2665
+ description XDL-EPON-ShenJia-LAN-15#
+vlan 3152
+ description HZ_ZhongCui_MplsVpn
+vlan 3206
+ description Vpn_ShuiLiFangXunBan_ShiPing
+vlan 3209
+ description VPN_QuJiangQuWeiShenJu
+vlan 3210
+ description VPN_JiaoJingGuoJiaXingDongJiHua
+vlan 3213
+ description public_Vpn_TongGangWuLiu
+vlan 3220
+ description public_Vpn_QZ_GongLuGuanLiChu
+vlan 3221
+ description public_Vpn_HaiLi_CaiWu
+vlan 3239
+ description QJ_GongLuGuanLiChu_local
+vlan 3273
+ description public_dcn_ADSL
+vlan 3283
+ description KC-GASPJK_EPON-ShenJia
+vlan 3290
+ description KC-GASPJK_XDL_IDC_CunChu
+vlan 3292
+ description local_KFQGASPJK_EPON_ShenJia
+vlan 3405
+ description Hotel_XDL_QuJiangXinTianDiDaJiuD
+vlan 3416
+ description JiuDian_SJ_HaoYunLai/JunZhi
+vlan 3542
+ description SJ_Netbar_YuFei(203)
+vlan 3544
+ description SJ_Netbar_PengYou(205)
+vlan 3545
+ description SJ_Netbar_DaMuZhi
+vlan 3547
+ description SJ_Netbar_DuoJiaoChong(208)
+vlan 3548
+ description SJ_NanKongZhongYao
+vlan 3549
+ description SJ_Netbar_YouHao(210)
+vlan 3550
+ description SJ_HuanBaoReDian(211)
+vlan 3551
+ description (5701UBD23462467)LingCui
+vlan 3552
+ description 5701UBD23600680 To YiLeWangGa 50M
+vlan 3553
+ description 5701UBD23242938 To XingShuoWangGa 100M
+vlan 3556
+ description Netbar-HaoXinQing
+vlan 3557
+ description SJ_Netbar_XinYu(218)
+vlan 3559
+ description SJ_MinXinTanYe(220)
+vlan 3560
+ description Netbar_FeiLanXingKong_5701LAN00162388
+vlan 3563
+ description (5701UBD22340000)LuShunWangBa
+vlan 3564
+ description SJ_45_AnDiJianCaiGongSi
+vlan 3566
+ description SJ_JuHuaShunChaoWuLiu_test227
+vlan 3571
+ description SJ_QuJiang_GuoTuJu232
+vlan 3572
+ description SJ_GongMaoXUeXiao234
+vlan 3573
+ description SJ_Netbar_ShiJiTong235
+vlan 3574
+ description SJ_MinHangWangJiangYuan236
+vlan 3576
+ description SJ_SiKeLaLianYouXianGongSi
+vlan 3577
+ description SJ_QuJiangQuDiYiXiaoXue239
+vlan 3580
+ description SJ_QJQ_XingZhengFuWuZhongXin242
+vlan 3587
+ description HaoXinQingNetBar_5701UBD15847016
+vlan 3670
+ description 5701UBD22895105 To KaiLiWangBa 100M
+vlan 3674
+ description QJZuZhiBu_5701UBD19689748
+vlan 3676
+ description SJ_45_RuiGuangZhenKongDianQi
+vlan 3679
+ description SJ_45_JiTaiGangMuZhiPin
+vlan 3720
+ description SJ_45_ShenFeiDongFengQiChe
+vlan 3723
+ description SJ_45_YuJieJiXieGongSi
+vlan 3725
+ description SJ_45_ShengChangLongTuSHiFang
+vlan 3726
+ description SJ_45_LanJianJianKangQiCai
+vlan 3727
+ description SJ_45_FuErJiaJu
+vlan 3729
+ description SJ_45_SenTeLaJieJu
+vlan 3730
+ description 5701UBD18082869 To BinGangBeiLu&DongJiDaDaoTW228 100M
+vlan 3732
+ description SJ_45_TianShengHuaXuePinGongSi
+vlan 3738
+ description SJ_45_HongChengFangShuiCaiLiao
+vlan 3739
+ description SJ_45_ShangPinHunNingTuGongSi
+vlan 3740
+ description SJ_45_XinYuanNongYeTeZhongZhiGon
+vlan 3741
+ description SJ_45_ZhengShiZhenZhiGongSi
+vlan 3742
+ description SJ_45_TianDiJianHuWaiYongPin
+vlan 3743
+ description SJ_45_JingXinTeZhongZhiYeGongSi
+vlan 3744
+ description SJ_45_TianDiMaoYe
+vlan 3745
+ description SJ_45_GuoFengYouZhiGongSi
+vlan 3746
+ description (5701UBD22295367)QJBingLongWangBa
+vlan 3747
+ description SJ_45_JianZiBiaoZhunJian
+vlan 3748
+ description SJ_45_YongLiSiLiao
+vlan 3749
+ description SJ_45_ZhiGaoJiXieGongSi
+vlan 3751
+ description SJ_45_FuShengJiXie
+vlan 3752
+ description SJ_45_XianHeTeZhongZhiYe
+vlan 3753
+ description SJ_45_LianHuaXinPinGongSi
+vlan 3754
+ description SJ_45_FeiLanQiJian_NetBar
+vlan 3755
+ description SJ_45_XianDaiTanYe
+vlan 3757
+ description SJ_45_ZhenJiXinXingJianCai
+vlan 3758
+ description (5701UBD22431430)YanQueWangBa
+vlan 3759
+ description Test
+vlan 3800
+ description VPN-YouZheng
+vlan 3802
+ description QJJiXinWangBa_5701LAN13019673
+vlan 3807
+ description (5701UBD22329398)QuJiangLianShe
+vlan 3809
+ description Temp-Fang
+vlan 3821
+ description 5701UBD22846909 To XiaoNiuWangBa  50M
+vlan 3822
+ description 5701UBD22961376 To SiYeCaoWangBa  50M
+vlan 3823
+ description SJ_45_FengHuaDianZi
+vlan 3824
+ description SJ_45_FengHuaZhuangShi
+vlan 3825
+ description SJ_45_QiangShunSiLiao
+vlan 3826
+ description SJ45_QJQ-NongCunHeZuoYiLiao
+vlan 3827
+ description SJ45_QuJiangGongAnJu
+vlan 3829
+ description QuZhouDianXinShenJia_5701UBD15602510
+vlan 3831
+ description (5701UBD22310758)QuJiangDaLouKongZhiZhongXin2
+vlan 3832
+ description SJ45_Netbar_XiaoYu
+vlan 3833
+ description SJ45_XianHeZhiYe
+vlan 3835
+ description SJ45_Netbar_HaiNiao
+vlan 3836
+ description (5701UBD22329399)XinYongLianShe
+vlan 3837
+ description SJ_45_SenLaTeJieJu_ltd.,co
+vlan 3839
+ description YiLeWangKa To 5701UBD22476171  100M
+vlan 3858
+ description 5701UBD23191888 To MaiFengWangGa 100M
+vlan 3859
+ description (5701UBD21633308)TianMingWangBa
+vlan 3880
+ description (5701UBD22008500)ChangYouWangBa
+vlan 3901
+ description VPN_HBJK_DongGanHuangBaoReDian
+vlan 3902
+ description VPN_HBJK_XianHeTeZhongZhiYe
+vlan 3903
+ description VPN_HBJK_XinYuanZhiYe
+vlan 3904
+ description VPN_HBJK_LaiLeKeZhiYe
+vlan 3905
+ description VPN_HBJK_XianHeZhiYe
+vlan 3907
+ description HBJK_ChiXingBaoZhuang
+vlan 3908
+ description (5701UBD21930870)QuJiangZhongDui
+vlan 3909
+ description VPN_HBJK_XinFengTeZhongZhiYe
+vlan 3910
+ description ZhenXingZhongLuXiaoFang_5701LAN14841695
+vlan 3992
+ description PVLAN_DZZW_QJ
+#
+aaa
+ authentication-scheme default
+ authentication-scheme zjdx
+  authentication-mode hwtacacs local
+ authorization-scheme default
+ authorization-scheme zjdx
+  authorization-mode  hwtacacs local
+ accounting-scheme default
+ accounting-scheme zjdx
+  accounting-mode hwtacacs
+  accounting start-fail online
+ recording-scheme zjdx
+  recording-mode hwtacacs zjdx
+ cmd recording-scheme zjdx
+ outbound recording-scheme zjdx
+ system recording-scheme zjdx
+ domain default
+ domain default_admin
+  authentication-scheme zjdx
+  accounting-scheme zjdx
+  authorization-scheme zjdx
+  hwtacacs-server zjdx
+ local-user admin password irreversible-cipher %^%#hR"gNjgY7Ks^luOywLF8l/VeQ+~NXX0reRGw<wGG[R,S;kq![By7wF2Ly,%X%^%#
+ local-user admin service-type http
+ local-user local password irreversible-cipher %^%#KC^/9Y)c~1k[;F:a/aU=-l2==A='~*u`o\"rNa-GKajJJzf9X=\cO/Bd57fF%^%#
+ local-user local privilege level 3
+ local-user local service-type telnet terminal
+ local-user zjnoc password irreversible-cipher %^%#']l74>+PwW)-4xONnu)D(E1MQmEsz&,%^d:=|/g4p4JQ"c^L'5Zn60,`_4~U%^%#
+ local-user zjnoc privilege level 3
+ local-user zjnoc service-type telnet terminal
+#
+ntp-service access peer 2002
+ntp-service unicast-server 70.0.0.32 version 2 source-interface Vlanif20 preference
+#
+interface Vlanif20
+ description For-Management
+ ip address 70.1.4.4 255.255.255.0
+#
+interface Eth-Trunk1
+ description uT:QZ-QZ-XDL-SR-2.MAN.7750:LAG2(GE6/1/4,GE6/1/9)
+ shutdown
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface Eth-Trunk3
+ description uT:QZ-QZ-XDL-SR-1.MAN.7750:LAG2(GE6/2/1)
+ shutdown
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface Eth-Trunk4
+ description uT:QZ-QZ-XZ-BAS-1.MAN.7750:lag1(10GE5/2/1,10GE6/2/1)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 29 998 1198 1294 1330 to 1336 1351 to 1353 1536 to 1538 1573 to 1582 1602 1604
+ port trunk allow-pass vlan 1626 to 1631 1716 to 1718 1723 to 1735 1771 1784 1797 to 1799 2501 to 2503 2556 to 2557 2646 to 2648 2657
+ port trunk allow-pass vlan 2659 to 2660 3992
+ traffic-policy tpIAD inbound
+ mode lacp
+#
+interface Eth-Trunk6
+ description uT:QZ-QZ-XZ-BAS-1.MAN.7750:lag3(GE5/1/2,GE5/1/4)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 20 22 to 28 489 503 509 530 543 561 701 to 704 706
+ port trunk allow-pass vlan 709 to 710 715 to 716 738 741 743 751 765 769 772 to 773 775
+ port trunk allow-pass vlan 777 781 783 to 785 787 to 794 797 804 to 805 836 840 843 851
+ port trunk allow-pass vlan 860 to 869 880 to 881 885 1207 1214 1220 1223 3152 3206 3209 to 3210
+ port trunk allow-pass vlan 3213 3220 to 3221 3228 3239 3273 3283 3290 3292 3405 3416
+ port trunk allow-pass vlan 3542 3544 to 3545 3547 to 3553 3556 to 3557 3559 to 3561 3563 to 3564 3572 to 3574 3580 3582 3587
+ port trunk allow-pass vlan 3670 3674 3676 3679 3726 3738 3741 to 3748 3751 3754 to 3755 3757 to 3759
+ port trunk allow-pass vlan 3800 3802 3807 3821 to 3822 3824 3826 to 3827 3829 3831 to 3833 3835 to 3837 3839
+ port trunk allow-pass vlan 3858 to 3859 3880 3901 to 3905 3907 to 3910
+ mode lacp
+#
+interface Eth-Trunk10
+ description dT:QZ-QZ-SJ-OLT-5.MAN.GH5680T:LAG1(10GE0/19/0)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 25 1578 to 1582 1797
+ mode lacp
+#
+interface Eth-Trunk11
+ description dT:QZ-QZ-SJ-OLT-2.MAN.EB5680T:LAG1(10GE0/20/0)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 25 29 489 530 1604 1626 to 1633 1799 2556 to 2557 2559 to 2563 3210
+ port trunk allow-pass vlan 3292
+ traffic-policy tpIAD inbound
+ mode lacp
+#
+interface Eth-Trunk12
+ description dT:QZ-QZ-SJ-OLT-3.MAN.GH5680T:LAG1(10GE0/20/0)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 25 1573 to 1577 1784
+ traffic-policy tpIAD inbound
+ mode lacp
+#
+interface Eth-Trunk13
+ description dT:QZ-QZ-SJ-OLT-1.MAN.EB5680T:LAG1(10GE0/20/0)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 25 27 29 543 793 998 1602 1716 to 1718 1723 to 1735 1798 to 1799
+ port trunk allow-pass vlan 2646 to 2648 2657 2659 to 2660 3152 3209 to 3210 3273 3283 3290 3292 3416
+ port trunk allow-pass vlan 3800
+ traffic-policy tpIAD inbound
+ mode lacp
+#
+interface Eth-Trunk14
+ description dT:QZ-QZ-ZXJ-DSW-1.MAN.8905:smartgroup1(GE1/1,GE1/2)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 20 22 to 24 27 to 28 503 509 543 561 708 730 745
+ port trunk allow-pass vlan 747 755 795 to 796 1198 1214 1220 1335 to 1336 3102 to 3103 3206 3220
+ port trunk allow-pass vlan 3239 3559 3742 3754 3756 3800 3807 3826 to 3827 3829 3910
+ traffic-policy tpIAD inbound
+#
+interface Eth-Trunk15
+ description dT:QZ-QZ-SJ-OLT-7.MAN.GH5516:Lag1(10GE19/1)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 25 1536 to 1538
+ mode lacp
+#
+interface Ethernet0/0/0
+ shutdown
+ ip address 192.168.110.1 255.255.255.252
+#
+interface GigabitEthernet1/0/0
+ description Vpn_ShuiLiFangXunBan_TaDiShuiKu
+ port link-type access
+#
+interface GigabitEthernet1/0/1
+ description Netbar_YuFei::kehu
+ port link-type access
+ port default vlan 3542
+#
+interface GigabitEthernet1/0/2
+ description Netbar_XinYu::kehu
+ port link-type access
+ port default vlan 3557
+ trap-threshold input-rate 100
+ trap-threshold output-rate 100
+#
+interface GigabitEthernet1/0/3
+ description Netbar_YouHao_5701LAN02113311::kehu
+ port link-type access
+ port default vlan 3549
+#
+interface GigabitEthernet1/0/4
+ description GongMaoXueXiao
+ port link-type access
+ port default vlan 3572
+#
+interface GigabitEthernet1/0/5
+ description Vpn_GongShang_idle
+ port link-type access
+#
+interface GigabitEthernet1/0/6
+ description idle_QuJianQuNongYeJiu
+ port link-type access
+#
+interface GigabitEthernet1/0/7
+ description Netbar_FeiLanXingKong_5701LAN00162388::kehu
+ port link-type access
+ port default vlan 3560
+#
+interface GigabitEthernet1/0/8
+ description PengYou_Netbar::kehu
+ port link-type access
+ port default vlan 3544
+#
+interface GigabitEthernet1/0/9
+ description Netbar_DuoJiaoChong::kehu
+ port link-type access
+ port default vlan 3547
+#
+interface GigabitEthernet1/0/10
+ description Netbar_ShiJiTong::kehu
+ port link-type access
+ port default vlan 3573
+ unicast-suppression cir 50000 cbs 9400000
+ broadcast-suppression cir 50000 cbs 9400000
+#
+interface GigabitEthernet1/0/11
+ description dT:QZ-QZ-XHZYSS-LSW-1.MAN.2826:(Local)FE1/24
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 26
+ port hybrid untagged vlan 1331
+ port vlan-stacking vlan 149 to 220 stack-vlan 1331
+#
+interface GigabitEthernet1/0/12
+ description XinAnYiYao_QuJiang_Vpn
+ shutdown
+ port link-type access
+#
+interface GigabitEthernet1/0/13
+ description JuHuaShunChaoWuLiu
+ port link-type access
+#
+interface GigabitEthernet1/0/14
+ description 5701UBD23242938 To XingShuoWangGa 100M::kehu
+ port link-type access
+ port default vlan 3553
+#
+interface GigabitEthernet1/0/15
+ description ShenXiaoDaJiuDian_5700L300292::kehu
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 28 1207 1294 3679
+#
+interface GigabitEthernet1/0/16
+ description QuJiangQuDiYiXiaoXue
+ shutdown
+ port link-type access
+#
+interface GigabitEthernet1/0/17
+ description XinTianDiDaJiuDian
+ port link-type access
+ port default vlan 3405
+#
+interface GigabitEthernet1/0/18
+ description (5701UBD22295367)QJBingLongWangBa::kehu
+ port link-type access
+ port default vlan 3746
+#
+interface GigabitEthernet1/0/19
+ description 5701UBD23600680 To YiLeWangGa::kehu
+ port link-type access
+ port default vlan 3552
+#
+interface GigabitEthernet1/0/20
+ description DZZW_ZhangTanJieDao::kehu
+ shutdown
+ port link-type access
+ port default vlan 727
+#
+interface GigabitEthernet1/0/21
+ description dT:QZ-QZ-QJQZF-ASW-1.MAN.S2326:(Local)GE0/0/2
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 23 to 25 805 3580 3674
+#
+interface GigabitEthernet1/0/22
+ description QuJiangGongAn_idle
+ port link-type access
+ port default vlan 729
+#
+interface GigabitEthernet1/0/23
+ description SJ45_XianHeZhiYe_5701LAN02894561::kehu
+ shutdown
+ port link-type access
+ port default vlan 3833
+#
+interface GigabitEthernet1/0/24
+ description 5701UBD23191888 To MaiFengWangGa 100M::kehu
+ port link-type access
+ port default vlan 3858
+#
+interface GigabitEthernet1/0/25
+ description SJ_45_ShengChangLongTuSHiFang
+ shutdown
+ port link-type access
+#
+interface GigabitEthernet1/0/26
+ description SJ_45_ShenFeiDongFengQiChe
+ shutdown
+ port link-type access
+#
+interface GigabitEthernet1/0/27
+ description Vpn_GuoShui_ShenJiaGuanWeiHui
+ port link-type access
+ port default vlan 561
+#
+interface GigabitEthernet1/0/28
+ description 5701UBD22846909 To XiaoNiuWangBa  50M::kehu
+ port link-type access
+ port default vlan 3821
+#
+interface GigabitEthernet1/0/29
+ description QJJiXinWangBa_5701LAN13019673::kehu
+ port link-type access
+ port default vlan 3802
+#
+interface GigabitEthernet1/0/30
+ description 5701UBD18082869 To BinGangBeiLu&DongJiDaDaoTW228 100M
+ shutdown
+ port link-type access
+#
+interface GigabitEthernet1/0/31
+ description QuJiangDangXiao::kehu
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 723 782
+#
+interface GigabitEthernet1/0/32
+ description ShenJiaGuanWeiHui::kehu
+ port link-type access
+ port default vlan 705
+#
+interface GigabitEthernet1/0/33
+ description 5701UBD22431430 To YanQueWangBa  100M::kehu
+ port link-type access
+ port default vlan 3758
+#
+interface GigabitEthernet1/0/34
+ description GongMaoXueXiaoShuShe_PPPoE::kehu
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 26
+ port hybrid untagged vlan 1331
+ port vlan-stacking vlan 101 to 148 stack-vlan 1331
+#
+interface GigabitEthernet1/0/35
+ description 5701UBD22340000 To LuShunWangBa  50M::kehu
+ port link-type access
+ port default vlan 3563
+#
+interface GigabitEthernet1/0/36
+ description WangKa
+ shutdown
+ port link-type access
+ port default vlan 3839
+#
+interface GigabitEthernet1/0/37
+ description SJ_Netbar_DaMuZhi::kehu
+ port link-type access
+ port default vlan 3545
+ unicast-suppression cir 50000 cbs 9400000
+ broadcast-suppression cir 50000 cbs 9400000
+#
+interface GigabitEthernet1/0/38
+ description SJ_QZZhiLJiShuJianDuJuQuJFJu221::kehu
+ port link-type access
+ port default vlan 717
+#
+interface GigabitEthernet1/0/39
+ description dT:QZ-QZ-XHZYSS-LSW-4.MAN.2826:(Local)FE1/24
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 26
+ port hybrid untagged vlan 1331
+ port vlan-stacking vlan 221 to 320 stack-vlan 1331
+ trap-threshold input-rate 100
+ trap-threshold output-rate 100
+#
+interface GigabitEthernet1/0/40
+ description VPN_HBJK_XianHeTeZhongZhiYe::kehu
+ port link-type access
+ port default vlan 3902
+ unicast-suppression cir 4000 cbs 752000
+ broadcast-suppression cir 4000 cbs 752000
+#
+interface GigabitEthernet1/0/41
+ description Netbar-HaoXinQing::kehu
+ port link-type access
+ port default vlan 3556
+ unicast-suppression cir 50000 cbs 9400000
+ broadcast-suppression cir 50000 cbs 9400000
+#
+interface GigabitEthernet1/0/42
+ description 5701UBD23462467 To LingCui 100M::kehu
+ port link-type access
+ port default vlan 3551
+#
+interface GigabitEthernet1/0/43
+ shutdown
+#
+interface GigabitEthernet1/0/44
+ shutdown
+#
+interface GigabitEthernet1/0/45
+ description Temp-Fang
+ shutdown
+ port link-type access
+ port default vlan 3809
+#
+interface GigabitEthernet1/0/46
+ shutdown
+#
+interface GigabitEthernet1/0/47
+ shutdown
+ port link-type access
+#
+interface GigabitEthernet3/0/0
+ description SJ_45_TaDiShuiLiShuNiu
+ port link-type access
+ unicast-suppression cir 2000 cbs 376000
+ broadcast-suppression cir 2000 cbs 376000
+#
+interface GigabitEthernet3/0/1
+ description SJ_45_TianShengHuaXuePinGongSi
+ port link-type access
+ unicast-suppression cir 2000 cbs 376000
+ broadcast-suppression cir 2000 cbs 376000
+#
+interface GigabitEthernet3/0/2
+ description SJ_45_HongLiDianZi
+ port link-type access
+ unicast-suppression cir 2000 cbs 376000
+ broadcast-suppression cir 2000 cbs 376000
+#
+interface GigabitEthernet3/0/3
+ description SJ_45_XianHeTeZhongZhiYe
+ port link-type access
+ unicast-suppression cir 10000 cbs 1880000
+ broadcast-suppression cir 10000 cbs 1880000
+#
+interface GigabitEthernet3/0/4
+ description DZZW_ZhangTangGongLuShouFeiZhan::kehu
+ port link-type access
+ port default vlan 765
+#
+interface GigabitEthernet3/0/5
+ description SJ_45_LianHuaXinPinGongSi
+ shutdown
+ port link-type access
+ unicast-suppression cir 2000 cbs 376000
+ broadcast-suppression cir 2000 cbs 376000
+#
+interface GigabitEthernet3/0/6
+ description SJ_45_ShengKangRanQi
+ shutdown
+ port link-type access
+#
+interface GigabitEthernet3/0/7
+ description DZZW_ShiBinYiGuan::kehu
+ port link-type access
+ port default vlan 738
+#
+interface GigabitEthernet3/0/8
+ description SJ45_DaTongGuoLu
+ port link-type access
+ unicast-suppression cir 2000 cbs 376000
+ broadcast-suppression cir 2000 cbs 376000
+#
+interface GigabitEthernet3/0/9
+ description VPN_HBJK_XianHeZhiYe::kehu
+ port link-type access
+ port default vlan 3905
+ unicast-suppression cir 4000 cbs 752000
+ broadcast-suppression cir 4000 cbs 752000
+#
+interface GigabitEthernet3/0/10
+ description SJ45_Netbar_XiaoYu::kehu
+ port link-type access
+ port default vlan 3832
+ unicast-suppression cir 50000 cbs 9400000
+ broadcast-suppression cir 50000 cbs 9400000
+#
+interface GigabitEthernet3/0/11
+ description (5701UBD21633308)TianMingWangBa::kehu
+ port link-type access
+ port default vlan 3859
+#
+interface GigabitEthernet3/0/12
+ description 5701UBD22895105 To KaiLiWangBa 100M::kehu
+ port link-type access
+ port default vlan 3670
+#
+interface GigabitEthernet3/0/13
+ description 5701UBD22961376 To SiYeCaoWangBa  50M::kehu
+ port link-type access
+ port default vlan 3822
+#
+interface GigabitEthernet3/0/14
+ shutdown
+#
+interface GigabitEthernet3/0/15
+ shutdown
+#
+interface GigabitEthernet3/0/16
+ shutdown
+ port link-type access
+#
+interface GigabitEthernet3/0/17
+ shutdown
+#
+interface GigabitEthernet3/0/18
+ shutdown
+#
+interface GigabitEthernet3/0/19
+ shutdown
+#
+interface GigabitEthernet3/0/20
+ shutdown
+#
+interface GigabitEthernet3/0/21
+ shutdown
+#
+interface GigabitEthernet3/0/22
+ shutdown
+#
+interface GigabitEthernet3/0/23
+ shutdown
+#
+interface GigabitEthernet3/0/24
+ shutdown
+ port link-type access
+ port default vlan 16
+#
+interface GigabitEthernet3/0/25
+ shutdown
+#
+interface GigabitEthernet3/0/26
+ shutdown
+#
+interface GigabitEthernet3/0/27
+ shutdown
+#
+interface GigabitEthernet3/0/28
+ shutdown
+#
+interface GigabitEthernet3/0/29
+ shutdown
+#
+interface GigabitEthernet3/0/30
+ shutdown
+#
+interface GigabitEthernet3/0/31
+ shutdown
+#
+interface GigabitEthernet3/0/32
+ shutdown
+#
+interface GigabitEthernet3/0/33
+ shutdown
+#
+interface GigabitEthernet3/0/34
+ shutdown
+#
+interface GigabitEthernet3/0/35
+ shutdown
+ port link-type access
+#
+interface GigabitEthernet3/0/36
+ port link-type access
+#
+interface GigabitEthernet3/0/37
+ description Temp-Fang
+ shutdown
+ port link-type access
+ port default vlan 3809
+#
+interface GigabitEthernet3/0/38
+ shutdown
+#
+interface GigabitEthernet3/0/39
+ shutdown
+#
+interface GigabitEthernet3/0/40
+ shutdown
+#
+interface GigabitEthernet3/0/41
+ shutdown
+ port link-type access
+ port default vlan 26
+#
+interface GigabitEthernet3/0/42
+ shutdown
+#
+interface GigabitEthernet3/0/43
+ shutdown
+#
+interface GigabitEthernet3/0/44
+ shutdown
+#
+interface GigabitEthernet3/0/45
+ description dT:QZ-QZ-SJ-DZW-HW5324-TP-SI:(Local)GE0/0/24
+ port link-type access
+ port default vlan 24
+#
+interface GigabitEthernet3/0/46
+ description dT:QZ-QZ-SJ-DSL-1.MAN.9210:(Local)FE16/0
+ port link-type access
+ port default vlan 22
+#
+interface GigabitEthernet3/0/47
+ description dT:QZ-QZ-SJ-DSL-2.MAN.9210:(local)FE16/0
+ port link-type access
+ port default vlan 22
+#
+interface GigabitEthernet4/0/0
+ undo negotiation auto
+ description uT:QZ-QZ-XDL-SR-2.MAN.7750:(F1005310012)GE6/1/9
+ shutdown
+ eth-trunk 1
+#
+interface GigabitEthernet4/0/1
+ description uT:QZ-QZ-XZ-BAS-1.MAN.7750:(F1404100025)GE5/1/2
+ eth-trunk 6
+#
+interface GigabitEthernet4/0/2
+ undo negotiation auto
+ description uT:QZ-QZ-XDL-SR-1.MAN.7750:(F0910190077)GE6/2/1
+ shutdown
+ eth-trunk 3
+#
+interface GigabitEthernet4/0/3
+ shutdown
+#
+interface GigabitEthernet4/0/4
+ undo negotiation auto
+ shutdown
+#
+interface GigabitEthernet4/0/5
+ undo negotiation auto
+ shutdown
+#
+interface GigabitEthernet4/0/6
+ shutdown
+#
+interface GigabitEthernet4/0/7
+ shutdown
+#
+interface GigabitEthernet4/0/8
+ undo negotiation auto
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 20
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet4/0/9
+ undo negotiation auto
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 20
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet4/0/10
+ shutdown
+#
+interface GigabitEthernet4/0/11
+ shutdown
+#
+interface GigabitEthernet4/0/12
+ description dT:QZ-QZ-SJ-DSL-2.MAN.9210:(local)GE16/7
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 1330
+ port vlan-stacking vlan 601 to 1080 stack-vlan 1330
+#
+interface GigabitEthernet4/0/13
+ shutdown
+#
+interface GigabitEthernet4/0/14
+ description dT:QZ-QZ-ZXJ-DSW-1.MAN.8905:(F0603210002)GE1/1
+ eth-trunk 14
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 20
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet4/0/15
+ description dT:QZ-QZ-MiaoJ-DSL-1.MAN.9210:(F0602230015)GE16/7
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 22 to 24 27
+ port hybrid untagged vlan 1334
+ port vlan-stacking vlan 101 to 580 stack-vlan 1334
+ port vlan-stacking vlan 1401 to 1472 stack-vlan 1334
+ port vlan-stacking vlan 1501 to 1596 stack-vlan 1334
+#
+interface GigabitEthernet4/0/16
+ description dT:QZ-QZ-AnR-ASW-1.MAN.Z3228:(F0906250005)GE3/2
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 21 to 25 27 3273
+ port hybrid untagged vlan 1333
+ port vlan-stacking vlan 101 to 484 stack-vlan 1333
+ port vlan-stacking vlan 485 to 580 stack-vlan 1333
+ port vlan-stacking vlan 1201 to 1320 stack-vlan 1333
+#
+interface GigabitEthernet4/0/17
+ description dT:QZ-QZ-HLu-ASW-1.MAN.Z3928:(F0912070001)GE3/2
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 22 to 24 27 737 1220 to 1221 1334 3273 3880
+#
+interface GigabitEthernet4/0/18
+ description 5701UBD22310758 To QuJiangDaLouKongZhiZhongXin2 200M::kehu
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 3831
+#
+interface GigabitEthernet4/0/19
+ description dT:QZ-QZ-GJ-DSW-1.MAN.5328:(F1405220015)GE1/0/1
+ shutdown
+#
+interface GigabitEthernet4/0/20
+ description 5701UBD22329399 To XinYongLianShe 200M::kehu
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 3836
+#
+interface GigabitEthernet4/0/21
+ shutdown
+#
+interface GigabitEthernet4/0/22
+ undo negotiation auto
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 20
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet4/0/23
+ shutdown
+#
+interface GigabitEthernet6/0/0
+ undo negotiation auto
+ description uT:QZ-QZ-XDL-SR-2.MAN.7750:(F1006020005)GE6/1/4
+ shutdown
+ eth-trunk 1
+#
+interface GigabitEthernet6/0/1
+ undo negotiation auto
+ description uT:QZ-QZ-XZ-BAS-1.MAN.7750:(F1612210003)GE5/1/4
+ eth-trunk 6
+#
+interface GigabitEthernet6/0/2
+ undo negotiation auto
+ shutdown
+ eth-trunk 3
+#
+interface GigabitEthernet6/0/3
+ shutdown
+#
+interface GigabitEthernet6/0/4
+ undo negotiation auto
+ shutdown
+#
+interface GigabitEthernet6/0/5
+ undo negotiation auto
+ shutdown
+#
+interface GigabitEthernet6/0/6
+ shutdown
+#
+interface GigabitEthernet6/0/7
+ shutdown
+#
+interface GigabitEthernet6/0/8
+ undo negotiation auto
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 20
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/9
+ undo negotiation auto
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 20
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/10
+ undo negotiation auto
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 20
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/11
+ shutdown
+#
+interface GigabitEthernet6/0/12
+ description dT:QZ-QZ-SJ-DSL-1.MAN.9210:(local)GE16/7
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 1330
+ port vlan-stacking vlan 101 to 580 stack-vlan 1330
+#
+interface GigabitEthernet6/0/13
+ shutdown
+#
+interface GigabitEthernet6/0/14
+ description dT:QZ-QZ-ZXJ-DSW-1.MAN.8905:(F1405050011)GE1/2
+ eth-trunk 14
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 20
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/15
+ description dT:QZ-QZ-HMWJY-ASW-1.MAN.Z3228:(F0905220006)GE3/1
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 21 to 24 27 3574 3907
+ port hybrid untagged vlan 1332
+ port vlan-stacking vlan 1201 to 1360 stack-vlan 1332
+ port vlan-stacking vlan 1561 to 1564 stack-vlan 1332
+#
+interface GigabitEthernet6/0/16
+ description dT:QZ-QZ-NS-DSW-1.MAN.8905:(F0701300002)GE2/1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 20 22 to 24 27 to 28 1223 1332 1335 3213 3221 3548 3550
+ port trunk allow-pass vlan 3587 3676 3726 3739 3741 3745 3747 to 3748 3751 3757 3824
+ port trunk allow-pass vlan 3835 3837 3901 3904
+#
+interface GigabitEthernet6/0/17
+ description dT:QZ-QZ-GaoTS-ASW-1.MAN.Z3228:(F0511070057)GE3/2
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 22 to 23 27 3290 3564 3738 3740 3743 to 3744 3755 3759 3903
+ port hybrid tagged vlan 3909
+ port hybrid untagged vlan 1333
+ port vlan-stacking vlan 601 to 984 stack-vlan 1333
+#
+interface GigabitEthernet6/0/18
+ description QZZWW-WW-SJDX.3750::kehu
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 23 to 24 701 to 724 726 to 738 740 to 752 754 to 769 771 to 778 780 to 785 787 to 797 804 836
+ port hybrid tagged vlan 840 843 851 860 to 869 880 to 881 885
+ port hybrid untagged vlan 3992
+ port vlan-stacking vlan 3800 to 3849 stack-vlan 3992
+#
+interface GigabitEthernet6/0/19
+ description dT:QZ-QZ-GJ-DSW-1.MAN.5328:(F1405220009)GE1/0/2
+ shutdown
+#
+interface GigabitEthernet6/0/20
+ shutdown
+#
+interface GigabitEthernet6/0/21
+ shutdown
+#
+interface GigabitEthernet6/0/22
+ undo negotiation auto
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 20
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/23
+ shutdown
+ port link-type access
+#
+interface XGigabitEthernet2/0/0
+ description uT:QZ-QZ-XZ-BAS-1.MAN.7750:(F1309110015)10GE6/2/1
+ eth-trunk 4
+#
+interface XGigabitEthernet2/0/1
+ shutdown
+#
+interface XGigabitEthernet2/0/2
+ shutdown
+#
+interface XGigabitEthernet2/0/3
+ shutdown
+#
+interface XGigabitEthernet2/0/4
+ shutdown
+#
+interface XGigabitEthernet2/0/5
+ shutdown
+#
+interface XGigabitEthernet2/0/6
+ shutdown
+#
+interface XGigabitEthernet2/0/7
+ shutdown
+#
+interface XGigabitEthernet2/0/8
+ shutdown
+#
+interface XGigabitEthernet2/0/9
+ shutdown
+#
+interface XGigabitEthernet2/0/10
+ shutdown
+#
+interface XGigabitEthernet2/0/11
+ shutdown
+#
+interface XGigabitEthernet2/0/12
+ shutdown
+#
+interface XGigabitEthernet2/0/13
+ description dT:QZ-QZ-SJ-OLT-2.MAN.EB5680T:(local)10GE0/20/0
+ eth-trunk 11
+#
+interface XGigabitEthernet2/0/14
+ description dT:QZ-QZ-SJ-OLT-3.MAN.GH5680T:(local)10GE0/20/0
+ eth-trunk 12
+#
+interface XGigabitEthernet2/0/15
+ description dT:QZ-QZ-SJ-OLT-6.MAN.GB5680T:(local)10GE0/19/0
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 25 29 707 1351 to 1353 1771 2501 to 2503 3908
+#
+interface XGigabitEthernet5/0/0
+ description uT:QZ-QZ-XZ-BAS-1.MAN.7750:(F1309110014)10GE5/2/1
+ eth-trunk 4
+#
+interface XGigabitEthernet5/0/1
+ shutdown
+#
+interface XGigabitEthernet5/0/2
+ shutdown
+#
+interface XGigabitEthernet5/0/3
+ shutdown
+#
+interface XGigabitEthernet5/0/4
+ shutdown
+#
+interface XGigabitEthernet5/0/5
+ shutdown
+#
+interface XGigabitEthernet5/0/6
+ shutdown
+#
+interface XGigabitEthernet5/0/7
+ shutdown
+#
+interface XGigabitEthernet5/0/8
+ shutdown
+#
+interface XGigabitEthernet5/0/9
+ shutdown
+#
+interface XGigabitEthernet5/0/10
+ shutdown
+#
+interface XGigabitEthernet5/0/11
+ shutdown
+#
+interface XGigabitEthernet5/0/12
+ description dT:QZ-QZ-SJ-OLT-5.MAN.GH5680T:(local)10GE0/20/0
+ eth-trunk 10
+#
+interface XGigabitEthernet5/0/13
+ shutdown
+#
+interface XGigabitEthernet5/0/14
+ description dT:QZ-QZ-SJ-OLT-7.MAN.GH5516:(Local)10GE19/1
+ eth-trunk 15
+#
+interface XGigabitEthernet5/0/15
+ description dT:QZ-QZ-SJ-OLT-1.MAN.EB5680T:(local)10GE0/20/0
+ eth-trunk 13
+#
+interface NULL0
+#
+ip route-static 0.0.0.0 0.0.0.0 10.21.1.1
+ip route-static 0.0.0.0 0.0.0.0 70.1.4.1
+#
+snmp-agent
+snmp-agent local-engineid 000007DB7FFFFFFF0000144C
+snmp-agent community read cipher %^%#G{g(O(!LO*^jRuO*qi")OfIu!DyFb7pn#_7b[zuTww}yWKII5I`)@I1'RzB.F[y6Xlna!OXQO86i,fJF%^%# acl 2000
+snmp-agent sys-info contact QZ-QZ-XZ
+snmp-agent sys-info location QZ-QZ-SJ
+snmp-agent sys-info version all
+snmp-agent target-host trap address udp-domain 10.192.0.11 params securityname cipher %^%#(<a|'HpYAXV/x_~]-[.%F*ys9\<xl/7k_dSk(ax%%^%# v2c
+snmp-agent target-host trap address udp-domain 10.192.0.12 params securityname cipher %^%#`Do"WqdOo<I$Y:TQm<fJ(jBm.$C\S:(oNe0yprq8%^%# v2c
+snmp-agent trap source Vlanif20
+snmp-agent trap enable
+#
+ssh server compatible-ssh1x enable
+#
+header login information " WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!"
+#
+user-interface con 0
+user-interface vty 0 4
+ acl 2001 inbound
+ authentication-mode aaa
+ idle-timeout 5 0
+ protocol inbound telnet
+user-interface vty 16 20
+ protocol inbound telnet
+#
+assistant task savelogfile
+ if-match timer cron * 0 0/1 * * * *
+ perform 1 batch-file savelogfile.bat
+#
+return
+<QZ-QZ-SJ-DSW-1.MAN.S9306>

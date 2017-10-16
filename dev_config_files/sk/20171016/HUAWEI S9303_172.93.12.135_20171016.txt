@@ -1,0 +1,812 @@
+
+!Software Version V200R008C00SPC500
+#
+sysname NB-YZ-WLXY-DSW-1.MAN.9303
+#
+super password level 3 cipher %$%$jO)P3dz{%'ZAOm;nV6;7*R'fpU#sWvFDS*%wzMSd..'!R'i*%$%$
+#
+info-center filter-id bymodule-alias SECE PORT_ATTACK_END
+info-center source default channel 2 log level warning
+info-center loghost source Vlanif93
+info-center loghost 172.200.100.6 facility local6
+#
+vlan batch 2 7 50 75 78 to 79 93 173 212 225 713 to 718
+vlan batch 721 to 728 994 1000 1144 1149 1199 1534 1582 1594 to 1596 1602
+vlan batch 1606 to 1607 1700 to 1705 1708 to 1715 3040 3051 3056 3058 3136 3151 3174
+vlan batch 3784 3792 3870 3912 3943 3963 3973 3980 3992
+#
+undo authentication unified-mode
+#
+telnet server enable
+telnet ipv6 server enable
+#
+undo http server enable
+undo http secure-server enable
+#
+undo management-port isolate enable
+undo management-plane isolate enable
+#
+clock timezone BJ add 08:00:00
+#
+time-range wanli-wlan 06:00 to 23:00 Mon   
+time-range wanli-wlan 06:00 to 23:00 Tue   
+time-range wanli-wlan 06:00 to 23:00 Wed   
+time-range wanli-wlan 06:00 to 23:00 Thu   
+time-range wanli-wlan 06:30 to 23:59 Fri   
+time-range wanli-wlan 00:00 to 23:59 Sat   
+time-range wanli-wlan 00:00 to 23:00 Sun   
+#
+diffserv domain default
+#
+hwtacacs-server template nbdx
+ hwtacacs-server authentication 172.200.100.249
+ hwtacacs-server authorization 172.200.100.249
+ hwtacacs-server accounting 172.200.100.249
+ hwtacacs-server source-ip 172.93.12.135
+ hwtacacs-server shared-key cipher %^%#uT94Bf,]&J~"k.=hniT5|j\9)Kv9",QZkzP/Ho^'%^%#
+ undo hwtacacs-server user-name domain-included
+#
+acl number 2015  
+ description For-SNMP
+ rule 10 permit source 172.200.100.12 0 
+ rule 20 permit source 172.200.100.6 0 
+ rule 30 permit source 172.200.100.13 0 
+ rule 40 permit source 172.200.100.7 0 
+ rule 50 permit source 172.200.100.8 0 
+ rule 60 permit source 172.200.100.9 0 
+ rule 70 permit source 172.200.100.10 0 
+ rule 80 permit source 172.200.100.11 0 
+ rule 90 permit source 172.200.100.14 0 
+ rule 100 permit source 172.200.100.15 0 
+ rule 110 permit source 172.200.100.5 0 
+ rule 120 permit source 172.200.100.4 0 
+ rule 130 permit source 172.200.100.3 0 
+ rule 1500 deny 
+#
+acl number 3501  
+ rule 100 deny ip 
+acl number 3502  
+ description bak
+ rule 5 permit ip time-range wanli-wlan 
+ rule 100 deny ip 
+#
+traffic classifier permitwlan operator or precedence 5
+ if-match acl 3501
+#
+traffic behavior permitnet
+ permit
+#
+traffic policy cutnet match-order auto
+ classifier permitwlan behavior permitnet
+#
+drop-profile default
+#
+vlan 7
+ description For-RaisecomManagement
+vlan 50
+ description For-S6502-NetManagement
+vlan 75
+ description For-DLink-Management
+vlan 78
+ description For-AP-WLAN-Management
+vlan 79
+ description For-AP-WLAN-Management-New
+vlan 93
+ description For_S9306_NetManagement
+vlan 212
+ description For-HuaWei-DSLAM-NetManagement
+vlan 225
+ description For-Alcatel-DSLAM-NetManagement
+vlan 994
+ description KaiYuan-Test
+vlan 1000
+ description For-Test
+vlan 1144
+ description WanLiXueYuanShiWai-WLAN
+vlan 1149
+ description WangLiXueYuan_ShanXun-WLAN
+vlan 1199
+ description KaiYuan-WLAN
+vlan 1534
+ description WanLiXueYuan-HW3-DSLAM
+vlan 1582
+ description KaiYuan-LAN
+vlan 1594
+ description WanLiXueYuan-HW2-DSLAM
+vlan 1595
+ description WanLiXueYuan-HW1-DSLAM
+vlan 1596
+ description WanLiXueYuan-ACL-DSLAM
+vlan 1602
+ description KeJiZhongXin-5100
+vlan 1606
+ description NanYueXinCun-ACL-DSLAM
+vlan 1607
+ description NanYueXinCun-HW-DSLAM
+vlan 1708
+ description WanLiXueYuan5#-WLAN-NeiWang
+vlan 1709
+ description WanLiXueYuan7#-WLAN-NeiWang
+vlan 3040
+ description V-yibao-ZGM-FD
+vlan 3051
+ description V_YingZhouSheBaoWang
+vlan 3056
+ description V-GuDing-ip
+vlan 3058
+ description caihong_vpn
+vlan 3136
+ description V-shounan-yibao
+vlan 3151
+ description V_shebaowang
+vlan 3174
+ description V-wanli-adsl-lan-hunhe
+vlan 3784
+ description wl-wlan-shanxun-pad-waiceng
+vlan 3792
+ description ShouNanJieDao-vpn
+vlan 3870
+ description V-HuanBaoJv-JianKong
+vlan 3943
+ description youzheng-vpn
+vlan 3963
+ description lvguanye-vpn
+vlan 3973
+ description QiXiangJu-VPN
+vlan 3980
+ description GongANJuYinZhangYE-VPN
+#
+aaa
+ authentication-scheme default
+ authentication-scheme nbdx
+  authentication-mode hwtacacs local
+ authorization-scheme default
+ authorization-scheme nbdx
+  authorization-mode  hwtacacs local
+ accounting-scheme default
+ accounting-scheme nbdx
+  accounting-mode hwtacacs
+  accounting realtime 3
+  accounting start-fail online
+ recording-scheme scheme0
+  recording-mode hwtacacs nbdx
+ cmd recording-scheme scheme0
+ outbound recording-scheme scheme0
+ domain default
+ domain default_admin
+  authentication-scheme nbdx
+  accounting-scheme nbdx
+  authorization-scheme nbdx
+  hwtacacs-server nbdx
+ local-user admin password irreversible-cipher %^%#$a0<U]&Pr~|r%:15)JN'pBpTK\L8'U,rOa&[Rk(#7!R'#_4b.'a$y0U"s>d-%^%#
+ local-user admin privilege level 1
+ local-user admin service-type telnet terminal
+ local-user zjnoc password irreversible-cipher %^%#PAJ85(l&y"\:9q%Q4*;QVix}+18+X:8YAm:|60Q2U7k"A2e!-#H$*MR~083<%^%#
+ local-user zjnoc privilege level 3
+ local-user zjnoc service-type telnet terminal
+#
+ntp-service source-interface Vlanif93
+ntp-service unicast-server 172.93.1.125 preference
+ntp-service unicast-server 172.93.1.126
+#
+interface Vlanif2
+ ip address 192.168.0.2 255.255.255.0
+#
+interface Vlanif50
+ description For_S6502-NetManagement
+ ip address 61.175.9.139 255.255.255.192
+#
+interface Vlanif79
+#
+interface Vlanif93
+ description For_S9306_NetManagement
+ ip address 172.93.12.135 255.255.255.224
+#
+interface Vlanif1700
+ ip address 10.79.0.2 255.255.255.0
+#
+interface Eth-Trunk0
+ description uP:NB-YZ-ZXQ-SW1-S9312-1.MAN-Eth-Trunk31
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 7 50 75 78 to 79 93 212 225 994 1000 1144
+ port trunk allow-pass vlan 1149 1166 1199 1534 1582 1594 to 1596 1602 1606 to 1608 3040 3051
+ port trunk allow-pass vlan 3056 3058 3136 3151 3174 3792 3870 3912 3943 3963
+ port trunk allow-pass vlan 3973 3980 3992
+ mode lacp
+ load-balance src-mac
+ lacp preempt enable
+#
+interface Ethernet0/0/0
+#
+interface GigabitEthernet1/0/0
+ undo negotiation auto
+ description uT:NB-YZ-ZXQ-SW1-S9312-1.MAN:(F1707070707)GE5/0/8
+ eth-trunk 0
+#
+interface GigabitEthernet1/0/1
+ undo negotiation auto
+ description uT:NB-YZ-ZXQ-SW1-S9312-1.MAN:(F1707070707)GE6/0/5
+ eth-trunk 0
+#
+interface GigabitEthernet1/0/2
+ undo negotiation auto
+ port hybrid tagged vlan 78 713 to 718
+ port hybrid untagged vlan 79 1149 1166 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3200 to 3400 stack-vlan 1166
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet1/0/3
+ port hybrid tagged vlan 78 713 to 718
+ port hybrid untagged vlan 79 1149 1166 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3200 to 3400 stack-vlan 1166
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet1/0/4
+ port hybrid tagged vlan 78 713 to 718
+ port hybrid untagged vlan 79 1149 1166 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3200 to 3400 stack-vlan 1166
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet1/0/5
+ port hybrid tagged vlan 78 713 to 718
+ port hybrid untagged vlan 79 1149 1166 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3200 to 3400 stack-vlan 1166
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet1/0/6
+ port hybrid tagged vlan 78 713 to 718
+ port hybrid untagged vlan 79 1149 1166 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3200 to 3400 stack-vlan 1166
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet1/0/7
+ undo negotiation auto
+ port hybrid tagged vlan 78 713 to 718
+ port hybrid untagged vlan 79 1149 1166 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3200 to 3400 stack-vlan 1166
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet1/0/8
+ port hybrid tagged vlan 1704 to 1705
+ port hybrid untagged vlan 79 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet1/0/9
+ port hybrid tagged vlan 1700 to 1701
+ port hybrid untagged vlan 79 3784
+ port vlan-stacking vlan 1600 to 1699 stack-vlan 79
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet1/0/10
+ port hybrid tagged vlan 1700 to 1701
+ port hybrid untagged vlan 79 3784
+ port vlan-stacking vlan 1600 to 1699 stack-vlan 79
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet1/0/11
+ port hybrid tagged vlan 1702 to 1703
+ port hybrid untagged vlan 79 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet1/0/12
+ port hybrid tagged vlan 1700 to 1701
+ port hybrid untagged vlan 79 3784
+ port vlan-stacking vlan 1600 to 1699 stack-vlan 79
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet1/0/13
+ description dT:To_WangLiXueYuan38#WXZX315-WLAN::kehu
+ port hybrid tagged vlan 1700 to 1701
+ port hybrid untagged vlan 79 3784
+ port vlan-stacking vlan 1600 to 1699 stack-vlan 79
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet1/0/14
+ undo negotiation auto
+ speed 100
+ port hybrid tagged vlan 728
+ port hybrid untagged vlan 79 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet1/0/15
+ undo negotiation auto
+ speed 100
+ port hybrid tagged vlan 727
+ port hybrid untagged vlan 79 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet1/0/16
+ undo negotiation auto
+ speed 100
+ port hybrid tagged vlan 726
+ port hybrid untagged vlan 79 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet1/0/17
+ undo negotiation auto
+ speed 100
+ port hybrid tagged vlan 725
+ port hybrid untagged vlan 79 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet1/0/18
+ undo negotiation auto
+ speed 100
+ port hybrid tagged vlan 724
+ port hybrid untagged vlan 79 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet1/0/19
+ undo negotiation auto
+ speed 100
+ port hybrid tagged vlan 723
+ port hybrid untagged vlan 79 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet1/0/20
+ port hybrid tagged vlan 722
+ port hybrid untagged vlan 79 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet1/0/21
+ shutdown
+ port hybrid tagged vlan 721
+ port hybrid untagged vlan 79 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet1/0/22
+ description To_NanYuXinCun-ACL7302-DSLAM
+ port hybrid tagged vlan 225 3040 3051 3056 3136 3151 3792 3963
+ port hybrid untagged vlan 1606
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1606
+ port vlan-stacking vlan 3600 stack-vlan 1606
+#
+interface GigabitEthernet1/0/23
+ undo negotiation auto
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 713 to 718 721 to 728 1710 to 1715
+#
+interface GigabitEthernet2/0/0
+ undo negotiation auto
+ speed 100
+ port link-type access
+ port default vlan 2
+#
+interface GigabitEthernet2/0/1
+ undo negotiation auto
+ shutdown
+ port hybrid tagged vlan 225 3174 3943
+ port hybrid untagged vlan 1596
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1596
+ port vlan-stacking vlan 3600 stack-vlan 1596
+#
+interface GigabitEthernet2/0/2
+ port hybrid tagged vlan 212 3943
+ port hybrid untagged vlan 1596
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1595
+ port vlan-stacking vlan 3600 stack-vlan 1595
+#
+interface GigabitEthernet2/0/3
+#
+interface GigabitEthernet2/0/4
+ port hybrid tagged vlan 212
+ port hybrid untagged vlan 1594
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1594
+ port vlan-stacking vlan 3600 stack-vlan 1594
+#
+interface GigabitEthernet2/0/5
+#
+interface GigabitEthernet2/0/6
+#
+interface GigabitEthernet2/0/7
+#
+interface GigabitEthernet2/0/8
+#
+interface GigabitEthernet2/0/9
+#
+interface GigabitEthernet2/0/10
+#
+interface GigabitEthernet2/0/11
+#
+interface GigabitEthernet2/0/12
+#
+interface GigabitEthernet2/0/13
+#
+interface GigabitEthernet2/0/14
+#
+interface GigabitEthernet2/0/15
+#
+interface GigabitEthernet2/0/16
+#
+interface GigabitEthernet2/0/17
+#
+interface GigabitEthernet2/0/18
+#
+interface GigabitEthernet2/0/19
+#
+interface GigabitEthernet2/0/20
+#
+interface GigabitEthernet2/0/21
+#
+interface GigabitEthernet2/0/22
+#
+interface GigabitEthernet2/0/23
+#
+interface GigabitEthernet2/0/24
+#
+interface GigabitEthernet2/0/25
+#
+interface GigabitEthernet2/0/26
+#
+interface GigabitEthernet2/0/27
+#
+interface GigabitEthernet2/0/28
+#
+interface GigabitEthernet2/0/29
+#
+interface GigabitEthernet2/0/30
+#
+interface GigabitEthernet2/0/31
+#
+interface GigabitEthernet2/0/32
+#
+interface GigabitEthernet2/0/33
+#
+interface GigabitEthernet2/0/34
+ undo negotiation auto
+ speed 100
+ description To_WangLiXueYuanShiWai_WLAN
+ port hybrid tagged vlan 78 713 to 718
+ port hybrid untagged vlan 79 1149 1166 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3200 to 3400 stack-vlan 1144
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+#
+interface GigabitEthernet2/0/35
+ undo negotiation auto
+ speed 100
+ port hybrid tagged vlan 78 713 to 718
+ port hybrid untagged vlan 79 1149 1166 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3200 to 3400 stack-vlan 1144
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+#
+interface GigabitEthernet2/0/36
+ undo negotiation auto
+ speed 100
+ description To_WangLiXueYuanShiWai_WLAN
+ port hybrid tagged vlan 78 713 to 718
+ port hybrid untagged vlan 79 1149 1166 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3200 to 3400 stack-vlan 1144
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+#
+interface GigabitEthernet2/0/37
+ undo negotiation auto
+ speed 100
+ description To_WangLiXueYuanShiWai_WLAN
+ port hybrid tagged vlan 78 713 to 718
+ port hybrid untagged vlan 79 1149 1166 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3200 to 3400 stack-vlan 1144
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+#
+interface GigabitEthernet2/0/38
+ undo negotiation auto
+ speed 100
+ description To_WangLiXueYuanShiWai_WLAN
+ port hybrid tagged vlan 78 713 to 718
+ port hybrid untagged vlan 79 1149 1166 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3200 to 3400 stack-vlan 1144
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+#
+interface GigabitEthernet2/0/39
+ undo negotiation auto
+ speed 100
+ description To_WangLiXueYuanShiWai_WLAN
+ port hybrid tagged vlan 78 713 to 718
+ port hybrid untagged vlan 79 1149 1166 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3200 to 3400 stack-vlan 1144
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+#
+interface GigabitEthernet2/0/40
+ undo negotiation auto
+ speed 100
+ port hybrid tagged vlan 78 713 to 718
+ port hybrid untagged vlan 79 1149 1166 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3200 to 3400 stack-vlan 1144
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+#
+interface GigabitEthernet2/0/41
+ undo negotiation auto
+ speed 100
+ description To_WangLiXueYuanShiWai_WLAN
+ port hybrid tagged vlan 78 713 to 718
+ port hybrid untagged vlan 79 1149 1166 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3200 to 3400 stack-vlan 1144
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+#
+interface GigabitEthernet2/0/42
+ description To_WangLiXueYuanYST-WLAN
+ port hybrid tagged vlan 78
+ port hybrid untagged vlan 79 1166 3784
+ port vlan-stacking vlan 1601 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3200 to 3400 stack-vlan 1166
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+#
+interface GigabitEthernet2/0/43
+ description To_KaiYuan-WLAN-LAN
+ port hybrid tagged vlan 75 78 994
+ port hybrid untagged vlan 79 1199 1582
+ port vlan-stacking vlan 1601 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3200 to 3400 stack-vlan 1199
+ port vlan-stacking vlan 1000 stack-vlan 1582
+#
+interface GigabitEthernet2/0/44
+ shutdown
+ port hybrid tagged vlan 212 3040 3056 3058 3912 3963 3973 3980 3992
+ port hybrid untagged vlan 1602
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1602
+ port vlan-stacking vlan 3600 stack-vlan 1602
+#
+interface GigabitEthernet2/0/45
+ undo negotiation auto
+ speed 100
+ description To_WangLiXueYuanYinYeTing_WLAN
+ port hybrid untagged vlan 79 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+#
+interface GigabitEthernet2/0/46
+ shutdown
+ port hybrid tagged vlan 212 3056 3136 3992
+ port hybrid untagged vlan 1607
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1607
+ port vlan-stacking vlan 3600 stack-vlan 1607
+#
+interface GigabitEthernet2/0/47
+ description For_RaisecomManagement
+ port link-type access
+ port default vlan 7
+#
+interface GigabitEthernet3/0/0
+ description To_WLXY-XYW::kehu
+ shutdown
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 1700 to 1705 1708 to 1715
+#
+interface GigabitEthernet3/0/1
+ port hybrid untagged vlan 79 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet3/0/2
+ description To_WangLiXueYuan40#-WLAN
+ port hybrid untagged vlan 79 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet3/0/3
+ port hybrid untagged vlan 79 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet3/0/4
+ port hybrid untagged vlan 79 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet3/0/5
+ port hybrid untagged vlan 79 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet3/0/6
+ port hybrid untagged vlan 79 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet3/0/7
+ port hybrid untagged vlan 79 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet3/0/8
+ port hybrid untagged vlan 79 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet3/0/9
+ port hybrid untagged vlan 79 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet3/0/10
+ port hybrid untagged vlan 79 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet3/0/11
+ port hybrid untagged vlan 79 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet3/0/12
+ port hybrid untagged vlan 79 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet3/0/13
+ port hybrid untagged vlan 79 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet3/0/14
+ port hybrid untagged vlan 79 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet3/0/15
+ port hybrid untagged vlan 79 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet3/0/16
+ undo negotiation auto
+ port hybrid untagged vlan 79 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet3/0/17
+ description To_WangLiXueYuan5#-WLAN::kehu
+ port hybrid tagged vlan 1708
+ port hybrid untagged vlan 79 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet3/0/18
+ port hybrid tagged vlan 1709
+ port hybrid untagged vlan 79 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet3/0/19
+ description uT:NB-YZ-ZXQ-9303:(F1707070707)GE2/0/11
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 3784
+#
+interface GigabitEthernet3/0/20
+ undo negotiation auto
+ shutdown
+ port hybrid tagged vlan 212 3992
+ port hybrid untagged vlan 1534
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1534
+ port vlan-stacking vlan 3600 stack-vlan 1534
+#
+interface GigabitEthernet3/0/21
+ description To_WangLiXueYuanHuiJv-WLAN:processing
+ shutdown
+ port hybrid tagged vlan 1710 to 1715
+ port hybrid untagged vlan 79 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet3/0/22
+ port hybrid tagged vlan 78 713 to 718
+ port hybrid untagged vlan 79 1149 1166 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3200 to 3400 stack-vlan 1166
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface GigabitEthernet3/0/23
+ port hybrid tagged vlan 78 713 to 718
+ port hybrid untagged vlan 79 1149 1166 3784
+ port vlan-stacking vlan 1600 to 1700 stack-vlan 79
+ port vlan-stacking vlan 3200 to 3400 stack-vlan 1166
+ port vlan-stacking vlan 3600 to 3700 stack-vlan 3784
+ traffic-policy cutnet inbound
+#
+interface NULL0
+#
+cpu-defend policy 1
+ auto-port-defend protocol arp-request arp-reply dhcp icmp ip-fragment
+#
+ip route-static 0.0.0.0 0.0.0.0 61.175.9.190
+ip route-static 172.0.0.0 255.0.0.0 172.93.12.158
+#
+snmp-agent
+snmp-agent local-engineid 800007DB000FE23F4C
+snmp-agent community read cipher %^%#%=3i-L;]g@~LCmU]n6MLAC+VU{-5+$"T'zYWjo.;`SO$469R+A*`<B.Jc7DU3$O88FR=V>7aPT0I:rhM%^%# acl 2015
+snmp-agent sys-info contact HuaWei 800-8302118
+snmp-agent sys-info location NB-YZ-WLXY-SW2-S9303-1.MAN
+snmp-agent sys-info version all
+snmp-agent target-host trap address udp-domain 172.200.100.5 udp-port 161 params securityname cipher %^%#k>l%3{&',9~xlM~o`qpV[kVT1,FhAMgk}}FI:e_X%^%#
+undo snmp-agent trap enable feature-name L2IFPPI trap-name hwMacFlappingAlarm
+undo snmp-agent trap enable feature-name DLDP
+undo snmp-agent trap enable feature-name LDTTRAP
+undo snmp-agent trap enable feature-name LLDPTRAP
+snmp-agent trap enable feature-name BASETRAP
+#
+ssh server compatible-ssh1x enable
+#
+header login information " WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!"
+#
+cpu-defend-policy 1 global
+cpu-defend-policy 1
+#
+user-interface con 0
+user-interface vty 0 4
+ authentication-mode aaa
+ idle-timeout 30 0
+ protocol inbound all
+user-interface vty 16 20
+ protocol inbound telnet
+#
+port-group trunk
+#
+return
+<NB-YZ-WLXY-DSW-1.MAN.9303>

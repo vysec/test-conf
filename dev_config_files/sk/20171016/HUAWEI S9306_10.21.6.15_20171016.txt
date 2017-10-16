@@ -1,0 +1,459 @@
+
+!Software Version V200R008C00SPC500
+#
+sysname QZ-CS-DQ-DSW-1.MAN.S9306
+#
+FTP server enable
+#
+info-center source default channel 2 log level warning trap level warning
+info-center source default channel 4 log level notification
+info-center source SHELL channel 4 log level notification
+info-center loghost source Vlanif20
+info-center loghost 10.192.0.11 facility local4
+info-center loghost 10.192.0.12 facility local4
+#
+vlan batch 13 20 to 23 25 27 29 555 1023 1561 to 1563 1623 to 1624 1626 to 1638
+vlan batch 1670 1672 to 1674 1677 to 1679 1695 1712 1721 1764 to 1767 1781 1793 1799
+vlan batch 2244 2511 2675 3102 3316 3332 3337 3339 3541 3841
+vlan batch 3889
+#
+undo authentication unified-mode
+#
+set save-configuration interval 43200 delay 30
+#
+transceiver phony-alarm-disable
+#
+telnet server enable
+telnet ipv6 server enable
+#
+lldp enable
+#
+undo http server enable
+undo http secure-server enable
+#
+undo management-port isolate enable
+undo management-plane isolate enable
+#
+clock timezone GMT add 08:00:00
+#
+diffserv domain default
+#
+hwtacacs-server template zjdx
+ hwtacacs-server authentication 70.0.0.32
+ hwtacacs-server authorization 70.0.0.32
+ hwtacacs-server accounting 70.0.0.32
+ hwtacacs-server source-ip 10.21.6.15
+ hwtacacs-server shared-key cipher %^%#nb_*14+M8EEM=xEwGo}/p\-p.UUYhX`hrkBB1>=1%^%#
+ hwtacacs-server timer response-timeout 30
+ undo hwtacacs-server user-name domain-included
+#
+acl number 2000  
+ description SNMP
+ rule 10 permit source 10.192.0.0 0.0.0.255 
+ rule 20 permit source 10.31.255.0 0.0.0.255 
+ rule 30 permit source 70.0.1.0 0.0.0.127 
+ rule 100 deny 
+acl number 2001  
+ description Telnet
+ rule 10 permit source 10.10.0.0 0.0.1.255 
+ rule 20 permit source 10.192.0.0 0.0.0.31 
+ rule 30 permit source 10.21.6.0 0.0.0.255 
+ rule 40 permit source 70.0.0.0 0.0.3.255 
+ rule 50 permit source 10.31.255.0 0.0.0.255 
+ rule 60 permit source 10.13.45.0 0.0.0.255 
+acl number 2002  
+ description NTP
+ rule 10 permit source 70.0.0.32 0 
+ rule 100 deny 
+#
+traffic classifier tcAny operator or precedence 10
+ if-match any
+traffic classifier tcIAD operator or precedence 5
+ if-match cvlan-id 3599 to 3600
+#
+traffic behavior tb100m
+ permit
+ car cir 102400 pir 102400 cbs 12800000 pbs 12800000 mode color-blind green pass yellow pass red discard
+traffic behavior tb10m
+ permit
+ car cir 10240 pir 10240 cbs 1280000 pbs 1280000 mode color-blind green pass yellow pass red discard
+traffic behavior tb1m
+ permit
+ car cir 1024 pir 1024 cbs 128000 pbs 128000 mode color-blind green pass yellow pass red discard
+traffic behavior tb20m
+ permit
+ car cir 20480 pir 20480 cbs 2560000 pbs 2560000 mode color-blind green pass yellow pass red discard
+traffic behavior tb2m
+ permit
+ car cir 2048 pir 2048 cbs 256000 pbs 256000 mode color-blind green pass yellow pass red discard
+traffic behavior tb4m
+ permit
+ car cir 4096 pir 4096 cbs 512000 pbs 512000 mode color-blind green pass yellow pass red discard
+traffic behavior tb50m
+ permit
+ car cir 51200 pir 51200 cbs 6400000 pbs 6400000 mode color-blind green pass yellow pass red discard
+traffic behavior tb6m
+ permit
+ car cir 6144 pir 6144 cbs 768000 pbs 768000 mode color-blind green pass yellow pass red discard
+traffic behavior tb8m
+ permit
+ car cir 8192 pir 8192 cbs 1024000 pbs 1024000 mode color-blind green pass yellow pass red discard
+traffic behavior tbIAD
+ permit
+ remark 8021p 4
+#
+traffic policy 100m match-order auto
+ classifier tcAny behavior tb100m
+traffic policy 10m match-order auto
+ classifier tcAny behavior tb10m
+traffic policy 1m match-order auto
+ classifier tcAny behavior tb1m
+traffic policy 20m match-order auto
+ classifier tcAny behavior tb20m
+traffic policy 2m match-order auto
+ classifier tcAny behavior tb2m
+traffic policy 4m match-order auto
+ classifier tcAny behavior tb4m
+traffic policy 50m match-order auto
+ classifier tcAny behavior tb50m
+traffic policy 6m match-order auto
+ classifier tcAny behavior tb6m
+traffic policy 8m match-order auto
+ classifier tcAny behavior tb8m
+traffic policy tpIAD match-order auto
+ classifier tcIAD behavior tbIAD
+#
+drop-profile default
+#
+vlan 20
+ description For-Management
+vlan 27
+ description DongLiJianKong
+vlan 1623
+ description DaQiao-FTTH
+vlan 1695
+ description DaQiao-WLAN
+vlan 1793
+ description DaQiao_FTTH-YuYin
+#
+aaa
+ authentication-scheme default
+ authentication-scheme zjdx
+  authentication-mode hwtacacs local
+ authorization-scheme default
+ authorization-scheme zjdx
+  authorization-mode  hwtacacs local
+ accounting-scheme default
+ accounting-scheme zjdx
+  accounting-mode hwtacacs
+  accounting start-fail online
+ recording-scheme zjdx
+  recording-mode hwtacacs zjdx
+ cmd recording-scheme zjdx
+ outbound recording-scheme zjdx
+ system recording-scheme zjdx
+ domain default
+ domain default_admin
+  authentication-scheme zjdx
+  accounting-scheme zjdx
+  authorization-scheme zjdx
+  hwtacacs-server zjdx
+ undo local-user admin
+ local-user local password irreversible-cipher %^%#^Lb@MR{tX-9v3P8s]\p>yOrn*TwwAO/Bc\Apa${=I=Z5)O6bDDI8'N2z_Y\8%^%#
+ local-user local privilege level 3
+ local-user local service-type telnet terminal
+ local-user s9300 password irreversible-cipher %^%#HSda~`5ew!K8LOS(Q)DWf>FM7k~#"Dy3jaEkJ>>#3o{|%,wn^Y#78u;;LOo1%^%#
+ local-user s9300 privilege level 3
+ local-user s9300 ftp-directory cfcard:
+ local-user s9300 service-type ftp
+ local-user zjnoc password irreversible-cipher %^%#N"(=%])n,Dq<aHU&6rbQ*.nQE(yqEP{tS6HV=r!BGp!d;\)}aO!MHE<B9%>F%^%#
+ local-user zjnoc privilege level 3
+ local-user zjnoc service-type telnet terminal
+ local-user changshan password irreversible-cipher %^%#Dk~P02V:[/ZaK01xwhtSJg}dTh,XN$2dcVKy`;7&,Sax26ud1Bjgl0-O,FsG%^%#
+ local-user changshan privilege level 3
+ local-user changshan service-type telnet
+#
+ntp-service access peer 2002
+ntp-service unicast-server 70.0.0.32 version 2 source-interface Vlanif20 preference
+#
+interface Vlanif20
+ description For-Management
+ ip address 10.21.6.15 255.255.255.0
+#
+interface Vlanif23
+#
+interface Vlanif1023
+ ip address 172.18.0.1 255.255.255.252
+#
+interface Eth-Trunk5
+ description uT:QZ-CS-ZX-DSW-1.MAN.S9306:Lag5(10GE2/0/1,10GE3/0/1)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 13 20 to 23 25 27 29 555 1561 to 1563 1623 to 1624 1626 to 1638 1670
+ port trunk allow-pass vlan 1672 to 1674 1677 to 1679 1695 1712 1721 1764 to 1767 1781 1793 1799 2244
+ port trunk allow-pass vlan 2511 2675 3102 3316 3332 3337 3339 3541 3841 3889
+#
+interface Eth-Trunk6
+ description dT:QZ-CS-DaQiao-OLT-1.MAN.GH5680T:Lag1(GE0/19/0,GE0/19/1)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 20 25 1623 to 1624 1793
+ load-balance src-mac
+#
+interface Eth-Trunk8
+ description dT:QZ-CS-DA-OLT-2.MAN.GH5680T:Lag1(GE0/19/0,GE0/20/0)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 25 1561 to 1563 1781
+ load-balance src-mac
+#
+interface Ethernet0/0/0
+ ip address 10.78.10.2 255.255.255.0
+#
+interface Ethernet2/0/0
+#
+interface Ethernet2/0/1
+ port link-type trunk
+ port trunk allow-pass vlan 20 23
+#
+interface Ethernet2/0/2
+ description dT:MengYu:(F0101010001)FE1/1
+ port hybrid tagged vlan 21 to 23 26 to 27 3102
+ port hybrid untagged vlan 1628
+ port vlan-stacking vlan 2840 to 2935 stack-vlan 1628
+#
+interface Ethernet2/0/3
+ description DongLiJianKong::kehu
+ port link-type access
+ port default vlan 27
+#
+interface Ethernet2/0/4
+#
+interface Ethernet2/0/5
+#
+interface Ethernet2/0/6
+#
+interface Ethernet2/0/7
+#
+interface Ethernet2/0/8
+#
+interface Ethernet2/0/9
+#
+interface Ethernet2/0/10
+#
+interface Ethernet2/0/11
+#
+interface Ethernet2/0/12
+#
+interface Ethernet2/0/13
+#
+interface Ethernet2/0/14
+#
+interface Ethernet2/0/15
+#
+interface Ethernet2/0/16
+#
+interface Ethernet2/0/17
+#
+interface Ethernet2/0/18
+#
+interface Ethernet2/0/19
+#
+interface Ethernet2/0/20
+#
+interface Ethernet2/0/21
+#
+interface Ethernet2/0/22
+#
+interface Ethernet2/0/23
+#
+interface Ethernet2/0/24
+#
+interface Ethernet2/0/25
+#
+interface Ethernet2/0/26
+#
+interface Ethernet2/0/27
+#
+interface Ethernet2/0/28
+#
+interface Ethernet2/0/29
+#
+interface Ethernet2/0/30
+#
+interface Ethernet2/0/31
+#
+interface Ethernet2/0/32
+#
+interface Ethernet2/0/33
+#
+interface Ethernet2/0/34
+#
+interface Ethernet2/0/35
+#
+interface Ethernet2/0/36
+#
+interface Ethernet2/0/37
+#
+interface Ethernet2/0/38
+#
+interface Ethernet2/0/39
+#
+interface Ethernet2/0/40
+#
+interface Ethernet2/0/41
+#
+interface Ethernet2/0/42
+#
+interface Ethernet2/0/43
+#
+interface Ethernet2/0/44
+#
+interface Ethernet2/0/45
+#
+interface Ethernet2/0/46
+#
+interface Ethernet2/0/47
+#
+interface GigabitEthernet1/0/0
+ undo negotiation auto
+ shutdown
+ trap-threshold input-rate 100
+ trap-threshold output-rate 100
+#
+interface GigabitEthernet1/0/1
+ undo negotiation auto
+ shutdown
+ trap-threshold input-rate 100
+ trap-threshold output-rate 100
+#
+interface GigabitEthernet1/0/2
+ description dT:QZ-CS-DongAn-ASW-1.MAN.S3928:(F0101010001)GE1/1/1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 13 21 to 23 26 543 555 1636 to 1637 1938 1983 1999 2240 to 2242
+ port trunk allow-pass vlan 3332 3541 3841
+#
+interface GigabitEthernet1/0/3
+ description Downto_DaQiao9210
+ shutdown
+ port hybrid tagged vlan 22
+ port hybrid untagged vlan 1627
+ port vlan-stacking vlan 101 to 420 stack-vlan 1627
+#
+interface GigabitEthernet1/0/4
+ shutdown
+#
+interface GigabitEthernet1/0/5
+ undo negotiation auto
+ description dT:QZ-CS-DA-OLT-1.MAN.XB5680T:(Local)GE0/20/0
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 25 27 29 555 1670 1672 to 1674 1677 to 1679 1695 1712 1721
+ port trunk allow-pass vlan 1764 to 1767 1799 2511 2675 3337 3541 3841 3889
+#
+interface GigabitEthernet1/0/6
+ undo negotiation auto
+ description dT:QZ-CS-DaQiao-OLT-1.MAN.GH5680T:(Local)GE0/19/0
+ eth-trunk 6
+#
+interface GigabitEthernet1/0/7
+ undo negotiation auto
+ description dT:QZ-CS-DaQiao-OLT-1.MAN.GH5680T:(Local)GE0/19/1
+ eth-trunk 6
+#
+interface GigabitEthernet1/0/8
+ undo negotiation auto
+ description dT:QZ-CS-DA-OLT-2.MAN.GH5680T:(Local)GE0/19/0
+ eth-trunk 8
+#
+interface GigabitEthernet1/0/9
+ undo negotiation auto
+ description dT:QZ-CS-DA-OLT-2.MAN.GH5680T:(Local)GE0/20/0
+ eth-trunk 8
+#
+interface GigabitEthernet1/0/10
+#
+interface GigabitEthernet1/0/11
+#
+interface GigabitEthernet1/0/12
+#
+interface GigabitEthernet1/0/13
+#
+interface GigabitEthernet1/0/14
+#
+interface GigabitEthernet1/0/15
+#
+interface GigabitEthernet1/0/16
+#
+interface GigabitEthernet1/0/17
+#
+interface GigabitEthernet1/0/18
+#
+interface GigabitEthernet1/0/19
+#
+interface GigabitEthernet1/0/20
+#
+interface GigabitEthernet1/0/21
+#
+interface GigabitEthernet1/0/22
+#
+interface GigabitEthernet1/0/23
+#
+interface XGigabitEthernet5/0/0
+ description uT:QZ-CS-ZX-DSW-1.MAN.S9306:(F0101010001)10GE2/0/1
+ eth-trunk 5
+#
+interface XGigabitEthernet5/0/1
+#
+interface XGigabitEthernet5/0/2
+#
+interface XGigabitEthernet5/0/3
+#
+interface XGigabitEthernet6/0/0
+ description uT:QZ-CS-ZX-DSW-1.MAN.S9306:(F0101010001)10GE3/0/1
+ eth-trunk 5
+#
+interface XGigabitEthernet6/0/1
+#
+interface XGigabitEthernet6/0/2
+#
+interface XGigabitEthernet6/0/3
+#
+interface NULL0
+#
+ip route-static 0.0.0.0 0.0.0.0 10.21.6.1
+#
+snmp-agent
+snmp-agent local-engineid 000007DB7FFFFFFF000038A2
+snmp-agent community read cipher %^%#BY[0>ph\#Ri-BT35WDAJ:&7HXxLk`3RG9"!Nj;J00)yf=W/i_J%ZAl&Ou/]YyTzEATzCr/!l5{Y\QZeJ%^%# acl 2000
+snmp-agent sys-info contact QZ-CS
+snmp-agent sys-info location QZ-CS-DQ-DSW-1
+snmp-agent sys-info version all
+snmp-agent target-host trap address udp-domain 10.192.0.11 params securityname cipher %^%#(h&d5+"b[$IKz`/Nsd@0,}8A<1PPG7~T)vS;GYUC%^%# v2c
+snmp-agent target-host trap address udp-domain 10.192.0.12 params securityname cipher %^%#CIvC3npC[MR8a3U6j0HBuT-U6/W4zH<Mi^>5m,%(%^%# v2c
+snmp-agent trap source Vlanif20
+snmp-agent trap enable
+#
+ssh server compatible-ssh1x enable
+#
+header login information " WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!"
+#
+user-interface con 0
+ idle-timeout 0 0
+ screen-length 0
+user-interface vty 0 4
+ acl 2001 inbound
+ authentication-mode aaa
+ user privilege level 15
+ idle-timeout 5 0
+ protocol inbound telnet
+user-interface vty 16 20
+ protocol inbound telnet
+#
+assistant task savelogfile
+ if-match timer cron * 0 0/1 * * * *
+ perform 1 batch-file savelogfile.bat
+#
+return
+<QZ-CS-DQ-DSW-1.MAN.S9306>

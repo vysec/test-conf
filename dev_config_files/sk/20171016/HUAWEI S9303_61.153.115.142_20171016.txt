@@ -1,0 +1,391 @@
+
+!Software Version V200R008C00SPC500
+#
+sysname NB-ZH-NDNQ-9303-WLAN
+#
+vlan batch 8 12 34 78 to 79 1001 1150 to 1152 1160 to 1163 1688 to 1694
+#
+undo authentication unified-mode
+#
+telnet server enable
+telnet ipv6 server enable
+#
+undo http server enable
+undo http secure-server enable
+#
+undo management-port isolate enable
+undo management-plane isolate enable
+#
+clock timezone UTC add 00:00:00
+#
+dhcp enable
+#
+diffserv domain default
+#
+acl number 2001  
+ rule 5 permit source 202.101.167.220 0 
+ rule 10 permit source 202.101.167.222 0 
+ rule 15 permit source 61.153.112.133 0 
+ rule 20 permit source 61.153.112.134 0 
+ rule 25 permit source 61.153.112.142 0 
+ rule 30 permit source 61.153.112.143 0 
+ rule 35 permit source 61.153.112.144 0 
+ rule 40 permit source 61.153.112.145 0 
+ rule 45 permit source 61.153.112.129 0 
+ rule 50 permit source 10.255.255.0 0.0.0.255 
+acl number 2100  
+ rule 5 permit source 202.101.167.192 0.0.0.63 
+ rule 10 permit source 61.153.82.90 0 
+ rule 15 permit source 202.96.112.32 0.0.0.31 
+ rule 20 permit source 218.0.7.112 0.0.0.15 
+ rule 22 permit source 61.153.112.0 0.0.0.255 
+ rule 25 deny 
+#
+drop-profile default
+#
+vlan 8
+ description SW-3550
+vlan 12
+ description temp-AC
+vlan 34
+ description to ND7609
+vlan 78
+ description WG-WLAN
+vlan 79
+ description WG-WLAN
+vlan 1001
+ description WLAN-XYW-YongJiangGongYu-YouXianMianBan
+vlan 1150
+ description WLAN-NDNQ&BBGY
+vlan 1151
+ description WLAN-ND-BBSS
+vlan 1152
+ description WLAN-ND-KJXY
+vlan 1160
+ description WLAN-XYW-NDNQ
+vlan 1161
+ description WLAN-XYW-ND-BBSS
+vlan 1162
+ description WLAN-XYW-BBJW
+vlan 1163
+ description WLAN-XYW-YongJiangGongYu-WuXianMianBan
+vlan 1688
+ description GongJiang1#AP
+vlan 1689
+ description GongJiang2#AP
+vlan 1690
+ description GongJiang3#AP
+vlan 1691
+ description GongJiang4#AP
+vlan 1692
+ description GongJiang5#AP
+vlan 1693
+ description GongJiang6#AP
+vlan 1694
+ description JiuYanShengLou-AP
+#
+aaa
+ authentication-scheme default
+ authorization-scheme default
+ accounting-scheme default
+ domain default
+ domain default_admin
+ local-user admin password irreversible-cipher %^%#k<f9$e]F*L480-):QJ!N^dm$JNp;9Tc)BB.)Mxb@vZ#T:wZ@yGM=~,<vWI5%%^%#
+ local-user admin service-type http
+#
+interface Vlanif8
+ ip address 172.135.12.251 255.255.255.0
+#
+interface Vlanif34
+ ip address 61.153.115.142 255.255.255.252
+#
+interface Eth-Trunk1
+ description To-XMZ01-9306-ETH5(G2/0/15,G2/0/16)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 78 to 79 1150 to 1151 1160 to 1161 1163
+#
+interface Eth-Trunk2
+ description AC
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 12 34 1688 to 1694
+ port hybrid untagged vlan 79
+ port vlan-stacking vlan 1695 stack-vlan 79
+ port vlan-stacking vlan 1696 stack-vlan 79
+#
+interface Eth-Trunk6
+#
+interface Ethernet0/0/0
+#
+interface GigabitEthernet1/0/0
+ description To-NDNQ9306-G5/0/22
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 8 12 34 1001
+#
+interface GigabitEthernet1/0/1
+ description uT:NB-ZH-XMZ01-DSW-S9306-1.MAN:(F0908260005)GE2/0/15
+ eth-trunk 1
+#
+interface GigabitEthernet1/0/2
+ description uT:NB-ZH-XMZ01-DSW-S9306-1.MAN:(F09082600011)GE2/0/16
+ eth-trunk 1
+#
+interface GigabitEthernet1/0/3
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet1/0/4
+ description dT:WLAN-YanJiuShengLou-1#
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1694
+ port hybrid untagged vlan 79 1163
+ port vlan-stacking vlan 1695 to 1696 stack-vlan 79
+ port vlan-stacking vlan 1011 to 1083 stack-vlan 1163
+#
+interface GigabitEthernet1/0/5
+ description dT:WLAN-YanJiuShengLou-2#
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1694
+ port hybrid untagged vlan 79 1163
+ port vlan-stacking vlan 1695 to 1696 stack-vlan 79
+ port vlan-stacking vlan 1011 to 1083 stack-vlan 1163
+#
+interface GigabitEthernet1/0/6
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet1/0/7
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet1/0/8
+ undo negotiation auto
+ description dT:WLAN-NDNQ-2:(local)G0/1
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 78
+ port hybrid untagged vlan 79 1150 1160
+ port vlan-stacking vlan 1601 to 1620 stack-vlan 79
+ port vlan-stacking vlan 1621 to 1680 stack-vlan 1150
+ port vlan-stacking vlan 300 to 500 stack-vlan 1160
+#
+interface GigabitEthernet1/0/9
+ undo negotiation auto
+ description dT:WLAN-NDNQ-3:(local)G0/1
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 78
+ port hybrid untagged vlan 79 1151 1161
+ port vlan-stacking vlan 1601 to 1620 stack-vlan 79
+ port vlan-stacking vlan 1686 stack-vlan 79
+ port vlan-stacking vlan 1621 to 1680 stack-vlan 1151
+ port vlan-stacking vlan 1687 stack-vlan 1151
+ port vlan-stacking vlan 300 to 500 stack-vlan 1161
+#
+interface GigabitEthernet1/0/10
+ description dT:WLAN-YongJiangGongYu-1#MianBan:()
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1688 to 1694
+ port hybrid untagged vlan 79 1001 1163
+ port vlan-stacking vlan 1695 to 1696 stack-vlan 79
+ port vlan-stacking vlan 111 to 200 stack-vlan 1001
+ port vlan-stacking vlan 1011 to 1083 stack-vlan 1163
+#
+interface GigabitEthernet1/0/11
+ description dT:WLAN-YongJiangGongYu-2#MianBan:()
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1688 to 1694
+ port hybrid untagged vlan 79 1001 1163
+ port vlan-stacking vlan 1695 to 1696 stack-vlan 79
+ port vlan-stacking vlan 111 to 200 stack-vlan 1001
+ port vlan-stacking vlan 1011 to 1083 stack-vlan 1163
+#
+interface GigabitEthernet1/0/12
+ description dT:WLAN-YongJiangGongYu-3#MianBan:()
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1688 to 1694
+ port hybrid untagged vlan 79 1001 1163
+ port vlan-stacking vlan 1695 to 1696 stack-vlan 79
+ port vlan-stacking vlan 111 to 200 stack-vlan 1001
+ port vlan-stacking vlan 1011 to 1083 stack-vlan 1163
+#
+interface GigabitEthernet1/0/13
+ description dT:WLAN-YongJiangGongYu-4#MianBan:()
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1688 to 1694
+ port hybrid untagged vlan 79 1001 1163
+ port vlan-stacking vlan 1695 to 1696 stack-vlan 79
+ port vlan-stacking vlan 111 to 200 stack-vlan 1001
+ port vlan-stacking vlan 1011 to 1083 stack-vlan 1163
+#
+interface GigabitEthernet1/0/14
+ description dT:WLAN-YongJiangGongYu-5#MianBan:()
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1688 to 1694
+ port hybrid untagged vlan 79 1001 1163
+ port vlan-stacking vlan 1695 to 1696 stack-vlan 79
+ port vlan-stacking vlan 111 to 200 stack-vlan 1001
+ port vlan-stacking vlan 1011 to 1083 stack-vlan 1163
+#
+interface GigabitEthernet1/0/15
+ description dT:WLAN-YongJiangGongYu-6#MianBan:()
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1688 to 1694
+ port hybrid untagged vlan 79 1001 1163
+ port vlan-stacking vlan 1695 to 1696 stack-vlan 79
+ port vlan-stacking vlan 111 to 200 stack-vlan 1001
+ port vlan-stacking vlan 1011 to 1083 stack-vlan 1163
+#
+interface GigabitEthernet1/0/16
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1694
+ port hybrid untagged vlan 79 1163
+ port vlan-stacking vlan 1695 to 1696 stack-vlan 79
+ port vlan-stacking vlan 1011 to 1083 stack-vlan 1163
+#
+interface GigabitEthernet1/0/17
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1694
+ port hybrid untagged vlan 79 1163
+ port vlan-stacking vlan 1695 to 1696 stack-vlan 79
+ port vlan-stacking vlan 1011 to 1083 stack-vlan 1163
+#
+interface GigabitEthernet1/0/18
+#
+interface GigabitEthernet1/0/19
+ port link-type trunk
+#
+interface GigabitEthernet1/0/20
+#
+interface GigabitEthernet1/0/21
+#
+interface GigabitEthernet1/0/22
+#
+interface GigabitEthernet1/0/23
+#
+interface GigabitEthernet2/0/0
+#
+interface GigabitEthernet2/0/1
+#
+interface GigabitEthernet2/0/2
+#
+interface GigabitEthernet2/0/3
+#
+interface GigabitEthernet2/0/4
+#
+interface GigabitEthernet2/0/5
+#
+interface GigabitEthernet2/0/6
+#
+interface GigabitEthernet2/0/7
+#
+interface GigabitEthernet2/0/8
+#
+interface GigabitEthernet2/0/9
+#
+interface GigabitEthernet2/0/10
+#
+interface GigabitEthernet2/0/11
+#
+interface GigabitEthernet2/0/12
+#
+interface GigabitEthernet2/0/13
+#
+interface GigabitEthernet2/0/14
+#
+interface GigabitEthernet2/0/15
+#
+interface GigabitEthernet2/0/16
+#
+interface GigabitEthernet2/0/17
+#
+interface GigabitEthernet2/0/18
+#
+interface GigabitEthernet2/0/19
+#
+interface GigabitEthernet2/0/20
+#
+interface GigabitEthernet2/0/21
+#
+interface GigabitEthernet2/0/22
+#
+interface GigabitEthernet2/0/23
+#
+interface GigabitEthernet2/0/24
+#
+interface GigabitEthernet2/0/25
+#
+interface GigabitEthernet2/0/26
+#
+interface GigabitEthernet2/0/27
+#
+interface GigabitEthernet2/0/28
+#
+interface GigabitEthernet2/0/29
+#
+interface GigabitEthernet2/0/30
+#
+interface GigabitEthernet2/0/31
+#
+interface GigabitEthernet2/0/32
+#
+interface GigabitEthernet2/0/33
+#
+interface GigabitEthernet2/0/34
+#
+interface GigabitEthernet2/0/35
+#
+interface GigabitEthernet2/0/36
+#
+interface GigabitEthernet2/0/37
+#
+interface GigabitEthernet2/0/38
+#
+interface GigabitEthernet2/0/39
+#
+interface GigabitEthernet2/0/40
+#
+interface GigabitEthernet2/0/41
+#
+interface GigabitEthernet2/0/42
+#
+interface GigabitEthernet2/0/43
+#
+interface GigabitEthernet2/0/44
+#
+interface GigabitEthernet2/0/45
+#
+interface GigabitEthernet2/0/46
+ description AC
+ eth-trunk 2
+#
+interface GigabitEthernet2/0/47
+ description AC
+ eth-trunk 2
+#
+interface NULL0
+#
+ip route-static 0.0.0.0 0.0.0.0 61.153.115.141
+ip route-static 10.255.255.0 255.255.255.0 172.135.12.254
+#
+snmp-agent
+snmp-agent local-engineid 000007DB7FFFFFFF00000168
+snmp-agent community read cipher %^%#YJAw9rRTtLTN@//@UWOU=d>>&uHD2)Qwb>V:C9[Ntk;NEDvNBBZE,v>645xFmm12MCZ+\#H76qD&su{;%^%# acl 2001
+snmp-agent sys-info contact R&D Nanjing, Huawei Technologies co.,Ltd.
+snmp-agent sys-info location Nanjing China
+snmp-agent sys-info version all
+undo snmp-agent trap enable feature-name DLDP
+undo snmp-agent trap enable feature-name LDTTRAP
+undo snmp-agent trap enable feature-name LLDPTRAP
+snmp-agent trap enable feature-name BASETRAP
+#
+ssh server compatible-ssh1x enable
+#
+user-interface con 0
+user-interface vty 0 4
+ acl 2100 inbound
+ authentication-mode password
+ user privilege level 3
+ set authentication password cipher %^%#[YyeNA+aSY(:x*XX@+XQLga%-q|W=Cm||'9_OO%Ra2xH.xN*dR5o2PR#3Z|D%^%#
+ protocol inbound all
+user-interface vty 16 20
+ protocol inbound telnet
+#
+return
+<NB-ZH-NDNQ-9303-WLAN>

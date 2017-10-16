@@ -1,0 +1,1101 @@
+
+#
+!Software Version V200R001C00SPC300
+sysname HZ-HZ-HuiX-DSW-1.MAN.9312
+#
+super password level 3 cipher %$%$E:\EEg8!h(Gz5P7!-lT!,jaXM\ZxDahyj/oeb~)Ac>*R.pgb%$%$
+#
+info-center source default channel 2 log level debugging
+info-center source SHELL channel 4 log level informational
+info-center loghost source Vlanif50
+info-center loghost 10.254.0.1 facility local4
+#
+vlan batch 22 50 333 1023 3451 to 3479
+#
+qos car qoscar1 cir 102400 pir 123600 cbs 1000000 pbs 1250000
+qos car 10m cir 10240 cbs 2048000
+qos car 20m cir 20480 cbs 2048000
+qos car 30m cir 30720 cbs 2048000
+qos car 50m cir 51200 cbs 2048000
+qos car 2m cir 2048 cbs 1280000
+qos car 4m cir 4096 cbs 2560000
+qos car 200m cir 204800 cbs 2048000
+qos car 300m cir 307200 cbs 40960000
+qos car 100m cir 102400 cbs 2048000
+#
+undo http server enable
+#
+undo nap slave enable
+#
+ dba-profile default0 type3 assure 40000 max 80000
+#
+diffserv domain default
+#
+radius-server template newhzdx
+ radius-server shared-key simple hzct@rsa
+ radius-server authentication 61.164.19.211 1812
+ radius-server authentication 61.164.19.213 1812 secondary
+ radius-server accounting 61.164.19.211 1813
+ radius-server accounting 61.164.19.213 1813 secondary
+ undo radius-server user-name domain-included
+#
+hwtacacs-server template hzdx
+ hwtacacs-server authentication 202.96.96.86
+ hwtacacs-server authentication 202.101.172.38 secondary
+ hwtacacs-server authorization 202.96.96.86
+ hwtacacs-server authorization 202.101.172.38 secondary
+ hwtacacs-server accounting 202.96.96.86
+ hwtacacs-server accounting 202.101.172.38 secondary
+ hwtacacs-server source-ip 172.28.6.6
+ hwtacacs-server shared-key simple hzdx
+ undo hwtacacs-server user-name domain-included
+#
+ line-profile default0
+#
+ service-profile default0
+#
+acl number 2000
+ rule 5 permit source 172.16.254.252 0
+ rule 10 permit source 202.96.102.253 0
+ rule 15 permit source 202.96.102.254 0
+ rule 20 permit source 10.254.0.0 0.0.0.255
+ rule 25 permit source 192.168.11.0 0.0.0.255
+ rule 30 permit source 10.10.10.34 0
+ rule 35 permit source 10.10.10.35 0
+ rule 40 permit source 192.168.0.0 0.0.255.255
+ rule 45 permit source 10.254.0.0 0.0.0.31
+ rule 50 permit source 172.16.247.5 0
+ rule 55 permit source 10.31.255.0 0.0.0.31
+ rule 60 deny
+#
+acl number 2001
+ rule 51 permit source 10.10.10.34 0
+ rule 52 permit source 10.10.10.35 0
+#
+acl number 2006
+ rule 51 permit source 10.10.10.34 0
+ rule 52 permit source 10.10.10.35 0
+#
+acl number 2016
+ rule 1 permit source 172.16.247.0 0.0.0.31
+ rule 2 permit source 172.16.254.0 0.0.0.15
+ rule 3 permit source 10.254.0.0 0.0.0.31
+ rule 4 permit source 10.31.255.0 0.0.0.255
+ rule 5 permit source 10.254.3.0 0.0.0.255
+ rule 6 permit source 10.10.10.0 0.0.0.63
+ rule 7 permit source 192.168.100.0 0.0.0.3
+ rule 8 permit source 172.16.0.0 0.0.0.7
+ rule 9 permit source 10.20.200.14 0
+ rule 10 permit source 10.20.200.18 0
+ rule 11 permit source 192.168.1.0 0.0.0.255
+ rule 12 permit source 192.168.4.0 0.0.0.255
+ rule 13 permit source 192.168.8.0 0.0.0.255
+ rule 14 permit source 192.168.11.0 0.0.0.255
+ rule 15 permit source 192.168.119.0 0.0.0.255
+ rule 16 permit source 192.168.105.0 0.0.0.255
+ rule 17 permit source 192.168.67.0 0.0.0.255
+ rule 18 permit source 172.28.11.251 0
+ rule 19 permit source 192.168.101.0 0.0.0.255
+ rule 20 permit source 192.168.48.0 0.0.0.255
+ rule 1000 deny
+#
+traffic classifier mark operator or precedence 5
+ if-match vlan-id 3599 to 3600
+#
+traffic behavior mark
+ remark 8021p 4
+#
+traffic policy mark
+ classifier mark behavior mark
+#
+drop-profile default
+#
+vlan 50
+ description Huawei-Switch-NetManagerment
+#
+aaa
+ authentication-scheme default
+ authentication-scheme hzdx
+  authentication-mode hwtacacs local
+  authentication-super hwtacacs super
+ authentication-scheme newhzdx
+  authentication-mode radius local
+ authorization-scheme default
+ authorization-scheme hwtacacs
+  authorization-mode hwtacacs
+ authorization-scheme hzdx
+  authorization-mode hwtacacs local
+ accounting-scheme default
+ accounting-scheme hwtacacs
+  accounting-mode hwtacacs
+  accounting realtime 3
+ accounting-scheme hzdx
+  accounting start-fail online
+ accounting-scheme newhzdx
+  accounting-mode radius
+ recording-scheme hzdx
+ domain default
+  authentication-scheme newhzdx
+  accounting-scheme newhzdx
+  authorization-scheme hzdx
+  radius-server  newhzdx
+  hwtacacs-server hzdx
+ domain default_admin
+  authentication-scheme newhzdx
+  accounting-scheme newhzdx
+  authorization-scheme hzdx
+  radius-server  newhzdx
+ domain hzdx
+  authentication-scheme hzdx
+  accounting-scheme hwtacacs
+  authorization-scheme hwtacacs
+  hwtacacs-server hzdx
+ local-user root password cipher %$%$DK5f/PdO.DQcaa"[-/1H>]TK%$%$
+ local-user root privilege level 3
+ local-user root service-type telnet
+ local-user admin password cipher %$%$I6.ASV)hJET,p"Dn.YM%3aXO%$%$
+ local-user admin service-type http
+ local-user zjnoc2013 password cipher %$%$yTO`29sZQTcbUr%nx[GM>5,#%$%$
+ local-user zjnoc2013 privilege level 3
+ local-user zjnoc2013 service-type telnet
+ local-user aaa@huawei.com password cipher %$%$5lhNMd[vF6({5{<aM<<%5-$x%$%$
+#
+ntp-service unicast-server 61.164.1.7 source-interface Vlanif50 preference
+ntp-service unicast-server 61.130.120.35 source-interface Vlanif50
+#
+interface Vlanif50
+ description manager
+ ip address 172.28.6.6 255.255.255.0
+#
+interface Vlanif1023
+ ip address 172.18.0.1 255.255.255.252
+#
+interface Eth-Trunk4
+ description uT:HZ-HZ-HX-SW-1&2.MAN.H3C12510F:BA10(10GE1/0/0/10,10GE2/0/0/10)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 50 3451 to 3500
+ traffic-policy mark inbound
+ mode lacp-static
+#
+interface Eth-Trunk10
+ description UBD21747963&UBD21747965&UBD21747967
+ port link-type access
+ port default vlan 3455
+#
+interface Eth-Trunk20
+ description UBD23338562&UBD23459517&UBD23459516
+ port link-type access
+ port default vlan 3457
+#
+interface Ethernet0/0/0
+#
+interface GigabitEthernet1/0/0
+ undo negotiation auto
+ shutdown
+#
+interface GigabitEthernet1/0/1
+ undo negotiation auto
+ shutdown
+#
+interface GigabitEthernet1/0/2
+#
+interface GigabitEthernet1/0/3
+#
+interface GigabitEthernet1/0/4
+#
+interface GigabitEthernet1/0/5
+ undo negotiation auto
+ shutdown
+#
+interface GigabitEthernet1/0/6
+ undo negotiation auto
+ shutdown
+#
+interface GigabitEthernet1/0/7
+ undo negotiation auto
+ speed 100
+ description LAN08129429
+ port link-type access
+ port default vlan 3452
+#
+interface GigabitEthernet1/0/8
+ undo negotiation auto
+ speed 100
+ description LAN06321193
+ port link-type access
+ port default vlan 3451
+ qos lr cir 20480 cbs 1280000 outbound
+#
+interface GigabitEthernet1/0/9
+ description UBD20543068
+ port link-type access
+ port default vlan 3453
+#
+interface GigabitEthernet1/0/10
+ undo negotiation auto
+ speed 100
+ description L1100023
+ port link-type access
+ port default vlan 3454
+#
+interface GigabitEthernet1/0/11
+ undo negotiation auto
+ speed 100
+ description UBD21747963
+ eth-trunk 10
+#
+interface GigabitEthernet1/0/12
+ undo negotiation auto
+ speed 100
+ description UBD21747965
+ eth-trunk 10
+#
+interface GigabitEthernet1/0/13
+ undo negotiation auto
+ speed 100
+ description UBD21747967
+ eth-trunk 10
+#
+interface GigabitEthernet1/0/14
+ undo negotiation auto
+ speed 100
+ description UBD23105473
+ port link-type access
+ port default vlan 3458
+#
+interface GigabitEthernet1/0/15
+ undo negotiation auto
+ description LAN12779934
+ port link-type access
+ port default vlan 3459
+ qos lr cir 204800 cbs 25600000 outbound
+ qos car inbound 200m
+#
+interface GigabitEthernet1/0/16
+ description LAN05047776
+ port link-type access
+ port default vlan 3462
+#
+interface GigabitEthernet1/0/17
+ undo negotiation auto
+ speed 100
+ description UBD23338562
+ eth-trunk 20
+#
+interface GigabitEthernet1/0/18
+ port link-type access
+#
+interface GigabitEthernet1/0/19
+ port link-type access
+#
+interface GigabitEthernet1/0/20
+ undo negotiation auto
+ speed 100
+ description UBD23459517
+ eth-trunk 20
+#
+interface GigabitEthernet1/0/21
+ undo negotiation auto
+ speed 100
+ description UBD23459516
+ eth-trunk 20
+#
+interface GigabitEthernet1/0/22
+ undo negotiation auto
+ speed 100
+ description UBD23635518
+ port link-type access
+ port default vlan 3468
+#
+interface GigabitEthernet1/0/23
+ description UBD23409776
+ port link-type access
+ port default vlan 3475
+ qos lr cir 204800 cbs 2048000 outbound
+ qos car inbound 200m
+#
+interface GigabitEthernet1/0/24
+ undo negotiation auto
+ port link-type access
+#
+interface GigabitEthernet1/0/25
+ undo negotiation auto
+ speed 100
+ description 201608215386
+ port link-type access
+ port default vlan 3471
+#
+interface GigabitEthernet1/0/26
+ undo negotiation auto
+ speed 100
+ shutdown
+ port link-type access
+#
+interface GigabitEthernet1/0/27
+ undo negotiation auto
+ speed 100
+ description 201608215382
+ port link-type access
+ port default vlan 3473
+#
+interface GigabitEthernet1/0/28
+ undo negotiation auto
+ speed 100
+ description UBD24813201
+ port link-type access
+ port default vlan 3472
+ qos lr cir 102400 cbs 12800000 outbound
+ qos car inbound 100m
+#
+interface GigabitEthernet1/0/29
+ undo negotiation auto
+ speed 100
+ description UBD24813203
+ port link-type access
+ port default vlan 3470
+ qos lr cir 102400 cbs 12800000 outbound
+ qos car inbound 100m
+#
+interface GigabitEthernet1/0/30
+ undo negotiation auto
+ speed 100
+ description UBD23235320
+ port link-type access
+ port default vlan 3466
+#
+interface GigabitEthernet1/0/31
+ undo negotiation auto
+ speed 100
+ description UBD23235319
+ port link-type access
+ port default vlan 3461
+ qos lr cir 102400 cbs 12800000 outbound
+ qos car inbound 100m
+#
+interface GigabitEthernet1/0/32
+ undo negotiation auto
+ speed 100
+ description LAN00299215
+ port link-type access
+ port default vlan 3460
+ qos lr cir 102400 cbs 12800000 outbound
+ qos car inbound 100m
+#
+interface GigabitEthernet1/0/33
+#
+interface GigabitEthernet1/0/34
+#
+interface GigabitEthernet1/0/35
+#
+interface GigabitEthernet1/0/36
+#
+interface GigabitEthernet1/0/37
+#
+interface GigabitEthernet1/0/38
+#
+interface GigabitEthernet1/0/39
+#
+interface GigabitEthernet1/0/40
+#
+interface GigabitEthernet1/0/41
+#
+interface GigabitEthernet1/0/42
+#
+interface GigabitEthernet1/0/43
+#
+interface GigabitEthernet1/0/44
+#
+interface GigabitEthernet1/0/45
+ undo negotiation auto
+ speed 100
+#
+interface GigabitEthernet1/0/46
+ undo negotiation auto
+ speed 100
+#
+interface GigabitEthernet1/0/47
+ description pT:HZ-HZ-HuiX-DSW-1.MAN.8912:(local)GE4/13
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 123
+ traffic-policy mark inbound
+ qos pq 4 wrr 0 to 3 5 to 7
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet2/0/0
+ undo negotiation auto
+ shutdown
+#
+interface GigabitEthernet2/0/1
+ undo negotiation auto
+ shutdown
+#
+interface GigabitEthernet2/0/2
+#
+interface GigabitEthernet2/0/3
+#
+interface GigabitEthernet2/0/4
+#
+interface GigabitEthernet2/0/5
+ undo negotiation auto
+ shutdown
+#
+interface GigabitEthernet2/0/6
+ undo negotiation auto
+ shutdown
+#
+interface GigabitEthernet2/0/7
+#
+interface GigabitEthernet2/0/8
+ undo negotiation auto
+ speed 100
+ description LAN06046339
+ port link-type access
+ port default vlan 3479
+ qos lr cir 20480 cbs 2048000 outbound
+ qos car inbound 20m
+#
+interface GigabitEthernet2/0/9
+#
+interface GigabitEthernet2/0/10
+#
+interface GigabitEthernet2/0/11
+#
+interface GigabitEthernet2/0/12
+#
+interface GigabitEthernet2/0/13
+#
+interface GigabitEthernet2/0/14
+#
+interface GigabitEthernet2/0/15
+#
+interface GigabitEthernet2/0/16
+ undo negotiation auto
+ speed 100
+ shutdown
+ port link-type access
+#
+interface GigabitEthernet2/0/17
+#
+interface GigabitEthernet2/0/18
+ undo negotiation auto
+ speed 100
+ description LAN04157531
+ port link-type access
+ port default vlan 3456
+ qos lr cir 51200 cbs 6400000 outbound
+ qos car inbound 50m
+#
+interface GigabitEthernet2/0/19
+ undo negotiation auto
+ speed 100
+ description LAN12713998
+ port link-type access
+ port default vlan 3463
+#
+interface GigabitEthernet2/0/20
+ undo negotiation auto
+ speed 100
+ description L1166270
+ port link-type access
+ port default vlan 3465
+#
+interface GigabitEthernet2/0/21
+#
+interface GigabitEthernet2/0/22
+ description UBD24548944
+ port link-type access
+ port default vlan 3469
+ qos lr cir 204800 cbs 2048000 outbound
+ qos car inbound 200m
+#
+interface GigabitEthernet2/0/23
+#
+interface GigabitEthernet2/0/24
+#
+interface GigabitEthernet2/0/25
+ description UBD23831478
+ port link-type access
+ port default vlan 3474
+#
+interface GigabitEthernet2/0/26
+ undo negotiation auto
+ description UBD24383228
+ port link-type access
+ port default vlan 3478
+ qos lr cir 204800 cbs 2048000 outbound
+ qos car inbound 200m
+#
+interface GigabitEthernet2/0/27
+#
+interface GigabitEthernet2/0/28
+#
+interface GigabitEthernet2/0/29
+#
+interface GigabitEthernet2/0/30
+#
+interface GigabitEthernet2/0/31
+#
+interface GigabitEthernet2/0/32
+#
+interface GigabitEthernet2/0/33
+#
+interface GigabitEthernet2/0/34
+#
+interface GigabitEthernet2/0/35
+ description UBD23537717
+ port link-type access
+ port default vlan 3467
+ qos lr cir 20480 cbs 1280000 outbound
+ qos car inbound 20m
+#
+interface GigabitEthernet2/0/36
+#
+interface GigabitEthernet2/0/37
+#
+interface GigabitEthernet2/0/38
+ undo negotiation auto
+ description UBD23587234
+ port link-type access
+ port default vlan 3464
+ qos lr cir 204800 cbs 2048000 outbound
+ qos car inbound 200m
+#
+interface GigabitEthernet2/0/39
+#
+interface GigabitEthernet2/0/40
+#
+interface GigabitEthernet2/0/41
+ description LAN13025768::process
+ port link-type access
+ port default vlan 3476
+ qos lr cir 204800 cbs 2048000 outbound
+ qos car inbound 200m
+#
+interface GigabitEthernet2/0/42
+ description LAN15522060
+ port link-type access
+ port default vlan 3477
+ qos lr cir 204800 cbs 2048000 outbound
+ qos car inbound 200m
+#
+interface GigabitEthernet2/0/43
+#
+interface GigabitEthernet2/0/44
+#
+interface GigabitEthernet2/0/45
+#
+interface GigabitEthernet2/0/46
+#
+interface GigabitEthernet2/0/47
+ undo negotiation auto
+ shutdown
+#
+interface GigabitEthernet3/0/0
+#
+interface GigabitEthernet3/0/1
+#
+interface GigabitEthernet3/0/2
+#
+interface GigabitEthernet3/0/3
+#
+interface GigabitEthernet3/0/4
+#
+interface GigabitEthernet3/0/5
+#
+interface GigabitEthernet3/0/6
+#
+interface GigabitEthernet3/0/7
+#
+interface GigabitEthernet3/0/8
+#
+interface GigabitEthernet3/0/9
+#
+interface GigabitEthernet3/0/10
+#
+interface GigabitEthernet3/0/11
+#
+interface GigabitEthernet3/0/12
+#
+interface GigabitEthernet3/0/13
+#
+interface GigabitEthernet3/0/14
+#
+interface GigabitEthernet3/0/15
+#
+interface GigabitEthernet3/0/16
+#
+interface GigabitEthernet3/0/17
+#
+interface GigabitEthernet3/0/18
+#
+interface GigabitEthernet3/0/19
+#
+interface GigabitEthernet3/0/20
+#
+interface GigabitEthernet3/0/21
+#
+interface GigabitEthernet3/0/22
+#
+interface GigabitEthernet3/0/23
+#
+interface GigabitEthernet3/0/24
+#
+interface GigabitEthernet3/0/25
+#
+interface GigabitEthernet3/0/26
+#
+interface GigabitEthernet3/0/27
+#
+interface GigabitEthernet3/0/28
+#
+interface GigabitEthernet3/0/29
+#
+interface GigabitEthernet3/0/30
+#
+interface GigabitEthernet3/0/31
+#
+interface GigabitEthernet3/0/32
+#
+interface GigabitEthernet3/0/33
+#
+interface GigabitEthernet3/0/34
+#
+interface GigabitEthernet3/0/35
+#
+interface GigabitEthernet3/0/36
+#
+interface GigabitEthernet3/0/37
+#
+interface GigabitEthernet3/0/38
+#
+interface GigabitEthernet3/0/39
+#
+interface GigabitEthernet3/0/40
+#
+interface GigabitEthernet3/0/41
+#
+interface GigabitEthernet3/0/42
+#
+interface GigabitEthernet3/0/43
+#
+interface GigabitEthernet3/0/44
+#
+interface GigabitEthernet3/0/45
+#
+interface GigabitEthernet3/0/46
+#
+interface GigabitEthernet3/0/47
+#
+interface GigabitEthernet4/0/0
+#
+interface GigabitEthernet4/0/1
+#
+interface GigabitEthernet4/0/2
+#
+interface GigabitEthernet4/0/3
+#
+interface GigabitEthernet4/0/4
+#
+interface GigabitEthernet4/0/5
+#
+interface GigabitEthernet4/0/6
+#
+interface GigabitEthernet4/0/7
+#
+interface GigabitEthernet4/0/8
+#
+interface GigabitEthernet4/0/9
+#
+interface GigabitEthernet4/0/10
+#
+interface GigabitEthernet4/0/11
+#
+interface GigabitEthernet4/0/12
+#
+interface GigabitEthernet4/0/13
+#
+interface GigabitEthernet4/0/14
+#
+interface GigabitEthernet4/0/15
+#
+interface GigabitEthernet4/0/16
+#
+interface GigabitEthernet4/0/17
+#
+interface GigabitEthernet4/0/18
+#
+interface GigabitEthernet4/0/19
+#
+interface GigabitEthernet4/0/20
+#
+interface GigabitEthernet4/0/21
+#
+interface GigabitEthernet4/0/22
+#
+interface GigabitEthernet4/0/23
+#
+interface GigabitEthernet4/0/24
+#
+interface GigabitEthernet4/0/25
+#
+interface GigabitEthernet4/0/26
+#
+interface GigabitEthernet4/0/27
+#
+interface GigabitEthernet4/0/28
+#
+interface GigabitEthernet4/0/29
+#
+interface GigabitEthernet4/0/30
+#
+interface GigabitEthernet4/0/31
+#
+interface GigabitEthernet4/0/32
+#
+interface GigabitEthernet4/0/33
+#
+interface GigabitEthernet4/0/34
+#
+interface GigabitEthernet4/0/35
+#
+interface GigabitEthernet4/0/36
+#
+interface GigabitEthernet4/0/37
+#
+interface GigabitEthernet4/0/38
+#
+interface GigabitEthernet4/0/39
+#
+interface GigabitEthernet4/0/40
+#
+interface GigabitEthernet4/0/41
+#
+interface GigabitEthernet4/0/42
+#
+interface GigabitEthernet4/0/43
+#
+interface GigabitEthernet4/0/44
+#
+interface GigabitEthernet4/0/45
+#
+interface GigabitEthernet4/0/46
+#
+interface GigabitEthernet4/0/47
+#
+interface GigabitEthernet5/0/0
+#
+interface GigabitEthernet5/0/1
+#
+interface GigabitEthernet5/0/2
+#
+interface GigabitEthernet5/0/3
+#
+interface GigabitEthernet5/0/4
+#
+interface GigabitEthernet5/0/5
+#
+interface GigabitEthernet5/0/6
+#
+interface GigabitEthernet5/0/7
+#
+interface GigabitEthernet5/0/8
+#
+interface GigabitEthernet5/0/9
+#
+interface GigabitEthernet5/0/10
+#
+interface GigabitEthernet5/0/11
+#
+interface GigabitEthernet5/0/12
+#
+interface GigabitEthernet5/0/13
+#
+interface GigabitEthernet5/0/14
+#
+interface GigabitEthernet5/0/15
+#
+interface GigabitEthernet5/0/16
+#
+interface GigabitEthernet5/0/17
+#
+interface GigabitEthernet5/0/18
+#
+interface GigabitEthernet5/0/19
+#
+interface GigabitEthernet5/0/20
+#
+interface GigabitEthernet5/0/21
+#
+interface GigabitEthernet5/0/22
+#
+interface GigabitEthernet5/0/23
+#
+interface GigabitEthernet5/0/24
+#
+interface GigabitEthernet5/0/25
+#
+interface GigabitEthernet5/0/26
+#
+interface GigabitEthernet5/0/27
+#
+interface GigabitEthernet5/0/28
+#
+interface GigabitEthernet5/0/29
+#
+interface GigabitEthernet5/0/30
+#
+interface GigabitEthernet5/0/31
+#
+interface GigabitEthernet5/0/32
+#
+interface GigabitEthernet5/0/33
+#
+interface GigabitEthernet5/0/34
+#
+interface GigabitEthernet5/0/35
+#
+interface GigabitEthernet5/0/36
+#
+interface GigabitEthernet5/0/37
+#
+interface GigabitEthernet5/0/38
+#
+interface GigabitEthernet5/0/39
+#
+interface GigabitEthernet5/0/40
+#
+interface GigabitEthernet5/0/41
+#
+interface GigabitEthernet5/0/42
+#
+interface GigabitEthernet5/0/43
+#
+interface GigabitEthernet5/0/44
+#
+interface GigabitEthernet5/0/45
+#
+interface GigabitEthernet5/0/46
+#
+interface GigabitEthernet5/0/47
+#
+interface GigabitEthernet8/0/0
+#
+interface GigabitEthernet8/0/1
+#
+interface GigabitEthernet8/0/2
+#
+interface GigabitEthernet8/0/3
+#
+interface GigabitEthernet8/0/4
+#
+interface GigabitEthernet8/0/5
+#
+interface GigabitEthernet8/0/6
+#
+interface GigabitEthernet8/0/7
+#
+interface GigabitEthernet8/0/8
+#
+interface GigabitEthernet8/0/9
+#
+interface GigabitEthernet8/0/10
+#
+interface GigabitEthernet8/0/11
+#
+interface GigabitEthernet8/0/12
+#
+interface GigabitEthernet8/0/13
+#
+interface GigabitEthernet8/0/14
+#
+interface GigabitEthernet8/0/15
+#
+interface GigabitEthernet8/0/16
+#
+interface GigabitEthernet8/0/17
+#
+interface GigabitEthernet8/0/18
+#
+interface GigabitEthernet8/0/19
+#
+interface GigabitEthernet8/0/20
+#
+interface GigabitEthernet8/0/21
+#
+interface GigabitEthernet8/0/22
+#
+interface GigabitEthernet8/0/23
+#
+interface GigabitEthernet8/0/24
+#
+interface GigabitEthernet8/0/25
+#
+interface GigabitEthernet8/0/26
+#
+interface GigabitEthernet8/0/27
+#
+interface GigabitEthernet8/0/28
+#
+interface GigabitEthernet8/0/29
+#
+interface GigabitEthernet8/0/30
+#
+interface GigabitEthernet8/0/31
+#
+interface GigabitEthernet8/0/32
+#
+interface GigabitEthernet8/0/33
+#
+interface GigabitEthernet8/0/34
+#
+interface GigabitEthernet8/0/35
+#
+interface GigabitEthernet8/0/36
+#
+interface GigabitEthernet8/0/37
+#
+interface GigabitEthernet8/0/38
+#
+interface GigabitEthernet8/0/39
+#
+interface GigabitEthernet8/0/40
+#
+interface GigabitEthernet8/0/41
+#
+interface GigabitEthernet8/0/42
+#
+interface GigabitEthernet8/0/43
+#
+interface GigabitEthernet8/0/44
+#
+interface GigabitEthernet8/0/45
+#
+interface GigabitEthernet8/0/46
+#
+interface GigabitEthernet8/0/47
+#
+interface XGigabitEthernet6/0/0
+ shutdown
+#
+interface XGigabitEthernet6/0/1
+ description uT:HZ-HZ-HX-SW-1&2.MAN.H3C12510F:(local)10GE1/0/0/10
+ eth-trunk 4
+#
+interface XGigabitEthernet6/0/2
+#
+interface XGigabitEthernet6/0/3
+#
+interface XGigabitEthernet6/0/4
+#
+interface XGigabitEthernet6/0/5
+#
+interface XGigabitEthernet6/0/6
+#
+interface XGigabitEthernet6/0/7
+#
+interface XGigabitEthernet6/0/8
+#
+interface XGigabitEthernet6/0/9
+#
+interface XGigabitEthernet6/0/10
+#
+interface XGigabitEthernet6/0/11
+#
+interface XGigabitEthernet6/0/12
+#
+interface XGigabitEthernet6/0/13
+#
+interface XGigabitEthernet6/0/14
+#
+interface XGigabitEthernet6/0/15
+#
+interface XGigabitEthernet7/0/0
+ shutdown
+#
+interface XGigabitEthernet7/0/1
+ description uT:HZ-HZ-HX-SW-1&2.MAN.H3C12510F:(local)10GE2/0/0/10
+ eth-trunk 4
+#
+interface XGigabitEthernet7/0/2
+#
+interface XGigabitEthernet7/0/3
+#
+interface XGigabitEthernet7/0/4
+#
+interface XGigabitEthernet7/0/5
+#
+interface XGigabitEthernet7/0/6
+#
+interface XGigabitEthernet7/0/7
+#
+interface XGigabitEthernet7/0/8
+#
+interface XGigabitEthernet7/0/9
+#
+interface XGigabitEthernet7/0/10
+#
+interface XGigabitEthernet7/0/11
+#
+interface XGigabitEthernet7/0/12
+#
+interface XGigabitEthernet7/0/13
+#
+interface XGigabitEthernet7/0/14
+#
+interface XGigabitEthernet7/0/15
+#
+interface NULL0
+ description HUAWEI, Quidway Series
+#
+ip route-static 0.0.0.0 0.0.0.0 172.28.6.253
+#
+snmp-agent
+snmp-agent local-engineid 800007DB000FE2318D4C6877
+snmp-agent community read cipher %$%$!f9r<lsqi,XXcO6e1^.Y>cZQ%$%$ acl 2000
+snmp-agent sys-info location HangZhou_HuiXing_2F
+snmp-agent sys-info version all
+snmp-agent target-host trap address udp-domain 172.16.254.252 params securityname hz2006snmp
+snmp-agent trap source Vlanif50
+snmp-agent trap enable feature-name IFNET trap-name linkDown
+snmp-agent trap enable feature-name IFNET trap-name linkUp
+snmp-agent trap enable feature-name CONFIGURATION trap-name hwCfgManEventlog
+snmp-agent trap enable feature-name CONFIGURATION trap-name hwCfgOperateCompletion
+snmp-agent trap enable feature-name CONFIGURATION trap-name hwCfgB2STransferFail
+snmp-agent trap enable feature-name CONFIGURATION trap-name hwCfgB2SOperate
+snmp-agent trap enable feature-name SNMP trap-name authenticationFailure
+snmp-agent trap enable feature-name VFS trap-name hwFlhOperNotification
+snmp-agent trap enable feature-name VFS trap-name hwSysMasterHDError
+snmp-agent trap enable feature-name VFS trap-name hwSysSlaveHDError
+snmp-agent trap enable feature-name VFS trap-name hwFlhSyncSuccessNotification
+snmp-agent trap enable feature-name VFS trap-name hwFlhSyncFailNotification
+#
+command-privilege level 0 view system display current-configuration
+#
+user-interface maximum-vty 10
+user-interface con 0
+ authentication-mode password
+ set authentication password cipher %$%$b.SR6,Y@f7Y=N:2O:z"=]ypg~/mBNa.Hj.++I"@Hh`LUu"vq%$%$
+ idle-timeout 0 0
+user-interface vty 0 4
+ acl 2016 inbound
+ authentication-mode aaa
+ user privilege level 3
+ idle-timeout 5 0
+ screen-length 0
+user-interface vty 5 9
+ acl 2000 inbound
+ authentication-mode aaa
+ user privilege level 3
+ idle-timeout 5 0
+user-interface vty 16 20
+#
+return
+[HZ-HZ-HuiX-DSW-1.MAN.9312-ui-vty0-4]

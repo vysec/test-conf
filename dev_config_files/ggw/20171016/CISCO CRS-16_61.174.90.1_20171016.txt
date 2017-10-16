@@ -1,0 +1,4653 @@
+
+Sun Oct 15 05:00:04.425 PRC
+Building configuration...
+!! IOS XR Configuration 5.1.4
+!! Last configuration change at Sat Oct 14 21:47:00 2017 by zjnoc_blj
+!
+hostname QZ-QZ-XDL-CR-1.MAN.CRS
+clock timezone PRC 8
+banner motd c WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user! c
+logging console informational
+logging buffered 10240000
+logging buffered informational
+logging facility local2
+logging 115.239.131.2 vrf default severity info
+logging 202.96.113.158 vrf default severity info
+logging source-interface Loopback0
+service timestamps log datetime localtime msec show-timezone
+service timestamps debug datetime localtime msec show-timezone
+telnet vrf default ipv4 server max-servers 10
+taskgroup only-show
+ task read fr
+ task read aaa
+ task read acl
+ task read atm
+ task read bfd
+ task read bgp
+ task read cdp
+ task read cef
+ task read ppp
+ task read qos
+ task read rib
+ task read rip
+ task read sbc
+ task read bcdl
+ task read boot
+ task read diag
+ task read dwdm
+ task read hdlc
+ task read hsrp
+ task read ipv4
+ task read ipv6
+ task read isis
+ task read lpts
+ task read ospf
+ task read ouni
+ task read snmp
+ task read vlan
+ task read vrrp
+ task read admin
+ task read eigrp
+ task read l2vpn
+ task read bundle
+ task read crypto
+ task read fabric
+ task read static
+ task read sysmgr
+ task read system
+ task read tunnel
+ task read drivers
+ task read logging
+ task read monitor
+ task read mpls-te
+ task read netflow
+ task read network
+ task read pos-dpt
+ task read firewall
+ task read mpls-ldp
+ task read pkg-mgmt
+ task read fault-mgr
+ task read interface
+ task read inventory
+ task read multicast
+ task read route-map
+ task read sonet-sdh
+ task read transport
+ task read ext-access
+ task read filesystem
+ task read tty-access
+ task read config-mgmt
+ task read ip-services
+ task read mpls-static
+ task read route-policy
+ task read host-services
+ task read basic-services
+ task read config-services
+ task write basic-services
+ task execute interface
+ task execute basic-services
+!
+usergroup priv1
+ taskgroup only-show
+!
+tacacs source-interface Loopback0 vrf default
+tacacs-server host 202.96.102.141 port 49
+ key 7 001509080B58
+!
+tacacs-server host 61.153.176.183 port 49
+ key 7 13140D1C040F
+!
+username zjdxnoc
+ group sysadmin
+ group root-system
+ group cisco-support
+ secret 5 $1$lro8$ZejSqxIYbgqBMxeXzTj6a0
+!
+aaa accounting exec default start-stop group tacacs+ none
+aaa accounting exec local-only start-stop group tacacs+ none
+aaa accounting commands default start-stop group tacacs+ none
+aaa accounting commands local-only start-stop group tacacs+ none
+aaa authorization exec default local group tacacs+
+aaa authorization exec local-only local
+aaa authorization commands default group tacacs+ none
+aaa authorization commands local-only none
+aaa authentication login console local
+aaa authentication login default local group tacacs+
+aaa authentication login local-only local
+vrf IWIFI
+ address-family ipv4 unicast
+  import route-target
+   4809:200013
+  !
+  export route-target
+   4809:200013
+  !
+ !
+!
+line console
+ accounting exec local-only
+ accounting commands local-only
+ authorization exec local-only
+ authorization commands local-only
+ login authentication local-only
+ exec-timeout 20 0
+ stopbits 1
+!
+line default
+ authorization commands local-only
+ exec-timeout 20 0
+ session-timeout 20
+ transport input telnet ssh
+!
+vty-pool default 0 9
+arp vrf default 192.168.1.2 0000.0000.0001 ARPA
+snmp-server ifindex persist
+snmp-server community zjdcb2k RO acl_snmp
+snmp-server community keepalive RO acl_snmp
+snmp-server community qzptt2007 RW acl_snmp
+snmp-server community zj2008snmp RO acl_snmp
+snmp-server community zjnoccnc2011snmp RO acl_snmp
+snmp-server traps copy-complete
+snmp-server traps snmp
+snmp-server traps flash removal
+snmp-server traps flash insertion
+snmp-server traps sonet
+snmp-server traps config
+snmp-server traps entity
+snmp-server traps syslog
+snmp-server trap-source Loopback0
+ipv4 conflict-policy static
+ntp
+ server 202.97.32.136 prefer
+ server 202.97.32.137
+ server 202.97.32.138
+ server 202.97.32.139
+ master 8
+ access-group ipv4 peer acl_NTP-Peer
+ access-group ipv4 serve-only acl_NTP-Serve-Only
+ source Loopback0
+ update-calendar
+!
+control-plane
+ management-plane
+  inband
+   interface all
+    allow SNMP
+    allow Telnet peer
+     address ipv4 61.174.87.25
+     address ipv4 115.239.131.11
+     address ipv4 115.239.131.12
+     address ipv4 122.229.8.81
+     address ipv4 122.229.8.82
+     address ipv4 202.96.102.47
+     address ipv4 202.96.102.84
+     address ipv4 202.96.102.139
+     address ipv4 202.96.102.221
+     address ipv4 202.96.102.240
+     address ipv4 202.96.102.244
+     address ipv4 202.96.103.164
+     address ipv4 202.96.103.188
+     address ipv4 202.96.113.155
+     address ipv4 202.96.113.156
+     address ipv4 202.96.113.158
+    !
+   !
+  !
+ !
+!
+ipv4 access-list rp1
+ 10 permit ipv4 any 233.18.205.0 0.0.0.255
+ 20 permit ipv4 any 233.18.206.0 0.0.0.255
+ 30 permit ipv4 any 233.18.208.0 0.0.0.255
+!
+ipv4 access-list rp2
+ 10 permit ipv4 any 233.18.207.0 0.0.0.255
+!
+ipv4 access-list rp3
+ 10 permit ipv4 233.50.200.0 0.0.0.255 any
+ 20 permit ipv4 233.60.200.0 0.0.0.255 any
+ 30 permit ipv4 233.50.201.0 0.0.0.255 any
+ 40 permit ipv4 233.50.200.0 0.0.7.255 any
+!
+ipv4 access-list acl_snmp
+ 5 permit ipv4 202.96.103.0 0.0.0.255 any
+ 10 permit ipv4 host 202.96.102.139 any
+ 15 permit ipv4 202.96.113.152 0.0.0.7 any
+ 20 permit ipv4 host 202.96.102.221 any
+ 25 permit ipv4 202.96.113.160 0.0.0.7 any
+ 30 permit ipv4 host 202.96.103.35 any
+ 40 permit ipv4 host 202.96.103.54 any
+ 50 permit ipv4 host 115.239.131.74 any
+ 80 permit ipv4 host 202.96.103.35 any
+ 90 permit ipv4 host 202.96.103.45 any
+ 100 permit ipv4 115.239.131.1 0.0.0.255 any
+!
+ipv4 access-list acl_163_out
+ 5 permit udp 202.97.0.0 0.0.127.255 any eq 3785
+ 10 permit ipv4 202.96.96.0 0.0.31.255 any
+ 20 permit ipv4 202.101.160.0 0.0.31.255 any
+ 30 permit ipv4 202.107.192.0 0.0.63.255 any
+ 40 permit ipv4 218.75.0.0 0.0.127.255 any
+ 50 permit ipv4 61.130.0.0 0.0.255.255 any
+ 60 permit ipv4 61.153.0.0 0.0.255.255 any
+ 70 permit ipv4 61.164.0.0 0.0.255.255 any
+ 80 permit ipv4 61.174.0.0 0.0.255.255 any
+ 90 permit ipv4 61.175.0.0 0.0.255.255 any
+ 100 permit ipv4 218.0.0.0 0.0.255.255 any
+ 110 permit ipv4 218.71.0.0 0.0.255.255 any
+ 120 permit ipv4 218.74.0.0 0.0.255.255 any
+ 130 permit ipv4 218.72.0.0 0.1.255.255 any
+ 140 permit ipv4 60.162.0.0 0.1.255.255 any
+ 150 permit ipv4 123.96.0.0 0.1.255.255 any
+ 160 permit ipv4 220.184.0.0 0.7.255.255 any
+ 170 permit ipv4 125.104.0.0 0.7.255.255 any
+ 180 permit ipv4 122.240.0.0 0.7.255.255 any
+ 190 permit ipv4 60.176.0.0 0.15.255.255 any
+ 200 permit ipv4 125.112.0.0 0.15.255.255 any
+ 210 permit ipv4 122.224.0.0 0.15.255.255 any
+ 220 permit ipv4 115.224.0.0 0.15.255.255 any
+ 230 permit ipv4 36.16.0.0 0.15.255.255 any
+ 240 permit ipv4 115.192.0.0 0.31.255.255 any
+ 250 permit ipv4 183.128.0.0 0.31.255.255 any
+ 260 permit ipv4 36.96.0.0 0.31.255.255 any
+ 270 permit ipv4 218.30.139.0 0.0.0.255 any
+ 280 permit ipv4 218.30.140.0 0.0.0.255 any
+ 290 permit ipv4 134.96.0.0 0.31.255.255 any
+ 300 permit ipv4 10.32.0.0 0.7.255.255 any
+ 3000 deny ipv4 any any
+!
+ipv4 access-list acl_NTP-Peer
+ 10 permit ipv4 host 202.97.32.137 any
+ 20 permit ipv4 host 202.97.32.136 any
+ 30 permit ipv4 host 202.97.32.138 any
+ 40 permit ipv4 host 202.97.32.139 any
+!
+ipv4 access-list acl_YUEME_in
+ 100 deny ipv4 any 127.0.0.0 0.255.255.255
+ 110 deny ipv4 any 172.16.0.0 0.15.255.255
+ 120 deny ipv4 any 192.168.0.0 0.0.255.255
+ 130 deny ipv4 any 169.254.0.0 0.0.255.255
+ 200 deny tcp any any eq 445
+ 210 deny tcp any any eq 139
+ 220 deny tcp any any eq 135
+ 300 permit ipv4 202.107.246.0 0.0.0.63 any
+ 310 permit ipv4 115.233.239.1 0.0.0.3 any
+ 1000 deny ipv4 any any
+!
+ipv4 access-list acl_163-input
+ 10 deny udp any any range 1433 1434
+ 11 deny udp any any range 135 netbios-ss
+ 12 deny udp any any eq 445
+ 13 deny tcp any any eq 4444
+ 14 deny tcp any any eq 445
+ 15 deny tcp any any eq 5554
+ 20 deny 0 any any
+ 21 deny 255 any any
+ 22 deny ipv4 host 0.0.0.0 any
+ 31 deny ipv4 127.0.0.0 0.255.255.255 any
+ 32 deny ipv4 172.16.0.0 0.15.255.255 any
+ 34 deny ipv4 192.168.0.0 0.0.255.255 any
+ 35 deny ipv4 169.254.0.0 0.0.255.255 any
+ 700 permit ipv4 any host 122.227.68.78 nexthop1 ipv4 192.168.1.2
+ 701 permit ipv4 any host 202.107.244.133 nexthop1 ipv4 192.168.1.2
+ 702 permit ipv4 any host 202.107.246.74 nexthop1 ipv4 192.168.1.2
+ 703 permit ipv4 any host 218.72.253.195 nexthop1 ipv4 192.168.1.2
+ 704 permit ipv4 any host 122.227.93.146 nexthop1 ipv4 192.168.1.2
+ 705 permit ipv4 any host 61.153.58.82 nexthop1 ipv4 192.168.1.2
+ 706 permit ipv4 any host 122.227.80.250 nexthop1 ipv4 192.168.1.2
+ 707 permit ipv4 any host 122.227.73.2 nexthop1 ipv4 192.168.1.2
+ 708 permit ipv4 any host 61.130.65.86 nexthop1 ipv4 192.168.1.2
+ 709 permit ipv4 any host 122.227.85.154 nexthop1 ipv4 192.168.1.2
+ 710 permit ipv4 any host 122.227.103.146 nexthop1 ipv4 192.168.1.2
+ 711 permit ipv4 any host 202.107.245.12 nexthop1 ipv4 192.168.1.2
+ 712 permit ipv4 any host 218.72.251.4 nexthop1 ipv4 192.168.1.2
+ 713 permit ipv4 any host 122.227.79.30 nexthop1 ipv4 192.168.1.2
+ 714 permit ipv4 any host 61.130.67.18 nexthop1 ipv4 192.168.1.2
+ 715 permit ipv4 any host 61.130.66.182 nexthop1 ipv4 192.168.1.2
+ 716 permit ipv4 any host 122.227.75.14 nexthop1 ipv4 192.168.1.2
+ 717 permit ipv4 any host 61.130.66.114 nexthop1 ipv4 192.168.1.2
+ 718 permit ipv4 any host 122.227.64.182 nexthop1 ipv4 192.168.1.2
+ 719 permit ipv4 any host 218.72.249.54 nexthop1 ipv4 192.168.1.2
+ 720 permit ipv4 any host 218.72.254.42 nexthop1 ipv4 192.168.1.2
+ 721 permit ipv4 any host 218.72.254.46 nexthop1 ipv4 192.168.1.2
+ 722 permit ipv4 any host 122.227.90.78 nexthop1 ipv4 192.168.1.2
+ 723 permit ipv4 any host 218.72.253.218 nexthop1 ipv4 192.168.1.2
+ 724 permit ipv4 any host 122.227.98.22 nexthop1 ipv4 192.168.1.2
+ 725 permit ipv4 any host 202.107.247.180 nexthop1 ipv4 192.168.1.2
+ 726 permit ipv4 any host 61.153.55.130 nexthop1 ipv4 192.168.1.2
+ 727 permit ipv4 any host 122.227.99.106 nexthop1 ipv4 192.168.1.2
+ 728 permit ipv4 any host 61.130.69.82 nexthop1 ipv4 192.168.1.2
+ 729 permit ipv4 any host 122.227.86.6 nexthop1 ipv4 192.168.1.2
+ 730 permit ipv4 any host 61.130.68.210 nexthop1 ipv4 192.168.1.2
+ 731 permit ipv4 any host 122.227.80.122 nexthop1 ipv4 192.168.1.2
+ 732 permit ipv4 any host 61.130.64.194 nexthop1 ipv4 192.168.1.2
+ 733 permit ipv4 any host 61.130.48.250 nexthop1 ipv4 192.168.1.2
+ 734 permit ipv4 any host 61.153.59.98 nexthop1 ipv4 192.168.1.2
+ 735 permit ipv4 any host 218.72.253.196 nexthop1 ipv4 192.168.1.2
+ 736 permit ipv4 any host 61.130.64.174 nexthop1 ipv4 192.168.1.2
+ 737 permit ipv4 any host 218.72.250.157 nexthop1 ipv4 192.168.1.2
+ 738 permit ipv4 any host 61.153.57.22 nexthop1 ipv4 192.168.1.2
+ 739 permit ipv4 any host 61.153.57.86 nexthop1 ipv4 192.168.1.2
+ 740 permit ipv4 any host 218.72.255.30 nexthop1 ipv4 192.168.1.2
+ 741 permit ipv4 any host 218.72.252.14 nexthop1 ipv4 192.168.1.2
+ 742 permit ipv4 any host 202.107.244.20 nexthop1 ipv4 192.168.1.2
+ 743 permit ipv4 any host 122.227.81.26 nexthop1 ipv4 192.168.1.2
+ 744 permit ipv4 any host 218.72.253.198 nexthop1 ipv4 192.168.1.2
+ 745 permit ipv4 any host 61.130.173.154 nexthop1 ipv4 192.168.1.2
+ 746 permit ipv4 any host 61.130.72.98 nexthop1 ipv4 192.168.1.2
+ 747 permit ipv4 any host 61.130.72.211 nexthop1 ipv4 192.168.1.2
+ 748 permit ipv4 any host 122.227.99.182 nexthop1 ipv4 192.168.1.2
+ 749 permit ipv4 any host 122.227.70.198 nexthop1 ipv4 192.168.1.2
+ 750 permit ipv4 any host 61.130.54.162 nexthop1 ipv4 192.168.1.2
+ 751 permit ipv4 any host 122.227.94.126 nexthop1 ipv4 192.168.1.2
+ 752 permit ipv4 any host 61.130.175.130 nexthop1 ipv4 192.168.1.2
+ 753 permit ipv4 any host 122.227.83.98 nexthop1 ipv4 192.168.1.2
+ 754 permit ipv4 any host 61.130.64.190 nexthop1 ipv4 192.168.1.2
+ 755 permit ipv4 any host 202.107.245.48 nexthop1 ipv4 192.168.1.2
+ 756 permit ipv4 any host 218.72.253.6 nexthop1 ipv4 192.168.1.2
+ 757 permit ipv4 any host 61.130.76.30 nexthop1 ipv4 192.168.1.2
+ 758 permit ipv4 any host 202.107.247.48 nexthop1 ipv4 192.168.1.2
+ 759 permit ipv4 any host 202.107.247.148 nexthop1 ipv4 192.168.1.2
+ 760 permit ipv4 any host 202.107.247.52 nexthop1 ipv4 192.168.1.2
+ 761 permit ipv4 any host 61.130.66.82 nexthop1 ipv4 192.168.1.2
+ 762 permit ipv4 any host 61.130.65.54 nexthop1 ipv4 192.168.1.2
+ 763 permit ipv4 any host 122.227.107.38 nexthop1 ipv4 192.168.1.2
+ 764 permit ipv4 any host 61.130.50.62 nexthop1 ipv4 192.168.1.2
+ 765 permit ipv4 any host 61.130.48.26 nexthop1 ipv4 192.168.1.2
+ 766 permit ipv4 any host 61.153.58.42 nexthop1 ipv4 192.168.1.2
+ 767 permit ipv4 any host 122.227.93.246 nexthop1 ipv4 192.168.1.2
+ 768 permit ipv4 any host 202.107.247.148 nexthop1 ipv4 192.168.1.2
+ 769 permit ipv4 any host 202.107.245.52 nexthop1 ipv4 192.168.1.2
+ 770 permit ipv4 any host 202.107.245.24 nexthop1 ipv4 192.168.1.2
+ 771 permit ipv4 any host 202.107.247.151 nexthop1 ipv4 192.168.1.2
+ 772 permit ipv4 any host 61.153.58.35 nexthop1 ipv4 192.168.1.2
+ 773 permit ipv4 any host 122.227.82.38 nexthop1 ipv4 192.168.1.2
+ 774 permit ipv4 any host 202.96.113.80 nexthop1 ipv4 192.168.1.2
+ 775 permit ipv4 any host 218.72.250.195 nexthop1 ipv4 192.168.1.2
+ 776 permit ipv4 any host 61.130.51.190 nexthop1 ipv4 192.168.1.2
+ 777 permit ipv4 any host 122.227.100.162 nexthop1 ipv4 192.168.1.2
+ 778 permit ipv4 any host 218.72.249.218 nexthop1 ipv4 192.168.1.2
+ 779 permit ipv4 any host 202.107.245.14 nexthop1 ipv4 192.168.1.2
+ 780 permit ipv4 any host 122.227.103.250 nexthop1 ipv4 192.168.1.2
+ 781 permit ipv4 any host 122.227.111.226 nexthop1 ipv4 192.168.1.2
+ 782 permit ipv4 any host 61.153.59.85 nexthop1 ipv4 192.168.1.2
+ 783 permit ipv4 any host 122.227.109.154 nexthop1 ipv4 192.168.1.2
+ 784 permit ipv4 any host 218.72.249.242 nexthop1 ipv4 192.168.1.2
+ 785 permit ipv4 any host 61.153.58.238 nexthop1 ipv4 192.168.1.2
+ 786 permit ipv4 any host 202.107.247.174 nexthop1 ipv4 192.168.1.2
+ 787 permit ipv4 any host 61.130.67.190 nexthop1 ipv4 192.168.1.2
+ 788 permit ipv4 any host 122.227.75.228 nexthop1 ipv4 192.168.1.2
+ 789 permit ipv4 any host 122.227.75.230 nexthop1 ipv4 192.168.1.2
+ 790 permit ipv4 any host 122.227.69.126 nexthop1 ipv4 192.168.1.2
+ 791 permit ipv4 any host 61.153.54.202 nexthop1 ipv4 192.168.1.2
+ 792 permit ipv4 any host 122.227.65.154 nexthop1 ipv4 192.168.1.2
+ 793 permit ipv4 any host 122.227.80.118 nexthop1 ipv4 192.168.1.2
+ 794 permit ipv4 any host 202.107.244.240 nexthop1 ipv4 192.168.1.2
+ 795 permit ipv4 any host 61.130.175.110 nexthop1 ipv4 192.168.1.2
+ 796 permit ipv4 any host 61.130.75.190 nexthop1 ipv4 192.168.1.2
+ 797 permit ipv4 any host 202.107.245.74 nexthop1 ipv4 192.168.1.2
+ 798 permit ipv4 any host 122.227.86.126 nexthop1 ipv4 192.168.1.2
+ 799 permit ipv4 any host 202.107.245.58 nexthop1 ipv4 192.168.1.2
+ 800 permit ipv4 any host 122.227.70.70 nexthop1 ipv4 192.168.1.2
+ 801 permit ipv4 any host 122.227.73.182 nexthop1 ipv4 192.168.1.2
+ 802 permit ipv4 any host 202.107.245.23 nexthop1 ipv4 192.168.1.2
+ 803 permit ipv4 any host 218.72.252.76 nexthop1 ipv4 192.168.1.2
+ 804 permit ipv4 any host 122.227.95.50 nexthop1 ipv4 192.168.1.2
+ 805 permit ipv4 any host 122.227.91.58 nexthop1 ipv4 192.168.1.2
+ 806 permit ipv4 any host 61.153.58.36 nexthop1 ipv4 192.168.1.2
+ 807 permit ipv4 any host 61.130.51.18 nexthop1 ipv4 192.168.1.2
+ 808 permit ipv4 any host 61.153.58.168 nexthop1 ipv4 192.168.1.2
+ 809 permit ipv4 any host 218.72.251.78 nexthop1 ipv4 192.168.1.2
+ 810 permit ipv4 any host 61.130.174.218 nexthop1 ipv4 192.168.1.2
+ 811 permit ipv4 any host 218.72.250.66 nexthop1 ipv4 192.168.1.2
+ 812 permit ipv4 any host 218.72.253.164 nexthop1 ipv4 192.168.1.2
+ 813 permit ipv4 any host 122.227.94.91 nexthop1 ipv4 192.168.1.2
+ 814 permit ipv4 any host 61.130.174.78 nexthop1 ipv4 192.168.1.2
+ 815 permit ipv4 any host 202.96.113.89 nexthop1 ipv4 192.168.1.2
+ 816 permit ipv4 any host 218.72.253.122 nexthop1 ipv4 192.168.1.2
+ 817 permit ipv4 any host 218.72.255.74 nexthop1 ipv4 192.168.1.2
+ 818 permit ipv4 any host 218.72.251.195 nexthop1 ipv4 192.168.1.2
+ 819 permit ipv4 any host 122.227.93.198 nexthop1 ipv4 192.168.1.2
+ 820 permit ipv4 any host 61.130.66.251 nexthop1 ipv4 192.168.1.2
+ 821 permit ipv4 any host 61.130.174.10 nexthop1 ipv4 192.168.1.2
+ 822 permit ipv4 any host 202.107.245.84 nexthop1 ipv4 192.168.1.2
+ 823 permit ipv4 any host 61.130.65.142 nexthop1 ipv4 192.168.1.2
+ 824 permit ipv4 any host 122.227.67.7 nexthop1 ipv4 192.168.1.2
+ 825 permit ipv4 any host 218.72.252.186 nexthop1 ipv4 192.168.1.2
+ 826 permit ipv4 any host 122.227.78.38 nexthop1 ipv4 192.168.1.2
+ 827 permit ipv4 any host 61.130.174.222 nexthop1 ipv4 192.168.1.2
+ 828 permit ipv4 any host 61.153.59.30 nexthop1 ipv4 192.168.1.2
+ 829 permit ipv4 any host 218.72.250.197 nexthop1 ipv4 192.168.1.2
+ 830 permit ipv4 any host 61.130.175.78 nexthop1 ipv4 192.168.1.2
+ 831 permit ipv4 any host 122.227.96.98 nexthop1 ipv4 192.168.1.2
+ 832 permit ipv4 any host 218.72.250.62 nexthop1 ipv4 192.168.1.2
+ 833 permit ipv4 any host 61.130.175.26 nexthop1 ipv4 192.168.1.2
+ 834 permit ipv4 any host 122.227.83.138 nexthop1 ipv4 192.168.1.2
+ 835 permit ipv4 any host 202.96.113.66 nexthop1 ipv4 192.168.1.2
+ 836 permit ipv4 any host 202.96.113.87 nexthop1 ipv4 192.168.1.2
+ 837 permit ipv4 any host 202.96.113.91 nexthop1 ipv4 192.168.1.2
+ 838 permit ipv4 any host 61.130.71.214 nexthop1 ipv4 192.168.1.2
+ 839 permit ipv4 any host 122.227.67.5 nexthop1 ipv4 192.168.1.2
+ 840 permit ipv4 any host 218.72.252.154 nexthop1 ipv4 192.168.1.2
+ 841 permit ipv4 any host 122.227.89.122 nexthop1 ipv4 192.168.1.2
+ 842 permit ipv4 any host 122.227.67.2 nexthop1 ipv4 192.168.1.2
+ 843 permit ipv4 any host 218.72.253.38 nexthop1 ipv4 192.168.1.2
+ 844 permit ipv4 any host 122.227.102.66 nexthop1 ipv4 192.168.1.2
+ 845 permit ipv4 any host 202.107.247.38 nexthop1 ipv4 192.168.1.2
+ 846 permit ipv4 any host 202.107.246.66 nexthop1 ipv4 192.168.1.2
+ 847 permit ipv4 any host 122.227.78.166 nexthop1 ipv4 192.168.1.2
+ 848 permit ipv4 any host 61.130.53.26 nexthop1 ipv4 192.168.1.2
+ 849 permit ipv4 any host 202.107.245.55 nexthop1 ipv4 192.168.1.2
+ 850 permit ipv4 any host 202.107.247.43 nexthop1 ipv4 192.168.1.2
+ 851 permit ipv4 any host 61.153.57.29 nexthop1 ipv4 192.168.1.2
+ 852 permit ipv4 any host 202.107.247.152 nexthop1 ipv4 192.168.1.2
+ 853 permit ipv4 any host 122.227.77.186 nexthop1 ipv4 192.168.1.2
+ 854 permit ipv4 any host 61.130.70.170 nexthop1 ipv4 192.168.1.2
+ 855 permit ipv4 any host 61.130.175.58 nexthop1 ipv4 192.168.1.2
+ 856 permit ipv4 any host 61.130.65.26 nexthop1 ipv4 192.168.1.2
+ 857 permit ipv4 any host 61.153.58.165 nexthop1 ipv4 192.168.1.2
+ 858 permit ipv4 any host 218.72.254.43 nexthop1 ipv4 192.168.1.2
+ 859 permit ipv4 any host 218.72.253.196 nexthop1 ipv4 192.168.1.2
+ 860 permit ipv4 any host 202.107.247.147 nexthop1 ipv4 192.168.1.2
+ 861 permit ipv4 any host 202.107.247.149 nexthop1 ipv4 192.168.1.2
+ 862 permit ipv4 any host 122.227.65.178 nexthop1 ipv4 192.168.1.2
+ 863 permit ipv4 any host 61.130.174.54 nexthop1 ipv4 192.168.1.2
+ 864 permit ipv4 any host 218.72.254.44 nexthop1 ipv4 192.168.1.2
+ 865 permit ipv4 any host 61.130.174.2 nexthop1 ipv4 192.168.1.2
+ 866 permit ipv4 any host 122.227.79.10 nexthop1 ipv4 192.168.1.2
+ 867 permit ipv4 any host 202.107.247.42 nexthop1 ipv4 192.168.1.2
+ 868 permit ipv4 any host 218.72.249.240 nexthop1 ipv4 192.168.1.2
+ 869 permit ipv4 any host 122.227.108.86 nexthop1 ipv4 192.168.1.2
+ 870 permit ipv4 any host 61.130.66.244 nexthop1 ipv4 192.168.1.2
+ 871 permit ipv4 any host 218.72.254.234 nexthop1 ipv4 192.168.1.2
+ 872 permit ipv4 any host 61.130.174.178 nexthop1 ipv4 192.168.1.2
+ 873 permit ipv4 any host 218.72.254.138 nexthop1 ipv4 192.168.1.2
+ 874 permit ipv4 any host 61.153.58.106 nexthop1 ipv4 192.168.1.2
+ 875 permit ipv4 any host 202.107.246.67 nexthop1 ipv4 192.168.1.2
+ 876 permit ipv4 any host 202.107.246.68 nexthop1 ipv4 192.168.1.2
+ 877 permit ipv4 any host 61.130.175.249 nexthop1 ipv4 192.168.1.2
+ 878 permit ipv4 any host 61.130.77.178 nexthop1 ipv4 192.168.1.2
+ 879 permit ipv4 any host 218.72.252.69 nexthop1 ipv4 192.168.1.2
+ 880 permit ipv4 any host 122.227.65.78 nexthop1 ipv4 192.168.1.2
+ 881 permit ipv4 any host 61.130.72.141 nexthop1 ipv4 192.168.1.2
+ 882 permit ipv4 any host 218.72.254.131 nexthop1 ipv4 192.168.1.2
+ 883 permit ipv4 any host 61.130.52.225 nexthop1 ipv4 192.168.1.2
+ 884 permit ipv4 any host 61.130.66.242 nexthop1 ipv4 192.168.1.2
+ 885 permit ipv4 any host 61.130.66.85 nexthop1 ipv4 192.168.1.2
+ 886 permit ipv4 any host 202.96.113.88 nexthop1 ipv4 192.168.1.2
+ 887 permit ipv4 any host 202.96.113.88 nexthop1 ipv4 192.168.1.2
+ 888 permit ipv4 any host 61.130.173.27 nexthop1 ipv4 192.168.1.2
+ 889 permit ipv4 any host 122.227.68.35 nexthop1 ipv4 192.168.1.2
+ 890 permit ipv4 any host 202.107.246.40 nexthop1 ipv4 192.168.1.2
+ 900 permit ipv4 any host 61.153.56.6 nexthop1 ipv4 192.168.1.2
+ 3000 permit ipv4 202.96.102.0 0.0.1.255 any
+ 3001 permit ipv4 61.164.15.48 0.0.0.15 any
+ 3002 permit ipv4 60.191.124.192 0.0.0.63 any
+ 3004 permit udp any eq domain any range 1023 65535
+ 3005 permit tcp any eq domain any range 1023 65535
+ 3006 deny ipv4 any host 202.96.113.35
+ 3007 deny ipv4 any host 202.96.113.34
+ 3008 deny ipv4 any host 202.96.113.38
+ 3009 deny ipv4 any host 202.96.113.122
+ 3010 deny ipv4 any host 202.96.113.123
+ 3011 deny ipv4 any host 202.96.113.124
+ 10000 permit ipv4 any any
+!
+ipv4 access-list iwifi-testnew
+ 10 permit ipv4 host 122.229.30.50 host 61.175.150.129
+ 20 permit ipv4 host 61.175.150.129 host 122.229.30.50
+ 80 permit ipv4 any any
+!
+ipv4 access-list acl_qzlocal_itv
+ 20 permit ipv4 233.58.202.1 0.0.0.255 any
+!
+ipv4 access-list acl_NTP-Serve-Only
+ 10 permit ipv4 220.185.58.0 0.0.0.255 any
+!
+ipv4 access-list acl_MAN_Interface_in
+ 10 deny udp any any range 1433 1434
+ 20 deny udp any any range 135 netbios-ss
+ 30 deny udp any any eq 445
+ 40 deny tcp any any eq 4444
+ 50 deny tcp any any eq 445
+ 60 deny tcp any any eq 5554
+ 70 deny 0 any any
+ 80 deny 255 any any
+ 90 deny ipv4 host 0.0.0.0 any
+ 410 permit ipv4 any 10.0.0.0 0.255.255.255
+ 420 permit ipv4 10.0.0.0 0.255.255.255 any
+ 700 permit ipv4 host 122.227.68.78 any nexthop1 ipv4 192.168.1.2
+ 701 permit ipv4 host 202.107.244.133 any nexthop1 ipv4 192.168.1.2
+ 702 permit ipv4 host 202.107.246.74 any nexthop1 ipv4 192.168.1.2
+ 703 permit ipv4 host 218.72.253.195 any nexthop1 ipv4 192.168.1.2
+ 704 permit ipv4 host 122.227.93.146 any nexthop1 ipv4 192.168.1.2
+ 705 permit ipv4 host 61.153.58.82 any nexthop1 ipv4 192.168.1.2
+ 706 permit ipv4 host 122.227.80.250 any nexthop1 ipv4 192.168.1.2
+ 707 permit ipv4 host 122.227.73.2 any nexthop1 ipv4 192.168.1.2
+ 708 permit ipv4 host 61.130.65.86 any nexthop1 ipv4 192.168.1.2
+ 709 permit ipv4 host 122.227.85.154 any nexthop1 ipv4 192.168.1.2
+ 710 permit ipv4 host 122.227.103.146 any nexthop1 ipv4 192.168.1.2
+ 711 permit ipv4 host 202.107.245.12 any nexthop1 ipv4 192.168.1.2
+ 712 permit ipv4 host 218.72.251.4 any nexthop1 ipv4 192.168.1.2
+ 713 permit ipv4 host 122.227.79.30 any nexthop1 ipv4 192.168.1.2
+ 714 permit ipv4 host 61.130.67.18 any nexthop1 ipv4 192.168.1.2
+ 715 permit ipv4 host 61.130.66.182 any nexthop1 ipv4 192.168.1.2
+ 716 permit ipv4 host 122.227.75.14 any nexthop1 ipv4 192.168.1.2
+ 717 permit ipv4 host 61.130.66.114 any nexthop1 ipv4 192.168.1.2
+ 718 permit ipv4 host 122.227.64.182 any nexthop1 ipv4 192.168.1.2
+ 719 permit ipv4 host 218.72.249.54 any nexthop1 ipv4 192.168.1.2
+ 720 permit ipv4 host 218.72.254.42 any nexthop1 ipv4 192.168.1.2
+ 721 permit ipv4 host 218.72.254.46 any nexthop1 ipv4 192.168.1.2
+ 722 permit ipv4 host 122.227.90.78 any nexthop1 ipv4 192.168.1.2
+ 723 permit ipv4 host 218.72.253.218 any nexthop1 ipv4 192.168.1.2
+ 724 permit ipv4 host 122.227.98.22 any nexthop1 ipv4 192.168.1.2
+ 725 permit ipv4 host 202.107.247.180 any nexthop1 ipv4 192.168.1.2
+ 726 permit ipv4 host 61.153.55.130 any nexthop1 ipv4 192.168.1.2
+ 727 permit ipv4 host 122.227.99.106 any nexthop1 ipv4 192.168.1.2
+ 728 permit ipv4 host 61.130.69.82 any nexthop1 ipv4 192.168.1.2
+ 729 permit ipv4 host 122.227.86.6 any nexthop1 ipv4 192.168.1.2
+ 730 permit ipv4 host 61.130.68.210 any nexthop1 ipv4 192.168.1.2
+ 731 permit ipv4 host 122.227.80.122 any nexthop1 ipv4 192.168.1.2
+ 732 permit ipv4 host 61.130.64.194 any nexthop1 ipv4 192.168.1.2
+ 733 permit ipv4 host 61.130.48.250 any nexthop1 ipv4 192.168.1.2
+ 734 permit ipv4 host 61.153.59.98 any nexthop1 ipv4 192.168.1.2
+ 735 permit ipv4 host 218.72.253.196 any nexthop1 ipv4 192.168.1.2
+ 736 permit ipv4 host 61.130.64.174 any nexthop1 ipv4 192.168.1.2
+ 737 permit ipv4 host 218.72.250.157 any nexthop1 ipv4 192.168.1.2
+ 738 permit ipv4 host 61.153.57.22 any nexthop1 ipv4 192.168.1.2
+ 739 permit ipv4 host 61.153.57.86 any nexthop1 ipv4 192.168.1.2
+ 740 permit ipv4 host 218.72.255.30 any nexthop1 ipv4 192.168.1.2
+ 741 permit ipv4 host 218.72.252.14 any nexthop1 ipv4 192.168.1.2
+ 742 permit ipv4 host 202.107.244.20 any nexthop1 ipv4 192.168.1.2
+ 743 permit ipv4 host 122.227.81.26 any nexthop1 ipv4 192.168.1.2
+ 744 permit ipv4 host 218.72.253.198 any nexthop1 ipv4 192.168.1.2
+ 745 permit ipv4 host 61.130.173.154 any nexthop1 ipv4 192.168.1.2
+ 746 permit ipv4 host 61.130.72.98 any nexthop1 ipv4 192.168.1.2
+ 747 permit ipv4 host 61.130.72.211 any nexthop1 ipv4 192.168.1.2
+ 748 permit ipv4 host 122.227.99.182 any nexthop1 ipv4 192.168.1.2
+ 749 permit ipv4 host 122.227.70.198 any nexthop1 ipv4 192.168.1.2
+ 750 permit ipv4 host 61.130.54.162 any nexthop1 ipv4 192.168.1.2
+ 751 permit ipv4 host 122.227.94.126 any nexthop1 ipv4 192.168.1.2
+ 752 permit ipv4 host 61.130.175.130 any nexthop1 ipv4 192.168.1.2
+ 753 permit ipv4 host 122.227.83.98 any nexthop1 ipv4 192.168.1.2
+ 754 permit ipv4 host 61.130.64.190 any nexthop1 ipv4 192.168.1.2
+ 755 permit ipv4 host 202.107.245.48 any nexthop1 ipv4 192.168.1.2
+ 756 permit ipv4 host 218.72.253.6 any nexthop1 ipv4 192.168.1.2
+ 757 permit ipv4 host 61.130.76.30 any nexthop1 ipv4 192.168.1.2
+ 758 permit ipv4 host 202.107.247.48 any nexthop1 ipv4 192.168.1.2
+ 759 permit ipv4 host 202.107.247.148 any nexthop1 ipv4 192.168.1.2
+ 760 permit ipv4 host 202.107.247.52 any nexthop1 ipv4 192.168.1.2
+ 761 permit ipv4 host 61.130.66.82 any nexthop1 ipv4 192.168.1.2
+ 762 permit ipv4 host 61.130.65.54 any nexthop1 ipv4 192.168.1.2
+ 763 permit ipv4 host 122.227.107.38 any nexthop1 ipv4 192.168.1.2
+ 764 permit ipv4 host 61.130.50.62 any nexthop1 ipv4 192.168.1.2
+ 765 permit ipv4 host 61.130.48.26 any nexthop1 ipv4 192.168.1.2
+ 766 permit ipv4 host 61.153.58.42 any nexthop1 ipv4 192.168.1.2
+ 767 permit ipv4 host 122.227.93.246 any nexthop1 ipv4 192.168.1.2
+ 768 permit ipv4 host 202.107.247.148 any nexthop1 ipv4 192.168.1.2
+ 769 permit ipv4 host 202.107.245.52 any nexthop1 ipv4 192.168.1.2
+ 770 permit ipv4 host 202.107.245.24 any nexthop1 ipv4 192.168.1.2
+ 771 permit ipv4 host 202.107.247.151 any nexthop1 ipv4 192.168.1.2
+ 772 permit ipv4 host 61.153.58.35 any nexthop1 ipv4 192.168.1.2
+ 773 permit ipv4 host 122.227.82.38 any nexthop1 ipv4 192.168.1.2
+ 774 permit ipv4 host 202.96.113.80 any nexthop1 ipv4 192.168.1.2
+ 775 permit ipv4 host 218.72.250.195 any nexthop1 ipv4 192.168.1.2
+ 776 permit ipv4 host 61.130.51.190 any nexthop1 ipv4 192.168.1.2
+ 777 permit ipv4 host 122.227.100.162 any nexthop1 ipv4 192.168.1.2
+ 778 permit ipv4 host 218.72.249.218 any nexthop1 ipv4 192.168.1.2
+ 779 permit ipv4 host 202.107.245.14 any nexthop1 ipv4 192.168.1.2
+ 780 permit ipv4 host 122.227.103.250 any nexthop1 ipv4 192.168.1.2
+ 781 permit ipv4 host 122.227.111.226 any nexthop1 ipv4 192.168.1.2
+ 782 permit ipv4 host 61.153.59.85 any nexthop1 ipv4 192.168.1.2
+ 783 permit ipv4 host 122.227.109.154 any nexthop1 ipv4 192.168.1.2
+ 784 permit ipv4 host 218.72.249.242 any nexthop1 ipv4 192.168.1.2
+ 785 permit ipv4 host 61.153.58.238 any nexthop1 ipv4 192.168.1.2
+ 786 permit ipv4 host 202.107.247.174 any nexthop1 ipv4 192.168.1.2
+ 787 permit ipv4 host 61.130.67.190 any nexthop1 ipv4 192.168.1.2
+ 788 permit ipv4 host 122.227.75.228 any nexthop1 ipv4 192.168.1.2
+ 789 permit ipv4 host 122.227.75.230 any nexthop1 ipv4 192.168.1.2
+ 790 permit ipv4 host 122.227.69.126 any nexthop1 ipv4 192.168.1.2
+ 791 permit ipv4 host 61.153.54.202 any nexthop1 ipv4 192.168.1.2
+ 792 permit ipv4 host 122.227.65.154 any nexthop1 ipv4 192.168.1.2
+ 793 permit ipv4 host 122.227.80.118 any nexthop1 ipv4 192.168.1.2
+ 794 permit ipv4 host 202.107.244.240 any nexthop1 ipv4 192.168.1.2
+ 795 permit ipv4 host 61.130.175.110 any nexthop1 ipv4 192.168.1.2
+ 796 permit ipv4 host 61.130.75.190 any nexthop1 ipv4 192.168.1.2
+ 797 permit ipv4 host 202.107.245.74 any nexthop1 ipv4 192.168.1.2
+ 798 permit ipv4 host 122.227.86.126 any nexthop1 ipv4 192.168.1.2
+ 799 permit ipv4 host 202.107.245.58 any nexthop1 ipv4 192.168.1.2
+ 800 permit ipv4 host 122.227.70.70 any nexthop1 ipv4 192.168.1.2
+ 801 permit ipv4 host 122.227.73.182 any nexthop1 ipv4 192.168.1.2
+ 802 permit ipv4 host 202.107.245.23 any nexthop1 ipv4 192.168.1.2
+ 803 permit ipv4 host 218.72.252.76 any nexthop1 ipv4 192.168.1.2
+ 804 permit ipv4 host 122.227.95.50 any nexthop1 ipv4 192.168.1.2
+ 805 permit ipv4 host 122.227.91.58 any nexthop1 ipv4 192.168.1.2
+ 806 permit ipv4 host 61.153.58.36 any nexthop1 ipv4 192.168.1.2
+ 807 permit ipv4 host 61.130.51.18 any nexthop1 ipv4 192.168.1.2
+ 808 permit ipv4 host 61.153.58.168 any nexthop1 ipv4 192.168.1.2
+ 809 permit ipv4 host 218.72.251.78 any nexthop1 ipv4 192.168.1.2
+ 810 permit ipv4 host 61.130.174.218 any nexthop1 ipv4 192.168.1.2
+ 811 permit ipv4 host 218.72.250.66 any nexthop1 ipv4 192.168.1.2
+ 812 permit ipv4 host 218.72.253.164 any nexthop1 ipv4 192.168.1.2
+ 813 permit ipv4 host 122.227.94.91 any nexthop1 ipv4 192.168.1.2
+ 814 permit ipv4 host 61.130.174.78 any nexthop1 ipv4 192.168.1.2
+ 815 permit ipv4 host 202.96.113.89 any nexthop1 ipv4 192.168.1.2
+ 816 permit ipv4 host 218.72.253.122 any nexthop1 ipv4 192.168.1.2
+ 817 permit ipv4 host 218.72.255.74 any nexthop1 ipv4 192.168.1.2
+ 818 permit ipv4 host 218.72.251.195 any nexthop1 ipv4 192.168.1.2
+ 819 permit ipv4 host 122.227.93.198 any nexthop1 ipv4 192.168.1.2
+ 820 permit ipv4 host 61.130.66.251 any nexthop1 ipv4 192.168.1.2
+ 821 permit ipv4 host 61.130.174.10 any nexthop1 ipv4 192.168.1.2
+ 822 permit ipv4 host 202.107.245.84 any nexthop1 ipv4 192.168.1.2
+ 823 permit ipv4 host 61.130.65.142 any nexthop1 ipv4 192.168.1.2
+ 824 permit ipv4 host 122.227.67.7 any nexthop1 ipv4 192.168.1.2
+ 825 permit ipv4 host 218.72.252.186 any nexthop1 ipv4 192.168.1.2
+ 826 permit ipv4 host 122.227.78.38 any nexthop1 ipv4 192.168.1.2
+ 827 permit ipv4 host 61.130.174.222 any nexthop1 ipv4 192.168.1.2
+ 828 permit ipv4 host 61.153.59.30 any nexthop1 ipv4 192.168.1.2
+ 829 permit ipv4 host 218.72.250.197 any nexthop1 ipv4 192.168.1.2
+ 830 permit ipv4 host 61.130.175.78 any nexthop1 ipv4 192.168.1.2
+ 831 permit ipv4 host 122.227.96.98 any nexthop1 ipv4 192.168.1.2
+ 832 permit ipv4 host 218.72.250.62 any nexthop1 ipv4 192.168.1.2
+ 833 permit ipv4 host 61.130.175.26 any nexthop1 ipv4 192.168.1.2
+ 834 permit ipv4 host 122.227.83.138 any nexthop1 ipv4 192.168.1.2
+ 835 permit ipv4 host 202.96.113.66 any nexthop1 ipv4 192.168.1.2
+ 836 permit ipv4 host 202.96.113.87 any nexthop1 ipv4 192.168.1.2
+ 837 permit ipv4 host 202.96.113.91 any nexthop1 ipv4 192.168.1.2
+ 838 permit ipv4 host 61.130.71.214 any nexthop1 ipv4 192.168.1.2
+ 839 permit ipv4 host 122.227.67.5 any nexthop1 ipv4 192.168.1.2
+ 840 permit ipv4 host 218.72.252.154 any nexthop1 ipv4 192.168.1.2
+ 841 permit ipv4 host 122.227.89.122 any nexthop1 ipv4 192.168.1.2
+ 842 permit ipv4 host 122.227.67.2 any nexthop1 ipv4 192.168.1.2
+ 843 permit ipv4 host 218.72.253.38 any nexthop1 ipv4 192.168.1.2
+ 844 permit ipv4 host 122.227.102.66 any nexthop1 ipv4 192.168.1.2
+ 845 permit ipv4 host 202.107.247.38 any nexthop1 ipv4 192.168.1.2
+ 846 permit ipv4 host 202.107.246.66 any nexthop1 ipv4 192.168.1.2
+ 847 permit ipv4 host 122.227.78.166 any nexthop1 ipv4 192.168.1.2
+ 848 permit ipv4 host 61.130.53.26 any nexthop1 ipv4 192.168.1.2
+ 849 permit ipv4 host 202.107.245.55 any nexthop1 ipv4 192.168.1.2
+ 850 permit ipv4 host 202.107.247.43 any nexthop1 ipv4 192.168.1.2
+ 851 permit ipv4 host 61.153.57.29 any nexthop1 ipv4 192.168.1.2
+ 852 permit ipv4 host 202.107.247.152 any nexthop1 ipv4 192.168.1.2
+ 853 permit ipv4 host 122.227.77.186 any nexthop1 ipv4 192.168.1.2
+ 854 permit ipv4 host 61.130.70.170 any nexthop1 ipv4 192.168.1.2
+ 855 permit ipv4 host 61.130.175.58 any nexthop1 ipv4 192.168.1.2
+ 856 permit ipv4 host 61.130.65.26 any nexthop1 ipv4 192.168.1.2
+ 857 permit ipv4 host 61.153.58.165 any nexthop1 ipv4 192.168.1.2
+ 858 permit ipv4 host 218.72.254.43 any nexthop1 ipv4 192.168.1.2
+ 859 permit ipv4 host 218.72.253.196 any nexthop1 ipv4 192.168.1.2
+ 860 permit ipv4 host 202.107.247.147 any nexthop1 ipv4 192.168.1.2
+ 861 permit ipv4 host 202.107.247.149 any nexthop1 ipv4 192.168.1.2
+ 862 permit ipv4 host 122.227.65.178 any nexthop1 ipv4 192.168.1.2
+ 863 permit ipv4 host 61.130.174.54 any nexthop1 ipv4 192.168.1.2
+ 864 permit ipv4 host 218.72.254.44 any nexthop1 ipv4 192.168.1.2
+ 865 permit ipv4 host 61.130.174.2 any nexthop1 ipv4 192.168.1.2
+ 866 permit ipv4 host 122.227.79.10 any nexthop1 ipv4 192.168.1.2
+ 867 permit ipv4 host 202.107.247.42 any nexthop1 ipv4 192.168.1.2
+ 868 permit ipv4 host 218.72.249.240 any nexthop1 ipv4 192.168.1.2
+ 869 permit ipv4 host 122.227.108.86 any nexthop1 ipv4 192.168.1.2
+ 870 permit ipv4 host 61.130.66.244 any nexthop1 ipv4 192.168.1.2
+ 871 permit ipv4 host 218.72.254.234 any nexthop1 ipv4 192.168.1.2
+ 872 permit ipv4 host 61.130.174.178 any nexthop1 ipv4 192.168.1.2
+ 873 permit ipv4 host 218.72.254.138 any nexthop1 ipv4 192.168.1.2
+ 874 permit ipv4 host 61.153.58.106 any nexthop1 ipv4 192.168.1.2
+ 875 permit ipv4 host 202.107.246.67 any nexthop1 ipv4 192.168.1.2
+ 876 permit ipv4 host 202.107.246.68 any nexthop1 ipv4 192.168.1.2
+ 877 permit ipv4 host 61.130.175.249 any nexthop1 ipv4 192.168.1.2
+ 878 permit ipv4 host 61.130.77.178 any nexthop1 ipv4 192.168.1.2
+ 879 permit ipv4 host 218.72.252.69 any nexthop1 ipv4 192.168.1.2
+ 880 permit ipv4 host 122.227.65.78 any nexthop1 ipv4 192.168.1.2
+ 881 permit ipv4 host 61.130.72.141 any nexthop1 ipv4 192.168.1.2
+ 882 permit ipv4 host 218.72.254.131 any nexthop1 ipv4 192.168.1.2
+ 883 permit ipv4 host 61.130.52.225 any nexthop1 ipv4 192.168.1.2
+ 884 permit ipv4 host 61.130.66.242 any nexthop1 ipv4 192.168.1.2
+ 885 permit ipv4 host 61.130.66.85 any nexthop1 ipv4 192.168.1.2
+ 886 permit ipv4 host 202.96.113.88 any nexthop1 ipv4 192.168.1.2
+ 887 permit ipv4 host 202.96.113.88 any nexthop1 ipv4 192.168.1.2
+ 888 permit ipv4 host 61.130.173.27 any nexthop1 ipv4 192.168.1.2
+ 889 permit ipv4 host 122.227.68.35 any nexthop1 ipv4 192.168.1.2
+ 890 permit ipv4 host 202.107.246.40 any nexthop1 ipv4 192.168.1.2
+ 891 permit ipv4 host 61.153.56.6 any nexthop1 ipv4 192.168.1.2
+ 1000 permit ipv4 any host 122.227.68.78 nexthop1 ipv4 192.168.1.2
+ 1001 permit ipv4 any host 202.107.244.133 nexthop1 ipv4 192.168.1.2
+ 1002 permit ipv4 any host 202.107.246.74 nexthop1 ipv4 192.168.1.2
+ 1003 permit ipv4 any host 218.72.253.195 nexthop1 ipv4 192.168.1.2
+ 1004 permit ipv4 any host 122.227.93.146 nexthop1 ipv4 192.168.1.2
+ 1005 permit ipv4 any host 61.153.58.82 nexthop1 ipv4 192.168.1.2
+ 1006 permit ipv4 any host 122.227.80.250 nexthop1 ipv4 192.168.1.2
+ 1007 permit ipv4 any host 122.227.73.2 nexthop1 ipv4 192.168.1.2
+ 1008 permit ipv4 any host 61.130.65.86 nexthop1 ipv4 192.168.1.2
+ 1009 permit ipv4 any host 122.227.85.154 nexthop1 ipv4 192.168.1.2
+ 1010 permit ipv4 any host 122.227.103.146 nexthop1 ipv4 192.168.1.2
+ 1011 permit ipv4 any host 202.107.245.12 nexthop1 ipv4 192.168.1.2
+ 1012 permit ipv4 any host 218.72.251.4 nexthop1 ipv4 192.168.1.2
+ 1013 permit ipv4 any host 122.227.79.30 nexthop1 ipv4 192.168.1.2
+ 1014 permit ipv4 any host 61.130.67.18 nexthop1 ipv4 192.168.1.2
+ 1015 permit ipv4 any host 61.130.66.182 nexthop1 ipv4 192.168.1.2
+ 1016 permit ipv4 any host 122.227.75.14 nexthop1 ipv4 192.168.1.2
+ 1017 permit ipv4 any host 61.130.66.114 nexthop1 ipv4 192.168.1.2
+ 1018 permit ipv4 any host 122.227.64.182 nexthop1 ipv4 192.168.1.2
+ 1019 permit ipv4 any host 218.72.249.54 nexthop1 ipv4 192.168.1.2
+ 1020 permit ipv4 any host 218.72.254.42 nexthop1 ipv4 192.168.1.2
+ 1021 permit ipv4 any host 218.72.254.46 nexthop1 ipv4 192.168.1.2
+ 1022 permit ipv4 any host 122.227.90.78 nexthop1 ipv4 192.168.1.2
+ 1023 permit ipv4 any host 218.72.253.218 nexthop1 ipv4 192.168.1.2
+ 1024 permit ipv4 any host 122.227.98.22 nexthop1 ipv4 192.168.1.2
+ 1025 permit ipv4 any host 202.107.247.180 nexthop1 ipv4 192.168.1.2
+ 1026 permit ipv4 any host 61.153.55.130 nexthop1 ipv4 192.168.1.2
+ 1027 permit ipv4 any host 122.227.99.106 nexthop1 ipv4 192.168.1.2
+ 1028 permit ipv4 any host 61.130.69.82 nexthop1 ipv4 192.168.1.2
+ 1029 permit ipv4 any host 122.227.86.6 nexthop1 ipv4 192.168.1.2
+ 1030 permit ipv4 any host 61.130.68.210 nexthop1 ipv4 192.168.1.2
+ 1031 permit ipv4 any host 122.227.80.122 nexthop1 ipv4 192.168.1.2
+ 1032 permit ipv4 any host 61.130.64.194 nexthop1 ipv4 192.168.1.2
+ 1033 permit ipv4 any host 61.130.48.250 nexthop1 ipv4 192.168.1.2
+ 1034 permit ipv4 any host 61.153.59.98 nexthop1 ipv4 192.168.1.2
+ 1035 permit ipv4 any host 218.72.253.196 nexthop1 ipv4 192.168.1.2
+ 1036 permit ipv4 any host 61.130.64.174 nexthop1 ipv4 192.168.1.2
+ 1037 permit ipv4 any host 218.72.250.157 nexthop1 ipv4 192.168.1.2
+ 1038 permit ipv4 any host 61.153.57.22 nexthop1 ipv4 192.168.1.2
+ 1039 permit ipv4 any host 61.153.57.86 nexthop1 ipv4 192.168.1.2
+ 1040 permit ipv4 any host 218.72.255.30 nexthop1 ipv4 192.168.1.2
+ 1041 permit ipv4 any host 218.72.252.14 nexthop1 ipv4 192.168.1.2
+ 1042 permit ipv4 any host 202.107.244.20 nexthop1 ipv4 192.168.1.2
+ 1043 permit ipv4 any host 122.227.81.26 nexthop1 ipv4 192.168.1.2
+ 1044 permit ipv4 any host 218.72.253.198 nexthop1 ipv4 192.168.1.2
+ 1045 permit ipv4 any host 61.130.173.154 nexthop1 ipv4 192.168.1.2
+ 1046 permit ipv4 any host 61.130.72.98 nexthop1 ipv4 192.168.1.2
+ 1047 permit ipv4 any host 61.130.72.211 nexthop1 ipv4 192.168.1.2
+ 1048 permit ipv4 any host 122.227.99.182 nexthop1 ipv4 192.168.1.2
+ 1049 permit ipv4 any host 122.227.70.198 nexthop1 ipv4 192.168.1.2
+ 1050 permit ipv4 any host 61.130.54.162 nexthop1 ipv4 192.168.1.2
+ 1051 permit ipv4 any host 122.227.94.126 nexthop1 ipv4 192.168.1.2
+ 1052 permit ipv4 any host 61.130.175.130 nexthop1 ipv4 192.168.1.2
+ 1053 permit ipv4 any host 122.227.83.98 nexthop1 ipv4 192.168.1.2
+ 1054 permit ipv4 any host 61.130.64.190 nexthop1 ipv4 192.168.1.2
+ 1055 permit ipv4 any host 202.107.245.48 nexthop1 ipv4 192.168.1.2
+ 1056 permit ipv4 any host 218.72.253.6 nexthop1 ipv4 192.168.1.2
+ 1057 permit ipv4 any host 61.130.76.30 nexthop1 ipv4 192.168.1.2
+ 1058 permit ipv4 any host 202.107.247.48 nexthop1 ipv4 192.168.1.2
+ 1059 permit ipv4 any host 202.107.247.148 nexthop1 ipv4 192.168.1.2
+ 1060 permit ipv4 any host 202.107.247.52 nexthop1 ipv4 192.168.1.2
+ 1061 permit ipv4 any host 61.130.66.82 nexthop1 ipv4 192.168.1.2
+ 1062 permit ipv4 any host 61.130.65.54 nexthop1 ipv4 192.168.1.2
+ 1063 permit ipv4 any host 122.227.107.38 nexthop1 ipv4 192.168.1.2
+ 1064 permit ipv4 any host 61.130.50.62 nexthop1 ipv4 192.168.1.2
+ 1065 permit ipv4 any host 61.130.48.26 nexthop1 ipv4 192.168.1.2
+ 1066 permit ipv4 any host 61.153.58.42 nexthop1 ipv4 192.168.1.2
+ 1067 permit ipv4 any host 122.227.93.246 nexthop1 ipv4 192.168.1.2
+ 1068 permit ipv4 any host 202.107.247.148 nexthop1 ipv4 192.168.1.2
+ 1069 permit ipv4 any host 202.107.245.52 nexthop1 ipv4 192.168.1.2
+ 1070 permit ipv4 any host 202.107.245.24 nexthop1 ipv4 192.168.1.2
+ 1071 permit ipv4 any host 202.107.247.151 nexthop1 ipv4 192.168.1.2
+ 1072 permit ipv4 any host 61.153.58.35 nexthop1 ipv4 192.168.1.2
+ 1073 permit ipv4 any host 122.227.82.38 nexthop1 ipv4 192.168.1.2
+ 1074 permit ipv4 any host 202.96.113.80 nexthop1 ipv4 192.168.1.2
+ 1075 permit ipv4 any host 218.72.250.195 nexthop1 ipv4 192.168.1.2
+ 1076 permit ipv4 any host 61.130.51.190 nexthop1 ipv4 192.168.1.2
+ 1077 permit ipv4 any host 122.227.100.162 nexthop1 ipv4 192.168.1.2
+ 1078 permit ipv4 any host 218.72.249.218 nexthop1 ipv4 192.168.1.2
+ 1079 permit ipv4 any host 202.107.245.14 nexthop1 ipv4 192.168.1.2
+ 1080 permit ipv4 any host 122.227.103.250 nexthop1 ipv4 192.168.1.2
+ 1081 permit ipv4 any host 122.227.111.226 nexthop1 ipv4 192.168.1.2
+ 1082 permit ipv4 any host 61.153.59.85 nexthop1 ipv4 192.168.1.2
+ 1083 permit ipv4 any host 122.227.109.154 nexthop1 ipv4 192.168.1.2
+ 1084 permit ipv4 any host 218.72.249.242 nexthop1 ipv4 192.168.1.2
+ 1085 permit ipv4 any host 61.153.58.238 nexthop1 ipv4 192.168.1.2
+ 1086 permit ipv4 any host 202.107.247.174 nexthop1 ipv4 192.168.1.2
+ 1087 permit ipv4 any host 61.130.67.190 nexthop1 ipv4 192.168.1.2
+ 1088 permit ipv4 any host 122.227.75.228 nexthop1 ipv4 192.168.1.2
+ 1089 permit ipv4 any host 122.227.75.230 nexthop1 ipv4 192.168.1.2
+ 1090 permit ipv4 any host 122.227.69.126 nexthop1 ipv4 192.168.1.2
+ 1091 permit ipv4 any host 61.153.54.202 nexthop1 ipv4 192.168.1.2
+ 1092 permit ipv4 any host 122.227.65.154 nexthop1 ipv4 192.168.1.2
+ 1093 permit ipv4 any host 122.227.80.118 nexthop1 ipv4 192.168.1.2
+ 1094 permit ipv4 any host 202.107.244.240 nexthop1 ipv4 192.168.1.2
+ 1095 permit ipv4 any host 61.130.175.110 nexthop1 ipv4 192.168.1.2
+ 1096 permit ipv4 any host 61.130.75.190 nexthop1 ipv4 192.168.1.2
+ 1097 permit ipv4 any host 202.107.245.74 nexthop1 ipv4 192.168.1.2
+ 1098 permit ipv4 any host 122.227.86.126 nexthop1 ipv4 192.168.1.2
+ 1099 permit ipv4 any host 202.107.245.58 nexthop1 ipv4 192.168.1.2
+ 1100 permit ipv4 any host 122.227.70.70 nexthop1 ipv4 192.168.1.2
+ 1101 permit ipv4 any host 122.227.73.182 nexthop1 ipv4 192.168.1.2
+ 1102 permit ipv4 any host 202.107.245.23 nexthop1 ipv4 192.168.1.2
+ 1103 permit ipv4 any host 218.72.252.76 nexthop1 ipv4 192.168.1.2
+ 1104 permit ipv4 any host 122.227.95.50 nexthop1 ipv4 192.168.1.2
+ 1105 permit ipv4 any host 122.227.91.58 nexthop1 ipv4 192.168.1.2
+ 1106 permit ipv4 any host 61.153.58.36 nexthop1 ipv4 192.168.1.2
+ 1107 permit ipv4 any host 61.130.51.18 nexthop1 ipv4 192.168.1.2
+ 1108 permit ipv4 any host 61.153.58.168 nexthop1 ipv4 192.168.1.2
+ 1109 permit ipv4 any host 218.72.251.78 nexthop1 ipv4 192.168.1.2
+ 1110 permit ipv4 any host 61.130.174.218 nexthop1 ipv4 192.168.1.2
+ 1111 permit ipv4 any host 218.72.250.66 nexthop1 ipv4 192.168.1.2
+ 1112 permit ipv4 any host 218.72.253.164 nexthop1 ipv4 192.168.1.2
+ 1113 permit ipv4 any host 122.227.94.91 nexthop1 ipv4 192.168.1.2
+ 1114 permit ipv4 any host 61.130.174.78 nexthop1 ipv4 192.168.1.2
+ 1115 permit ipv4 any host 202.96.113.89 nexthop1 ipv4 192.168.1.2
+ 1116 permit ipv4 any host 218.72.253.122 nexthop1 ipv4 192.168.1.2
+ 1117 permit ipv4 any host 218.72.255.74 nexthop1 ipv4 192.168.1.2
+ 1118 permit ipv4 any host 218.72.251.195 nexthop1 ipv4 192.168.1.2
+ 1119 permit ipv4 any host 122.227.93.198 nexthop1 ipv4 192.168.1.2
+ 1120 permit ipv4 any host 61.130.66.251 nexthop1 ipv4 192.168.1.2
+ 1121 permit ipv4 any host 61.130.174.10 nexthop1 ipv4 192.168.1.2
+ 1122 permit ipv4 any host 202.107.245.84 nexthop1 ipv4 192.168.1.2
+ 1123 permit ipv4 any host 61.130.65.142 nexthop1 ipv4 192.168.1.2
+ 1124 permit ipv4 any host 122.227.67.7 nexthop1 ipv4 192.168.1.2
+ 1125 permit ipv4 any host 218.72.252.186 nexthop1 ipv4 192.168.1.2
+ 1126 permit ipv4 any host 122.227.78.38 nexthop1 ipv4 192.168.1.2
+ 1127 permit ipv4 any host 61.130.174.222 nexthop1 ipv4 192.168.1.2
+ 1128 permit ipv4 any host 61.153.59.30 nexthop1 ipv4 192.168.1.2
+ 1129 permit ipv4 any host 218.72.250.197 nexthop1 ipv4 192.168.1.2
+ 1130 permit ipv4 any host 61.130.175.78 nexthop1 ipv4 192.168.1.2
+ 1131 permit ipv4 any host 122.227.96.98 nexthop1 ipv4 192.168.1.2
+ 1132 permit ipv4 any host 218.72.250.62 nexthop1 ipv4 192.168.1.2
+ 1133 permit ipv4 any host 61.130.175.26 nexthop1 ipv4 192.168.1.2
+ 1134 permit ipv4 any host 122.227.83.138 nexthop1 ipv4 192.168.1.2
+ 1135 permit ipv4 any host 202.96.113.66 nexthop1 ipv4 192.168.1.2
+ 1136 permit ipv4 any host 202.96.113.87 nexthop1 ipv4 192.168.1.2
+ 1137 permit ipv4 any host 202.96.113.91 nexthop1 ipv4 192.168.1.2
+ 1138 permit ipv4 any host 61.130.71.214 nexthop1 ipv4 192.168.1.2
+ 1139 permit ipv4 any host 122.227.67.5 nexthop1 ipv4 192.168.1.2
+ 1140 permit ipv4 any host 218.72.252.154 nexthop1 ipv4 192.168.1.2
+ 1141 permit ipv4 any host 122.227.89.122 nexthop1 ipv4 192.168.1.2
+ 1142 permit ipv4 any host 122.227.67.2 nexthop1 ipv4 192.168.1.2
+ 1143 permit ipv4 any host 218.72.253.38 nexthop1 ipv4 192.168.1.2
+ 1144 permit ipv4 any host 122.227.102.66 nexthop1 ipv4 192.168.1.2
+ 1145 permit ipv4 any host 202.107.247.38 nexthop1 ipv4 192.168.1.2
+ 1146 permit ipv4 any host 202.107.246.66 nexthop1 ipv4 192.168.1.2
+ 1147 permit ipv4 any host 122.227.78.166 nexthop1 ipv4 192.168.1.2
+ 1148 permit ipv4 any host 61.130.53.26 nexthop1 ipv4 192.168.1.2
+ 1149 permit ipv4 any host 202.107.245.55 nexthop1 ipv4 192.168.1.2
+ 1150 permit ipv4 any host 202.107.247.43 nexthop1 ipv4 192.168.1.2
+ 1151 permit ipv4 any host 61.153.57.29 nexthop1 ipv4 192.168.1.2
+ 1152 permit ipv4 any host 202.107.247.152 nexthop1 ipv4 192.168.1.2
+ 1153 permit ipv4 any host 122.227.77.186 nexthop1 ipv4 192.168.1.2
+ 1154 permit ipv4 any host 61.130.70.170 nexthop1 ipv4 192.168.1.2
+ 1155 permit ipv4 any host 61.130.175.58 nexthop1 ipv4 192.168.1.2
+ 1156 permit ipv4 any host 61.130.65.26 nexthop1 ipv4 192.168.1.2
+ 1157 permit ipv4 any host 61.153.58.165 nexthop1 ipv4 192.168.1.2
+ 1158 permit ipv4 any host 218.72.254.43 nexthop1 ipv4 192.168.1.2
+ 1159 permit ipv4 any host 218.72.253.196 nexthop1 ipv4 192.168.1.2
+ 1160 permit ipv4 any host 202.107.247.147 nexthop1 ipv4 192.168.1.2
+ 1161 permit ipv4 any host 202.107.247.149 nexthop1 ipv4 192.168.1.2
+ 1162 permit ipv4 any host 122.227.65.178 nexthop1 ipv4 192.168.1.2
+ 1163 permit ipv4 any host 61.130.174.54 nexthop1 ipv4 192.168.1.2
+ 1164 permit ipv4 any host 218.72.254.44 nexthop1 ipv4 192.168.1.2
+ 1165 permit ipv4 any host 61.130.174.2 nexthop1 ipv4 192.168.1.2
+ 1166 permit ipv4 any host 122.227.79.10 nexthop1 ipv4 192.168.1.2
+ 1167 permit ipv4 any host 202.107.247.42 nexthop1 ipv4 192.168.1.2
+ 1168 permit ipv4 any host 218.72.249.240 nexthop1 ipv4 192.168.1.2
+ 1169 permit ipv4 any host 122.227.108.86 nexthop1 ipv4 192.168.1.2
+ 1170 permit ipv4 any host 61.130.66.244 nexthop1 ipv4 192.168.1.2
+ 1171 permit ipv4 any host 218.72.254.234 nexthop1 ipv4 192.168.1.2
+ 1172 permit ipv4 any host 61.130.174.178 nexthop1 ipv4 192.168.1.2
+ 1173 permit ipv4 any host 218.72.254.138 nexthop1 ipv4 192.168.1.2
+ 1174 permit ipv4 any host 61.153.58.106 nexthop1 ipv4 192.168.1.2
+ 1175 permit ipv4 any host 202.107.246.67 nexthop1 ipv4 192.168.1.2
+ 1176 permit ipv4 any host 202.107.246.68 nexthop1 ipv4 192.168.1.2
+ 1177 permit ipv4 any host 61.130.175.249 nexthop1 ipv4 192.168.1.2
+ 1178 permit ipv4 any host 61.130.77.178 nexthop1 ipv4 192.168.1.2
+ 1179 permit ipv4 any host 218.72.252.69 nexthop1 ipv4 192.168.1.2
+ 1180 permit ipv4 any host 122.227.65.78 nexthop1 ipv4 192.168.1.2
+ 1181 permit ipv4 any host 61.130.72.141 nexthop1 ipv4 192.168.1.2
+ 1182 permit ipv4 any host 218.72.254.131 nexthop1 ipv4 192.168.1.2
+ 1183 permit ipv4 any host 61.130.52.225 nexthop1 ipv4 192.168.1.2
+ 1184 permit ipv4 any host 61.130.66.242 nexthop1 ipv4 192.168.1.2
+ 1185 permit ipv4 any host 61.130.66.85 nexthop1 ipv4 192.168.1.2
+ 1186 permit ipv4 any host 202.96.113.88 nexthop1 ipv4 192.168.1.2
+ 1187 permit ipv4 any host 202.96.113.88 nexthop1 ipv4 192.168.1.2
+ 1188 permit ipv4 any host 61.130.173.27 nexthop1 ipv4 192.168.1.2
+ 1189 permit ipv4 any host 122.227.68.35 nexthop1 ipv4 192.168.1.2
+ 1190 permit ipv4 any host 202.107.246.40 nexthop1 ipv4 192.168.1.2
+ 1191 permit ipv4 any host 61.153.56.6 nexthop1 ipv4 192.168.1.2
+ 3000 permit ipv4 any 61.130.48.0 0.0.0.255
+ 3001 permit ipv4 any 115.207.0.0 0.0.127.255
+ 3002 permit ipv4 any 115.233.238.0 0.0.1.255
+ 3003 permit ipv4 any 183.150.0.0 0.0.255.255
+ 3004 permit ipv4 any 61.130.49.0 0.0.0.255
+ 3005 permit ipv4 any 61.130.50.0 0.0.1.255
+ 3006 permit ipv4 any 61.130.64.0 0.0.7.255
+ 3007 permit ipv4 any 61.130.72.0 0.0.7.255
+ 3008 permit ipv4 any 61.130.172.0 0.0.3.255
+ 3009 permit ipv4 any 61.153.54.0 0.0.1.255
+ 3010 permit ipv4 any 61.153.56.0 0.0.3.255
+ 3011 permit ipv4 any 61.174.90.0 0.0.1.255
+ 3012 permit ipv4 any 61.174.112.0 0.0.7.255
+ 3013 permit ipv4 any 61.175.144.0 0.0.7.255
+ 3014 permit ipv4 any 202.96.113.0 0.0.0.255
+ 3015 permit ipv4 any 202.101.186.0 0.0.0.255
+ 3016 permit ipv4 any 202.101.181.0 0.0.0.255
+ 3017 permit ipv4 any 202.101.182.0 0.0.0.255
+ 3018 permit ipv4 any 202.107.244.0 0.0.3.255
+ 3019 permit ipv4 any 218.0.80.0 0.0.7.255
+ 3020 permit ipv4 any 218.72.240.0 0.0.7.255
+ 3021 permit ipv4 any 218.72.248.0 0.0.7.255
+ 3022 permit ipv4 any 220.185.0.0 0.0.31.255
+ 3023 permit ipv4 any 220.185.62.0 0.0.1.255
+ 3024 permit ipv4 any 220.185.32.0 0.0.15.255
+ 3025 permit ipv4 any 220.185.48.0 0.0.7.255
+ 3026 permit ipv4 any 60.185.0.0 0.0.63.255
+ 3027 permit ipv4 any 220.191.236.0 0.0.3.255
+ 3028 permit ipv4 any 61.130.62.0 0.0.0.255
+ 3029 permit ipv4 any 61.130.52.0 0.0.3.255
+ 3030 permit ipv4 any 220.185.58.0 0.0.1.255
+ 3031 permit ipv4 any 220.185.60.0 0.0.1.255
+ 3032 permit ipv4 any 60.185.64.0 0.0.63.255
+ 3033 permit ipv4 any 125.106.0.0 0.0.255.255
+ 3034 permit ipv4 any 122.225.249.0 0.0.0.255
+ 3035 permit ipv4 any 122.227.64.0 0.0.15.255
+ 3036 permit ipv4 any 61.130.54.0 0.0.1.255
+ 3037 permit ipv4 any 122.227.80.0 0.0.15.255
+ 3038 permit ipv4 any 125.105.0.0 0.0.255.255
+ 3039 permit ipv4 any 220.185.56.0 0.0.1.255
+ 3040 permit ipv4 any 122.227.96.0 0.0.15.225
+ 3042 permit ipv4 any 36.26.128.0 0.0.31.225
+ 4000 permit ipv4 122.225.249.0 0.0.0.255 any nexthop1 ipv4 59.43.65.73
+ 10000 permit ipv4 any any
+!
+ipv4 access-list acl_MAN_WhiteList_in
+ 10 deny 0 any any
+ 20 deny 255 any any
+ 30 deny ipv4 127.0.0.0 0.255.255.255 any
+ 40 deny ipv4 172.16.0.0 0.15.255.255 any
+ 50 deny ipv4 192.168.0.0 0.0.255.255 any
+ 60 deny ipv4 169.254.0.0 0.0.255.255 any
+ 70 deny ipv4 host 0.0.0.0 any
+ 80 deny ipv4 any 127.0.0.0 0.255.255.255
+ 90 deny ipv4 any 172.16.0.0 0.15.255.255
+ 100 deny ipv4 any 192.168.0.0 0.0.255.255
+ 110 deny ipv4 any 169.254.0.0 0.0.255.255
+ 410 permit ipv4 any 10.0.0.0 0.255.255.255
+ 420 permit ipv4 10.0.0.0 0.255.255.255 any
+ 2000 permit ipv4 host 122.227.68.78 any nexthop1 ipv4 192.168.1.2
+ 2001 permit ipv4 host 202.107.244.133 any nexthop1 ipv4 192.168.1.2
+ 2002 permit ipv4 host 202.107.246.74 any nexthop1 ipv4 192.168.1.2
+ 2003 permit ipv4 host 218.72.253.195 any nexthop1 ipv4 192.168.1.2
+ 2004 permit ipv4 host 122.227.93.146 any nexthop1 ipv4 192.168.1.2
+ 2005 permit ipv4 host 61.153.58.82 any nexthop1 ipv4 192.168.1.2
+ 2006 permit ipv4 host 122.227.80.250 any nexthop1 ipv4 192.168.1.2
+ 2007 permit ipv4 host 122.227.73.2 any nexthop1 ipv4 192.168.1.2
+ 2008 permit ipv4 host 61.130.65.86 any nexthop1 ipv4 192.168.1.2
+ 2009 permit ipv4 host 122.227.85.154 any nexthop1 ipv4 192.168.1.2
+ 2010 permit ipv4 host 122.227.103.146 any nexthop1 ipv4 192.168.1.2
+ 2011 permit ipv4 host 202.107.245.12 any nexthop1 ipv4 192.168.1.2
+ 2012 permit ipv4 host 218.72.251.4 any nexthop1 ipv4 192.168.1.2
+ 2013 permit ipv4 host 122.227.79.30 any nexthop1 ipv4 192.168.1.2
+ 2014 permit ipv4 host 61.130.67.18 any nexthop1 ipv4 192.168.1.2
+ 2015 permit ipv4 host 61.130.66.182 any nexthop1 ipv4 192.168.1.2
+ 2016 permit ipv4 host 122.227.75.14 any nexthop1 ipv4 192.168.1.2
+ 2017 permit ipv4 host 61.130.66.114 any nexthop1 ipv4 192.168.1.2
+ 2018 permit ipv4 host 122.227.64.182 any nexthop1 ipv4 192.168.1.2
+ 2019 permit ipv4 host 218.72.249.54 any nexthop1 ipv4 192.168.1.2
+ 2020 permit ipv4 host 218.72.254.42 any nexthop1 ipv4 192.168.1.2
+ 2021 permit ipv4 host 218.72.254.46 any nexthop1 ipv4 192.168.1.2
+ 2022 permit ipv4 host 122.227.90.78 any nexthop1 ipv4 192.168.1.2
+ 2023 permit ipv4 host 218.72.253.218 any nexthop1 ipv4 192.168.1.2
+ 2024 permit ipv4 host 122.227.98.22 any nexthop1 ipv4 192.168.1.2
+ 2025 permit ipv4 host 202.107.247.180 any nexthop1 ipv4 192.168.1.2
+ 2026 permit ipv4 host 61.153.55.130 any nexthop1 ipv4 192.168.1.2
+ 2027 permit ipv4 host 122.227.99.106 any nexthop1 ipv4 192.168.1.2
+ 2028 permit ipv4 host 61.130.69.82 any nexthop1 ipv4 192.168.1.2
+ 2029 permit ipv4 host 122.227.86.6 any nexthop1 ipv4 192.168.1.2
+ 2030 permit ipv4 host 61.130.68.210 any nexthop1 ipv4 192.168.1.2
+ 2031 permit ipv4 host 122.227.80.122 any nexthop1 ipv4 192.168.1.2
+ 2032 permit ipv4 host 61.130.64.194 any nexthop1 ipv4 192.168.1.2
+ 2033 permit ipv4 host 61.130.48.250 any nexthop1 ipv4 192.168.1.2
+ 2034 permit ipv4 host 61.153.59.98 any nexthop1 ipv4 192.168.1.2
+ 2035 permit ipv4 host 218.72.253.196 any nexthop1 ipv4 192.168.1.2
+ 2036 permit ipv4 host 61.130.64.174 any nexthop1 ipv4 192.168.1.2
+ 2037 permit ipv4 host 218.72.250.157 any nexthop1 ipv4 192.168.1.2
+ 2038 permit ipv4 host 61.153.57.22 any nexthop1 ipv4 192.168.1.2
+ 2039 permit ipv4 host 61.153.57.86 any nexthop1 ipv4 192.168.1.2
+ 2040 permit ipv4 host 218.72.255.30 any nexthop1 ipv4 192.168.1.2
+ 2041 permit ipv4 host 218.72.252.14 any nexthop1 ipv4 192.168.1.2
+ 2042 permit ipv4 host 202.107.244.20 any nexthop1 ipv4 192.168.1.2
+ 2043 permit ipv4 host 122.227.81.26 any nexthop1 ipv4 192.168.1.2
+ 2044 permit ipv4 host 218.72.253.198 any nexthop1 ipv4 192.168.1.2
+ 2045 permit ipv4 host 61.130.173.154 any nexthop1 ipv4 192.168.1.2
+ 2046 permit ipv4 host 61.130.72.98 any nexthop1 ipv4 192.168.1.2
+ 2047 permit ipv4 host 61.130.72.211 any nexthop1 ipv4 192.168.1.2
+ 2048 permit ipv4 host 122.227.99.182 any nexthop1 ipv4 192.168.1.2
+ 2049 permit ipv4 host 122.227.70.198 any nexthop1 ipv4 192.168.1.2
+ 2050 permit ipv4 host 61.130.54.162 any nexthop1 ipv4 192.168.1.2
+ 2051 permit ipv4 host 122.227.94.126 any nexthop1 ipv4 192.168.1.2
+ 2052 permit ipv4 host 61.130.175.130 any nexthop1 ipv4 192.168.1.2
+ 2053 permit ipv4 host 122.227.83.98 any nexthop1 ipv4 192.168.1.2
+ 2054 permit ipv4 host 61.130.64.190 any nexthop1 ipv4 192.168.1.2
+ 2055 permit ipv4 host 202.107.245.48 any nexthop1 ipv4 192.168.1.2
+ 2056 permit ipv4 host 218.72.253.6 any nexthop1 ipv4 192.168.1.2
+ 2057 permit ipv4 host 61.130.76.30 any nexthop1 ipv4 192.168.1.2
+ 2058 permit ipv4 host 202.107.247.48 any nexthop1 ipv4 192.168.1.2
+ 2059 permit ipv4 host 202.107.247.148 any nexthop1 ipv4 192.168.1.2
+ 2060 permit ipv4 host 202.107.247.52 any nexthop1 ipv4 192.168.1.2
+ 2061 permit ipv4 host 61.130.66.82 any nexthop1 ipv4 192.168.1.2
+ 2062 permit ipv4 host 61.130.65.54 any nexthop1 ipv4 192.168.1.2
+ 2063 permit ipv4 host 122.227.107.38 any nexthop1 ipv4 192.168.1.2
+ 2064 permit ipv4 host 61.130.50.62 any nexthop1 ipv4 192.168.1.2
+ 2065 permit ipv4 host 61.130.48.26 any nexthop1 ipv4 192.168.1.2
+ 2066 permit ipv4 host 61.153.58.42 any nexthop1 ipv4 192.168.1.2
+ 2067 permit ipv4 host 122.227.93.246 any nexthop1 ipv4 192.168.1.2
+ 2068 permit ipv4 host 202.107.247.148 any nexthop1 ipv4 192.168.1.2
+ 2069 permit ipv4 host 202.107.245.52 any nexthop1 ipv4 192.168.1.2
+ 2070 permit ipv4 host 202.107.245.24 any nexthop1 ipv4 192.168.1.2
+ 2071 permit ipv4 host 202.107.247.151 any nexthop1 ipv4 192.168.1.2
+ 2072 permit ipv4 host 61.153.58.35 any nexthop1 ipv4 192.168.1.2
+ 2073 permit ipv4 host 122.227.82.38 any nexthop1 ipv4 192.168.1.2
+ 2074 permit ipv4 host 202.96.113.80 any nexthop1 ipv4 192.168.1.2
+ 2075 permit ipv4 host 218.72.250.195 any nexthop1 ipv4 192.168.1.2
+ 2076 permit ipv4 host 61.130.51.190 any nexthop1 ipv4 192.168.1.2
+ 2077 permit ipv4 host 122.227.100.162 any nexthop1 ipv4 192.168.1.2
+ 2078 permit ipv4 host 218.72.249.218 any nexthop1 ipv4 192.168.1.2
+ 2079 permit ipv4 host 202.107.245.14 any nexthop1 ipv4 192.168.1.2
+ 2080 permit ipv4 host 122.227.103.250 any nexthop1 ipv4 192.168.1.2
+ 2081 permit ipv4 host 122.227.111.226 any nexthop1 ipv4 192.168.1.2
+ 2082 permit ipv4 host 61.153.59.85 any nexthop1 ipv4 192.168.1.2
+ 2083 permit ipv4 host 122.227.109.154 any nexthop1 ipv4 192.168.1.2
+ 2084 permit ipv4 host 218.72.249.242 any nexthop1 ipv4 192.168.1.2
+ 2085 permit ipv4 host 61.153.58.238 any nexthop1 ipv4 192.168.1.2
+ 2086 permit ipv4 host 202.107.247.174 any nexthop1 ipv4 192.168.1.2
+ 2087 permit ipv4 host 61.130.67.190 any nexthop1 ipv4 192.168.1.2
+ 2088 permit ipv4 host 122.227.75.228 any nexthop1 ipv4 192.168.1.2
+ 2089 permit ipv4 host 122.227.75.230 any nexthop1 ipv4 192.168.1.2
+ 2090 permit ipv4 host 122.227.69.126 any nexthop1 ipv4 192.168.1.2
+ 2091 permit ipv4 host 61.153.54.202 any nexthop1 ipv4 192.168.1.2
+ 2092 permit ipv4 host 122.227.65.154 any nexthop1 ipv4 192.168.1.2
+ 2093 permit ipv4 host 122.227.80.118 any nexthop1 ipv4 192.168.1.2
+ 2094 permit ipv4 host 202.107.244.240 any nexthop1 ipv4 192.168.1.2
+ 2095 permit ipv4 host 61.130.175.110 any nexthop1 ipv4 192.168.1.2
+ 2096 permit ipv4 host 61.130.75.190 any nexthop1 ipv4 192.168.1.2
+ 2097 permit ipv4 host 202.107.245.74 any nexthop1 ipv4 192.168.1.2
+ 2098 permit ipv4 host 122.227.86.126 any nexthop1 ipv4 192.168.1.2
+ 2099 permit ipv4 host 202.107.245.58 any nexthop1 ipv4 192.168.1.2
+ 2100 permit ipv4 host 122.227.70.70 any nexthop1 ipv4 192.168.1.2
+ 2101 permit ipv4 host 122.227.73.182 any nexthop1 ipv4 192.168.1.2
+ 2102 permit ipv4 host 202.107.245.23 any nexthop1 ipv4 192.168.1.2
+ 2103 permit ipv4 host 218.72.252.76 any nexthop1 ipv4 192.168.1.2
+ 2104 permit ipv4 host 122.227.95.50 any nexthop1 ipv4 192.168.1.2
+ 2105 permit ipv4 host 122.227.91.58 any nexthop1 ipv4 192.168.1.2
+ 2106 permit ipv4 host 61.153.58.36 any nexthop1 ipv4 192.168.1.2
+ 2107 permit ipv4 host 61.130.51.18 any nexthop1 ipv4 192.168.1.2
+ 2108 permit ipv4 host 61.153.58.168 any nexthop1 ipv4 192.168.1.2
+ 2109 permit ipv4 host 218.72.251.78 any nexthop1 ipv4 192.168.1.2
+ 2110 permit ipv4 host 61.130.174.218 any nexthop1 ipv4 192.168.1.2
+ 2111 permit ipv4 host 218.72.250.66 any nexthop1 ipv4 192.168.1.2
+ 2112 permit ipv4 host 218.72.253.164 any nexthop1 ipv4 192.168.1.2
+ 2113 permit ipv4 host 122.227.94.91 any nexthop1 ipv4 192.168.1.2
+ 2114 permit ipv4 host 61.130.174.78 any nexthop1 ipv4 192.168.1.2
+ 2115 permit ipv4 host 202.96.113.89 any nexthop1 ipv4 192.168.1.2
+ 2116 permit ipv4 host 218.72.253.122 any nexthop1 ipv4 192.168.1.2
+ 2117 permit ipv4 host 218.72.255.74 any nexthop1 ipv4 192.168.1.2
+ 2118 permit ipv4 host 218.72.251.195 any nexthop1 ipv4 192.168.1.2
+ 2119 permit ipv4 host 122.227.93.198 any nexthop1 ipv4 192.168.1.2
+ 2120 permit ipv4 host 61.130.66.251 any nexthop1 ipv4 192.168.1.2
+ 2121 permit ipv4 host 61.130.174.10 any nexthop1 ipv4 192.168.1.2
+ 2122 permit ipv4 host 202.107.245.84 any nexthop1 ipv4 192.168.1.2
+ 2123 permit ipv4 host 61.130.65.142 any nexthop1 ipv4 192.168.1.2
+ 2124 permit ipv4 host 122.227.67.7 any nexthop1 ipv4 192.168.1.2
+ 2125 permit ipv4 host 218.72.252.186 any nexthop1 ipv4 192.168.1.2
+ 2126 permit ipv4 host 122.227.78.38 any nexthop1 ipv4 192.168.1.2
+ 2127 permit ipv4 host 61.130.174.222 any nexthop1 ipv4 192.168.1.2
+ 2128 permit ipv4 host 61.153.59.30 any nexthop1 ipv4 192.168.1.2
+ 2129 permit ipv4 host 218.72.250.197 any nexthop1 ipv4 192.168.1.2
+ 2130 permit ipv4 host 61.130.175.78 any nexthop1 ipv4 192.168.1.2
+ 2131 permit ipv4 host 122.227.96.98 any nexthop1 ipv4 192.168.1.2
+ 2132 permit ipv4 host 218.72.250.62 any nexthop1 ipv4 192.168.1.2
+ 2133 permit ipv4 host 61.130.175.26 any nexthop1 ipv4 192.168.1.2
+ 2134 permit ipv4 host 122.227.83.138 any nexthop1 ipv4 192.168.1.2
+ 2135 permit ipv4 host 202.96.113.66 any nexthop1 ipv4 192.168.1.2
+ 2136 permit ipv4 host 202.96.113.87 any nexthop1 ipv4 192.168.1.2
+ 2137 permit ipv4 host 202.96.113.91 any nexthop1 ipv4 192.168.1.2
+ 2138 permit ipv4 host 61.130.71.214 any nexthop1 ipv4 192.168.1.2
+ 2139 permit ipv4 host 122.227.67.5 any nexthop1 ipv4 192.168.1.2
+ 2140 permit ipv4 host 218.72.252.154 any nexthop1 ipv4 192.168.1.2
+ 2141 permit ipv4 host 122.227.89.122 any nexthop1 ipv4 192.168.1.2
+ 2142 permit ipv4 host 122.227.67.2 any nexthop1 ipv4 192.168.1.2
+ 2143 permit ipv4 host 218.72.253.38 any nexthop1 ipv4 192.168.1.2
+ 2144 permit ipv4 host 122.227.102.66 any nexthop1 ipv4 192.168.1.2
+ 2145 permit ipv4 host 202.107.247.38 any nexthop1 ipv4 192.168.1.2
+ 2146 permit ipv4 host 202.107.246.66 any nexthop1 ipv4 192.168.1.2
+ 2147 permit ipv4 host 122.227.78.166 any nexthop1 ipv4 192.168.1.2
+ 2148 permit ipv4 host 61.130.53.26 any nexthop1 ipv4 192.168.1.2
+ 2149 permit ipv4 host 202.107.245.55 any nexthop1 ipv4 192.168.1.2
+ 2150 permit ipv4 host 202.107.247.43 any nexthop1 ipv4 192.168.1.2
+ 2151 permit ipv4 host 61.153.57.29 any nexthop1 ipv4 192.168.1.2
+ 2152 permit ipv4 host 202.107.247.152 any nexthop1 ipv4 192.168.1.2
+ 2153 permit ipv4 host 122.227.77.186 any nexthop1 ipv4 192.168.1.2
+ 2154 permit ipv4 host 61.130.70.170 any nexthop1 ipv4 192.168.1.2
+ 2155 permit ipv4 host 61.130.175.58 any nexthop1 ipv4 192.168.1.2
+ 2156 permit ipv4 host 61.130.65.26 any nexthop1 ipv4 192.168.1.2
+ 2157 permit ipv4 host 61.153.58.165 any nexthop1 ipv4 192.168.1.2
+ 2158 permit ipv4 host 218.72.254.43 any nexthop1 ipv4 192.168.1.2
+ 2159 permit ipv4 host 218.72.253.196 any nexthop1 ipv4 192.168.1.2
+ 2160 permit ipv4 host 202.107.247.147 any nexthop1 ipv4 192.168.1.2
+ 2161 permit ipv4 host 202.107.247.149 any nexthop1 ipv4 192.168.1.2
+ 2162 permit ipv4 host 122.227.65.178 any nexthop1 ipv4 192.168.1.2
+ 2163 permit ipv4 host 61.130.174.54 any nexthop1 ipv4 192.168.1.2
+ 2164 permit ipv4 host 218.72.254.44 any nexthop1 ipv4 192.168.1.2
+ 2165 permit ipv4 host 61.130.174.2 any nexthop1 ipv4 192.168.1.2
+ 2166 permit ipv4 host 122.227.79.10 any nexthop1 ipv4 192.168.1.2
+ 2167 permit ipv4 host 202.107.247.42 any nexthop1 ipv4 192.168.1.2
+ 2168 permit ipv4 host 218.72.249.240 any nexthop1 ipv4 192.168.1.2
+ 2169 permit ipv4 host 122.227.108.86 any nexthop1 ipv4 192.168.1.2
+ 2170 permit ipv4 host 61.130.66.244 any nexthop1 ipv4 192.168.1.2
+ 2171 permit ipv4 host 218.72.254.234 any nexthop1 ipv4 192.168.1.2
+ 2172 permit ipv4 host 61.130.174.178 any nexthop1 ipv4 192.168.1.2
+ 2173 permit ipv4 host 218.72.254.138 any nexthop1 ipv4 192.168.1.2
+ 2174 permit ipv4 host 61.153.58.106 any nexthop1 ipv4 192.168.1.2
+ 2175 permit ipv4 host 202.107.246.67 any nexthop1 ipv4 192.168.1.2
+ 2176 permit ipv4 host 202.107.246.68 any nexthop1 ipv4 192.168.1.2
+ 2177 permit ipv4 host 61.130.175.249 any nexthop1 ipv4 192.168.1.2
+ 2178 permit ipv4 host 61.130.77.178 any nexthop1 ipv4 192.168.1.2
+ 2179 permit ipv4 host 218.72.252.69 any nexthop1 ipv4 192.168.1.2
+ 2180 permit ipv4 host 122.227.65.78 any nexthop1 ipv4 192.168.1.2
+ 2181 permit ipv4 host 61.130.72.141 any nexthop1 ipv4 192.168.1.2
+ 2182 permit ipv4 host 218.72.254.131 any nexthop1 ipv4 192.168.1.2
+ 2183 permit ipv4 host 61.130.52.225 any nexthop1 ipv4 192.168.1.2
+ 2184 permit ipv4 host 61.130.66.242 any nexthop1 ipv4 192.168.1.2
+ 2185 permit ipv4 host 61.130.66.85 any nexthop1 ipv4 192.168.1.2
+ 2186 permit ipv4 host 202.96.113.88 any nexthop1 ipv4 192.168.1.2
+ 2187 permit ipv4 host 202.96.113.88 any nexthop1 ipv4 192.168.1.2
+ 2188 permit ipv4 host 61.130.173.27 any nexthop1 ipv4 192.168.1.2
+ 2189 permit ipv4 host 122.227.68.35 any nexthop1 ipv4 192.168.1.2
+ 2190 permit ipv4 host 202.107.246.40 any nexthop1 ipv4 192.168.1.2
+ 2200 permit ipv4 host 61.153.56.6 any nexthop1 ipv4 192.168.1.2
+ 2201 permit ipv4 any host 61.153.56.6 nexthop1 ipv4 192.168.1.2
+ 3000 permit ipv4 any host 122.227.68.78 nexthop1 ipv4 192.168.1.2
+ 3001 permit ipv4 any host 202.107.244.133 nexthop1 ipv4 192.168.1.2
+ 3002 permit ipv4 any host 202.107.246.74 nexthop1 ipv4 192.168.1.2
+ 3003 permit ipv4 any host 218.72.253.195 nexthop1 ipv4 192.168.1.2
+ 3004 permit ipv4 any host 122.227.93.146 nexthop1 ipv4 192.168.1.2
+ 3005 permit ipv4 any host 61.153.58.82 nexthop1 ipv4 192.168.1.2
+ 3006 permit ipv4 any host 122.227.80.250 nexthop1 ipv4 192.168.1.2
+ 3007 permit ipv4 any host 122.227.73.2 nexthop1 ipv4 192.168.1.2
+ 3008 permit ipv4 any host 61.130.65.86 nexthop1 ipv4 192.168.1.2
+ 3009 permit ipv4 any host 122.227.85.154 nexthop1 ipv4 192.168.1.2
+ 3010 permit ipv4 any host 122.227.103.146 nexthop1 ipv4 192.168.1.2
+ 3011 permit ipv4 any host 202.107.245.12 nexthop1 ipv4 192.168.1.2
+ 3012 permit ipv4 any host 218.72.251.4 nexthop1 ipv4 192.168.1.2
+ 3013 permit ipv4 any host 122.227.79.30 nexthop1 ipv4 192.168.1.2
+ 3014 permit ipv4 any host 61.130.67.18 nexthop1 ipv4 192.168.1.2
+ 3015 permit ipv4 any host 61.130.66.182 nexthop1 ipv4 192.168.1.2
+ 3016 permit ipv4 any host 122.227.75.14 nexthop1 ipv4 192.168.1.2
+ 3017 permit ipv4 any host 61.130.66.114 nexthop1 ipv4 192.168.1.2
+ 3018 permit ipv4 any host 122.227.64.182 nexthop1 ipv4 192.168.1.2
+ 3019 permit ipv4 any host 218.72.249.54 nexthop1 ipv4 192.168.1.2
+ 3020 permit ipv4 any host 218.72.254.42 nexthop1 ipv4 192.168.1.2
+ 3021 permit ipv4 any host 218.72.254.46 nexthop1 ipv4 192.168.1.2
+ 3022 permit ipv4 any host 122.227.90.78 nexthop1 ipv4 192.168.1.2
+ 3023 permit ipv4 any host 218.72.253.218 nexthop1 ipv4 192.168.1.2
+ 3024 permit ipv4 any host 122.227.98.22 nexthop1 ipv4 192.168.1.2
+ 3025 permit ipv4 any host 202.107.247.180 nexthop1 ipv4 192.168.1.2
+ 3026 permit ipv4 any host 61.153.55.130 nexthop1 ipv4 192.168.1.2
+ 3027 permit ipv4 any host 122.227.99.106 nexthop1 ipv4 192.168.1.2
+ 3028 permit ipv4 any host 61.130.69.82 nexthop1 ipv4 192.168.1.2
+ 3029 permit ipv4 any host 122.227.86.6 nexthop1 ipv4 192.168.1.2
+ 3030 permit ipv4 any host 61.130.68.210 nexthop1 ipv4 192.168.1.2
+ 3031 permit ipv4 any host 122.227.80.122 nexthop1 ipv4 192.168.1.2
+ 3032 permit ipv4 any host 61.130.64.194 nexthop1 ipv4 192.168.1.2
+ 3033 permit ipv4 any host 61.130.48.250 nexthop1 ipv4 192.168.1.2
+ 3034 permit ipv4 any host 61.153.59.98 nexthop1 ipv4 192.168.1.2
+ 3035 permit ipv4 any host 218.72.253.196 nexthop1 ipv4 192.168.1.2
+ 3036 permit ipv4 any host 61.130.64.174 nexthop1 ipv4 192.168.1.2
+ 3037 permit ipv4 any host 218.72.250.157 nexthop1 ipv4 192.168.1.2
+ 3038 permit ipv4 any host 61.153.57.22 nexthop1 ipv4 192.168.1.2
+ 3039 permit ipv4 any host 61.153.57.86 nexthop1 ipv4 192.168.1.2
+ 3040 permit ipv4 any host 218.72.255.30 nexthop1 ipv4 192.168.1.2
+ 3041 permit ipv4 any host 218.72.252.14 nexthop1 ipv4 192.168.1.2
+ 3042 permit ipv4 any host 202.107.244.20 nexthop1 ipv4 192.168.1.2
+ 3043 permit ipv4 any host 122.227.81.26 nexthop1 ipv4 192.168.1.2
+ 3044 permit ipv4 any host 218.72.253.198 nexthop1 ipv4 192.168.1.2
+ 3045 permit ipv4 any host 61.130.173.154 nexthop1 ipv4 192.168.1.2
+ 3046 permit ipv4 any host 61.130.72.98 nexthop1 ipv4 192.168.1.2
+ 3047 permit ipv4 any host 61.130.72.211 nexthop1 ipv4 192.168.1.2
+ 3048 permit ipv4 any host 122.227.99.182 nexthop1 ipv4 192.168.1.2
+ 3049 permit ipv4 any host 122.227.70.198 nexthop1 ipv4 192.168.1.2
+ 3050 permit ipv4 any host 61.130.54.162 nexthop1 ipv4 192.168.1.2
+ 3051 permit ipv4 any host 122.227.94.126 nexthop1 ipv4 192.168.1.2
+ 3052 permit ipv4 any host 61.130.175.130 nexthop1 ipv4 192.168.1.2
+ 3053 permit ipv4 any host 122.227.83.98 nexthop1 ipv4 192.168.1.2
+ 3054 permit ipv4 any host 61.130.64.190 nexthop1 ipv4 192.168.1.2
+ 3055 permit ipv4 any host 202.107.245.48 nexthop1 ipv4 192.168.1.2
+ 3056 permit ipv4 any host 218.72.253.6 nexthop1 ipv4 192.168.1.2
+ 3057 permit ipv4 any host 61.130.76.30 nexthop1 ipv4 192.168.1.2
+ 3058 permit ipv4 any host 202.107.247.48 nexthop1 ipv4 192.168.1.2
+ 3059 permit ipv4 any host 202.107.247.148 nexthop1 ipv4 192.168.1.2
+ 3060 permit ipv4 any host 202.107.247.52 nexthop1 ipv4 192.168.1.2
+ 3061 permit ipv4 any host 61.130.66.82 nexthop1 ipv4 192.168.1.2
+ 3062 permit ipv4 any host 61.130.65.54 nexthop1 ipv4 192.168.1.2
+ 3063 permit ipv4 any host 122.227.107.38 nexthop1 ipv4 192.168.1.2
+ 3064 permit ipv4 any host 61.130.50.62 nexthop1 ipv4 192.168.1.2
+ 3065 permit ipv4 any host 61.130.48.26 nexthop1 ipv4 192.168.1.2
+ 3066 permit ipv4 any host 61.153.58.42 nexthop1 ipv4 192.168.1.2
+ 3067 permit ipv4 any host 122.227.93.246 nexthop1 ipv4 192.168.1.2
+ 3068 permit ipv4 any host 202.107.247.148 nexthop1 ipv4 192.168.1.2
+ 3069 permit ipv4 any host 202.107.245.52 nexthop1 ipv4 192.168.1.2
+ 3070 permit ipv4 any host 202.107.245.24 nexthop1 ipv4 192.168.1.2
+ 3071 permit ipv4 any host 202.107.247.151 nexthop1 ipv4 192.168.1.2
+ 3072 permit ipv4 any host 61.153.58.35 nexthop1 ipv4 192.168.1.2
+ 3073 permit ipv4 any host 122.227.82.38 nexthop1 ipv4 192.168.1.2
+ 3074 permit ipv4 any host 202.96.113.80 nexthop1 ipv4 192.168.1.2
+ 3075 permit ipv4 any host 218.72.250.195 nexthop1 ipv4 192.168.1.2
+ 3076 permit ipv4 any host 61.130.51.190 nexthop1 ipv4 192.168.1.2
+ 3077 permit ipv4 any host 122.227.100.162 nexthop1 ipv4 192.168.1.2
+ 3078 permit ipv4 any host 218.72.249.218 nexthop1 ipv4 192.168.1.2
+ 3079 permit ipv4 any host 202.107.245.14 nexthop1 ipv4 192.168.1.2
+ 3080 permit ipv4 any host 122.227.103.250 nexthop1 ipv4 192.168.1.2
+ 3081 permit ipv4 any host 122.227.111.226 nexthop1 ipv4 192.168.1.2
+ 3082 permit ipv4 any host 61.153.59.85 nexthop1 ipv4 192.168.1.2
+ 3083 permit ipv4 any host 122.227.109.154 nexthop1 ipv4 192.168.1.2
+ 3084 permit ipv4 any host 218.72.249.242 nexthop1 ipv4 192.168.1.2
+ 3085 permit ipv4 any host 61.153.58.238 nexthop1 ipv4 192.168.1.2
+ 3086 permit ipv4 any host 202.107.247.174 nexthop1 ipv4 192.168.1.2
+ 3087 permit ipv4 any host 61.130.67.190 nexthop1 ipv4 192.168.1.2
+ 3088 permit ipv4 any host 122.227.75.228 nexthop1 ipv4 192.168.1.2
+ 3089 permit ipv4 any host 122.227.75.230 nexthop1 ipv4 192.168.1.2
+ 3090 permit ipv4 any host 122.227.69.126 nexthop1 ipv4 192.168.1.2
+ 3091 permit ipv4 any host 61.153.54.202 nexthop1 ipv4 192.168.1.2
+ 3092 permit ipv4 any host 122.227.65.154 nexthop1 ipv4 192.168.1.2
+ 3093 permit ipv4 any host 122.227.80.118 nexthop1 ipv4 192.168.1.2
+ 3094 permit ipv4 any host 202.107.244.240 nexthop1 ipv4 192.168.1.2
+ 3095 permit ipv4 any host 61.130.175.110 nexthop1 ipv4 192.168.1.2
+ 3096 permit ipv4 any host 61.130.75.190 nexthop1 ipv4 192.168.1.2
+ 3097 permit ipv4 any host 202.107.245.74 nexthop1 ipv4 192.168.1.2
+ 3098 permit ipv4 any host 122.227.86.126 nexthop1 ipv4 192.168.1.2
+ 3099 permit ipv4 any host 202.107.245.58 nexthop1 ipv4 192.168.1.2
+ 3100 permit ipv4 any host 122.227.70.70 nexthop1 ipv4 192.168.1.2
+ 3101 permit ipv4 any host 122.227.73.182 nexthop1 ipv4 192.168.1.2
+ 3102 permit ipv4 any host 202.107.245.23 nexthop1 ipv4 192.168.1.2
+ 3103 permit ipv4 any host 218.72.252.76 nexthop1 ipv4 192.168.1.2
+ 3104 permit ipv4 any host 122.227.95.50 nexthop1 ipv4 192.168.1.2
+ 3105 permit ipv4 any host 122.227.91.58 nexthop1 ipv4 192.168.1.2
+ 3106 permit ipv4 any host 61.153.58.36 nexthop1 ipv4 192.168.1.2
+ 3107 permit ipv4 any host 61.130.51.18 nexthop1 ipv4 192.168.1.2
+ 3108 permit ipv4 any host 61.153.58.168 nexthop1 ipv4 192.168.1.2
+ 3109 permit ipv4 any host 218.72.251.78 nexthop1 ipv4 192.168.1.2
+ 3110 permit ipv4 any host 61.130.174.218 nexthop1 ipv4 192.168.1.2
+ 3111 permit ipv4 any host 218.72.250.66 nexthop1 ipv4 192.168.1.2
+ 3112 permit ipv4 any host 218.72.253.164 nexthop1 ipv4 192.168.1.2
+ 3113 permit ipv4 any host 122.227.94.91 nexthop1 ipv4 192.168.1.2
+ 3114 permit ipv4 any host 61.130.174.78 nexthop1 ipv4 192.168.1.2
+ 3115 permit ipv4 any host 202.96.113.89 nexthop1 ipv4 192.168.1.2
+ 3116 permit ipv4 any host 218.72.253.122 nexthop1 ipv4 192.168.1.2
+ 3117 permit ipv4 any host 218.72.255.74 nexthop1 ipv4 192.168.1.2
+ 3118 permit ipv4 any host 218.72.251.195 nexthop1 ipv4 192.168.1.2
+ 3119 permit ipv4 any host 122.227.93.198 nexthop1 ipv4 192.168.1.2
+ 3120 permit ipv4 any host 61.130.66.251 nexthop1 ipv4 192.168.1.2
+ 3121 permit ipv4 any host 61.130.174.10 nexthop1 ipv4 192.168.1.2
+ 3122 permit ipv4 any host 202.107.245.84 nexthop1 ipv4 192.168.1.2
+ 3123 permit ipv4 any host 61.130.65.142 nexthop1 ipv4 192.168.1.2
+ 3124 permit ipv4 any host 122.227.67.7 nexthop1 ipv4 192.168.1.2
+ 3125 permit ipv4 any host 218.72.252.186 nexthop1 ipv4 192.168.1.2
+ 3126 permit ipv4 any host 122.227.78.38 nexthop1 ipv4 192.168.1.2
+ 3127 permit ipv4 any host 61.130.174.222 nexthop1 ipv4 192.168.1.2
+ 3128 permit ipv4 any host 61.153.59.30 nexthop1 ipv4 192.168.1.2
+ 3129 permit ipv4 any host 218.72.250.197 nexthop1 ipv4 192.168.1.2
+ 3130 permit ipv4 any host 61.130.175.78 nexthop1 ipv4 192.168.1.2
+ 3131 permit ipv4 any host 122.227.96.98 nexthop1 ipv4 192.168.1.2
+ 3132 permit ipv4 any host 218.72.250.62 nexthop1 ipv4 192.168.1.2
+ 3133 permit ipv4 any host 61.130.175.26 nexthop1 ipv4 192.168.1.2
+ 3134 permit ipv4 any host 122.227.83.138 nexthop1 ipv4 192.168.1.2
+ 3135 permit ipv4 any host 202.96.113.66 nexthop1 ipv4 192.168.1.2
+ 3136 permit ipv4 any host 202.96.113.87 nexthop1 ipv4 192.168.1.2
+ 3137 permit ipv4 any host 202.96.113.91 nexthop1 ipv4 192.168.1.2
+ 3138 permit ipv4 any host 61.130.71.214 nexthop1 ipv4 192.168.1.2
+ 3139 permit ipv4 any host 122.227.67.5 nexthop1 ipv4 192.168.1.2
+ 3140 permit ipv4 any host 218.72.252.154 nexthop1 ipv4 192.168.1.2
+ 3141 permit ipv4 any host 122.227.89.122 nexthop1 ipv4 192.168.1.2
+ 3142 permit ipv4 any host 122.227.67.2 nexthop1 ipv4 192.168.1.2
+ 3143 permit ipv4 any host 218.72.253.38 nexthop1 ipv4 192.168.1.2
+ 3144 permit ipv4 any host 122.227.102.66 nexthop1 ipv4 192.168.1.2
+ 3145 permit ipv4 any host 202.107.247.38 nexthop1 ipv4 192.168.1.2
+ 3146 permit ipv4 any host 202.107.246.66 nexthop1 ipv4 192.168.1.2
+ 3147 permit ipv4 any host 122.227.78.166 nexthop1 ipv4 192.168.1.2
+ 3148 permit ipv4 any host 61.130.53.26 nexthop1 ipv4 192.168.1.2
+ 3149 permit ipv4 any host 202.107.245.55 nexthop1 ipv4 192.168.1.2
+ 3150 permit ipv4 any host 202.107.247.43 nexthop1 ipv4 192.168.1.2
+ 3151 permit ipv4 any host 61.153.57.29 nexthop1 ipv4 192.168.1.2
+ 3152 permit ipv4 any host 202.107.247.152 nexthop1 ipv4 192.168.1.2
+ 3153 permit ipv4 any host 122.227.77.186 nexthop1 ipv4 192.168.1.2
+ 3154 permit ipv4 any host 61.130.70.170 nexthop1 ipv4 192.168.1.2
+ 3155 permit ipv4 any host 61.130.175.58 nexthop1 ipv4 192.168.1.2
+ 3156 permit ipv4 any host 61.130.65.26 nexthop1 ipv4 192.168.1.2
+ 3157 permit ipv4 any host 61.153.58.165 nexthop1 ipv4 192.168.1.2
+ 3158 permit ipv4 any host 218.72.254.43 nexthop1 ipv4 192.168.1.2
+ 3159 permit ipv4 any host 218.72.253.196 nexthop1 ipv4 192.168.1.2
+ 3160 permit ipv4 any host 202.107.247.147 nexthop1 ipv4 192.168.1.2
+ 3161 permit ipv4 any host 202.107.247.149 nexthop1 ipv4 192.168.1.2
+ 3162 permit ipv4 any host 122.227.65.178 nexthop1 ipv4 192.168.1.2
+ 3163 permit ipv4 any host 61.130.174.54 nexthop1 ipv4 192.168.1.2
+ 3164 permit ipv4 any host 218.72.254.44 nexthop1 ipv4 192.168.1.2
+ 3165 permit ipv4 any host 61.130.174.2 nexthop1 ipv4 192.168.1.2
+ 3166 permit ipv4 any host 122.227.79.10 nexthop1 ipv4 192.168.1.2
+ 3167 permit ipv4 any host 202.107.247.42 nexthop1 ipv4 192.168.1.2
+ 3168 permit ipv4 any host 218.72.249.240 nexthop1 ipv4 192.168.1.2
+ 3169 permit ipv4 any host 122.227.108.86 nexthop1 ipv4 192.168.1.2
+ 3170 permit ipv4 any host 61.130.66.244 nexthop1 ipv4 192.168.1.2
+ 3171 permit ipv4 any host 218.72.254.234 nexthop1 ipv4 192.168.1.2
+ 3172 permit ipv4 any host 61.130.174.178 nexthop1 ipv4 192.168.1.2
+ 3173 permit ipv4 any host 218.72.254.138 nexthop1 ipv4 192.168.1.2
+ 3174 permit ipv4 any host 61.153.58.106 nexthop1 ipv4 192.168.1.2
+ 3175 permit ipv4 any host 202.107.246.67 nexthop1 ipv4 192.168.1.2
+ 3176 permit ipv4 any host 202.107.246.68 nexthop1 ipv4 192.168.1.2
+ 3177 permit ipv4 any host 61.130.175.249 nexthop1 ipv4 192.168.1.2
+ 3178 permit ipv4 any host 61.130.77.178 nexthop1 ipv4 192.168.1.2
+ 3179 permit ipv4 any host 218.72.252.69 nexthop1 ipv4 192.168.1.2
+ 3180 permit ipv4 any host 122.227.65.78 nexthop1 ipv4 192.168.1.2
+ 3181 permit ipv4 any host 61.130.72.141 nexthop1 ipv4 192.168.1.2
+ 3182 permit ipv4 any host 218.72.254.131 nexthop1 ipv4 192.168.1.2
+ 3183 permit ipv4 any host 61.130.52.225 nexthop1 ipv4 192.168.1.2
+ 3184 permit ipv4 any host 61.130.66.242 nexthop1 ipv4 192.168.1.2
+ 3185 permit ipv4 any host 61.130.66.85 nexthop1 ipv4 192.168.1.2
+ 3186 permit ipv4 any host 202.96.113.88 nexthop1 ipv4 192.168.1.2
+ 3187 permit ipv4 any host 202.96.113.88 nexthop1 ipv4 192.168.1.2
+ 3188 permit ipv4 any host 61.130.173.27 nexthop1 ipv4 192.168.1.2
+ 3189 permit ipv4 any host 122.227.68.35 nexthop1 ipv4 192.168.1.2
+ 3190 permit ipv4 any host 202.107.246.40 nexthop1 ipv4 192.168.1.2
+ 4001 permit ipv4 any 202.96.96.0 0.0.31.255
+ 4002 permit ipv4 any 202.101.160.0 0.0.31.255
+ 4003 permit ipv4 any 202.107.192.0 0.0.63.255
+ 4004 permit ipv4 any 218.75.0.0 0.0.127.255
+ 4005 permit ipv4 any 61.130.0.0 0.0.255.255
+ 4006 permit ipv4 any 61.153.0.0 0.0.255.255
+ 4007 permit ipv4 any 61.164.0.0 0.0.255.255
+ 4008 permit ipv4 any 61.174.0.0 0.0.255.255
+ 4009 permit ipv4 any 61.175.0.0 0.0.255.255
+ 4010 permit ipv4 any 218.0.0.0 0.0.255.255
+ 4011 permit ipv4 any 218.71.0.0 0.0.255.255
+ 4012 permit ipv4 any 218.74.0.0 0.0.255.255
+ 4013 permit ipv4 any 218.72.0.0 0.1.255.255
+ 4014 permit ipv4 any 60.162.0.0 0.1.255.255
+ 4015 permit ipv4 any 123.96.0.0 0.1.255.255
+ 4016 permit ipv4 any 220.184.0.0 0.7.255.255
+ 4017 permit ipv4 any 125.104.0.0 0.7.255.255
+ 4018 permit ipv4 any 122.240.0.0 0.7.255.255
+ 4019 permit ipv4 any 60.176.0.0 0.15.255.255
+ 4020 permit ipv4 any 125.112.0.0 0.15.255.255
+ 4021 permit ipv4 any 122.224.0.0 0.15.255.255
+ 4022 permit ipv4 any 115.224.0.0 0.15.255.255
+ 4023 permit ipv4 any 36.16.0.0 0.15.255.255
+ 4024 permit ipv4 any 115.192.0.0 0.31.255.255
+ 4025 permit ipv4 any 183.128.0.0 0.31.255.255
+ 4026 permit ipv4 any 36.96.0.0 0.31.255.255
+ 4027 permit ipv4 any 218.30.139.0 0.0.0.255
+ 4028 permit ipv4 any 218.30.140.0 0.0.0.255
+ 4029 permit ipv4 122.225.249.0 0.0.0.255 any nexthop1 ipv4 59.43.65.73
+ 4030 permit tcp any any eq 8080 nexthop1 ipv4 220.185.57.213
+ 4031 permit tcp any any eq www nexthop1 ipv4 220.185.57.213
+ 10000 permit ipv4 any any
+!
+ipv4 prefix-list ldp-filter
+ 10 permit 220.185.58.128/25 eq 32
+ 20 permit 61.174.90.0/24 eq 32
+ 30 permit 220.185.58.0/25 eq 32
+!
+class-map match-any cmCritical
+ match mpls experimental topmost 4 
+ match precedence ipv4 flash-override 
+ end-class-map
+!
+class-map match-any cmPlatinum
+ match mpls experimental topmost 5 7 
+ match precedence ipv4 critical network 
+ end-class-map
+!
+class-map match-any cmNetworkControl
+ match mpls experimental topmost 6 
+ match precedence ipv4 internet 
+ end-class-map
+!
+class-map match-any cmGoldSilverCopper
+ match mpls experimental topmost 1 2 3 
+ match precedence ipv4 priority immediate flash 
+ end-class-map
+!
+policy-map IPTV-MARK
+ class class-default
+  set precedence critical
+ !
+ end-policy-map
+!
+policy-map pmCRS-Out
+ class cmCritical
+  police rate percent 10 
+   conform-action transmit
+   exceed-action drop
+  !
+  priority level 1 
+ !
+ class cmPlatinum
+  bandwidth percent 30 
+ !
+ class cmNetworkControl
+  bandwidth percent 1 
+ !
+ class cmGoldSilverCopper
+  bandwidth percent 1 
+ !
+ class class-default
+  bandwidth remaining percent 90 
+ !
+ end-policy-map
+!
+policy-map ingress_policy
+ class class-default
+  shape average percent 80 
+ !
+ end-policy-map
+!
+flow exporter-map myexp
+ version v9
+ !
+ transport udp 50040
+ source Loopback0
+ destination 122.224.178.220
+!
+flow exporter-map fem_zjnoc
+ version v9
+  template timeout 3600
+ !
+ transport udp 9001
+ source Loopback0
+ destination 202.96.103.45
+!
+flow monitor-map fmm_zjnoc
+ record ipv4
+ exporter myexp
+ exporter fem_zjnoc
+ cache entries 200000
+ cache timeout active 60
+!
+sampler-map sm_zjnoc
+ random 1 out-of 5000
+!
+interface Bundle-Ether2
+ description dT:QZ-QZ-NJ-Q-S9306-1.iTV.H2:()30G:Eth-trunk33
+ ipv4 unreachables disable
+ load-interval 30
+!
+interface Bundle-Ether2.300
+ description dT:QZ-QZ-NJ-Q-S9306-1.iTV.H2:()30G:Eth-trunk33
+ service-policy input IPTV-MARK
+ ipv4 address 220.185.56.133 255.255.255.252
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ encapsulation dot1q 300
+!
+interface Bundle-Ether3
+ description dT:QZ-QZ-XDL-Q-S9306-1.iTV.H2:()30G:Eth-trunk34
+ load-interval 30
+!
+interface Bundle-Ether3.301
+ description dT:QZ-QZ-XDL-Q-S9306-1.iTV.H2:()30G:Eth-trunk34
+ service-policy input IPTV-MARK
+ ipv4 address 220.185.63.237 255.255.255.252
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ encapsulation dot1q 301
+!
+interface Bundle-Ether4
+ description dT:QZ-QZ-XDL-BR-1.IDC.7950:()lag-21
+ mtu 1614
+ ipv4 address 220.185.59.25 255.255.255.252
+ ipv4 unreachables disable
+ load-interval 30
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_WhiteList_in ingress
+!
+interface Bundle-Ether5
+ description dT:QZ-QZ-XDL-BR-1.IDC.7950:()lag-25
+ mtu 1614
+ ipv4 address 220.185.56.173 255.255.255.252
+ ipv4 unreachables disable
+ load-interval 30
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_WhiteList_in ingress
+!
+interface Bundle-Ether6
+ description dT:QZ-QZ-XDL-DSW-1.IDC.C7609:Port-channel7
+ mtu 1614
+ ipv4 mtu 1600
+ ipv4 address 61.174.90.65 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_WhiteList_in ingress
+!
+interface Bundle-Ether7
+ description dT:QuZhou-DPX8K-A5-Guard:()Bond1
+ mtu 1614
+!
+interface Bundle-Ether7.201
+ description dT:QuZhou-DPX8K-A5-Guard:(In)Bond1.201
+ ipv4 mtu 1600
+ ipv4 address 220.185.62.137 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ encapsulation dot1q 201
+!
+interface Bundle-Ether7.202
+ description dT:QuZhou-DPX8K-A5-Guard:(Out)Bond1.202
+ ipv4 mtu 1600
+ ipv4 address 220.185.62.141 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ encapsulation dot1q 202
+!
+interface Bundle-Ether8
+ description dT:QZ-QZ-XDL-BAS-1.IWIFI.M6000:()SM1
+ mtu 1614
+!
+interface Bundle-Ether8.50
+ description dT:QZ-QZ-XDL-BAS-1.IWIFI.M6000:()SM1.50
+ vrf IWIFI
+ ipv4 address 10.155.255.1 255.255.255.252
+ ipv4 unreachables disable
+ encapsulation dot1q 50
+!
+interface Bundle-Ether8.51
+ description dT:QZ-QZ-XDL-BAS-1.IWIFI.M6000:()SM1.51
+ ipv4 mtu 1600
+ ipv4 address 220.185.57.17 255.255.255.252
+ ipv4 unreachables disable
+ encapsulation dot1q 51
+ ipv4 access-group iwifi-testnew ingress hardware-count
+ ipv4 access-group iwifi-testnew egress hardware-count
+!
+interface Bundle-Ether10
+ description dT:QZ-QZ-XDLSL-DSW-1.IDC.12508:()Route-Aggregation2
+ mtu 1614
+ ipv4 address 220.185.57.153 255.255.255.252
+ ipv4 unreachables disable
+ load-interval 30
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_WhiteList_in ingress
+!
+interface Bundle-Ether11
+ description dT:QZ-QZ-XDL-BR-1.IDC.7950:()lag-22
+ mtu 1614
+ ipv4 address 220.185.57.109 255.255.255.252
+ ipv4 unreachables disable
+ load-interval 30
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_WhiteList_in ingress
+!
+interface Bundle-Ether12
+ description dT:QZ-QZ-XDL-BR-1.IDC.7950:()lag-23
+ mtu 1614
+ ipv4 address 220.185.59.1 255.255.255.252
+ ipv4 unreachables disable
+ load-interval 30
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_WhiteList_in ingress
+!
+interface Bundle-Ether13
+ description dT:QZ-QZ-XDL-BR-1.IDC.7950:()lag-24
+ mtu 1614
+ ipv4 address 220.185.57.113 255.255.255.252
+ ipv4 unreachables disable
+ load-interval 30
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_WhiteList_in ingress
+!
+interface Bundle-Ether14
+ description dT:QZ-QZ-XDL-BR-1.IDC.7950:()lag-26
+ mtu 1614
+ ipv4 address 220.185.57.117 255.255.255.252
+ ipv4 unreachables disable
+ load-interval 30
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_WhiteList_in ingress
+!
+interface Bundle-Ether15
+ description dT:QZ-QZ-XDL-BR-1.IDC.7950:()lag-27
+ ipv4 address 220.185.57.129 255.255.255.252
+ ipv4 unreachables disable
+ load-interval 30
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_WhiteList_in ingress
+!
+interface Bundle-Ether16
+ description dT:QZ-QZ-XDL-DPI.S5820:Eth-Trunk1
+ mtu 1614
+!
+interface Bundle-Ether16.51
+ description dT:QZ-QZ-XDL-DPI.S5820:Eth-Trunk1
+ ipv4 address 220.185.57.189 255.255.255.252
+ encapsulation dot1q 51
+!
+interface Bundle-Ether20
+ description dT:QZ-QZ-XDL-B-S9312-1.iTV.H2:()20GE:Eth-trunk0
+ service-policy input IPTV-MARK
+ ipv4 address 220.185.57.45 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+!
+interface Bundle-Ether21
+ description dT:QZ-QZ-NJ-B-S9312-1.iTV.H2:()20GE:Eth-trunk0
+ service-policy input IPTV-MARK
+ ipv4 address 220.185.57.53 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+!
+interface Bundle-Ether120
+ description pT:QZ-QZ-XDL-CR-1.MAN.CRS:(loopback external)
+ ipv4 address 192.168.1.1 255.255.255.252
+ ipv4 unreachables disable
+ mac-address 0.0.1
+!
+interface Loopback0
+ description For-Management
+ ipv4 address 61.174.90.1 255.255.255.255
+!
+interface MgmtEth0/RP0/CPU0/0
+!
+interface MgmtEth0/RP1/CPU0/0
+!
+interface MgmtEth1/RP0/CPU0/0
+!
+interface MgmtEth1/RP1/CPU0/0
+!
+interface GigabitEthernet0/2/2/0
+ description dT:QZ-QZ-XDL-M6000:processing
+ ipv4 address 220.185.57.133 255.255.255.252
+ negotiation auto
+!
+interface GigabitEthernet0/2/2/1
+ description dT:QZ-QZ-XDL-M6000:processing
+ ipv4 address 220.185.57.137 255.255.255.252
+ ipv4 unreachables disable
+ negotiation auto
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface GigabitEthernet0/2/2/2
+ description dT:QZ-QZ-XDL-DNS-R-1.163.S9306(Local)GE1/0/0
+ mtu 1614
+ ipv4 address 115.233.236.169 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface GigabitEthernet0/2/2/3
+ description dT:QZ-QZ-XDL-DSW-1.IDC.C7609:(F1007190012)GE3/1
+ bundle id 6 mode on
+ negotiation auto
+!
+interface GigabitEthernet0/2/2/4
+ description dT:QZ-QZ-XDL-DSW-1.IDC.C7609:(F1007190011)GE3/4
+ bundle id 6 mode on
+ negotiation auto
+!
+interface GigabitEthernet0/2/2/5
+ description dT:QZ-QZ-XDL-BAS-5.MAN.ERX1440:(Local)GE2/0
+ mtu 1538
+ shutdown
+!
+interface GigabitEthernet0/2/2/6
+ description dT:QZ-QZ-XDL-BAS-4.MAN.ERX1440:(Local)GE4/0::processing
+ mtu 1538
+!
+interface GigabitEthernet0/2/2/7
+ description dT:QZ-QZ-XDL-SR-1.MAN.7750:(Local)GE1/1/20::processing
+ mtu 1614
+!
+interface GigabitEthernet0/2/2/7.301
+ description dT:QZ-QZ-XDL-SR-1.MAN.7750:(local)10GE1/1/20(IPTV_VPN)::processing
+ shutdown
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ encapsulation dot1q 301
+ ipv4 access-group acl_MAN_WhiteList_in ingress
+!
+interface TenGigE0/1/0/0
+ description pT:QZ-QZ-NJ-CR-1.MAN.CRS:(F0805060022)10GE0/1/0/0
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.63.137 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+!
+interface TenGigE0/1/0/1
+ description dT:QZ-QZ-XDL-SR-2.MAN.7750:(local)10GE1/2/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.59.105 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/1/0/2
+ description dT:QZ-QZ-NJ-SR-2.MAN.7750:(F1103090008)10GE5/2/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.60.37 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_WhiteList_in ingress
+!
+interface TenGigE0/1/0/3
+ description dT:QZ-QZ-NQ-SR-2.MAN.7750:(F1403190013)10GE1/1/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.56.209 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/1/0/4
+ description QZ-QZ-QH-SR-2.MAN.7750:(F1402140013)10GE1/1/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.56.221 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/1/0/5
+ description uT:ZJ-QZ-XDL-S-1.CN2:(Local)10GE1/0/2
+ ipv4 address 59.43.65.74 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+!
+interface TenGigE0/1/0/6
+ description dT:QZ-QZ-XDL-BAS-8.MAN.7750:(Local)10GE3/1/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.56.109 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/1/0/7
+ description dT:QZ-QZ-NJ-BAS-2.MAN.7750:(F1301180006)10GE3/1/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.56.189 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/1/0/8
+ description dT:QZ-QZ-NQ-BAS-1.MAN.7750:(F1301180002)10GE5/1/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.60.45 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/1/0/9
+ description dT:QZ-QZ-QH-BAS-1.MAN.7750:(F1301180007)10GE5/1/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.57.33 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/1/0/10
+ description dT:QZ-QZ-XZ-BAS-1.MAN.7750:(F1402140009)10GE6/2/2
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.56.233 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_WhiteList_in ingress
+!
+interface TenGigE0/1/0/11
+ description dT:QZ-LY-LY-BAS-1.MAN.7750:(F1412050017)10GE3/1/1
+ mtu 1614
+ service-policy input IPTV-MARK
+ service-policy output ingress_policy
+ ipv4 address 220.185.57.69 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_WhiteList_in ingress
+!
+interface TenGigE0/1/0/12
+ description dT:QZ-JS-CZ-BAS-2.MAN.7750:(F1211260010)10GE3/1/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.61.169 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/1/0/13
+ description dT:QZ-JS-CZ-BAS-1.MAN.7750:(F0910150028)10GE1/1/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 mtu 1600
+ ipv4 address 220.185.61.21 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_WhiteList_in ingress
+!
+interface TenGigE0/1/0/14
+ description dT:QZ-KH-KH-BAS-2.MAN.7750:(F1504140049)10GE6/2/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.57.145 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/1/0/15
+ description dT:QZ-CS-CS-BAS-1.MAN.7750:(F1403280016)10GE6/2/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.56.245 255.255.255.252
+ ipv4 unreachables disable
+ load-interval 30
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/1/0/16
+ description dT:QZ-QZ-XDL-BAS-6.MAN.ME60:(Local)10GE1/0/0
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.56.61 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/1/0/17
+ description dT:QZ-QZ-XDL-Q-S9306-1.iTV.H2:(Local)10GE1/0/0
+ bundle id 3 mode on
+!
+interface TenGigE0/1/0/18
+ description dT:QZ-QZ-NJ-Q-S9306-1.iTV.H2:(F1112130005)10GE6/0/2
+ bundle id 2 mode on
+!
+interface TenGigE0/1/0/19
+ description dT:QZ-QZ-XDL-B-S9312-1.iTV.H2:(Local)10GE7/0/15
+ bundle id 20 mode active
+!
+interface TenGigE0/1/0/20
+ description dT:QZ-QZ-NJ-B-S9312-1.iTV.H2:(F1004280009)10GE7/0/15
+ bundle id 21 mode active
+!
+interface TenGigE0/1/0/21
+ bundle id 14 mode active
+ shutdown
+!
+interface TenGigE0/1/0/22
+ bundle id 11 mode active
+ shutdown
+!
+interface TenGigE0/1/0/23
+ bundle id 4 mode active
+ shutdown
+!
+interface TenGigE0/1/0/24
+ bundle id 12 mode active
+ shutdown
+!
+interface TenGigE0/1/0/25
+ bundle id 5 mode active
+ shutdown
+!
+interface TenGigE0/1/0/26
+ bundle id 12 mode active
+ shutdown
+!
+interface TenGigE0/1/0/27
+ bundle id 14 mode active
+ shutdown
+!
+interface TenGigE0/1/0/28
+ description dT:QZ-QZ-XDL-BAS-9.MAN.7750:(local)10GE1/1/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.62.9 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/1/0/29
+ description dT:QZ-QZ-XDL-BAS-10.MAN.7750:(local)10GE3/1/2
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.62.17 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/1/0/30
+ description dT:QZ-QZ-NJ-BAS-3.MAN.7750:(F1604130010)10GE1/2/2
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.62.33 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/1/0/31
+ description dT:QZ-QZ-NQ-BAS-2.MAN.7750:(F1604140002)10GE6/2/2
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.62.49 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/1/0/32
+ description dT:QZ-QZ-XZ-BAS-2.MAN.7750:(F1604130011)10GE1/1/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.62.81 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/1/0/33
+ description dT:QZ-LY-LY-BAS-1.MAN.7750:(F1604130004)10GE1/1/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.62.105 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/1/0/34
+ description dT:QZ-CS-CS-BAS-1.MAN.7750:(F1604130007)10GE1/1/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.62.129 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/1/0/35
+ description dT:QZ-JS-CZ-BAS-1.MAN.7750:(F1604120016)10GE8/1/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.62.89 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/1/0/36
+ description dT:QZ-QZ-QH-BAS-2.MAN.7750:(F1604130025)10GE1/1/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.62.65 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/1/0/37
+ description dT:QuZhou-DPX8K-A5-Guard:()10GE2/0::processing
+ bundle id 7 mode active
+!
+interface TenGigE0/1/0/38
+ description dT:QuZhou-DPX8K-A5-Guard:()10GE2/1::processing
+ bundle id 7 mode active
+!
+interface TenGigE0/1/0/39
+ description dT:QZ-QZ-XDL-DPI.S5820:(local)10GE1/0/11
+ bundle id 16 mode active
+!
+interface TenGigE0/2/4/0
+ description dT:ZJ-QZ-SNL-CSW-001.YueMe:()10GE1/0/47::kehu
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 115.233.239.1 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_YUEME_in ingress
+!
+interface TenGigE1/1/0/0
+ description pT:QZ-QZ-NJ-CR-1.MAN.CRS:(F0908250020)10GE1/1/0/0
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.63.133 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+!
+interface TenGigE1/1/0/1
+ description dT:QZ-LY-LY-SR-1.MAN.7750:(F0905270015)10GE7/2/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 mtu 1600
+ ipv4 address 220.185.61.33 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_WhiteList_in ingress
+!
+interface TenGigE1/1/0/2
+ description dT:QZ-JS-CZ-SR-2.MAN.7750:(F1609280014)10GE6/2/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 mtu 1600
+ ipv4 address 220.185.56.21 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_WhiteList_in ingress
+!
+interface TenGigE1/1/0/3
+ description dT:QZ-CS-CS-SR-1.MAN.7750:(F1609280016)10GE6/1/1
+ mtu 3000
+ service-policy output pmCRS-Out
+ ipv4 mtu 1500
+ ipv4 address 220.185.61.129 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_WhiteList_in ingress
+!
+interface TenGigE1/1/0/4
+ description dT:QZ-KH-KH-SR-2.MAN.7750:(F1609280012)10GE5/2/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.61.173 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_WhiteList_in ingress
+!
+interface TenGigE1/1/0/5
+ description dT:QZ-QZ-XDL-BAS-9.MAN.7750:(local)10GE3/1/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.56.125 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE1/1/0/6
+ description dT:QZ-QZ-XDL-BAS-10.MAN.7750:(local)10GE5/2/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.56.153 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE1/1/0/7
+ description dT:QZ-QZ-NJ-BAS-3.MAN.7750:(F1103090016)10GE2/1/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.57.41 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_WhiteList_in ingress
+!
+interface TenGigE1/1/0/8
+ description dT:QZ-QZ-NQ-BAS-2.MAN.7750:(F1301180003)10GE5/1/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.60.73 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE1/1/0/9
+ description dT:QZ-QZ-QH-BAS-2.MAN.7750:(F1402140010)10GE5/1/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.56.201 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE1/1/0/10
+ description dT:QZ-QZ-XZ-BAS-2.MAN.7750:(F1402140015)10GE6/2/2
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.56.241 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_WhiteList_in ingress
+!
+interface TenGigE1/1/0/11
+ description dT:QZ-LY-LY-BAS-2.MAN.7750:(F1211260012)10GE3/1/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.61.65 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_WhiteList_in ingress
+!
+interface TenGigE1/1/0/12
+ description dT:QZ-LY-LY-BAS-3.MAN.7750:(F1609280015)10GE6/2/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 mtu 1600
+ ipv4 address 220.185.61.1 255.255.255.252
+ ipv4 unreachables disable
+ load-interval 30
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_WhiteList_in ingress
+!
+interface TenGigE1/1/0/13
+ description dT:QZ-JS-CZ-BAS-3.MAN.7750:(F1412050019)10GE3/1/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.57.77 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_WhiteList_in ingress
+!
+interface TenGigE1/1/0/14
+ description dT:QZ-KH-KH-BAS-1.MAN.7750:(F1504140048)10GE6/2/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.57.65 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE1/1/0/15
+ description dT:QZ-CS-CS-BAS-2.MAN.7750:(F1403280005)10GE6/2/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.56.253 255.255.255.252
+ ipv4 unreachables disable
+ load-interval 30
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE1/1/0/16
+ description dT:QZ-QZ-XDL-BAS-1.IWIFI.M6000:(Local)10GE0/0/0/1
+ bundle id 8 mode active
+ load-interval 30
+ dampening
+!
+interface TenGigE1/1/0/17
+ description dT:QZ-QZ-XDL-Q-S9306-1.iTV.H2:(Local)10GE6/0/1
+ bundle id 3 mode on
+!
+interface TenGigE1/1/0/18
+ description dT:QZ-QZ-NJ-Q-S9306-1.iTV.H2:(F1106070018)10GE1/0/2
+ bundle id 2 mode on
+!
+interface TenGigE1/1/0/19
+ description dT:QZ-QZ-XDL-Q-S9306-1.iTV.H2:(Local)10GE1/0/1
+ bundle id 3 mode on
+!
+interface TenGigE1/1/0/20
+ description dT:QZ-QZ-NJ-Q-S9306-1.iTV.H2:(F1107250016)10GE1/0/3
+ bundle id 2 mode on
+!
+interface TenGigE1/1/0/21
+ description pT:QZ-QZ-XDL-CR-1.MAN.CRS:(loopback external):TenGigE1/1/0/21
+ bundle id 120 mode on
+ load-interval 30
+ dampening 1 250 950 1
+!
+interface TenGigE1/1/0/22
+ description pT:QZ-QZ-XDL-CR-1.MAN.CRS:(loopback external):TenGigE1/1/0/22
+ bundle id 120 mode on
+ load-interval 30
+ dampening 1 250 950 1
+!
+interface TenGigE1/1/0/23
+ bundle id 13 mode active
+ shutdown
+!
+interface TenGigE1/1/0/24
+ description dT:EU-SW(disturb):1/0/49
+ ipv4 address 192.168.11.1 255.255.255.0
+!
+interface TenGigE1/1/0/25
+ bundle id 11 mode active
+ shutdown
+!
+interface TenGigE1/1/0/26
+ bundle id 4 mode active
+ shutdown
+!
+interface TenGigE1/1/0/27
+ bundle id 15 mode active
+ shutdown
+!
+interface TenGigE1/1/0/28
+ description dT:QZ-QZ-XDL-BAS-1.MAN.SE1200:()10GE6/1
+ mtu 1614
+!
+interface TenGigE1/1/0/28.51
+ description dT:QZ-QZ-XDL-BAS-1.MAN.SE1200:()10GE6/1.51(local)
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.56.17 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ encapsulation dot1q 51
+ ipv4 access-group acl_MAN_WhiteList_in ingress
+!
+interface TenGigE1/1/0/28.52
+ description dT:QZ-QZ-XDL-BAS-1.MAN.SE1200:()10GE6/1.52(vrPPPoE)
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.56.41 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ encapsulation dot1q 52
+ ipv4 access-group acl_MAN_WhiteList_in ingress
+!
+interface TenGigE1/1/0/28.53
+ description dT:QZ-QZ-XDL-BAS-1.MAN.SE1200:()10GE6/1.53(vrIPTV)
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.56.33 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ encapsulation dot1q 53
+ ipv4 access-group acl_MAN_WhiteList_in ingress
+!
+interface TenGigE1/1/0/28.55
+ description dT:QZ-QZ-XDL-BAS-1.MAN.SE1200:()10GE6/1.55(QZ_XY)
+ ipv4 address 220.185.56.49 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ encapsulation dot1q 55
+ ipv4 access-group acl_MAN_WhiteList_in ingress
+!
+interface TenGigE1/1/0/28.56
+ description dT:QZ-QZ-XDL-BAS-1.MAN.SE1200:()10GE6/1.56(QY shanxun)
+ ipv4 address 220.185.59.149 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ encapsulation dot1q 56
+ ipv4 access-group acl_MAN_WhiteList_in ingress
+!
+interface TenGigE1/1/0/29
+ description dT:QZ-QZ-NJ-BAS-2.MAN.7750:(F1604130008)10GE6/2/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.62.25 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE1/1/0/30
+ description dT:QZ-QZ-NQ-BAS-1.MAN.7750:(F1604120026)10GE1/1/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.62.41 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE1/1/0/31
+ description dT:QZ-QZ-QH-BAS-1.MAN.7750:(F1604130024)10GE8/1/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.62.57 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE1/1/0/32
+ description dT:QZ-QZ-XZ-BAS-1.MAN.7750:(F1604130009)10GE3/2/2
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.62.73 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE1/1/0/33
+ description dT:QZ-LY-LY-BAS-2.MAN.7750:(F1604130005)10GE1/1/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.62.113 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE1/1/0/34
+ description dT:QZ-KH-KH-BAS-2.MAN.7750:(F1604130006)10GE5/2/2
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.62.121 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE1/1/0/35
+ description dT:QZ-JS-CZ-BAS-2.MAN.7750:(F1604130003)10GE1/1/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.62.97 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE1/1/0/36
+ description dT:QZ-QZ-XDL-BAS-8.MAN.7750:(local)10GE8/1/2
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.185.62.1 255.255.255.252
+ ipv4 unreachables disable
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE1/1/0/37
+ description dT:QZ-QZ-NJ-B-S9312-1.iTV.H2:(F1708113811)10GE8/0/14
+ bundle id 21 mode active
+!
+interface TenGigE1/1/0/38
+ description dT:QZ-QZ-XDL-B-S9312-1.iTV.H2:(Local)10GE8/0/14
+ bundle id 20 mode active
+!
+interface TenGigE1/1/0/39
+ description dT:QZ-QZ-XDL-DPI.S5820:(local)10GE1/0/11
+ bundle id 16 mode active
+!
+interface POS0/2/0/0
+ shutdown
+!
+interface POS0/2/0/1
+ shutdown
+!
+interface POS0/2/0/2
+ shutdown
+!
+interface POS0/2/0/3
+ shutdown
+!
+interface POS0/2/1/0
+!
+controller SONET0/2/0/0
+ ais-shut
+ line
+  delay trigger 49
+ !
+ path
+  ais-shut
+  delay trigger 49
+ !
+ framing sdh
+ clock source internal
+!
+interface HundredGigE0/0/0/0
+ description uT:ZJ-HZ-WL-C-1.163:(100G0006IPM)100GE3/1/0/0
+ mtu 9182
+ ipv4 address 220.185.57.214 255.255.255.252
+ load-interval 30
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ dampening 1 250 950 1
+ ipv4 access-group acl_163-input ingress
+ ipv4 access-group acl_163_out egress
+!
+interface HundredGigE0/0/0/1
+ description uT:ZJ-HZ-ESN-C-2.163:(100G0003IPM)100GE5/1/0/0
+ mtu 9182
+ ipv4 address 220.185.57.222 255.255.255.252
+ load-interval 30
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ dampening 1 250 950 1
+ ipv4 access-group acl_163-input ingress
+ ipv4 access-group acl_163_out egress
+!
+interface HundredGigE0/0/0/2
+ description uT:ZJ-JH-CN-D-1.163:(100G0002IPM)100GE1/16/0/0
+ mtu 9182
+ ipv4 address 220.185.57.246 255.255.255.252
+ load-interval 30
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ dampening 1 250 950 1
+ ipv4 access-group acl_163-input ingress
+ ipv4 access-group acl_163_out egress
+!
+interface HundredGigE0/0/0/3
+ description dT:QZ-QZ-XDLSL-DSW-1.IDC.12508:(F1605170007)100GE1/2/0/2
+ bundle id 10 mode active
+!
+interface HundredGigE1/0/0/0
+ description uT:ZJ-HZ-WL-C-1.163:(100G0005IPM)100GE5/7/0/0
+ mtu 9182
+ ipv4 address 220.185.57.218 255.255.255.252
+ load-interval 30
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ dampening 1 250 950 1
+ ipv4 access-group acl_163-input ingress
+ ipv4 access-group acl_163_out egress
+!
+interface HundredGigE1/0/0/1
+ description uT:ZJ-HZ-ESN-C-2.163:(100G0004IPM)100GE5/3/0/0
+ mtu 9182
+ ipv4 address 220.185.57.226 255.255.255.252
+ load-interval 30
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ dampening 1 250 950 1
+ ipv4 access-group acl_163-input ingress
+ ipv4 access-group acl_163_out egress
+!
+interface HundredGigE1/0/0/2
+ mtu 9182
+ load-interval 30
+ flow ipv4 monitor fmm_zjnoc sampler sm_zjnoc ingress
+ dampening 1 250 950 1
+ ipv4 access-group acl_163-input ingress
+ ipv4 access-group acl_163_out egress
+!
+interface HundredGigE1/0/0/3
+ description dT:QZ-QZ-XDLSL-DSW-1.IDC.12508:(F1605170009)100GE2/2/0/2
+ bundle id 10 mode active
+!
+prefix-set plTo163
+  61.130.48.0/24,
+  61.130.49.0/24,
+  61.130.50.0/23,
+  61.130.64.0/21,
+  61.130.72.0/21,
+  61.130.172.0/22,
+  61.153.54.0/23,
+  61.153.56.0/22,
+  61.174.90.0/23,
+  61.174.112.0/21,
+  61.175.144.0/21,
+  202.96.113.0/24,
+  202.101.186.0/24,
+  202.107.244.0/22,
+  218.0.80.0/21,
+  218.72.240.0/21,
+  218.72.248.0/21,
+  220.185.0.0/19,
+  220.185.62.0/23,
+  220.185.32.0/20,
+  220.185.48.0/21,
+  60.185.0.0/18,
+  220.191.236.0/22,
+  61.130.62.0/24,
+  61.130.52.0/22,
+  220.185.58.0/23,
+  220.185.60.0/23,
+  60.185.64.0/18,
+  125.106.0.0/16,
+  122.225.249.0/24,
+  122.227.64.0/20,
+  61.130.54.0/23,
+  122.227.80.0/20,
+  125.105.0.0/16,
+  220.185.56.0/23,
+  122.227.96.0/20,
+  115.207.0.0/17,
+  115.233.238.0/23,
+  183.150.0.0/16,
+  202.101.181.0/24,
+  202.101.182.0/24,
+  183.136.208.0/22,
+  183.136.232.0/22,
+  115.231.128.0/21,
+  183.136.218.0/23,
+  115.231.136.0/21,
+  10.32.0.0/13,
+  36.26.128.0/19
+end-set
+!
+prefix-set plToIwifivpn
+  10.152.0.0/14,
+  172.16.10.0/24
+end-set
+!
+prefix-set plFromIDC7950
+  61.153.56.4/30,
+  61.153.56.8/29,
+  122.227.101.64/26,
+  218.72.249.16/30,
+  218.72.249.96/27,
+  218.72.250.28/30,
+  220.185.57.192/30,
+  61.130.72.240/28,
+  183.136.218.0/24,
+  122.227.101.128/25,
+  218.72.250.184/30,
+  218.72.250.188/30,
+  61.130.72.160/30,
+  61.130.72.164/30,
+  61.130.72.168/30,
+  61.130.72.172/30,
+  61.130.72.176/30,
+  61.130.72.180/30,
+  61.130.72.184/30,
+  61.130.72.188/30,
+  61.130.72.192/32,
+  61.130.72.193/32,
+  202.107.247.64/26,
+  61.130.72.194/32,
+  61.130.72.195/32,
+  61.130.72.194/32,
+  61.130.72.195/32,
+  202.107.247.208/30,
+  202.107.247.212/30,
+  183.136.219.0/24,
+  61.130.72.200/29,
+  183.136.232.0/23,
+  183.136.234.0/23,
+  115.231.128.0/23,
+  122.227.101.128/25,
+  218.72.250.184/30,
+  218.72.250.188/30,
+  61.130.72.160/30,
+  61.130.72.164/30,
+  61.130.72.168/30,
+  61.130.72.172/30,
+  61.130.72.176/30,
+  61.130.72.180/30,
+  61.130.72.184/29,
+  61.130.72.192/32,
+  61.130.72.193/32,
+  202.107.247.64/26,
+  61.130.72.194/32,
+  61.130.72.195/32,
+  61.130.72.194/32,
+  61.130.72.195/32,
+  202.107.247.208/30,
+  202.107.247.212/30,
+  61.130.72.200/29,
+  183.136.232.0/22,
+  183.136.219.0/24,
+  115.231.136.0/24,
+  115.231.138.0/23,
+  115.231.140.0/23
+end-set
+!
+prefix-set plFromIDC9306
+  122.227.101.128/25,
+  218.72.250.184/30,
+  218.72.250.188/30,
+  61.130.72.160/30,
+  61.130.72.164/30,
+  61.130.72.168/30,
+  61.130.72.172/30,
+  61.130.72.176/30,
+  61.130.72.180/30,
+  61.130.72.184/30,
+  61.130.72.188/30,
+  61.130.72.192/32,
+  61.130.72.193/32,
+  202.107.247.64/26,
+  61.130.72.194/32,
+  61.130.72.195/32,
+  61.130.72.194/32,
+  61.130.72.195/32,
+  202.107.247.208/30,
+  202.107.247.212/30,
+  61.130.72.200/29,
+  183.136.232.0/22,
+  61.153.56.128/25,
+  122.227.101.0/25,
+  61.153.56.128/25,
+  202.107.244.0/25,
+  218.72.249.64/26,
+  183.136.219.0/24,
+  183.136.208.0/24,
+  183.136.210.0/24,
+  115.231.131.0/24,
+  115.231.132.0/22,
+  115.231.136.0/24
+end-set
+!
+prefix-set plDefaultRoute
+  0.0.0.0/0
+end-set
+!
+prefix-set plFromIDC12508
+  61.153.56.4/30,
+  183.136.235.0/24,
+  115.231.130.0/24,
+  183.136.233.224/30,
+  183.136.233.228/30,
+  183.136.233.232/30,
+  183.136.233.236/30,
+  183.136.218.100/30,
+  183.136.218.104/30,
+  183.136.218.108/30,
+  61.153.56.8/29,
+  183.136.218.0/24,
+  202.107.247.64/26,
+  183.136.219.0/24,
+  183.136.232.0/23,
+  183.136.234.0/23,
+  115.231.128.0/23,
+  202.107.247.64/26,
+  183.136.232.0/22,
+  183.136.219.0/24,
+  115.231.140.0/23,
+  183.136.218.0/23,
+  183.136.232.0/22,
+  115.231.128.0/24,
+  202.107.244.128/29,
+  202.107.244.136/29,
+  202.107.244.144/29,
+  202.107.244.152/29,
+  202.107.244.160/29,
+  202.107.244.168/29,
+  202.107.244.176/29,
+  202.107.244.184/29,
+  202.107.244.192/29,
+  202.107.244.200/29,
+  202.107.244.208/30,
+  202.107.244.212/30,
+  202.107.244.216/29,
+  202.107.244.224/27,
+  202.107.245.0/26,
+  202.107.246.64/28,
+  202.107.246.96/27,
+  202.107.247.144/28,
+  202.107.247.240/30,
+  202.107.247.32/27,
+  218.72.249.32/28,
+  218.72.250.160/28,
+  218.72.250.84/30,
+  220.185.62.188/30,
+  61.130.72.128/27,
+  61.130.72.208/28,
+  61.130.72.224/28,
+  61.153.56.16/28,
+  61.153.56.32/29,
+  61.153.56.40/29,
+  61.153.56.48/29,
+  61.153.56.64/26,
+  61.153.56.8/29,
+  61.153.56.0/30,
+  202.107.244.0/27,
+  202.107.246.128/25,
+  61.153.56.128/25,
+  122.227.101.0/26,
+  122.227.101.64/26,
+  202.107.244.64/27,
+  202.107.244.96/27,
+  218.72.249.16/30,
+  218.72.249.64/27,
+  218.72.249.96/27,
+  218.72.250.28/30,
+  220.185.57.192/30,
+  61.130.72.240/28,
+  183.136.208.0/24,
+  183.136.218.0/24
+end-set
+!
+prefix-set plFromIwifivpn
+  0.0.0.0/0,
+  122.229.30.50/32
+end-set
+!
+prefix-set plFromIDC7609-1
+  202.107.244.128/29,
+  202.107.244.136/29,
+  202.107.244.144/29,
+  202.107.244.152/29,
+  202.107.244.160/29,
+  202.107.244.168/29,
+  202.107.244.176/29,
+  202.107.244.184/29,
+  202.107.244.192/29,
+  202.107.244.200/29,
+  202.107.244.208/30,
+  202.107.244.212/30,
+  202.107.244.216/29,
+  202.107.244.224/27,
+  202.107.245.0/26,
+  202.107.246.64/28,
+  202.107.246.96/27,
+  202.107.247.144/28,
+  202.107.247.240/30,
+  202.107.247.32/27,
+  218.72.249.32/28,
+  218.72.250.160/28,
+  218.72.250.84/30,
+  220.185.62.188/30,
+  61.130.72.128/27,
+  61.130.72.208/28,
+  61.130.72.224/28,
+  61.153.56.16/28,
+  61.153.56.32/29,
+  61.153.56.40/29,
+  61.153.56.48/29,
+  61.153.56.64/26,
+  61.153.56.8/29,
+  61.153.56.0/30,
+  202.107.244.0/27,
+  202.107.246.128/25
+end-set
+!
+prefix-set plFromIDC7609-2
+  61.153.56.128/25,
+  122.227.101.0/26,
+  122.227.101.64/26,
+  202.107.244.64/27,
+  202.107.244.96/27,
+  218.72.249.16/30,
+  218.72.249.64/27,
+  218.72.249.96/27,
+  218.72.250.28/30,
+  220.185.57.192/30,
+  61.130.72.240/28,
+  183.136.208.0/24,
+  183.136.218.0/24
+end-set
+!
+prefix-set plFromIDC9306-1
+  122.227.101.128/25,
+  218.72.250.184/30,
+  218.72.250.188/30,
+  183.136.208.0/24,
+  61.130.72.160/30,
+  61.130.72.164/30,
+  61.130.72.168/30,
+  61.130.72.172/30,
+  61.130.72.176/30,
+  61.130.72.180/30,
+  61.130.72.184/30,
+  61.130.72.188/30,
+  61.130.72.192/32,
+  61.130.72.193/32,
+  202.107.247.64/26,
+  61.130.72.194/32,
+  61.130.72.195/32,
+  61.130.72.194/32,
+  61.130.72.195/32,
+  202.107.247.208/30,
+  202.107.247.212/30,
+  61.130.72.200/29,
+  183.136.232.0/22
+end-set
+!
+prefix-set plFromIDC9306-2
+  122.227.101.128/25,
+  218.72.250.184/30,
+  218.72.250.188/30,
+  183.136.208.0/24,
+  61.130.72.160/30,
+  61.130.72.164/30,
+  61.130.72.168/30,
+  61.130.72.172/30,
+  61.130.72.176/30,
+  61.130.72.180/30,
+  61.130.72.184/30,
+  61.130.72.188/30,
+  61.130.72.192/32,
+  61.130.72.193/32,
+  202.107.247.64/26,
+  61.130.72.194/32,
+  61.130.72.195/32,
+  61.130.72.194/32,
+  61.130.72.195/32,
+  202.107.247.208/30,
+  202.107.247.212/30,
+  61.130.72.200/29,
+  183.136.232.0/22
+end-set
+!
+prefix-set pl_GUARD_detail
+end-set
+!
+prefix-set plFromIDC9312CSS
+  61.153.56.128/25,
+  122.227.101.0/26,
+  122.227.101.64/26,
+  202.107.244.64/27,
+  202.107.244.96/27,
+  218.72.249.16/30,
+  218.72.249.64/27,
+  218.72.249.96/27,
+  218.72.250.28/30,
+  220.185.57.192/30,
+  61.130.72.240/28,
+  183.136.208.0/24,
+  183.136.218.0/24,
+  122.227.101.128/25,
+  218.72.250.184/30,
+  218.72.250.188/30,
+  183.136.208.0/24,
+  61.130.72.160/30,
+  61.130.72.164/30,
+  61.130.72.168/30,
+  61.130.72.172/30,
+  61.130.72.176/30,
+  61.130.72.180/30,
+  61.130.72.184/30,
+  61.130.72.188/30,
+  61.130.72.192/32,
+  61.130.72.193/32,
+  202.107.247.64/26,
+  61.130.72.194/32,
+  61.130.72.195/32,
+  61.130.72.194/32,
+  61.130.72.195/32,
+  202.107.247.208/30,
+  202.107.247.212/30,
+  183.136.219.0/24,
+  61.130.72.200/29,
+  183.136.232.0/23,
+  183.136.234.0/23,
+  115.231.128.0/23,
+  115.231.130.0/24
+end-set
+!
+prefix-set plPrivateNetwork
+  172.16.0.0/12 le 32,
+  192.168.0.0/16 le 32
+end-set
+!
+prefix-set plFromIwifiGlobal
+  61.175.150.0/24,
+  61.175.151.0/24,
+  61.130.72.243/32,
+  61.130.72.244/32,
+  61.130.72.245/32,
+  61.175.147.0/24
+end-set
+!
+as-path-set apNULL
+  ios-regex '^$'
+end-set
+!
+as-path-set privateAS
+  ios-regex '^6514[0-9]$'
+end-set
+!
+community-set 169
+  4134:110,
+  4134:3021,
+  4134:3210
+end-set
+!
+community-set N-169
+  4134:111,
+  4134:3021,
+  4134:3210
+end-set
+!
+community-set from-ZJ
+  4134:3210
+end-set
+!
+community-set cmQZIDC7609
+  65140:1108
+end-set
+!
+community-set cmQZIDC7950
+  65140:1309
+end-set
+!
+community-set cmQZIDC9306
+  65140:1308
+end-set
+!
+community-set cmQZIDC12508
+  65140:1709
+end-set
+!
+community-set cmQZIDC9312css
+  65140:1309
+end-set
+!
+route-policy rpToBR
+  if destination in plDefaultRoute then
+    set med 10000
+    set next-hop self
+    pass
+  elseif destination in plTo163 then
+    drop
+  elseif as-path in (ios-regex '^$') then
+    pass
+  elseif as-path in privateAS then
+    pass
+  else
+    drop
+  endif
+end-policy
+!
+route-policy rpToCR
+  if destination in plTo163 then
+    drop
+  else
+    pass
+  endif
+end-policy
+!
+route-policy rpTo163
+  if destination in plTo163 then
+    set med 0
+    set community N-169 additive
+    pass
+  else
+    drop
+  endif
+end-policy
+!
+route-policy rpToCN2
+  if destination in plTo163 then
+    set med 0
+    pass
+  else
+    drop
+  endif
+end-policy
+!
+route-policy rpFromWZ
+  if as-path passes-through '64757'  then
+    set med 100
+    pass
+  elseif as-path passes-through '64746'  then
+    set med 100
+    pass
+  elseif community matches-any from-ZJ then
+    set med 100
+    pass
+  elseif destination in (0.0.0.0/0) then
+    set med 6610
+    pass
+  else
+    pass
+  endif
+end-policy
+!
+route-policy rpFrom163
+  if as-path length ge 100 then
+    drop
+  elseif destination in plDefaultRoute then
+    pass
+    set med 0
+  else
+    pass
+  endif
+end-policy
+!
+route-policy rpPassAll
+  if destination in plDefaultRoute then
+    set weight 200
+    set med 0
+    pass
+  else
+    pass
+  endif
+end-policy
+!
+route-policy rpFromIBGP
+  if destination in plDefaultRoute then
+    drop
+  else
+    pass
+  endif
+end-policy
+!
+route-policy rpConnToBGP
+  if destination in plPrivateNetwork then
+    drop
+  else
+    pass
+  endif
+end-policy
+!
+route-policy rpFromGUARD
+  if destination in pl_GUARD_detail then
+    pass
+  elseif destination in plDefaultRoute then
+    drop
+  else
+    drop
+  endif
+end-policy
+!
+route-policy rpToIwifivpn
+  if destination in plToIwifivpn then
+    set next-hop self
+    pass
+  else
+    drop
+  endif
+end-policy
+!
+route-policy rpFromIDC7950
+  if destination in plFromIDC7950 then
+    set community cmQZIDC7950
+    pass
+  else
+    drop
+  endif
+end-policy
+!
+route-policy rpFromIDC9306
+  if destination in plFromIDC9306 then
+    set community cmQZIDC9306
+    pass
+  else
+    drop
+  endif
+end-policy
+!
+route-policy rpStaticToBGP
+  if tag eq 100 then
+    pass
+  else
+    drop
+  endif
+end-policy
+!
+route-policy rpDefaultRoute
+  if destination in plDefaultRoute then
+    set med 10000
+    set next-hop self
+    pass
+  else
+    drop
+  endif
+end-policy
+!
+route-policy rpFromIDC12508
+  if destination in plFromIDC12508 then
+    set community cmQZIDC12508
+    pass
+  else
+    drop
+  endif
+end-policy
+!
+route-policy rpFromIwifivpn
+  if destination in plFromIwifivpn then
+    pass
+  else
+    drop
+  endif
+end-policy
+!
+route-policy rpStaticToISIS
+  if tag eq 10 then
+    pass
+  else
+    drop
+  endif
+end-policy
+!
+route-policy static-to-ospf
+  if destination in plTo163 then
+    drop
+  else
+    set ospf-metric 10
+    pass
+  endif
+end-policy
+!
+route-policy rpFromBlackHole
+  if destination in plDefaultRoute then
+    drop
+  else
+    pass
+  endif
+end-policy
+!
+route-policy rpFromIDC7609-1
+  if destination in plFromIDC7609-1 then
+    set community cmQZIDC7609
+    pass
+  else
+    drop
+  endif
+end-policy
+!
+route-policy rpFromIDC7609-2
+  if destination in plFromIDC7609-2 then
+    set community cmQZIDC7609
+    pass
+  else
+    drop
+  endif
+end-policy
+!
+route-policy rpFromIDC9306-1
+  if destination in plFromIDC9306-1 then
+    set community cmQZIDC9306
+    pass
+  else
+    drop
+  endif
+end-policy
+!
+route-policy rpFromIDC9306-2
+  if destination in plFromIDC9306-2 then
+    set community cmQZIDC9306
+    pass
+  else
+    drop
+  endif
+end-policy
+!
+route-policy rpFromIDC9312CSS
+  if destination in plFromIDC9312CSS then
+    set community cmQZIDC9312css
+    pass
+  else
+    drop
+  endif
+end-policy
+!
+route-policy rpFromIwifiGlobal
+  if destination in plFromIwifiGlobal then
+    pass
+  else
+    drop
+  endif
+end-policy
+!
+router static
+ address-family ipv4 unicast
+  0.0.0.0/0 HundredGigE0/0/0/0 220.185.57.213 210 description uT:ZJ-HZ-WL-C-1.163-FloatRoute
+  0.0.0.0/0 HundredGigE0/0/0/1 220.185.57.221 210 description uT:ZJ-HZ-ESN-C-2.163-FloatRout
+  0.0.0.0/0 HundredGigE1/0/0/0 220.185.57.217 210 description uT:ZJ-HZ-WL-C-1.163-FloatRoute
+  0.0.0.0/0 HundredGigE1/0/0/1 220.185.57.225 210 description uT:ZJ-HZ-ESN-C-2.163-FloatRout
+  10.10.10.10/32 Null0 description dT:QZ-QZ-XDL-BlackHole.IDC
+  10.32.0.0/13 Null0 190
+  36.26.128.0/19 Null0 190
+  59.43.0.122/32 TenGigE0/1/0/5 59.43.65.73 description uT:ZJ-QZ-XDL-S-1.CN2
+  60.185.0.0/18 Null0 190
+  60.185.64.0/18 Null0 190
+  61.130.48.0/24 Null0 190
+  61.130.49.0/24 Null0 190
+  61.130.50.0/23 Null0 190
+  61.130.52.0/22 Null0 190
+  61.130.54.0/23 Null0 190
+  61.130.62.0/24 Null0 190
+  61.130.63.0/26 Bundle-Ether20 220.185.57.46 tag 10 description dT:QZ-QZ-XDL-B-S9312-1.iTV.H2
+  61.130.63.128/26 Bundle-Ether21 220.185.57.54 tag 10 description dT:QZ-QZ-NJ-B-S9312-1.iTV.H2
+  61.130.64.0/21 Null0 190
+  61.130.72.0/21 Null0 190
+  61.130.172.0/22 Null0 190
+  61.153.54.0/23 Null0 190
+  61.153.56.0/22 Null0 190
+  61.174.90.0/23 Null0 190
+  61.174.90.9/32 Bundle-Ether6 61.174.90.66 tag 100 description dT:QZ-QZ-IDC-S1-7609-1.MAN
+  61.174.112.0/21 Null0 190
+  61.175.144.0/21 Null0 190
+  115.207.0.0/17 Null0 190
+  115.231.128.0/21 Null0 190
+  115.231.136.0/21 Null0 190
+  115.233.200.0/24 Bundle-Ether2.300 220.185.56.134 tag 10 description dT:QZ-QZ-XDL-IPTV2.0-C-9306
+  115.233.200.0/24 Bundle-Ether3.301 220.185.63.238 tag 10 description dT:QZ-QZ-XDL-IPTV2.0-C-9306
+  115.233.238.0/23 Null0 190
+  122.225.249.0/24 Null0 190
+  122.227.64.0/20 Null0 190
+  122.227.80.0/20 Null0 190
+  122.227.96.0/20 Null0 190
+  122.229.4.0/24 Bundle-Ether2.300 220.185.56.134 tag 10 description dT:QZ-QZ-XDL-IPTV2.0-C-9306
+  122.229.4.0/24 Bundle-Ether3.301 220.185.63.238 tag 10 description dT:QZ-QZ-XDL-IPTV2.0-C-9306
+  122.229.5.0/24 Bundle-Ether2.300 220.185.56.134 tag 10 description dT:QZ-QZ-XDL-IPTV2.0-C-9306
+  122.229.5.0/24 Bundle-Ether3.301 220.185.63.238 tag 10 description dT:QZ-QZ-XDL-IPTV2.0-C-9306
+  122.229.6.0/24 Bundle-Ether2.300 220.185.56.134 tag 10 description dT:QZ-QZ-XDL-IPTV2.0-C-9306
+  122.229.6.0/24 Bundle-Ether3.301 220.185.63.238 tag 10 description dT:QZ-QZ-XDL-IPTV2.0-C-9306
+  122.229.7.0/24 Bundle-Ether2.300 220.185.56.134 tag 10 description dT:QZ-QZ-XDL-IPTV2.0-C-9306
+  122.229.7.0/24 Bundle-Ether3.301 220.185.63.238 tag 10 description dT:QZ-QZ-XDL-IPTV2.0-C-9306
+  122.229.16.128/25 Bundle-Ether2.300 220.185.56.134 tag 10 description dT:QZ-QZ-XDL-IPTV2.0-C-9306
+  122.229.16.128/25 Bundle-Ether3.301 220.185.63.238 tag 10 description dT:QZ-QZ-XDL-IPTV2.0-C-9306
+  122.229.27.64/27 Bundle-Ether2.300 220.185.56.134 tag 10 description dT:QZ-QZ-XDL-IPTV2.0-C-9306
+  122.229.27.64/27 Bundle-Ether3.301 220.185.63.238 tag 10 description dT:QZ-QZ-XDL-IPTV2.0-C-9306
+  125.105.0.0/16 Null0 190
+  125.106.0.0/16 Null0 190
+  183.136.208.0/22 Null0 190
+  183.136.218.0/23 Null0 190
+  183.136.232.0/22 Null0 190
+  183.136.232.13/32 220.185.63.138 description for_Idcisp
+  183.150.0.0/16 Null0 190
+  202.96.113.0/24 Null0 190
+  202.96.113.34/32 HundredGigE0/0/0/0 220.185.57.213 210 description uT:ZJ-HZ-WL-C-1.163-DNS
+  202.96.113.34/32 HundredGigE1/0/0/0 220.185.57.217 210 description uT:ZJ-HZ-WL-C-1.163-DNS
+  202.96.113.35/32 HundredGigE0/0/0/0 220.185.57.213 210 description uT:ZJ-HZ-WL-C-1.163-DNS
+  202.96.113.35/32 HundredGigE1/0/0/0 220.185.57.217 210 description uT:ZJ-HZ-WL-C-1.163-DNS
+  202.96.113.38/32 HundredGigE0/0/0/0 220.185.57.213 210 description uT:ZJ-HZ-WL-C-1.163-DNS
+  202.96.113.38/32 HundredGigE1/0/0/0 220.185.57.217 210 description uT:ZJ-HZ-WL-C-1.163-DNS
+  202.96.113.144/29 Bundle-Ether16.51 220.185.57.190 tag 10 description dT:QZ-QZ-XDL-DPI.S5820
+  202.97.32.136/32 HundredGigE0/0/0/0 220.185.57.213 bfd fast-detect minimum-interval 100 multiplier 5 description ZJ-HZ-WL-C-1.163-Lo
+  202.97.32.136/32 HundredGigE1/0/0/0 220.185.57.217 bfd fast-detect minimum-interval 100 multiplier 5 description ZJ-HZ-WL-C-1.163-Lo
+  202.97.32.137/32 HundredGigE0/0/0/1 220.185.57.221 bfd fast-detect minimum-interval 100 multiplier 5 description ZJ-HZ-ESN-C-2.163-Lo
+  202.97.32.137/32 HundredGigE1/0/0/1 220.185.57.225 bfd fast-detect minimum-interval 100 multiplier 5 description ZJ-HZ-ESN-C-2.163-Lo
+  202.97.32.160/32 HundredGigE0/0/0/2 220.185.57.245 bfd fast-detect minimum-interval 100 multiplier 5 description ZJ-JH-CN-D-1.163-Lo
+  202.101.181.0/24 Null0 190
+  202.101.181.0/25 Bundle-Ether3.301 220.185.63.238 tag 10 description dT:QZ-QZ-XDL-IPTV2.0-C-9306
+  202.101.181.128/25 Bundle-Ether3.301 220.185.63.238 tag 10 description dT:QZ-QZ-XDL-IPTV2.0-C-9306
+  202.101.182.0/24 Null0 190
+  202.101.182.0/25 Bundle-Ether2.300 220.185.56.134 tag 10 description dT:QZ-QZ-NJ-IPTV2.0-C-9306
+  202.101.182.128/25 Bundle-Ether2.300 220.185.56.134 tag 10 description dT:QZ-QZ-NJ-IPTV2.0-C-9306
+  202.101.186.0/24 Null0 190
+  202.107.244.0/22 Null0 190
+  202.107.246.0/26 TenGigE0/2/4/0 115.233.239.2 tag 10 description dT:CTL-ZJ-QZ-SNL-CSW-001
+  218.0.80.0/21 Null0 190
+  218.72.240.0/21 Null0 190
+  218.72.248.0/21 Null0 190
+  220.185.0.0/19 Null0 190
+  220.185.32.0/20 Null0 190
+  220.185.48.0/21 Null0 190
+  220.185.56.0/23 Null0 190
+  220.185.57.212/30 202.97.32.136 210 description FujiBackup
+  220.185.57.212/30 202.97.32.137 210 description FujiBackup
+  220.185.57.212/30 202.97.32.160 210 description FujiBackup
+  220.185.58.0/23 Null0 190
+  220.185.58.70/32 TenGigE1/1/0/28.56 220.185.56.110 tag 10 description dT:QZ-QZ-XDL-BAS-1.MAN.SE1200
+  220.185.58.81/32 Bundle-Ether8.51 220.185.57.18 tag 10 description QZ-QZ-XDL-BAS-1.IWIFI.M6000
+  220.185.58.222/32 Bundle-Ether4 220.185.59.26 tag 100 description dT:QZ-QZ-XDL-BR-1.IDC.7950
+  220.185.58.222/32 Bundle-Ether5 220.185.56.174 tag 100 description dT:QZ-QZ-XDL-BR-1.IDC.7950
+  220.185.58.222/32 Bundle-Ether11 220.185.57.110 tag 100 description dT:QZ-QZ-XDL-BR-1.IDC.7950
+  220.185.58.222/32 Bundle-Ether12 220.185.59.2 tag 100 description dT:QZ-QZ-XDL-BR-1.IDC.7950
+  220.185.58.222/32 Bundle-Ether13 220.185.57.114 tag 100 description dT:QZ-QZ-XDL-BR-1.IDC.7950
+  220.185.58.222/32 Bundle-Ether14 220.185.57.118 tag 100 description dT:QZ-QZ-XDL-BR-1.IDC.7950
+  220.185.58.222/32 Bundle-Ether15 220.185.57.130 tag 100 description dT:QZ-QZ-XDL-BR-1.IDC.7950
+  220.185.58.223/32 Bundle-Ether10 220.185.57.154 tag 100 description dT:QZ-QZ-XDLSL-DSW-1.IDC.12508
+  220.185.60.0/23 Null0 190
+  220.185.62.0/23 Null0 190
+  220.185.62.154/32 Bundle-Ether7.201 220.185.62.138 tag 100 description QuZhou-DPX8K-A5-Guard
+  220.191.136.0/24 Bundle-Ether2.300 220.185.56.134 tag 10 description dT:QZ-QZ-XDL-IPTV2.0-C-9306
+  220.191.136.0/24 Bundle-Ether3.301 220.185.63.238 tag 10 description dT:QZ-QZ-XDL-IPTV2.0-C-9306
+  220.191.137.0/24 Bundle-Ether2.300 220.185.56.134 tag 10 description IPTVkanbaserver
+  220.191.137.0/24 Bundle-Ether3.301 220.185.63.238 tag 10 description IPTVkanbaserver
+  220.191.139.0/24 Bundle-Ether2.300 220.185.56.134 tag 10 description dT:QZ-QZ-XDL-IPTV2.0-C-9306
+  220.191.139.0/24 Bundle-Ether3.301 220.185.63.238 tag 10 description dT:QZ-QZ-XDL-IPTV2.0-C-9306
+  220.191.140.0/24 Bundle-Ether2.300 220.185.56.134 tag 10 description dT:QZ-QZ-XDL-IPTV2.0-C-9306
+  220.191.140.0/24 Bundle-Ether3.301 220.185.63.238 tag 10 description dT:QZ-QZ-XDL-IPTV2.0-C-9306
+  220.191.236.0/22 Null0 190
+ !
+ vrf IWIFI
+  address-family ipv4 unicast
+   10.152.0.0/14 Null0
+  !
+ !
+!
+router isis quzhou
+ set-overload-bit on-startup 15
+ net 86.4750.0570.0611.7409.0001.00
+ log adjacency changes
+ lsp-refresh-interval 32768 level 2
+ max-lsp-lifetime 65500 level 2
+ address-family ipv4 unicast
+  metric-style wide level 1
+  metric-style wide level 2
+  metric 100000 level 2
+  ispf level 2
+  default-information originate
+  maximum-paths 32
+  attached-bit send always-set
+  redistribute static level-2 route-policy rpStaticToISIS
+  distance 155
+ !
+ interface Loopback0
+  passive
+  circuit-type level-2-only
+  hello-padding disable
+  address-family ipv4 unicast
+  !
+ !
+ interface GigabitEthernet0/2/2/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface GigabitEthernet0/2/2/1
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface GigabitEthernet0/2/2/2
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/1/0/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 50
+  !
+ !
+ interface TenGigE0/1/0/1
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/1/0/2
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/1/0/3
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/1/0/4
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/1/0/6
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/1/0/7
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/1/0/8
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/1/0/9
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/1/0/10
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/1/0/11
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/1/0/12
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/1/0/13
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/1/0/14
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/1/0/15
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/1/0/16
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/1/0/28
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/1/0/29
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/1/0/30
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/1/0/31
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/1/0/32
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/1/0/33
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/1/0/34
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/1/0/35
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/1/0/36
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE1/1/0/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 50
+  !
+ !
+ interface TenGigE1/1/0/1
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE1/1/0/2
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE1/1/0/3
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE1/1/0/4
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE1/1/0/5
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE1/1/0/6
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE1/1/0/7
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE1/1/0/8
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE1/1/0/9
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE1/1/0/10
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE1/1/0/11
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE1/1/0/12
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE1/1/0/13
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE1/1/0/14
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE1/1/0/15
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE1/1/0/28.51
+  circuit-type level-2-only
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE1/1/0/28.52
+  circuit-type level-2-only
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE1/1/0/28.53
+  circuit-type level-2-only
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE1/1/0/28.55
+  circuit-type level-2-only
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE1/1/0/28.56
+  circuit-type level-2-only
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE1/1/0/29
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE1/1/0/30
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE1/1/0/31
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE1/1/0/32
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE1/1/0/33
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE1/1/0/34
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE1/1/0/35
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE1/1/0/36
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+ !
+!
+router bgp 64750
+ bgp router-id 61.174.90.1
+ address-family ipv4 unicast
+  distance bgp 20 200 200
+  bgp dampening
+  maximum-paths ebgp 8
+  maximum-paths ibgp 8
+  network 10.32.0.0/13
+  network 36.26.128.0/19
+  network 60.185.0.0/18
+  network 60.185.64.0/18
+  network 61.130.48.0/24
+  network 61.130.49.0/24
+  network 61.130.50.0/23
+  network 61.130.52.0/22
+  network 61.130.54.0/23
+  network 61.130.62.0/24
+  network 61.130.64.0/21
+  network 61.130.72.0/21
+  network 61.130.172.0/22
+  network 61.153.54.0/23
+  network 61.153.56.0/22
+  network 61.174.90.0/23
+  network 61.174.112.0/21
+  network 61.175.144.0/21
+  network 115.207.0.0/17
+  network 115.231.128.0/21
+  network 115.231.136.0/21
+  network 115.233.238.0/23
+  network 122.225.249.0/24
+  network 122.227.64.0/20
+  network 122.227.80.0/20
+  network 122.227.96.0/20
+  network 125.105.0.0/16
+  network 125.106.0.0/16
+  network 183.136.208.0/22
+  network 183.136.218.0/23
+  network 183.136.232.0/22
+  network 183.150.0.0/16
+  network 202.96.113.0/24
+  network 202.101.181.0/24
+  network 202.101.182.0/24
+  network 202.101.186.0/24
+  network 202.107.244.0/22
+  network 218.0.80.0/21
+  network 218.72.240.0/21
+  network 218.72.248.0/21
+  network 220.185.0.0/19
+  network 220.185.32.0/20
+  network 220.185.48.0/21
+  network 220.185.56.0/23
+  network 220.185.58.0/23
+  network 220.185.60.0/23
+  network 220.185.62.0/23
+  network 220.191.236.0/22
+  redistribute connected route-policy rpConnToBGP
+  redistribute static route-policy rpStaticToBGP
+ !
+ address-family vpnv4 unicast
+  bgp dampening
+ !
+ address-family ipv6 unicast
+  bgp dampening
+ !
+ neighbor-group pgBR
+  remote-as 64750
+  update-source Loopback0
+  address-family ipv4 unicast
+   route-policy rpFromIBGP in
+   route-reflector-client
+   route-policy rpToBR out
+   default-originate
+   next-hop-self
+  !
+ !
+ neighbor-group pgCR
+  remote-as 64750
+  update-source Loopback0
+  address-family ipv4 unicast
+   route-policy rpToCR out
+   next-hop-self
+  !
+ !
+ neighbor-group pgSR
+  remote-as 64750
+  update-source Loopback0
+  address-family ipv4 unicast
+   route-policy rpFromIBGP in
+   route-reflector-client
+   route-policy rpDefaultRoute out
+   default-originate
+  !
+ !
+ neighbor-group pgVRR
+  remote-as 64750
+  description FOR-ZJ-QZ-VPN-RR
+  update-source Loopback0
+  address-family vpnv4 unicast
+   next-hop-self
+  !
+ !
+ neighbor-group pgBRAS
+  remote-as 64750
+  update-source Loopback0
+  address-family ipv4 unicast
+   route-policy rpFromIBGP in
+   route-reflector-client
+   route-policy rpDefaultRoute out
+   default-originate
+  !
+ !
+ neighbor-group pgGUARD
+  remote-as 64750
+  update-source Loopback0
+  address-family ipv4 unicast
+   route-reflector-client
+  !
+ !
+ neighbor-group pgIWIFI
+  remote-as 65510
+  ebgp-multihop 255
+  update-source Loopback0
+  address-family ipv4 unicast
+   route-policy rpFromIwifiGlobal in
+   route-policy rpDefaultRoute out
+   default-originate
+  !
+ !
+ neighbor-group pgTo163
+  remote-as 4134
+  ebgp-multihop 2
+  description To163
+  update-source Loopback0
+  address-family ipv4 unicast
+   send-community-ebgp
+   route-policy rpFrom163 in
+   route-policy rpTo163 out
+  !
+ !
+ neighbor-group pgToCN2
+  remote-as 4809
+  ebgp-multihop 2
+  password encrypted 101A51495C2C58365A507D7E74
+  description To CN2
+  update-source Loopback0
+  address-family ipv4 unicast
+   send-community-ebgp
+   route-policy rpPassAll in
+   route-policy rpToCN2 out
+  !
+ !
+ neighbor-group pgIDC7950
+  remote-as 65140
+  ebgp-multihop 2
+  update-source Loopback0
+  address-family ipv4 unicast
+   route-policy rpFromIDC7950 in
+   maximum-prefix 100 75
+   route-policy rpDefaultRoute out
+   default-originate
+  !
+ !
+ neighbor-group pgIDC9306
+  remote-as 65140
+  ebgp-multihop 2
+  update-source Loopback0
+  address-family ipv4 unicast
+   route-policy rpFromIDC9306 in
+   maximum-prefix 100 75
+   route-policy rpDefaultRoute out
+   default-originate
+  !
+ !
+ neighbor-group pgToJH163
+  remote-as 4134
+  ebgp-multihop 255
+  password encrypted 115D485643294131527E7C7178
+  update-source Loopback0
+  address-family ipv4 unicast
+   send-community-ebgp
+   route-policy rpFrom163 in
+   route-policy rpTo163 out
+  !
+ !
+ neighbor-group pgIDC12508
+  remote-as 65140
+  ebgp-multihop 2
+  update-source Loopback0
+  address-family ipv4 unicast
+   route-policy rpFromIDC12508 in
+   maximum-prefix 100 75
+   route-policy rpDefaultRoute out
+   default-originate
+  !
+ !
+ neighbor-group pgIDC7609-1
+  remote-as 65140
+  ebgp-multihop 2
+  update-source Loopback0
+  address-family ipv4 unicast
+   route-policy rpFromIDC7609-1 in
+   maximum-prefix 100 75
+   route-policy rpDefaultRoute out
+   default-originate
+  !
+ !
+ neighbor-group pgIDC7609-2
+  remote-as 65140
+  ebgp-multihop 2
+  update-source Loopback0
+  address-family ipv4 unicast
+   route-policy rpFromIDC7609-2 in
+   maximum-prefix 100 75
+   route-policy rpDefaultRoute out
+   default-originate
+  !
+ !
+ neighbor-group pgIDC9306-1
+  remote-as 65140
+  ebgp-multihop 2
+  update-source Loopback0
+  address-family ipv4 unicast
+   route-policy rpFromIDC9306-1 in
+   maximum-prefix 100 75
+   route-policy rpDefaultRoute out
+   default-originate
+  !
+ !
+ neighbor-group pgIDC9306-2
+  remote-as 65140
+  ebgp-multihop 2
+  update-source Loopback0
+  address-family ipv4 unicast
+   route-policy rpFromIDC9306-2 in
+   maximum-prefix 100 75
+   route-policy rpDefaultRoute out
+   default-originate
+  !
+ !
+ neighbor-group pgIDC9312CSS
+  remote-as 65140
+  ebgp-multihop 2
+  update-source Loopback0
+  address-family ipv4 unicast
+   route-policy rpFromIDC9312CSS in
+   maximum-prefix 100 75
+   route-policy rpDefaultRoute out
+   default-originate
+  !
+ !
+ neighbor 59.43.0.122
+  use neighbor-group pgToCN2
+  description EBGP session to CN2_NE40E
+  address-family ipv4 unicast
+  !
+ !
+ neighbor 61.174.90.2
+  use neighbor-group pgCR
+  description *** iBGP session To QZ-QZ-NJ-C-2.MAN ***
+ !
+ neighbor 61.174.90.9
+  use neighbor-group pgIDC7609-1
+  description *** eBGP session To QZ-QZ-IDC-S1-7609-1.MAN ***
+ !
+ neighbor 61.174.90.12
+  remote-as 64750
+  description *** iBGP session To QZ-QZ-XDL-BlackHole.IDC.C3750 ***
+  update-source Loopback0
+  address-family ipv4 unicast
+   route-policy rpFromBlackHole in
+   maximum-prefix 100 75
+   route-policy rpDefaultRoute out
+   default-originate
+  !
+ !
+ neighbor 202.97.32.136
+  use neighbor-group pgTo163
+  description *** eBGP session To ZJ-HZ-WL-C-1.163 ***
+ !
+ neighbor 202.97.32.137
+  use neighbor-group pgTo163
+  description *** eBGP session To ZJ-HZ-ESN-C-2.163 ***
+ !
+ neighbor 202.97.32.160
+  use neighbor-group pgToJH163
+  description *** eBGP session To ZJ-JH-CN-D-1.163 ***
+ !
+ neighbor 220.185.58.10
+  use neighbor-group pgBRAS
+  description *** iBGP session To QZ-QZ-XDL-BAS-7.MAN.7750 ***
+ !
+ neighbor 220.185.58.11
+  use neighbor-group pgBRAS
+  description *** iBGP session To QZ-QZ-XDL-BAS-8.MAN.7750 ***
+ !
+ neighbor 220.185.58.12
+  use neighbor-group pgBRAS
+  description *** iBGP session To QZ-QZ-XDL-BAS-10.MAN.7750 ***
+ !
+ neighbor 220.185.58.13
+  use neighbor-group pgIDC9306
+  description *** eBGP session To QZ-QZ-DSW-1.IDC.S9306CSS ***
+ !
+ neighbor 220.185.58.15
+  use neighbor-group pgBRAS
+  description *** iBGP session To QZ-QZ-NQ-BAS-1.MAN.7750 ***
+ !
+ neighbor 220.185.58.16
+  use neighbor-group pgBRAS
+  description *** iBGP session To QZ-QZ-NQ-BAS-2.MAN.7750 ***
+ !
+ neighbor 220.185.58.17
+  use neighbor-group pgBRAS
+  description *** iBGP session To QZ-QZ-XZ-BAS-3.MAN.7750 ***
+ !
+ neighbor 220.185.58.18
+  use neighbor-group pgBRAS
+  description *** iBGP session To QZ-QZ-XZ-BAS-4.MAN.7750 ***
+ !
+ neighbor 220.185.58.20
+  use neighbor-group pgBRAS
+  description *** iBGP session To QZ-LY-LY-BAS-1.MAN.7750 ***
+ !
+ neighbor 220.185.58.22
+  use neighbor-group pgBRAS
+  description *** iBGP session To QZ-LY-LY-BAS-2.MAN.7750 ***
+ !
+ neighbor 220.185.58.23
+  use neighbor-group pgBRAS
+  description *** iBGP session To QZ-LY-LY-BAS-4.MAN.7750 ***
+ !
+ neighbor 220.185.58.24
+  use neighbor-group pgBRAS
+  description *** iBGP session To QZ-JS-CZ-BAS-2.MAN.7750 ***
+ !
+ neighbor 220.185.58.27
+  use neighbor-group pgBRAS
+  description *** iBGP session To QZ-QZ-QH-BAS-2.MAN.7750 ***
+ !
+ neighbor 220.185.58.28
+  use neighbor-group pgBRAS
+  description *** iBGP session To QZ-QZ-NJ-BAS-2.MAN.7750 ***
+ !
+ neighbor 220.185.58.33
+  use neighbor-group pgBRAS
+  description *** iBGP session To XDL-BAS-6.MAN.ME60 ***
+ !
+ neighbor 220.185.58.34
+  use neighbor-group pgBRAS
+  description *** iBGP session To QZ-JS-JS-BAS-4.MAN.7750 ***
+ !
+ neighbor 220.185.58.41
+  use neighbor-group pgBRAS
+  description *** iBGP session To QZ-JS-JS-BAS-5.MAN.7750 ***
+ !
+ neighbor 220.185.58.42
+  use neighbor-group pgBRAS
+  description *** iBGP session To QZ-CS-CS-BAS-3.MAN.7750 ***
+ !
+ neighbor 220.185.58.43
+  use neighbor-group pgBRAS
+  description *** iBGP session To QZ-CS-CS-BAS-4.MAN.7750 ***
+ !
+ neighbor 220.185.58.44
+  use neighbor-group pgBRAS
+  description *** iBGP session To QZ-KH-KH-BAS-1.MAN.7750 ***
+ !
+ neighbor 220.185.58.45
+  use neighbor-group pgBRAS
+  description *** iBGP session To QZ-CS-XDL-BAS-1.MAN.SE1200 for vrPPPoE ***
+ !
+ neighbor 220.185.58.46
+  use neighbor-group pgBRAS
+  description *** iBGP session To QZ-CS-XDL-BAS-1.MAN.SE1200 for vrIPTV ***
+ !
+ neighbor 220.185.58.48
+  use neighbor-group pgBRAS
+  description *** iBGP session To QZ-CS-XDL-BAS-1.MAN.SE1200 for local ***
+ !
+ neighbor 220.185.58.51
+  use neighbor-group pgBRAS
+  description *** iBGP session To QZ-KH-KH-BAS-3.MAN.7750 ***
+ !
+ neighbor 220.185.58.66
+  use neighbor-group pgBRAS
+  description *** iBGP session To QZ-CS-XDL-BAS-1.MAN.SE1200 for vrQZXY ***
+ !
+ neighbor 220.185.58.72
+  use neighbor-group pgBRAS
+  description *** iBGP session To QZ-CS-XDL-BAS-1.MAN.SE1200 for vrShanXun ***
+ !
+ neighbor 220.185.58.81
+  use neighbor-group pgIWIFI
+  description TO QZ-QZ-XDL-BAS-1.IWIFI.M6000
+ !
+ neighbor 220.185.58.128
+  remote-as 64750
+  description *** iBGP session To QZ-QZ-XDL-SR-1.MAN.7750 ***
+  update-source Loopback0
+  address-family ipv4 unicast
+   route-policy rpFromIBGP in
+   route-reflector-client
+   route-policy rpToBR out
+   default-originate
+   next-hop-self
+  !
+  address-family vpnv4 unicast
+   next-hop-self
+  !
+ !
+ neighbor 220.185.58.130
+  use neighbor-group pgBR
+  description *** iBGP session To QZ-QZ-NQ-SR-SR7750-1.MAN ***
+ !
+ neighbor 220.185.58.131
+  use neighbor-group pgBR
+  description *** iBGP session To QZ-JS-CZ-SR-SR7750-1.MAN ***
+ !
+ neighbor 220.185.58.132
+  use neighbor-group pgBR
+  description *** iBGP session To QZ-LY-LY-SR-1.MAN.SR7750 ***
+ !
+ neighbor 220.185.58.133
+  use neighbor-group pgBR
+  description *** iBGP session To QZ-QZ-CS-SR-SR7750-1.MAN ***
+ !
+ neighbor 220.185.58.134
+  use neighbor-group pgBR
+  description *** iBGP session To QZ-QZ-NJ-BAS-3.MAN.7750 for default***
+ !
+ neighbor 220.185.58.135
+  use neighbor-group pgBRAS
+  description *** iBGP session To QZ-QZ-QH-BAS-2.MAN.7750 ***
+ !
+ neighbor 220.185.58.140
+  use neighbor-group pgBR
+  description *** iBGP session To QZ-QZ-QH-SR-1.MAN.7750 ***
+ !
+ neighbor 220.185.58.141
+  use neighbor-group pgBR
+  description *** iBGP session To QZ-KH-KH-SR-1.MAN.7750 ***
+ !
+ neighbor 220.185.58.144
+  use neighbor-group pgBR
+  description *** iBGP session To QZ-LY-LY-SR-2.MAN.SR7750 ***
+ !
+ neighbor 220.185.58.145
+  use neighbor-group pgBR
+  description *** iBGP session To QZ-QZ-NJ-SR-1.MAN.7750 ***
+ !
+ neighbor 220.185.58.148
+  use neighbor-group pgBR
+  description *** iBGP session To QZ-JS-CZ-SR-SR7750-2.MAN ***
+ !
+ neighbor 220.185.58.149
+  use neighbor-group pgBR
+  description *** iBGP session To QZ-QZ-CS-SR-SR7750-2.MAN ***
+ !
+ neighbor 220.185.58.150
+  use neighbor-group pgBR
+  description *** iBGP session To QZ-KH-KH-SR-2.MAN.7750 ***
+ !
+ neighbor 220.185.58.171
+  use neighbor-group pgBR
+  description *** iBGP session To QZ-QZ-XDL-SR-2.MAN.7750 ***
+ !
+ neighbor 220.185.58.172
+  use neighbor-group pgBR
+  description *** iBGP session To QZ-QZ-NJ-SR-2.MAN.7750 ***
+ !
+ neighbor 220.185.58.173
+  use neighbor-group pgBR
+  description *** iBGP session To QZ-QZ-NQ-SR-SR7750-2.MAN ***
+ !
+ neighbor 220.185.58.174
+  use neighbor-group pgBR
+  description *** iBGP session To QZ-QZ-QH-SR-2.MAN.7750 ***
+ !
+ neighbor 220.185.58.223
+  use neighbor-group pgIDC12508
+  description *** eBGP session To QZ-QZ-XDLSL-DSW-1.IDC.12508 ***
+ !
+ neighbor 220.185.58.227
+  use neighbor-group pgBRAS
+  description *** iBGP session To QZ-QZ-XDL-BAS-1.WLAN.M6000***
+ !
+ neighbor 220.185.58.228
+  use neighbor-group pgBRAS
+  description *** iBGP session To QZ-QZ-XDL-BAS-2.WLAN.M6000***
+ !
+ neighbor 220.185.62.154
+  use neighbor-group pgGUARD
+  description *** iBGP session To QuZhou-DPX8K-A5-Guard ***
+ !
+ vrf IWIFI
+  rd 4809:200013
+  address-family ipv4 unicast
+   redistribute static
+  !
+  neighbor 10.155.255.2
+   remote-as 65510
+   address-family ipv4 unicast
+    route-policy rpFromIwifivpn in
+    route-policy rpToIwifivpn out
+   !
+  !
+ !
+!
+mpls ldp
+ log
+  neighbor
+ !
+ address-family ipv4
+  label
+   local
+    allocate for host-routes
+   !
+  !
+ !
+ interface Bundle-Ether4
+ !
+ interface Bundle-Ether10
+ !
+ interface TenGigE0/1/0/0
+ !
+ interface TenGigE0/1/0/1
+ !
+ interface TenGigE0/1/0/2
+ !
+ interface TenGigE0/1/0/3
+ !
+ interface TenGigE0/1/0/4
+ !
+ interface TenGigE0/1/0/6
+ !
+ interface TenGigE0/1/0/7
+ !
+ interface TenGigE0/1/0/8
+ !
+ interface TenGigE0/1/0/9
+ !
+ interface TenGigE1/1/0/0
+ !
+ interface TenGigE1/1/0/1
+ !
+ interface TenGigE1/1/0/2
+ !
+ interface TenGigE1/1/0/3
+ !
+ interface TenGigE1/1/0/4
+ !
+ interface TenGigE1/1/0/5
+ !
+ interface TenGigE1/1/0/6
+ !
+ interface TenGigE1/1/0/7
+ !
+ interface TenGigE1/1/0/8
+ !
+ interface TenGigE1/1/0/9
+ !
+ interface TenGigE0/1/0/10
+ !
+ interface TenGigE0/1/0/11
+ !
+ interface TenGigE0/1/0/12
+ !
+ interface TenGigE0/1/0/13
+ !
+ interface TenGigE0/1/0/14
+ !
+ interface TenGigE0/1/0/15
+ !
+ interface TenGigE0/1/0/16
+ !
+ interface TenGigE0/1/0/28
+ !
+ interface TenGigE0/1/0/29
+ !
+ interface TenGigE0/1/0/30
+ !
+ interface TenGigE0/1/0/31
+ !
+ interface TenGigE0/1/0/32
+ !
+ interface TenGigE0/1/0/33
+ !
+ interface TenGigE0/1/0/34
+ !
+ interface TenGigE0/1/0/35
+ !
+ interface TenGigE0/1/0/36
+ !
+ interface TenGigE1/1/0/10
+ !
+ interface TenGigE1/1/0/11
+ !
+ interface TenGigE1/1/0/12
+ !
+ interface TenGigE1/1/0/13
+ !
+ interface TenGigE1/1/0/14
+ !
+ interface TenGigE1/1/0/15
+ !
+ interface TenGigE1/1/0/29
+ !
+ interface TenGigE1/1/0/30
+ !
+ interface TenGigE1/1/0/31
+ !
+ interface TenGigE1/1/0/32
+ !
+ interface TenGigE1/1/0/33
+ !
+ interface TenGigE1/1/0/34
+ !
+ interface TenGigE1/1/0/35
+ !
+ interface TenGigE1/1/0/36
+ !
+ interface Bundle-Ether7.202
+ !
+ interface TenGigE1/1/0/28.51
+ !
+!
+multicast-routing
+ address-family ipv4
+  interface Bundle-Ether20
+   enable
+  !
+  interface Bundle-Ether21
+   enable
+  !
+  interface TenGigE0/1/0/0
+   enable
+  !
+  interface TenGigE0/1/0/1
+   enable
+  !
+  interface TenGigE0/1/0/2
+   enable
+  !
+  interface TenGigE0/1/0/3
+   enable
+  !
+  interface TenGigE0/1/0/4
+   enable
+  !
+  interface TenGigE0/1/0/6
+   enable
+  !
+  interface TenGigE0/1/0/7
+   enable
+  !
+  interface TenGigE0/1/0/8
+   enable
+  !
+  interface TenGigE0/1/0/9
+   enable
+  !
+  interface TenGigE1/1/0/0
+   enable
+  !
+  interface TenGigE1/1/0/1
+   enable
+  !
+  interface TenGigE1/1/0/2
+   enable
+  !
+  interface TenGigE1/1/0/3
+   enable
+  !
+  interface TenGigE1/1/0/4
+   enable
+  !
+  interface TenGigE1/1/0/5
+   enable
+  !
+  interface TenGigE1/1/0/6
+   enable
+  !
+  interface TenGigE1/1/0/7
+   enable
+  !
+  interface TenGigE1/1/0/8
+   enable
+  !
+  interface TenGigE1/1/0/9
+   enable
+  !
+  interface TenGigE0/1/0/10
+   enable
+  !
+  interface TenGigE0/1/0/11
+   enable
+  !
+  interface TenGigE0/1/0/12
+   enable
+  !
+  interface TenGigE0/1/0/13
+   enable
+  !
+  interface TenGigE0/1/0/14
+   enable
+  !
+  interface TenGigE0/1/0/15
+   enable
+  !
+  interface TenGigE0/1/0/28
+   enable
+  !
+  interface TenGigE0/1/0/29
+   enable
+  !
+  interface TenGigE0/1/0/30
+   enable
+  !
+  interface TenGigE0/1/0/31
+   enable
+  !
+  interface TenGigE0/1/0/32
+   enable
+  !
+  interface TenGigE0/1/0/33
+   enable
+  !
+  interface TenGigE0/1/0/34
+   enable
+  !
+  interface TenGigE0/1/0/35
+   enable
+  !
+  interface TenGigE0/1/0/36
+   enable
+  !
+  interface TenGigE1/1/0/10
+   enable
+  !
+  interface TenGigE1/1/0/11
+   enable
+  !
+  interface TenGigE1/1/0/12
+   enable
+  !
+  interface TenGigE1/1/0/13
+   enable
+  !
+  interface TenGigE1/1/0/14
+   enable
+  !
+  interface TenGigE1/1/0/15
+   enable
+  !
+  interface TenGigE1/1/0/29
+   enable
+  !
+  interface TenGigE1/1/0/30
+   enable
+  !
+  interface TenGigE1/1/0/31
+   enable
+  !
+  interface TenGigE1/1/0/32
+   enable
+  !
+  interface TenGigE1/1/0/33
+   enable
+  !
+  interface TenGigE1/1/0/34
+   enable
+  !
+  interface TenGigE1/1/0/35
+   enable
+  !
+  interface TenGigE1/1/0/36
+   enable
+  !
+  interface Bundle-Ether2.300
+   enable
+  !
+  interface Bundle-Ether3.301
+   enable
+  !
+  interface TenGigE1/1/0/28.53
+   enable
+  !
+  interface GigabitEthernet0/2/2/1
+   enable
+  !
+ !
+!
+router pim
+ address-family ipv4
+  rp-address 122.229.7.137 rp3
+  rp-address 220.185.58.71 acl_qzlocal_itv
+  rp-address 220.191.138.18 rp1
+  rp-address 220.191.138.19 rp2
+  interface Bundle-Ether20
+  !
+  interface Bundle-Ether21
+  !
+  interface TenGigE0/1/0/0
+  !
+  interface TenGigE0/1/0/1
+   enable
+  !
+  interface TenGigE0/1/0/2
+  !
+  interface TenGigE0/1/0/3
+   enable
+  !
+  interface TenGigE0/1/0/4
+  !
+  interface TenGigE0/1/0/6
+   enable
+  !
+  interface TenGigE0/1/0/7
+  !
+  interface TenGigE0/1/0/8
+  !
+  interface TenGigE0/1/0/9
+  !
+  interface TenGigE1/1/0/0
+  !
+  interface TenGigE1/1/0/1
+  !
+  interface TenGigE1/1/0/2
+  !
+  interface TenGigE1/1/0/3
+  !
+  interface TenGigE1/1/0/4
+  !
+  interface TenGigE1/1/0/5
+   enable
+  !
+  interface TenGigE1/1/0/6
+   enable
+  !
+  interface TenGigE1/1/0/7
+  !
+  interface TenGigE1/1/0/8
+  !
+  interface TenGigE1/1/0/9
+  !
+  interface TenGigE0/1/0/10
+   enable
+  !
+  interface TenGigE0/1/0/11
+   enable
+  !
+  interface TenGigE0/1/0/13
+  !
+  interface TenGigE0/1/0/14
+   enable
+  !
+  interface TenGigE0/1/0/15
+   enable
+  !
+  interface TenGigE0/1/0/28
+   enable
+  !
+  interface TenGigE0/1/0/29
+   enable
+  !
+  interface TenGigE0/1/0/30
+   enable
+  !
+  interface TenGigE0/1/0/31
+   enable
+  !
+  interface TenGigE0/1/0/32
+   enable
+  !
+  interface TenGigE0/1/0/33
+   enable
+  !
+  interface TenGigE0/1/0/34
+   enable
+  !
+  interface TenGigE0/1/0/35
+   enable
+  !
+  interface TenGigE0/1/0/36
+   enable
+  !
+  interface TenGigE1/1/0/10
+   enable
+  !
+  interface TenGigE1/1/0/12
+  !
+  interface TenGigE1/1/0/13
+   enable
+  !
+  interface TenGigE1/1/0/14
+   enable
+  !
+  interface TenGigE1/1/0/15
+   enable
+  !
+  interface TenGigE1/1/0/29
+   enable
+  !
+  interface TenGigE1/1/0/30
+  !
+  interface TenGigE1/1/0/31
+   enable
+  !
+  interface TenGigE1/1/0/32
+   enable
+  !
+  interface TenGigE1/1/0/33
+   enable
+  !
+  interface TenGigE1/1/0/34
+   enable
+  !
+  interface TenGigE1/1/0/35
+   enable
+  !
+  interface TenGigE1/1/0/36
+   enable
+  !
+  interface Bundle-Ether2.300
+   enable
+  !
+  interface Bundle-Ether3.301
+   enable
+  !
+  interface TenGigE1/1/0/28.53
+  !
+  interface GigabitEthernet0/2/2/1
+  !
+ !
+!
+end
+
+RP/0/RP0/CPU0:QZ-QZ-XDL-CR-1.MAN.CRS#

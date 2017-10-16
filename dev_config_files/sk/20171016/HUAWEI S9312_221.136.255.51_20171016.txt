@@ -1,0 +1,804 @@
+
+!Software Version V200R003C00SPC500
+#
+sysname BaiYun_9312_super
+#
+super password level 3 cipher %$%$OiRz~;Hhp292skYQ8}N/]gSBuL8KE:&`|Ip_)y<W1CbIgSE]%$%$
+#
+vlan batch 6 to 9 12 15 19 to 20 22 24 to 26 30 to 31 37 39 43
+vlan batch 47 to 48 51 to 56 61 63 to 64 74 77 82 85 92 94 to 95
+vlan batch 99 135 163 165 183 186 to 188 197 to 200 222 to 224 265 299
+vlan batch 302 345 347 349 380 to 381 402 450 452 to 453 456 to 457 459
+vlan batch 899 to 900 971 to 999 4011 to 4012 4067 to 4070 4073 to 4080
+#
+undo http server enable
+undo http secure-server enable
+#
+undo nap slave enable
+#
+ dba-profile default0 type3 assure 40000 max 80000
+#
+arp-miss anti-attack rate-limit enable
+#
+diffserv domain default
+#
+ line-profile default0
+#
+ service-profile default0
+#
+acl number 2001
+ rule 5 permit source 221.136.64.113 0
+ rule 10 permit source 203.175.198.50 0
+ rule 15 permit source 203.175.200.0 0.0.0.255
+ rule 20 permit source 61.153.82.90 0
+ rule 25 permit source 203.175.211.1 0
+ rule 30 permit source 203.175.198.0 0.0.0.255
+ rule 40 permit source 203.175.193.0 0.0.0.255
+ rule 45 permit source 202.101.167.192 0.0.0.63
+ rule 290 permit source 61.153.112.134 0
+ rule 300 permit source 61.153.112.142 0
+ rule 310 permit source 61.153.112.143 0
+ rule 320 permit source 61.153.112.144 0
+ rule 330 permit source 61.153.112.145 0
+ rule 340 permit source 61.153.112.146 0
+ rule 350 permit source 61.153.112.147 0
+ rule 360 permit source 61.153.112.148 0
+ rule 370 permit source 61.153.112.133 0
+ rule 380 permit source 61.153.112.129 0
+#
+acl number 3005
+ description user_filter
+ rule 5 deny tcp destination 203.175.255.82 0 destination-port eq www
+ rule 10 permit ip
+#
+acl number 3333
+#
+acl number 3999
+ description For_ATTACK_SOURCE
+ rule 5 permit ip source 180.76.0.0 0.0.255.255
+#
+acl number 4444
+ rule 5 permit l2-protocol arp
+#
+traffic classifier 2 operator or precedence 10
+ if-match acl 3005
+traffic classifier test operator and precedence 15
+ if-match vlan-id 100 cvlan-id 200
+ if-match acl 3333
+#
+traffic behavior 1
+ permit
+#
+traffic policy 2
+ classifier 2 behavior 1
+#
+drop-profile default
+#
+vlan 31
+ traffic-policy 2 outbound
+vlan 4079
+ description To-GSR-1
+#
+aaa
+ authentication-scheme default
+ authorization-scheme default
+ accounting-scheme default
+ domain default
+ domain default_admin
+ local-user ftp password cipher %@%@,nzV104N]UGO>o<30j>R]gTC%@%@
+ local-user ftp privilege level 3
+ local-user ftp ftp-directory cfcard:/
+ local-user ftp service-type ftp
+ local-user admin password cipher %@%@5d~9:M^ipCfL\iB)EQd>3Uwe%@%@
+ local-user admin service-type http
+#
+interface Vlanif30
+ ip address 221.136.254.254 255.255.255.128
+ ip address 221.136.50.142 255.255.255.240 sub
+ ip address 221.136.92.22 255.255.255.248 sub
+#
+interface Vlanif31
+ shutdown
+ ip address 203.175.255.65 255.255.255.192
+#
+interface Vlanif85
+ ip address 203.175.197.129 255.255.255.192
+ ospf cost 10
+#
+interface Vlanif92
+ ip address 203.175.198.65 255.255.255.192
+ ospf dr-priority 5
+#
+interface Vlanif94
+ ip address 203.175.199.65 255.255.255.192
+ ip address 203.175.199.129 255.255.255.192 sub
+#
+interface Vlanif95
+ ip address 203.175.192.1 255.255.255.240
+ ospf cost 1
+ ospf dr-priority 100
+#
+interface Vlanif186
+ ip address 203.175.198.253 255.255.255.248
+#
+interface Vlanif222
+ ip address 203.175.198.194 255.255.255.252
+#
+interface Vlanif223
+ description Dianxin_7400
+ ip address 203.175.198.206 255.255.255.252
+#
+interface Vlanif224
+ description JiaoYuWang_PBR
+ ip address 203.175.198.198 255.255.255.252
+#
+interface Vlanif380
+ ip address 221.136.240.129 255.255.255.224
+#
+interface Vlanif4011
+ ip address 203.175.193.246 255.255.255.248
+#
+interface Vlanif4012
+ description ASA_5500_outside
+ ip address 203.175.193.162 255.255.255.252
+#
+interface Vlanif4067
+ ip address 203.175.193.181 255.255.255.252
+ ospf cost 2
+#
+interface Vlanif4068
+ ip address 203.175.193.185 255.255.255.252
+ ospf cost 2
+#
+interface Vlanif4069
+ ip address 203.175.193.189 255.255.255.252
+ ospf cost 2
+#
+interface Vlanif4070
+ ip address 203.175.193.194 255.255.255.252
+ ospf cost 100
+#
+interface Vlanif4073
+ ip address 203.175.193.165 255.255.255.252
+ ospf cost 100
+#
+interface Vlanif4074
+ ip address 203.175.193.169 255.255.255.252
+ ospf cost 2
+#
+interface Vlanif4075
+ ip address 203.175.193.173 255.255.255.252
+ ospf cost 2
+#
+interface Vlanif4076
+ ip address 203.175.193.177 255.255.255.252
+ ospf cost 2
+#
+interface Vlanif4077
+ ip address 203.175.193.206 255.255.255.252
+ ospf cost 2
+#
+interface Vlanif4078
+ ip address 203.175.193.210 255.255.255.252
+ ospf cost 2
+#
+interface Vlanif4079
+ ip address 203.175.193.214 255.255.255.252
+ ospf cost 2
+#
+interface Vlanif4080
+ description To_IDC_router35_203.175.195.97
+ shutdown
+ ip address 203.175.195.98 255.255.255.252
+#
+interface Ethernet0/0/0
+#
+interface GigabitEthernet4/0/0
+ port link-type access
+ port default vlan 380
+#
+interface GigabitEthernet4/0/1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/2
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/3
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/4
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/5
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/6
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/7
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/8
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/9
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/10
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/11
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/12
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/13
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/14
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/15
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/16
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/17
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/18
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/19
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/20
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/21
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/22
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/23
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/24
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/25
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/26
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/27
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/28
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/29
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/30
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/31
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/32
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/33
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/34
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/35
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/36
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/37
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/38
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/39
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/40
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/41
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/42
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/43
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/44
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/45
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/46
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet4/0/47
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet9/0/0
+ undo negotiation auto
+ description HaiGuang_super_1/2
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 4075
+#
+interface GigabitEthernet9/0/1
+ description HaiGuang_super_4/14
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 4074
+#
+interface GigabitEthernet9/0/2
+ description ShuGuang_GSR_10/2
+ port link-type access
+ port default vlan 4070
+#
+interface GigabitEthernet9/0/3
+ description ShuGuang_9312_super_11/0/15
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 4068
+#
+interface GigabitEthernet9/0/4
+ description ShuGuang_9312_super_9/0/9
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 4069
+#
+interface GigabitEthernet9/0/5
+ description HG_6509_5/6
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 30 94 660
+#
+interface GigabitEthernet9/0/6
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet9/0/7
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet9/0/8
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet9/0/9
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet9/0/10
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet9/0/11
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet9/0/12
+ undo negotiation auto
+ description BY_GSR_6/0
+ port link-type access
+ port default vlan 4078
+#
+interface GigabitEthernet9/0/13
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet9/0/14
+ description BaiYun_9312_1_9/0/14
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 94
+#
+interface GigabitEthernet9/0/15
+ description BaiYun_9312_2_9/0/15
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet9/0/16
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet9/0/17
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet9/0/18
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet9/0/19
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet9/0/20
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet9/0/21
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet9/0/22
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet9/0/23
+ undo negotiation auto
+ description BaiYun_me60_4/7
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 54 77 94 163 165 183
+#
+interface GigabitEthernet11/0/0
+ description HaiGuang_super_4/16
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 4076
+#
+interface GigabitEthernet11/0/1
+ undo negotiation auto
+ description YangGuang_super_4/14
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 4073 4080
+#
+interface GigabitEthernet11/0/2
+ description ShuGuang_9312_super_11/0/17
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 4067
+#
+interface GigabitEthernet11/0/3
+ description HG7609_3/4
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet11/0/4
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet11/0/5
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet11/0/6
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet11/0/7
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet11/0/8
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet11/0/9
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet11/0/10
+ undo negotiation auto
+ description To-BY-GSR-10/0
+ port link-type access
+ port default vlan 4079
+#
+interface GigabitEthernet11/0/11
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet11/0/12
+ undo negotiation auto
+ description BY_GSR_3/0
+ port link-type access
+ port default vlan 4077
+#
+interface GigabitEthernet11/0/13
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet11/0/14
+ description BaiYun_9312_1_11/0/14
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 6 to 9 20 30 to 31 43 47 to 48 50 to 51 53 to 55 61 77 85
+ port trunk allow-pass vlan 92 95 135 163 165 183 186 to 188 197 to 201 203 265
+ port trunk allow-pass vlan 303 347 380 to 381 402 899 4011
+#
+interface GigabitEthernet11/0/15
+ description BaiYun_9312_2_11/0/15
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 31 61 85 92 94 to 95 342 345 380 4011
+#
+interface GigabitEthernet11/0/16
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet11/0/17
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet11/0/18
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet11/0/19
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet11/0/20
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet11/0/21
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet11/0/22
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet11/0/23
+ description ASA5500_outside_203.175.193.161
+ port link-type access
+ port default vlan 4012
+#
+interface NULL0
+#
+interface LoopBack0
+ ip address 221.136.255.51 255.255.255.255
+#
+ospf 1 router-id 221.136.255.51
+ import-route direct
+ import-route static
+ area 0.0.0.0
+  network 203.175.193.164 0.0.0.3
+  network 203.175.193.168 0.0.0.3
+  network 203.175.193.172 0.0.0.3
+  network 203.175.193.176 0.0.0.3
+  network 203.175.193.180 0.0.0.3
+  network 203.175.193.184 0.0.0.3
+  network 203.175.193.188 0.0.0.3
+  network 203.175.193.192 0.0.0.3
+  network 203.175.193.204 0.0.0.3
+  network 203.175.193.208 0.0.0.3
+  network 203.175.193.212 0.0.0.3
+  network 221.136.255.51 0.0.0.0
+ area 0.0.0.99
+  network 203.175.195.96 0.0.0.3
+  nssa default-route-advertise no-summary
+ area 0.0.0.102
+  network 203.175.197.129 0.0.0.0
+  network 203.175.198.64 0.0.0.63
+ area 0.0.0.104
+  network 203.175.192.0 0.0.0.15
+#
+ospf 100
+#
+rip 1
+#
+cpu-defend policy io-board
+ blacklist 1 acl 3999
+ car packet-type ttl-expired cir 8 cbs 10000
+ auto-defend enable
+ auto-defend attack-packet sample 5
+ auto-defend threshold 30
+ auto-defend trace-type source-mac source-ip source-portvlan
+ auto-defend protocol all
+#
+cpu-defend policy main-board
+ blacklist 1 acl 3999
+ car packet-type ttl-expired cir 16 cbs 10000
+ auto-defend enable
+ auto-defend attack-packet sample 5
+ auto-defend threshold 30
+ auto-defend trace-type source-mac source-ip source-portvlan
+ auto-defend protocol all
+#
+ip route-static 60.55.20.0 255.255.252.0 203.175.193.161
+ip route-static 60.55.24.0 255.255.248.0 203.175.193.161
+ip route-static 60.55.76.0 255.255.252.0 203.175.193.161
+ip route-static 60.55.136.0 255.255.248.0 203.175.193.161
+ip route-static 60.55.144.0 255.255.248.0 203.175.193.161
+ip route-static 60.55.152.0 255.255.248.0 203.175.193.161
+ip route-static 60.55.160.0 255.255.248.0 203.175.199.78
+ip route-static 60.55.219.0 255.255.255.128 203.175.199.82
+ip route-static 60.55.219.128 255.255.255.128 203.175.199.82
+ip route-static 60.55.220.0 255.255.254.0 203.175.199.82
+ip route-static 60.55.222.0 255.255.254.0 203.175.199.82
+ip route-static 60.55.224.0 255.255.248.0 203.175.199.82
+ip route-static 60.55.232.0 255.255.248.0 203.175.199.82
+ip route-static 122.246.80.0 255.255.240.0 203.175.199.148
+ip route-static 221.136.4.0 255.255.255.0 203.175.193.161
+ip route-static 221.136.5.0 255.255.255.0 203.175.193.161
+ip route-static 221.136.6.0 255.255.255.0 203.175.193.161
+ip route-static 221.136.21.0 255.255.255.0 203.175.193.161
+ip route-static 221.136.22.0 255.255.255.0 203.175.193.161
+ip route-static 221.136.23.0 255.255.255.0 203.175.193.161
+ip route-static 221.136.24.84 255.255.255.252 203.175.199.80
+ip route-static 221.136.34.0 255.255.255.0 203.175.198.102
+ip route-static 221.136.35.0 255.255.255.0 203.175.198.102
+ip route-static 221.136.81.108 255.255.255.252 203.175.199.80
+ip route-static 221.136.84.0 255.255.255.0 Vlanif92 203.175.198.92
+ip route-static 221.136.95.0 255.255.255.252 203.175.199.148
+ip route-static 221.136.95.12 255.255.255.252 203.175.199.148
+ip route-static 221.136.95.20 255.255.255.252 203.175.199.148
+ip route-static 221.136.95.24 255.255.255.252 203.175.199.148
+ip route-static 221.136.95.28 255.255.255.252 203.175.199.148
+ip route-static 221.136.95.32 255.255.255.252 203.175.199.148
+ip route-static 221.136.95.44 255.255.255.252 203.175.199.148
+ip route-static 221.136.95.48 255.255.255.252 203.175.199.148
+ip route-static 221.136.95.96 255.255.255.252 203.175.199.148
+ip route-static 221.136.96.24 255.255.255.252 203.175.199.148
+ip route-static 221.136.96.48 255.255.255.252 203.175.199.148
+ip route-static 221.136.96.68 255.255.255.252 203.175.199.148
+ip route-static 221.136.98.116 255.255.255.252 203.175.199.148
+ip route-static 221.136.99.12 255.255.255.252 203.175.199.148
+ip route-static 221.136.99.44 255.255.255.252 203.175.199.148
+ip route-static 221.136.100.100 255.255.255.252 203.175.193.243 description BaiYun_VPN_YaZhouHuaYuanBinGuan
+ip route-static 221.136.169.0 255.255.255.252 203.175.193.243 description BaiYun_VPN_BoYangJiaFang
+ip route-static 221.136.241.0 255.255.255.0 203.175.199.148
+#
+snmp-agent
+snmp-agent local-engineid 000007DB7FFFFFFF00007F8F
+snmp-agent community read cipher %$%$U{=LKUf%bEy)`NXqM}wO]g^SNn31Osa'^Y\xoY4$lVN8g^V]h*=Q#rTxACt/}qF:JkdH^_]g%$%$
+snmp-agent community read cipher %$%$.{3(&W3kW!r5rz-HnYdL]g^qT.Qw&<-#~;w#ik:.[al@g^t]U!J0CDxd@NU!c}&f<FQK^}]g%$%$
+snmp-agent sys-info contact R&D Nanjing, Huawei Technologies co.,Ltd.
+snmp-agent sys-info location NB_JiangBei
+snmp-agent sys-info version all
+snmp-agent trap enable feature-name TRUNK
+snmp-agent trap enable feature-name OSPF
+undo snmp-agent trap enable feature-name OSPF trap-name ospfIfConfigError
+undo snmp-agent trap enable feature-name OSPF trap-name ospfVirtIfConfigError
+undo snmp-agent trap enable feature-name OSPF trap-name ospfTxRetransmit
+undo snmp-agent trap enable feature-name OSPF trap-name ospfVirtIfTxRetransmit
+undo snmp-agent trap enable feature-name OSPF trap-name ospfOriginateLsa
+undo snmp-agent trap enable feature-name OSPF trap-name ospfMaxAgeLsa
+snmp-agent trap enable feature-name bgp
+snmp-agent trap enable feature-name MPLS_LSPM trap-name hwMplsStaticLspUp
+snmp-agent trap enable feature-name MPLS_LSPM trap-name hwMplsStaticLspDown
+snmp-agent trap enable feature-name MPLS_LSPM trap-name hwMplsStaticCRLspUp
+snmp-agent trap enable feature-name MPLS_LSPM trap-name hwMplsStaticCRLspDown
+snmp-agent trap enable feature-name MPLS_LSPM trap-name mplsTunnelReoptimized
+snmp-agent trap enable feature-name MPLS_LSPM trap-name mplsTunnelRerouted
+snmp-agent trap enable feature-name MPLS_LSPM trap-name hwMplsTeFrrSwitch
+snmp-agent trap enable feature-name MPLS_LSPM trap-name hwMplsTeFrrResume
+snmp-agent trap enable feature-name MPLS_LSPM trap-name hwMplsTunnelHSBSwitch
+snmp-agent trap enable feature-name MPLS_LSPM trap-name hwMplsTunnelHSBResume
+snmp-agent trap enable feature-name MPLS_LSPM trap-name hwMplsTunnelOBSwitch
+snmp-agent trap enable feature-name MPLS_LSPM trap-name hwMplsTunnelOBResume
+snmp-agent trap enable feature-name MPLS_LSPM trap-name hwMplsTeFrrProtAval
+snmp-agent trap enable feature-name MPLS_LSPM trap-name hwMplsTeFrrProtNotAval
+snmp-agent trap enable feature-name MPLS_LSPM trap-name hwmplsTunnelChangeBW
+snmp-agent trap enable feature-name TUNNEL-TE trap-name hwMplsPsSwitchWtoP
+snmp-agent trap enable feature-name TUNNEL-TE trap-name hwMplsPsSwitchPtoW
+snmp-agent trap enable feature-name l3vpn
+snmp-agent trap enable feature-name MPLS-OAM
+snmp-agent trap enable feature-name L2VPN trap-name hwCCCVcDown
+snmp-agent trap enable feature-name L2VPN trap-name hwCCCVcUp
+snmp-agent trap enable feature-name L2VPN trap-name hwVplsVcDown
+snmp-agent trap enable feature-name L2VPN trap-name hwVplsVcUp
+snmp-agent trap enable feature-name L2VPN trap-name hwVplsVsiDown
+snmp-agent trap enable feature-name L2VPN trap-name hwVplsVsiUp
+snmp-agent trap enable feature-name L2VPN trap-name hwKompellaVcDown
+snmp-agent trap enable feature-name L2VPN trap-name hwKompellaVcUp
+snmp-agent trap enable feature-name L2VPN trap-name hwKompellaSwitchWtoP
+snmp-agent trap enable feature-name L2VPN trap-name hwKompellaSwitchPtoW
+snmp-agent trap enable feature-name L2VPN trap-name hwPWVcDown
+snmp-agent trap enable feature-name L2VPN trap-name hwPWVcUp
+snmp-agent trap enable feature-name L2VPN trap-name hwPWVcSwitchWtoP
+snmp-agent trap enable feature-name L2VPN trap-name hwPWVcSwitchPtoW
+snmp-agent trap enable feature-name L2VPN trap-name hwSvcDown
+snmp-agent trap enable feature-name L2VPN trap-name hwSvcUp
+snmp-agent trap enable feature-name L2VPN trap-name hwVplsVcBackup
+snmp-agent trap enable feature-name L2VPN trap-name hwPWVcBackup
+snmp-agent trap enable feature-name l2-multicast
+snmp-agent trap enable feature-name ldp trap-name Session-Retry
+snmp-agent trap enable feature-name ldp trap-name Session-PVL
+snmp-agent trap enable feature-name ldp trap-name Session-Up-MIB
+snmp-agent trap enable feature-name ldp trap-name Session-Down-MIB
+snmp-agent trap enable feature-name EOAM-1AG
+snmp-agent trap enable feature-name MSTP
+snmp-agent trap enable feature-name LACP
+snmp-agent trap enable feature-name EFM
+snmp-agent trap enable feature-name BFD
+snmp-agent trap enable feature-name IFNET trap-name hwIfMonitorInputRateRising
+snmp-agent trap enable feature-name IFNET trap-name hwIfMonitorInputRateResume
+snmp-agent trap enable feature-name IFNET trap-name hwIfMonitorOutputRateRising
+snmp-agent trap enable feature-name IFNET trap-name hwIfMonitorOutputRateResume
+snmp-agent trap enable feature-name IFNET trap-name linkDown
+snmp-agent trap enable feature-name IFNET trap-name linkUp
+snmp-agent trap enable feature-name CONFIGURATION
+snmp-agent trap enable feature-name SNMP trap-name authenticationFailure
+snmp-agent trap enable feature-name DLDP
+snmp-agent trap enable feature-name LDTTRAP
+snmp-agent trap enable feature-name LLDPTRAP
+snmp-agent trap enable feature-name VFS
+snmp-agent trap enable feature-name BASETRAP
+#
+cpu-defend-policy io-board global
+cpu-defend-policy main-board
+#
+user-interface con 0
+user-interface vty 0 4
+ acl 2001 inbound
+ authentication-mode password
+ user privilege level 3
+ set authentication password cipher %@%@xJi{>IxaI7QcqEHK&bW(]ger<3lQ#fFwR/DR=c,qz49Dgeu]%@%@
+user-interface vty 16 20
+#
+return
+<BaiYun_9312_super>

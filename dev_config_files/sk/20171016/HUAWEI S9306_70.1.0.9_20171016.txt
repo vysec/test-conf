@@ -1,0 +1,1265 @@
+
+!Software Version V200R008C00SPC500
+#
+sysname QZ-QZ-SLF-DSW-1.MAN.S9306
+#
+super password level 3 cipher %$%$%}gE'R6xaA83|EL9a]$>#k6trp0d,nQuFEqd.i1|-[e!k6w#%$%$
+#
+info-center source default channel 2 log level warning trap level warning
+info-center source default channel 4 log level notification
+info-center source SHELL channel 4 log level notification
+info-center source NTP channel 4 log state off 
+info-center loghost source Vlanif20
+info-center loghost 10.192.0.11 facility local4
+info-center loghost 10.192.0.12 facility local4
+#
+vlan batch 20 22 to 25 27 29 483 585 700 781 840 1222
+vlan batch 1318 to 1321 1471 to 1479 1525 to 1530 1543 to 1548 1606 1613 1681 to 1684 1739 to 1742 1781 1787
+vlan batch 1793 2611 2613 to 2614 2669 to 2672 3194 3210 3273 3290 3640 3647
+vlan batch 3692 3850 to 3852 3855 3953 to 3954
+#
+undo authentication unified-mode
+#
+set save-configuration interval 43200 delay 30
+#
+transceiver phony-alarm-disable
+#
+telnet server enable
+telnet ipv6 server enable
+#
+qos car 100m cir 100000 pir 102400 cbs 12500000 pbs 12800000
+qos car 4m cir 4000 pir 4096 cbs 500000 pbs 512000
+qos car 10m cir 10000 pir 10240 cbs 1250000 pbs 1280000
+qos car 2m cir 2000 pir 2048 cbs 250000 pbs 256000
+qos car 20m cir 20480 cbs 3850240
+#
+lldp enable
+#
+undo http server enable
+undo http secure-server enable
+#
+undo management-port isolate enable
+undo management-plane isolate enable
+#
+clock timezone GMT add 08:00:00
+#
+diffserv domain default
+#
+hwtacacs-server template zjdx
+ hwtacacs-server authentication 70.0.0.32
+ hwtacacs-server authorization 70.0.0.32
+ hwtacacs-server accounting 70.0.0.32
+ hwtacacs-server source-ip 70.1.0.9
+ hwtacacs-server shared-key cipher %^%#5@`bGD%_b2jc)S&OuskU{h;E'gqVWC.g~sPZZB=6%^%#
+ hwtacacs-server timer response-timeout 30
+ undo hwtacacs-server user-name domain-included
+#
+acl number 2000  
+ description SNMP
+ rule 10 permit source 10.192.0.0 0.0.0.255 
+ rule 20 permit source 10.31.255.0 0.0.0.255 
+ rule 30 permit source 70.0.1.0 0.0.0.127 
+ rule 100 deny 
+acl number 2001  
+ description Telnet
+ rule 10 permit source 10.10.0.0 0.0.1.255 
+ rule 20 permit source 10.192.0.0 0.0.0.31 
+ rule 30 permit source 70.1.0.0 0.0.0.255 
+ rule 40 permit source 10.31.255.0 0.0.0.255 
+ rule 50 permit source 70.0.0.0 0.0.3.255 
+ rule 100 deny 
+acl number 2002  
+ description NTP
+ rule 10 permit source 70.0.0.32 0 
+ rule 100 deny 
+#
+traffic classifier tcAny operator or precedence 15
+ if-match any
+traffic classifier tcCritical operator or precedence 5
+ if-match vlan-id 3599 to 3600
+traffic classifier tcIAD operator or precedence 10
+ if-match cvlan-id 3599 to 3600
+#
+traffic behavior tb100m
+ permit
+ car cir 102400 pir 102400 cbs 12800000 pbs 12800000 mode color-blind green pass yellow pass red discard
+traffic behavior tb10m
+ permit
+ car cir 10240 pir 10240 cbs 1280000 pbs 1280000 mode color-blind green pass yellow pass red discard
+traffic behavior tb1m
+ permit
+ car cir 1024 pir 1024 cbs 128000 pbs 128000 mode color-blind green pass yellow pass red discard
+traffic behavior tb20m
+ permit
+ car cir 20480 pir 20480 cbs 2560000 pbs 2560000 mode color-blind green pass yellow pass red discard
+traffic behavior tb2m
+ permit
+ car cir 2048 pir 2048 cbs 256000 pbs 256000 mode color-blind green pass yellow pass red discard
+traffic behavior tb4m
+ permit
+ car cir 4096 pir 4096 cbs 512000 pbs 512000 mode color-blind green pass yellow pass red discard
+traffic behavior tb50m
+ permit
+ car cir 51200 pir 51200 cbs 6400000 pbs 6400000 mode color-blind green pass yellow pass red discard
+traffic behavior tb6m
+ permit
+ car cir 6144 pir 6144 cbs 768000 pbs 768000 mode color-blind green pass yellow pass red discard
+traffic behavior tb8m
+ permit
+ car cir 8192 pir 8192 cbs 1024000 pbs 1024000 mode color-blind green pass yellow pass red discard
+traffic behavior tbCritical
+ permit
+ remark 8021p 4
+traffic behavior tbIAD
+ permit
+ remark 8021p 4
+#
+traffic policy 100m match-order auto
+ classifier tcAny behavior tb100m
+traffic policy 10m match-order auto
+ classifier tcAny behavior tb10m
+traffic policy 1m match-order auto
+ classifier tcAny behavior tb1m
+traffic policy 20m match-order auto
+ classifier tcAny behavior tb20m
+traffic policy 2m match-order auto
+ classifier tcAny behavior tb2m
+traffic policy 4m match-order auto
+ classifier tcAny behavior tb4m
+traffic policy 50m match-order auto
+ classifier tcAny behavior tb50m
+traffic policy 6m match-order auto
+ classifier tcAny behavior tb6m
+traffic policy 8m match-order auto
+ classifier tcAny behavior tb8m
+traffic policy tpCritical match-order auto
+ classifier tcCritical behavior tbCritical
+traffic policy tpIAD match-order auto
+ classifier tcIAD behavior tbIAD
+#
+drop-profile default
+#
+vlan 20
+ description For-Management
+vlan 22
+ description Manager_ZTE_ADSL-XDL
+vlan 23
+ description Manager_Node_Switch-XDL
+vlan 24
+ description Manager_ShouFaQi-XDL
+vlan 25
+ description Manager_HuaWei_VDSL-XDL
+vlan 27
+ description Manager_DongLiJianKong_XDL
+vlan 483
+ description DCN
+vlan 585
+ description Vpn_ShiLiFengJianYu
+vlan 700
+ description DCN-Management
+vlan 781
+ description DZZW_QJLianHuaZhengFu
+vlan 840
+ description DZZW_QJGaoJiaZhen
+vlan 1222
+ description ShiLiang_ShiLiFeng-Wlan
+vlan 1318
+ description ShiLiFeng_Dslam_PPPoE-1
+vlan 1319
+ description ShiLiFeng_Dslam_PPPoE-2
+vlan 1320
+ description ShiLiFeng_Dslam_PPPoE-3
+vlan 1321
+ description ShiLiFeng_Dslam_PPPoE-4
+vlan 1471
+ description QZ-QZ-SLF-OLT-5.MAN.GH5516-1#
+vlan 1472
+ description QZ-QZ-SLF-OLT-5.MAN.GH5516-2#
+vlan 1473
+ description QZ-QZ-SLF-OLT-5.MAN.GH5516-3#
+vlan 1474
+ description QZ-QZ-SLF-OLT-5.MAN.GH5516-4#
+vlan 1475
+ description QZ-QZ-SLF-OLT-5.MAN.GH5516-5#
+vlan 1476
+ description QZ-QZ-GJ-OLT-5.MAN.GH5516-1#
+vlan 1477
+ description QZ-QZ-GJ-OLT-5.MAN.GH5516-2#
+vlan 1478
+ description QZ-QZ-GJ-OLT-5.MAN.GH5516-3#
+vlan 1479
+ description QZ-QZ-GJ-OLT-5.MAN.GH5516-4#
+vlan 1543
+ description GaoJia_BELL-GPON-1-1-FTTH-1#
+vlan 1548
+ description QZ-QZ-GaoJ-OLT-3.MAN.GH5680T-5#
+vlan 1613
+ description GaoJia_EPON-FTTH
+vlan 1683
+ description GJ-OLT-1.XB5680T-GB-PPP-1#
+vlan 1684
+ description GJ-OLT-1.XB5680T-GB-PPP-2#
+vlan 1739
+ description XDL-EPON-ShiLiFeng-PPPOE-1#
+vlan 1740
+ description XDL-EPON-ShiLiFeng-PPPOE-2#
+vlan 1741
+ description SLF-OLT-1.XB5680T-GB-PPP-1#
+vlan 1742
+ description SLF-OLT-1.XB5680T-GB-PPP-2#
+vlan 1787
+ description HW-OLT-YuYin_GaoJia
+vlan 1793
+ description XDL-EPON_ShiLiFeng-VOIP
+vlan 2613
+ description GJ-OLT-1.XB5680T-GB-LAN-1#
+vlan 2614
+ description GJ-OLT-1.XB5680T-GB-LAN-2#
+vlan 2669
+ description XDL-EPON-ShiLiFeng-LAN-1#
+vlan 2670
+ description XDL-EPON-ShiLiFeng-LAN-2#
+vlan 2671
+ description SLF-OLT-1.XB5680T-GB-LAN-1#
+vlan 2672
+ description SLF-OLT-1.XB5680T-GB-LAN-2#
+vlan 3194
+ description local_Vpn_ShiLiFengJianYu
+vlan 3210
+ description VPN_JiaoJingGuoJiaXingDongJiHua
+vlan 3273
+ description DCN
+vlan 3290
+ description KC-GASPJK_XDL_IDC_CunChu
+vlan 3640
+ description ShiLF_Netbar_XinLianXin202
+vlan 3647
+ description ShiLF_Netbar_XianXian221
+vlan 3692
+ description DZ_45_ShiLiFengJianYu
+vlan 3850
+ description SLF_93_LianHuaWeiShengYuan
+vlan 3851
+ description SLF93_Netbar_AnRen
+vlan 3852
+ description SLF93_GaoJiaXinYongShe
+vlan 3855
+ description SLF93_ZhouJianHua
+vlan 3954
+ description GaoJiaPaiChuSuo_5701UBD17473809
+#
+aaa
+ authentication-scheme default
+ authentication-scheme zjdx
+  authentication-mode hwtacacs local
+ authorization-scheme default
+ authorization-scheme zjdx
+  authorization-mode  hwtacacs local
+ accounting-scheme default
+ accounting-scheme zjdx
+  accounting-mode hwtacacs
+  accounting start-fail online
+ recording-scheme zjdx
+  recording-mode hwtacacs zjdx
+ cmd recording-scheme zjdx
+ outbound recording-scheme zjdx
+ system recording-scheme zjdx
+ domain default
+ domain default_admin
+  authentication-scheme zjdx
+  accounting-scheme zjdx
+  authorization-scheme zjdx
+  hwtacacs-server zjdx
+ local-user admin password irreversible-cipher %^%#AFui6@|@;=J928~0aoBQZgx+0(_rI5ASG~Rr5CY#RkQtLvp,''!MYjNXJ4cP%^%#
+ local-user admin service-type http
+ local-user local password irreversible-cipher %^%#Y$H@1,-x;4U^Qp7OO5XU]3gV-~rO0FiISTX*tNhMV}%D=(4IF!Q<S`/bu\B2%^%#
+ local-user local privilege level 3
+ local-user local service-type telnet terminal
+ local-user zjnoc password irreversible-cipher %^%#R,uh'rNn&X0-f|36.{&6AJ(F-kDBLQJkCqLa#7^2I1@y.^8n7PFE9v/2)-dC%^%#
+ local-user zjnoc privilege level 3
+ local-user zjnoc service-type telnet terminal
+#
+ntp-service access peer 2002
+ntp-service unicast-server 70.0.0.32 version 2 source-interface Vlanif20 preference
+#
+interface Vlanif20
+ description For-Management
+ ip address 70.1.0.9 255.255.255.0
+#
+interface Eth-Trunk1
+ description uT:QZ-QZ-XDL-DSW-1.MAN.CE12808:Eth-Trunk24(10GE1/8/0/21,10GE2/8/0/21)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 20 22 to 25 27 29 483 700 781 840 1222 1318 to 1321
+ port trunk allow-pass vlan 1471 to 1479 1525 to 1530 1543 to 1548 1606 1613 1681 to 1684 1739 to 1742 1781 1787 1793
+ port trunk allow-pass vlan 2611 2613 to 2614 2669 to 2672 3194 3210 3273 3290 3640 3647 3692
+ port trunk allow-pass vlan 3698 3850 to 3852 3855 3953 to 3954
+ traffic-policy tpIAD inbound
+ mode lacp
+#
+interface Eth-Trunk3
+ description uT:QZ-QZ-DuZ-DSW-1.MAN.S9306:Eth-Trunk6(10GE2/0/15,10GE5/0/15)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 20
+ traffic-policy tpIAD inbound
+ mode lacp
+#
+interface Eth-Trunk4
+ description dT:QZ-QZ-GaoJ-ASW-1.MAN.S5328:Eth-Trunk0(10GE0/1/1,10GE0/1/2)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 20 22 to 25 27 29 735 840 1320 1476 to 1479 1543 to 1548 1613
+ port trunk allow-pass vlan 1681 to 1684 1787 2611 2613 to 2614 3210 3273 3851 to 3852 3953 to 3954
+ mode lacp
+#
+interface Eth-Trunk5
+ description dT:QZ-QZ-SLF-OLT-1.MAN.XB5680T:LAG1(GE0/19/0,GE0/20/0)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 25 29 1606 1739 to 1742 1781 1793 2669 to 2672 3290 3953 to 3954
+ traffic-policy tpIAD inbound
+ mode lacp
+#
+interface Eth-Trunk9
+ description dT:QZ-QZ-SLF-OLT-2.MAN.7360:lag1(GE9/1,GE10/1)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 25 1525 1793
+ traffic-policy tpIAD inbound
+#
+interface Eth-Trunk14
+ description dT:QZ-QZ-SLF-OLT-5.MAN.GH5516:Lag1(GE19/3)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 25 1471 to 1472
+ mode lacp
+#
+interface Ethernet0/0/0
+ shutdown
+#
+interface Ethernet1/0/0
+ description dT:QZ-QZ-SLF-FC-1.MAN.RS16:(local)MGR
+ shutdown
+ port link-type access
+ port default vlan 24
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/1
+ description dT:QZ-QZ-HJYT-ASW-1.MAN.Z3228:(F0912180003)FE1/24
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 22 to 24 27
+ port hybrid untagged vlan 1318
+ port vlan-stacking vlan 1101 to 1196 stack-vlan 1318
+ port vlan-stacking vlan 1197 to 1500 stack-vlan 1318
+ port vlan-stacking vlan 1501 to 1532 stack-vlan 1318
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/2
+ description idle_DZ_45_ShiLiFengJianYu_5701LAN02251893
+ shutdown
+ port link-type access
+ port default vlan 3692
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+ qos car inbound 100m 
+#
+interface Ethernet1/0/3
+ shutdown
+#
+interface Ethernet1/0/4
+ shutdown
+#
+interface Ethernet1/0/5
+ description DZ45_ShiLiFengJianYu-1DaDui
+ shutdown
+ port link-type access
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+ qos car inbound 4m 
+#
+interface Ethernet1/0/6
+ shutdown
+#
+interface Ethernet1/0/7
+ shutdown
+ port link-type access
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/8
+ shutdown
+#
+interface Ethernet1/0/9
+ description SLF93_ZhouJianHua
+ port link-type access
+ port default vlan 3855
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+ qos car inbound 2m 
+#
+interface Ethernet1/0/10
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/11
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/12
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/13
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/14
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/15
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/16
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/17
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/18
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/19
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/20
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/21
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/22
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/23
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/24
+ port link-type access
+ port default vlan 25
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/25
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/26
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/27
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/28
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/29
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/30
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/31
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/32
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/33
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/34
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/35
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/36
+ shutdown
+ port link-type access
+ port default vlan 22
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/37
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/38
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/39
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/40
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/41
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/42
+ description DHJK::kehu
+ port link-type access
+ port default vlan 27
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/43
+ description dT:QZ-QZ-SLFJYNet-LSW-1.MAN.S3026:(Local)FE0/24
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 23 585 3194
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/44
+ shutdown
+#
+interface Ethernet1/0/45
+ description ShiLiFeng-wlan-2::kehu
+ port link-type access
+ port default vlan 1222
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/46
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface Ethernet1/0/47
+ description To:DCN-LianHuaZhiJu::kehu
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 483 700
+#
+interface GigabitEthernet6/0/0
+ shutdown
+#
+interface GigabitEthernet6/0/1
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/2
+ undo negotiation auto
+ description uT:QZ-QZ-XDL-DSW-2.MAN.9306:(F1401080004)GE6/0/2
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 20
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/3
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/4
+ undo negotiation auto
+ description uT:QZ-QZ-DSW-2.MAN.9306:(F1003120013)GE4/0/13
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 20
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/5
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 20
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/6
+ description dT:QZ-QZ-SLF-OLT-1.MAN.XB5680T:(local)GE0/20/0
+ eth-trunk 5
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 20
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/7
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 20
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/8
+ description dT:QZ-QZ-SLF-OLT-1.MAN.XB5680T:(local)GE0/19/0
+ eth-trunk 5
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 20
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/9
+ undo negotiation auto
+ description dT:QZ-QZ-SLF-OLT-2.MAN.7360:(local)GE9/1
+ eth-trunk 9
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 20
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/10
+ undo negotiation auto
+ description dT:QZ-QZ-SLF-OLT-2.MAN.7360:(local)GE10/1
+ eth-trunk 9
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 20
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/11
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/12
+ description dT:QZ-QZ-SLF-DSL-1.MAN.9210:(local)GE16/7
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 22
+ port hybrid untagged vlan 1318
+ port vlan-stacking vlan 101 to 580 stack-vlan 1318
+ traffic-policy tpCritical inbound
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/13
+ shutdown
+#
+interface GigabitEthernet6/0/14
+ description dT:QZ-QZ-SLF-OLT-5.MAN.GH5516:(Local)GE19/3
+ eth-trunk 14
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/15
+ description dT:QZ-QZ-SLF-OLT-5.MAN.GH5516:(Local)GE20/3
+ eth-trunk 14
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/16
+ description dT:QZ-QZ-LH-ASW-1.MAN.Z3928:(F0611240011)GE3/2
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 22 to 24 27 781 1222 1319 3106 3273 3290 3647 3850
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/17
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/18
+ description dT:QZ-QZ-ZhaiT-ASW-1.MAN.C3750:(F1209210005)GE1/0/2
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 22 to 24 27
+ port hybrid untagged vlan 1321
+ port vlan-stacking vlan 101 to 324 stack-vlan 1321
+ port vlan-stacking vlan 1301 to 1348 stack-vlan 1321
+ port vlan-stacking vlan 1401 to 1464 stack-vlan 1321
+ port vlan-stacking vlan 1465 to 1496 stack-vlan 1321
+ port vlan-stacking vlan 1501 to 1548 stack-vlan 1321
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/19
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 20
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/20
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 20
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/21
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/22
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 20
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/23
+ shutdown
+#
+interface XGigabitEthernet2/0/0
+ description uT:QZ-QZ-DuZ-DSW-1.MAN.S9306:(F1412010002)10GE2/0/15
+ eth-trunk 3
+#
+interface XGigabitEthernet2/0/1
+ flow-control
+ description uT:QZ-QZ-XDL-DSW-1.MAN.CE12808:(F1401080004)10GE1/8/0/21
+ eth-trunk 1
+#
+interface XGigabitEthernet2/0/2
+ shutdown
+#
+interface XGigabitEthernet2/0/3
+ shutdown
+#
+interface XGigabitEthernet2/0/4
+ shutdown
+#
+interface XGigabitEthernet2/0/5
+ shutdown
+#
+interface XGigabitEthernet2/0/6
+ shutdown
+#
+interface XGigabitEthernet2/0/7
+ shutdown
+#
+interface XGigabitEthernet2/0/8
+ description dT:QZ-QZ-SLF-OLT-3.MAN.GH5680T:(Local)10GE0/20/0
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 25 1526 to 1530 1793
+ traffic-policy tpIAD inbound
+#
+interface XGigabitEthernet2/0/9
+ shutdown
+#
+interface XGigabitEthernet2/0/10
+ shutdown
+#
+interface XGigabitEthernet2/0/11
+ shutdown
+#
+interface XGigabitEthernet2/0/12
+ shutdown
+#
+interface XGigabitEthernet2/0/13
+ shutdown
+#
+interface XGigabitEthernet2/0/14
+ shutdown
+#
+interface XGigabitEthernet2/0/15
+ description dT:QZ-QZ-GaoJ-DSW-1.MAN.S5328:(F0912180005)10GE0/1/1
+ eth-trunk 4
+#
+interface XGigabitEthernet5/0/0
+ description uT:QZ-QZ-DuZ-DSW-1.MAN.S9306:(F0908250012)10GE5/0/15
+ eth-trunk 3
+#
+interface XGigabitEthernet5/0/1
+ description uT:QZ-QZ-XDL-DSW-1.MAN.CE12808:(F1003120013)10GE2/8/0/21
+ eth-trunk 1
+#
+interface XGigabitEthernet5/0/2
+ shutdown
+#
+interface XGigabitEthernet5/0/3
+ shutdown
+#
+interface XGigabitEthernet5/0/4
+ shutdown
+#
+interface XGigabitEthernet5/0/5
+ shutdown
+#
+interface XGigabitEthernet5/0/6
+ shutdown
+#
+interface XGigabitEthernet5/0/7
+ shutdown
+#
+interface XGigabitEthernet5/0/8
+ shutdown
+#
+interface XGigabitEthernet5/0/9
+ shutdown
+#
+interface XGigabitEthernet5/0/10
+ shutdown
+#
+interface XGigabitEthernet5/0/11
+ shutdown
+#
+interface XGigabitEthernet5/0/12
+ shutdown
+#
+interface XGigabitEthernet5/0/13
+ shutdown
+#
+interface XGigabitEthernet5/0/14
+ shutdown
+#
+interface XGigabitEthernet5/0/15
+ description dT:QZ-QZ-GaoJ-DSW-1.MAN.S5328:(F1102280004)10GE0/1/2
+ eth-trunk 4
+#
+interface NULL0
+#
+ip route-static 0.0.0.0 0.0.0.0 70.1.0.1
+#
+snmp-agent
+snmp-agent local-engineid 000007DB7FFFFFFF000042C1
+snmp-agent community read cipher %^%#gqI~C<[G`6p-=D2=Y)sBr>pi#:t9<-$`T$@nV>g3[9|DI3<NV%O|xx:hP(GC78B+TtayxEu$ma@f%V#/%^%# acl 2000
+snmp-agent sys-info contact QZ-QZ-XDL
+snmp-agent sys-info location QZ-QZ-SLF
+snmp-agent sys-info version all
+snmp-agent target-host trap address udp-domain 10.192.0.11 params securityname cipher %^%#@(\v$rKL[<l@X&8m]MJ0fupF+fyJ=:_Y$U2WRu<.%^%# v2c
+snmp-agent target-host trap address udp-domain 10.192.0.12 params securityname cipher %^%#py$HDpU(^/Epy40'dR;/G}`EBbsN]GUL`2Uig<}&%^%# v2c
+snmp-agent trap source Vlanif20
+snmp-agent trap enable
+#
+ssh server compatible-ssh1x enable
+#
+header login information " WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!"
+#
+user-interface con 0
+user-interface vty 0 4
+ acl 2001 inbound
+ authentication-mode aaa
+ idle-timeout 5 0
+ protocol inbound telnet
+user-interface vty 16 20
+ authentication-mode password
+ user privilege level 1
+ set authentication password cipher %^%#JH!5/2+jD+7,6>B=t!7HAqavAJqD5:=J[1'Yb-MCupAX&[(tx,!qoINF9dLL%^%#
+ protocol inbound telnet
+#
+assistant task savelogfile
+ if-match timer cron * 0 0/1 * * * *
+ perform 1 batch-file savelogfile.bat
+#
+return
+<QZ-QZ-SLF-DSW-1.MAN.S9306>

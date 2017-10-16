@@ -1,0 +1,577 @@
+
+!Software Version V200R008C00SPC500
+#
+sysname QZ-QZ-QZZY-DSW.WLAN.S9306
+#
+vlan batch 23 28 to 36 60 to 62 302 911 1023 1235 1489 to 1490 2300 to 2307 2350 to 2353
+vlan batch 3000 to 3001
+#
+undo authentication unified-mode
+#
+telnet server enable
+telnet ipv6 server enable
+#
+loop-detection enable 
+loop-detection enable vlan 1 23 28 to 36 302 911 1023 1235 1489 to 1490 2300 to 2303 2350 to 2353
+#
+lldp enable
+#
+undo http server enable
+#
+undo management-port isolate enable
+undo management-plane isolate enable
+#
+clock timezone UTC add 00:00:00
+#
+observe-port 1 interface GigabitEthernet1/0/24
+#
+diffserv domain default
+#
+acl number 2009  
+ rule 20 permit source 10.192.0.0 0.0.0.255 
+ rule 21 permit source 10.10.0.0 0.0.0.31 
+#
+traffic classifier c2 operator or precedence 10
+ if-match source-mac c018-859d-2c25
+ if-match destination-mac c018-859d-2c25
+traffic classifier c3 operator or precedence 15
+ if-match source-mac 74e5-4316-ffc0
+ if-match destination-mac 74e5-4316-ffc0
+#
+traffic behavior b1
+ mirroring to observe-port 1 
+ statistic enable
+#
+traffic policy p1 match-order auto
+ classifier c3 behavior b1
+#
+drop-profile default
+#
+vlan 29
+ description sw-management
+vlan 32
+ description zhiyuan99306-to_H3C_WX6112E
+vlan 1235
+ description AP_yewu
+vlan 1490
+ description test
+#
+aaa
+ authentication-scheme default
+ authorization-scheme default
+ accounting-scheme default
+ domain default
+ domain default_admin
+ local-user qzdx password irreversible-cipher %^%#7`(r~z9:r@6*N|FM/hlSTlzV8Zy[&'"o0KTzywiR`'-X'5{V.Ic#>K+aeb%J%^%#
+ local-user qzdx privilege level 3
+ local-user qzdx service-type telnet
+ local-user admin password irreversible-cipher %^%#{xggHix5`WCl~IUe4IXNe>>WN01qQTwvA"CdZFy'K24`Y/<<A$Ki#QHX<"*Y%^%#
+ local-user admin service-type http
+ local-user huawei password cipher %^%#:$>g2jOo|0;EA=;&4ZL-`&(b(AG(_Ug&:B2%]Gk-%^%#
+ local-user huawei service-type telnet terminal ssh ftp ppp web x25-pad bind 8021x http
+ local-user aaa@huawei.com password cipher %^%#$CZA+&{.F#A`SR<&aQLMCoorDntQ=+b>MGY`J+@V%^%#
+ local-user aaa@huawei.com service-type telnet terminal ssh ftp ppp web x25-pad bind 8021x http
+#
+ntp-service unicast-server 70.0.0.32 version 2 source-interface Vlanif29 preference
+#
+interface Vlanif23
+ ip address 10.20.180.1 255.255.255.192
+#
+interface Vlanif28
+ ip address 10.20.181.1 255.255.255.0
+#
+interface Vlanif29
+ description guwang/manage
+ ip address 10.20.145.66 255.255.255.248
+#
+interface Vlanif30
+#
+interface Vlanif31
+#
+interface Vlanif32
+ description to_h3c_wx6112E
+ ip address 10.20.145.73 255.255.255.248
+#
+interface Vlanif33
+#
+interface Vlanif34
+#
+interface Eth-Trunk1
+ description uT:QZ-QZ-QZZY-DSW-1.MAN.S9303:Lag3(GE2/0/22,GE2/0/23)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 23 28 to 29 60 to 62 1489 to 1490
+ mode lacp
+#
+interface Eth-Trunk2
+ description dT:AC-H3C_WX6112E::kehu
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 20 23 28 to 36 2300 to 2307 2350 to 2353 3000 to 3001
+ port hybrid untagged vlan 911 1489
+ port vlan-stacking vlan 101 to 110 stack-vlan 911
+ port vlan-stacking vlan 301 to 310 stack-vlan 1489
+ port vlan-mapping vlan 20 map-vlan 20
+ port vlan-mapping vlan 23 map-vlan 23
+ port vlan-mapping vlan 28 map-vlan 28
+ port vlan-mapping vlan 30 map-vlan 30
+ port vlan-mapping vlan 31 map-vlan 31
+ port vlan-mapping vlan 32 map-vlan 32
+ port vlan-mapping vlan 33 map-vlan 33
+ port vlan-mapping vlan 34 map-vlan 34
+ port vlan-mapping vlan 35 map-vlan 35
+ port vlan-mapping vlan 36 map-vlan 36
+ port vlan-mapping vlan 2300 map-vlan 2300
+ port vlan-mapping vlan 2301 map-vlan 2301
+ port vlan-mapping vlan 2302 map-vlan 2302
+ port vlan-mapping vlan 2303 map-vlan 2303
+ port vlan-mapping vlan 2304 map-vlan 2304
+ port vlan-mapping vlan 2305 map-vlan 2305
+ port vlan-mapping vlan 2306 map-vlan 2306
+ port vlan-mapping vlan 2307 map-vlan 2307
+ port vlan-mapping vlan 3000 map-vlan 3000
+ port vlan-mapping vlan 3001 map-vlan 3001
+#
+interface Eth-Trunk3
+ description YiDong_WLAN_AC::kehu
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 2300 to 2307 2350 to 2353
+#
+interface Ethernet0/0/0
+#
+interface GigabitEthernet1/0/0
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/1
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/2
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/3
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/4
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/5
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/6
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/7
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/8
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/9
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/10
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1023 3000 to 3001
+#
+interface GigabitEthernet1/0/11
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/12
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 3000 to 3001
+#
+interface GigabitEthernet1/0/13
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/14
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/15
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/16
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/17
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/18
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/19
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/20
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/21
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/22
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/23
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/24
+#
+interface GigabitEthernet1/0/25
+#
+interface GigabitEthernet1/0/26
+#
+interface GigabitEthernet1/0/27
+#
+interface GigabitEthernet1/0/28
+#
+interface GigabitEthernet1/0/29
+#
+interface GigabitEthernet1/0/30
+ description UnKnow::kehu
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 60 1023 3000 to 3001
+#
+interface GigabitEthernet1/0/31
+#
+interface GigabitEthernet1/0/32
+#
+interface GigabitEthernet1/0/33
+#
+interface GigabitEthernet1/0/34
+ port link-type access
+ port default vlan 32
+#
+interface GigabitEthernet1/0/35
+ port link-type access
+ port default vlan 32
+#
+interface GigabitEthernet1/0/36
+ description UnKnow::kehu
+ port link-type access
+ port default vlan 32
+#
+interface GigabitEthernet1/0/37
+ shutdown
+ port link-type access
+ port default vlan 911
+#
+interface GigabitEthernet1/0/38
+#
+interface GigabitEthernet1/0/39
+ port link-type access
+ port default vlan 62
+#
+interface GigabitEthernet1/0/40
+#
+interface GigabitEthernet1/0/41
+#
+interface GigabitEthernet1/0/42
+#
+interface GigabitEthernet1/0/43
+#
+interface GigabitEthernet1/0/44
+#
+interface GigabitEthernet1/0/45
+#
+interface GigabitEthernet1/0/46
+#
+interface GigabitEthernet1/0/47
+ port link-type access
+ port default vlan 61
+#
+interface GigabitEthernet2/0/0
+ description uT:QZ-QZ-XDL-BAS-5.MAN.ERX1440:(F1308200008)GE11/0
+ shutdown
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet2/0/1
+ description uT:QZ-QZ-XDL-BAS-4.MAN.ERX1440:(F1308200009)GE11/0
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 911
+#
+interface GigabitEthernet2/0/2
+ undo negotiation auto
+ description uT:QZ-QZ-QZZY-DSW-1.MAN.S9303:(Local)GE2/0/22
+ eth-trunk 1
+#
+interface GigabitEthernet2/0/3
+ undo negotiation auto
+ description uT:QZ-QZ-QZZY-DSW-1.MAN.S9303:(Local)GE2/0/23
+ eth-trunk 1
+#
+interface GigabitEthernet2/0/4
+ description YiDong_WLAN_AC::kehu
+ shutdown
+ eth-trunk 3
+#
+interface GigabitEthernet2/0/5
+ description YiDong_WLAN_AC::kehu
+ eth-trunk 3
+#
+interface GigabitEthernet2/0/6
+ description YiDong_WLAN_AC::kehu
+ eth-trunk 3
+#
+interface GigabitEthernet2/0/7
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet2/0/8
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet2/0/9
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet2/0/10
+ description dT:AC-H3C_WX6112E::kehu
+ eth-trunk 2
+#
+interface GigabitEthernet2/0/11
+ description dT:AC-H3C_WX6112E::kehu
+ eth-trunk 2
+#
+interface GigabitEthernet2/0/12
+ description 1haosushe::kehu
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 23 28 30 to 36
+ port hybrid untagged vlan 1235 1489
+#
+interface GigabitEthernet2/0/13
+ description 2haosushe::kehu
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 23 28 30 to 36
+ port hybrid untagged vlan 1235 1489
+#
+interface GigabitEthernet2/0/14
+ description 3haosushe::kehu
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 23 28 30 to 36
+ port hybrid untagged vlan 1235 1489
+#
+interface GigabitEthernet2/0/15
+ description 4haosushe::kehu
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 23 28 30 to 36
+ port hybrid untagged vlan 1235 1489
+#
+interface GigabitEthernet2/0/16
+ description HouQin&6haosushe::kehu
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 23 28 30 to 36
+ port hybrid untagged vlan 1235 1489
+#
+interface GigabitEthernet2/0/17
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet2/0/18
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet2/0/19
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet2/0/20
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet2/0/21
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet2/0/22
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 60 1023 3000 to 3001
+#
+interface GigabitEthernet2/0/23
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1023
+#
+interface XGigabitEthernet4/0/0
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 28 30 to 35
+#
+interface XGigabitEthernet4/0/1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 28 30 to 35
+#
+interface XGigabitEthernet4/0/2
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 28 30 to 35
+#
+interface XGigabitEthernet4/0/3
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 28 30 to 35
+#
+interface XGigabitEthernet4/0/4
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 28 30 to 35
+#
+interface XGigabitEthernet4/0/5
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 28 30 to 35
+#
+interface XGigabitEthernet4/0/6
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 28 30 to 35
+#
+interface XGigabitEthernet4/0/7
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 28 30 to 35
+#
+interface XGigabitEthernet4/0/8
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 28 30 to 35
+#
+interface XGigabitEthernet4/0/9
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 28 30 to 35
+#
+interface XGigabitEthernet4/0/10
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 28 30 to 35
+#
+interface XGigabitEthernet4/0/11
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 28 30 to 35
+#
+interface XGigabitEthernet5/0/0
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 28 30 to 35
+#
+interface XGigabitEthernet5/0/1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 28 30 to 35
+#
+interface XGigabitEthernet5/0/2
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 28 30 to 35
+#
+interface XGigabitEthernet5/0/3
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 28 30 to 35
+#
+interface XGigabitEthernet5/0/4
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 28 30 to 35
+#
+interface XGigabitEthernet5/0/5
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 28 30 to 35
+#
+interface XGigabitEthernet5/0/6
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 28 30 to 35
+#
+interface XGigabitEthernet5/0/7
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 28 30 to 35
+#
+interface XGigabitEthernet5/0/8
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 28 30 to 35
+#
+interface XGigabitEthernet5/0/9
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 28 30 to 35
+#
+interface XGigabitEthernet5/0/10
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 28 30 to 35
+#
+interface XGigabitEthernet5/0/11
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 28 30 to 35
+#
+interface NULL0
+#
+ip route-static 0.0.0.0 0.0.0.0 10.20.145.65
+ip route-static 10.20.164.0 255.255.252.0 10.20.145.76
+ip route-static 10.20.168.0 255.255.252.0 10.20.145.76
+ip route-static 10.20.168.0 255.255.255.0 10.20.145.76
+ip route-static 10.20.176.0 255.255.252.0 10.20.145.76
+ip route-static 172.16.0.0 255.255.252.0 10.20.145.78
+ip route-static 192.168.1.0 255.255.255.0 10.20.145.78
+#
+snmp-agent
+snmp-agent local-engineid 800007DB03E468A387E6F0
+snmp-agent community read cipher %^%#pXcZ$=4e$/~v\~VNf4sJ7s\vEpIv\&Jt!KEumntXjB~&AX<DXB5K,U<TT%])GY//PQ|575MFs}@/F76:%^%# acl 2009
+snmp-agent sys-info version all
+snmp-agent target-host trap address udp-domain 10.192.0.11 params securityname cipher %^%#5}IZ~:s-O->aRi%%M;7Tom(D6l:MZLq{J<+YIF+"%^%# v2c
+snmp-agent trap source Vlanif29
+#
+ssh server compatible-ssh1x enable
+#
+user-interface maximum-vty 15
+user-interface con 0
+ authentication-mode password
+ set authentication password cipher %^%#3WA1S0jU6HrhKi"\aj[YfR]E;:0U~ZHn!!(={fqWb.{B'Iv'yS6B'}//0:c!%^%#
+ idle-timeout 0 0
+ screen-length 45
+user-interface vty 0 4
+ authentication-mode aaa
+ user privilege level 3
+ idle-timeout 0 0
+ protocol inbound telnet
+user-interface vty 5 14
+ authentication-mode aaa
+ user privilege level 3
+ idle-timeout 0 0
+ screen-length 0
+ protocol inbound telnet
+user-interface vty 16 20
+ protocol inbound telnet
+#
+return
+<QZ-QZ-QZZY-DSW.WLAN.S9306>

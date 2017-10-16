@@ -1,0 +1,355 @@
+--------------------show run--------------------
+
+Building configuration...
+
+Current configuration : 6982 bytes
+!
+! Last configuration change at 10:20:48 UTC Wed Sep 13 2017 by cisco
+! NVRAM config last updated at 10:52:01 UTC Tue Aug 1 2017 by cisco
+!
+version 12.2
+no service pad
+service tcp-keepalives-in
+service tcp-keepalives-out
+service timestamps debug datetime msec localtime show-timezone
+service timestamps log datetime msec localtime show-timezone
+service password-encryption
+!
+hostname QiXingDaShu3550
+!
+logging buffered 32768 debugging
+enable secret 5 $1$c1In$yezwYNivL/yxeNxCGSiFm1
+!
+username cisco privilege 0 password 7 032E432F0230711E0D5B405743
+no aaa new-model
+errdisable recovery cause udld
+errdisable recovery cause bpduguard
+errdisable recovery cause security-violation
+errdisable recovery cause channel-misconfig
+errdisable recovery cause pagp-flap
+errdisable recovery cause dtp-flap
+errdisable recovery cause link-flap
+errdisable recovery cause gbic-invalid
+errdisable recovery cause l2ptguard
+errdisable recovery cause psecure-violation
+errdisable recovery cause dhcp-rate-limit
+errdisable recovery cause unicast-flood
+errdisable recovery cause vmps
+errdisable recovery cause storm-control
+errdisable recovery cause arp-inspection
+errdisable recovery cause loopback
+mls qos
+ip subnet-zero
+no ip domain-lookup
+!
+vtp mode transparent
+!
+!
+!
+port-channel load-balance dst-mac
+no file verify auto
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+no spanning-tree vlan 1,101-196,301-684,767-812,1600,1700,1702-1714,1720-1749
+no spanning-tree vlan 3047,3202,3472,3476,3764,3812,3878,3890
+!
+vlan internal allocation policy ascending
+!
+vlan 99
+ name KuanDai_JiaoHuanJi_NetManager_1
+!
+vlan 1700 
+!
+vlan 1701
+ name LvZhou_NongYe_PPPOE_2M
+!
+vlan 1702,1704-1714,1720-1749,2809 
+!
+vlan 3006
+ name 112-VPN
+!
+vlan 3031
+ name ShiYouHuaGong_VPN
+!
+vlan 3047
+ name GangHang_JX_Vlan-VPN
+!
+vlan 3472 
+!
+vlan 3527
+ name NanHuQu_ShangXian_WangBa_Co.,ltd
+!
+vlan 3535
+ name YaYa_HunNingtu
+!
+vlan 3764,3878,3890 
+!
+class-map match-all 50M
+  match ip dscp default 
+class-map match-all 10M
+  match ip dscp default 
+class-map match-all 2m
+  match ip dscp default 
+class-map match-all 8M
+  match ip dscp default 
+class-map match-all 4M
+  match ip dscp default 
+!
+!
+policy-map 50M
+  class 50M
+    police 50000000 800000 exceed-action drop
+policy-map 10M
+  class 10M
+    police 10000000 800000 exceed-action drop
+policy-map 20M
+  class 10M
+    police 20000000 800000 exceed-action drop
+policy-map 2m
+  class 2m
+    police 2000000 800000 exceed-action drop
+policy-map 8M
+  class 8M
+    police 8000000 800000 exceed-action drop
+policy-map 4M
+  class 4M
+    police 4000000 800000 exceed-action drop
+!
+!
+interface FastEthernet0/1
+ description JX_NeiHeGuoJi_JiZhuangXiangMaTou
+ switchport access vlan 3878
+ switchport mode access
+ switchport protected
+ service-policy input 10M
+ service-policy output 10M
+!
+interface FastEthernet0/2
+ description 5731LAN07792108KangLiDeGouJian
+ switchport access vlan 3890
+ switchport mode access
+ switchport protected
+ service-policy input 20M
+ service-policy output 20M
+!
+interface FastEthernet0/3
+ description dT:JX-ZS-QXDS-AG-2.MAN.BELL:()Master
+ switchport access vlan 2809
+ switchport mode access
+ shutdown
+!
+interface FastEthernet0/4
+ switchport access vlan 1726
+ switchport mode access
+ switchport protected
+ shutdown
+!
+interface FastEthernet0/5
+ description 112_CeShi_VPN
+ switchport access vlan 3006
+ switchport mode access
+ switchport protected
+ switchport block multicast
+ switchport block unicast
+!
+interface FastEthernet0/6
+ description QiXing-ZhongShiHua_pppoe_2M
+ switchport access vlan 1721
+ switchport mode access
+ switchport protected
+ switchport block multicast
+ switchport block unicast
+!
+interface FastEthernet0/7
+ description LvZhou_NongYe_PPPOE_2M
+ switchport access vlan 1722
+ switchport mode dynamic desirable
+ switchport protected
+ switchport block multicast
+ switchport block unicast
+!
+interface FastEthernet0/8
+ description LiangJun_FuShi_2M
+ switchport access vlan 1723
+ switchport mode access
+ switchport protected
+ shutdown
+!
+interface FastEthernet0/9
+ description HuaKang_FuShi
+ switchport access vlan 1724
+ switchport mode access
+ switchport protected
+!
+interface FastEthernet0/10
+ description dT:JX-ZS-QXDS-AG-1.MAN.BELL:()Master
+ switchport access vlan 2809
+ switchport mode access
+ shutdown
+!
+interface FastEthernet0/11
+ description dT:JX-ZS-QXDS-AG-1.MAN.BELL:()Backup
+ switchport access vlan 2809
+ switchport mode access
+ shutdown
+!
+interface FastEthernet0/12
+ description QiXing_YouKuXinDaLou_VPN
+ switchport access vlan 3031
+ switchport mode access
+ service-policy input 10M
+ service-policy output 10M
+!
+interface FastEthernet0/13
+ description DongJinZhongYe_2M
+ switchport access vlan 1725
+ switchport mode access
+ switchport protected
+ service-policy input 2m
+ service-policy output 2m
+!
+interface FastEthernet0/14
+ description dT:JX-ZS-QXDS-AG-2.MAN.BELL:()Backup
+ switchport access vlan 2809
+ switchport mode access
+ shutdown
+!
+interface FastEthernet0/15
+ description ShiYouFenGongsi_VPN
+ switchport access vlan 3047
+ switchport mode access
+ speed 10
+!
+interface FastEthernet0/16
+ description feichefangbaodianqi
+ switchport access vlan 1701
+ switchport mode access
+ switchport protected
+!
+interface FastEthernet0/17
+ description GangHang_VPN_ZhongJiShiYe
+ switchport access vlan 3047
+ switchport mode access
+ switchport protected
+ service-policy input 2m
+ service-policy output 2m
+!
+interface FastEthernet0/18
+ description ShangXianWangBa
+ switchport access vlan 3527
+ switchport mode access
+ switchport protected
+ switchport block multicast
+ switchport block unicast
+!
+interface FastEthernet0/19
+ switchport mode access
+ switchport protected
+ shutdown
+!
+interface FastEthernet0/20
+ description 5730G20040204NanFangHunNingTu
+ switchport access vlan 3535
+ switchport mode access
+ switchport protected
+ switchport block multicast
+ switchport block unicast
+ service-policy input 50M
+ service-policy output 50M
+!
+interface FastEthernet0/21
+ no switchport
+ no ip address
+ shutdown
+!
+interface FastEthernet0/22
+ switchport access vlan 2809
+ switchport mode access
+ shutdown
+!
+interface FastEthernet0/23
+ switchport mode access
+ shutdown
+!
+interface FastEthernet0/24
+ switchport mode dynamic desirable
+ shutdown
+!
+interface GigabitEthernet0/1
+ description uT:JX-ZS-QXDS-ASW-2.MAN.3352
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface GigabitEthernet0/2
+ switchport mode dynamic desirable
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan99
+ ip address 10.133.250.14 255.255.255.0
+!
+ip default-gateway 10.133.250.1
+ip classless
+no ip http server
+!
+logging 61.153.224.7
+access-list 101 deny   ip any any time-range wangba
+access-list 101 permit ip any any
+snmp-server engineID local 00000009020000075023BDC0
+snmp-server community jxipnet RO
+!
+control-plane
+!
+!
+line con 0
+ password 7 032E432F0230711E0D5B405743
+ login
+line vty 0 4
+ login local
+line vty 5 15
+ login local
+!
+ntp clock-period 17180217
+ntp server 10.3.4.1
+ntp server 10.3.4.65
+time-range wangba
+ periodic daily 0:00 to 8:00
+!
+!
+end
+
+QiXingDaShu3550#
+--------------------show interfaces status--------------------
+
+
+Port      Name               Status       Vlan       Duplex  Speed Type
+Fa0/1     JX_NeiHeGuoJi_JiZh connected    3878       a-full  a-100 10/100BaseTX
+Fa0/2     5731LAN07792108Kan connected    3890       a-full  a-100 10/100BaseTX
+Fa0/3     dT:JX-ZS-QXDS-AG-2 disabled     2809         auto   auto 10/100BaseTX
+Fa0/4                        disabled     1726         auto   auto 10/100BaseTX
+Fa0/5     112_CeShi_VPN      connected    3006       a-full  a-100 10/100BaseTX
+Fa0/6     QiXing-ZhongShiHua connected    1721       a-full  a-100 10/100BaseTX
+Fa0/7     LvZhou_NongYe_PPPO connected    1722       a-full  a-100 10/100BaseTX
+Fa0/8     LiangJun_FuShi_2M  disabled     1723         auto   auto 10/100BaseTX
+Fa0/9     HuaKang_FuShi      connected    1724       a-full  a-100 10/100BaseTX
+Fa0/10    dT:JX-ZS-QXDS-AG-1 disabled     2809         auto   auto 10/100BaseTX
+Fa0/11    dT:JX-ZS-QXDS-AG-1 disabled     2809         auto   auto 10/100BaseTX
+Fa0/12    QiXing_YouKuXinDaL connected    3031       a-full  a-100 10/100BaseTX
+Fa0/13    DongJinZhongYe_2M  connected    1725       a-full  a-100 10/100BaseTX
+Fa0/14    dT:JX-ZS-QXDS-AG-2 disabled     2809         auto   auto 10/100BaseTX
+Fa0/15    ShiYouFenGongsi_VP connected    3047       a-full     10 10/100BaseTX
+Fa0/16    feichefangbaodianq connected    1701       a-full  a-100 10/100BaseTX
+Fa0/17    GangHang_VPN_Zhong connected    3047       a-full  a-100 10/100BaseTX
+Fa0/18    ShangXianWangBa    connected    3527       a-full  a-100 10/100BaseTX
+Fa0/19                       disabled     1            auto   auto 10/100BaseTX
+Fa0/20    5730G20040204NanFa connected    3535       a-full  a-100 10/100BaseTX
+Fa0/21                       disabled     routed       auto   auto 10/100BaseTX
+Fa0/22                       disabled     2809         auto   auto 10/100BaseTX
+Fa0/23                       disabled     1            auto   auto 10/100BaseTX
+Fa0/24                       disabled     1            auto   auto 10/100BaseTX
+Gi0/1     uT:JX-ZS-QXDS-ASW- connected    trunk      a-full a-1000 1000BaseLX
+Gi0/2                        notconnect   1            auto   auto 1000BaseLX
+QiXingDaShu3550#

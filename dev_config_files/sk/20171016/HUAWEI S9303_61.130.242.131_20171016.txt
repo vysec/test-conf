@@ -1,0 +1,746 @@
+
+!Software Version V200R003C00SPC500
+#
+sysname ZS-SS-NXSZ-ASW-1.MAN.9303
+#
+info-center source default channel 2 log level warning trap level warning
+info-center source SHELL channel 4 log level informational
+info-center loghost source Vlanif56
+info-center loghost 10.208.0.2 facility local4
+info-center loghost 220.187.27.220 facility local6
+#
+vlan batch 27 33 56 91 to 92 151 154 901 907 964 976
+vlan batch 983 991 993 999 1159 1375 1382 1395 1468 1474
+vlan batch 1489 1810 1814 1821 to 1822 1852 3003 to 3005 3012 3024 3109 3157
+vlan batch 3162 3887 to 3888 3899
+#
+domain zsdx admin
+#
+dot1x enable
+#
+undo http server enable
+undo http secure-server enable
+#
+undo nap slave enable
+#
+ dba-profile default0 type3 assure 40000 max 80000
+#
+diffserv domain default
+#
+hwtacacs-server template zsdx
+ hwtacacs-server authentication 10.208.4.30
+ hwtacacs-server authorization 10.208.4.30
+ hwtacacs-server accounting 10.208.4.30
+ hwtacacs-server source-ip 10.208.21.43
+ hwtacacs-server shared-key cipher %@%@3{!C#y*8043%_xEZSmH4N#_W%@%@
+ undo hwtacacs-server user-name domain-included
+#
+ line-profile default0
+#
+ service-profile default0
+#
+acl number 2000
+ rule 5 permit source 61.175.176.224 0.0.0.31
+ rule 10 permit source 61.175.111.64 0.0.0.31
+ rule 15 permit source 61.174.92.0 0.0.0.255
+ rule 20 permit source 61.174.93.0 0.0.0.255
+ rule 25 permit source 220.187.30.192 0.0.0.63
+ rule 30 permit source 61.153.37.224 0.0.0.15
+ rule 35 permit source 220.187.27.216 0.0.0.7
+ rule 40 permit source 10.208.0.0 0.0.255.255
+ rule 45 permit source 61.153.216.196 0.0.0.3
+#
+acl number 2998
+#
+acl number 3000
+ rule 1 deny tcp destination-port eq 4444
+ rule 2 deny udp destination-port eq tftp
+ rule 3 deny tcp destination-port eq 135
+ rule 4 deny udp destination-port eq 135
+ rule 5 deny tcp destination-port eq 139
+ rule 6 deny udp destination-port eq netbios-ssn
+ rule 7 deny tcp destination-port eq 445
+ rule 8 deny udp destination-port eq 445
+ rule 9 deny tcp destination-port eq 593
+ rule 10 deny udp destination-port eq 593
+ rule 11 deny udp destination-port eq 1434
+ rule 12 deny tcp destination-port eq 5554
+ rule 13 deny tcp destination-port eq 9995
+ rule 14 deny tcp destination-port eq 9996
+ rule 15 deny tcp destination-port eq 1068
+ rule 16 deny tcp destination-port eq 5800
+ rule 17 deny tcp destination-port eq 5900
+ rule 18 deny tcp destination-port eq 10080
+ rule 19 deny tcp destination-port eq 3208
+ rule 20 deny tcp destination-port eq 1871
+ rule 21 deny tcp destination-port eq 4510
+ rule 22 deny udp destination-port eq 4334
+ rule 23 deny tcp destination-port eq 4331
+ rule 24 deny tcp destination-port eq 4557
+ rule 25 deny udp destination-port eq netbios-ns
+ rule 26 deny udp destination-port eq netbios-dgm
+#
+traffic classifier 2M operator or precedence 6
+ if-match any
+traffic classifier huawei operator or precedence 5
+ if-match acl 3000
+#
+traffic behavior 2M
+ permit
+ car cir 1024000 pir 2048000 cbs 128000000 pbs 256000000 mode color-blind green pass yellow pass red discard
+traffic behavior 4M
+ permit
+ car cir 1024000 pir 4096000 cbs 128000000 pbs 512000000 mode color-blind green pass yellow pass red discard
+traffic behavior 6M
+ permit
+traffic behavior huawei
+ deny
+#
+traffic policy 2M
+ classifier 2M behavior 2M
+traffic policy 4M
+ classifier 2M behavior 4M
+traffic policy 6M
+traffic policy huawei
+ classifier huawei behavior huawei
+#
+drop-profile default
+#
+vlan 27
+ description JiaoYuJu
+vlan 33
+ description PingAnXiaoYuan-JianKong
+vlan 56
+ description LouDao-MGN
+vlan 91
+ description New-Switch-MGR
+vlan 92
+ description switch_wg
+vlan 151
+ description ShengSi3550-WangGuan-2
+vlan 154
+ description C3550_mgnt_link
+vlan 901
+ description WLAN-DLINK
+vlan 907
+ description NanQing-qing-wlan
+vlan 964
+ description VPN2-GongLuDuan
+vlan 976
+ description JiaoTongWei-VPN
+vlan 983
+ description JiaoTongJvHangYunGuanliSuo-vpn
+vlan 993
+ description VPN2-GongLuGuanLiJv
+vlan 999
+ description KuaiJiHeSuan
+vlan 1159
+ description NongCun-CaiYuan
+vlan 1375
+ description NanQing-FTTH-YeWu2
+vlan 1395
+ description OLT_NX
+vlan 1468
+ description Pvlan-NanXinShanZhuanglan
+vlan 1474
+ description Pvlan-nanxin_1_2
+vlan 1489
+ description Pvlan-nanxin_1_1
+vlan 1810
+ description XianZhongYiYuan_PPPoE
+vlan 1814
+ description XinDiJianSheKaiFaGongSi-pppoe
+vlan 1821
+ description ZhenXingShanMao_PPPoE
+vlan 1822
+ description HaiChengGongCheng_PPPoE
+vlan 1852
+ description QiCheZhan_Wlan
+vlan 3003
+ description SheQvJingWuWang
+vlan 3004
+ description KeYunZhan_VPN
+vlan 3005
+ description WeiShengJu_vpn
+vlan 3012
+ description JiaoTongJv-VPN
+vlan 3024
+ description WLAN-MGN
+vlan 3109
+ description OIL_C200_WG
+vlan 3157
+ description GongAnDaoLuJianKong-PingAnXiaoYuan
+vlan 3162
+ description GongAnJingKong_GuangDian
+vlan 3887
+ description JiaoTongJu-Lan
+vlan 3888
+ description JiaoTongJV-Guang
+vlan 3899
+ description DongFangHangYunGongSi-QiYeWangGuan
+#
+aaa
+ authentication-scheme default
+ authentication-scheme zsdx
+  authentication-mode hwtacacs local
+ authorization-scheme default
+ authorization-scheme zsdx
+  authorization-mode hwtacacs local
+ accounting-scheme default
+ accounting-scheme zsdx
+  accounting-mode hwtacacs
+  accounting start-fail online
+ recording-scheme zsdx
+  recording-mode hwtacacs zsdx
+ cmd recording-scheme zsdx
+ outbound recording-scheme zsdx
+ system recording-scheme zsdx
+ domain default
+ domain default_admin
+ domain zsdx
+  authentication-scheme zsdx
+  accounting-scheme zsdx
+  authorization-scheme zsdx
+  hwtacacs-server zsdx
+ local-user admin password cipher %@%@5d~9:M^ipCfL\iB)EQd>3Uwe%@%@
+ local-user admin service-type http
+ local-user zsadm password cipher %@%@c'Q)Ke3ynS~\+K1N,bSCN#_T%@%@
+ local-user zsadm privilege level 15
+ local-user zsadm service-type telnet
+#
+ntp-service unicast-server 202.96.115.130
+ntp-service unicast-server 202.96.115.129
+#
+interface Vlanif56
+ ip address 10.208.21.43 255.255.255.224
+#
+interface Vlanif91
+ ip address 61.130.242.131 255.255.255.240
+#
+interface Vlanif993
+#
+interface Vlanif3109
+ ip address 10.146.5.252 255.255.255.0
+#
+interface Eth-Trunk0
+ description uT:ZS-SS-CY-DSW-1.MAN.S9306 LinkGroup7
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 56 91 907 976 993 1375 1382 1395 1468 1489
+ port trunk allow-pass vlan 1801 1814 1817 1821 to 1822 1870 3004 3012 3024 3109 3157
+ port trunk allow-pass vlan 3162 3887 to 3889 3899
+ traffic-policy huawei outbound
+#
+interface Eth-Trunk1
+ description uT:ZS-SS-NX-OLT-1.MAN.C220:SM1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 1375 1382 1395 3109
+#
+interface Ethernet0/0/0
+ ip address 10.11.104.2 255.255.255.0
+#
+interface GigabitEthernet1/0/0
+ undo negotiation auto
+ description uT:ZS-SS-CY-DSW-2.MAN.S9306:(F0511220031)Gi3/0/5
+ eth-trunk 0
+#
+interface GigabitEthernet1/0/1
+ undo negotiation auto
+ description uT:ZS-SS-CY-DSW-2.MAN.S9306:(F0907300023)Gi4/0/8
+ eth-trunk 0
+#
+interface GigabitEthernet1/0/2
+ undo negotiation auto
+ description NanXin9210-1-1
+ shutdown
+ port link-type dot1q-tunnel
+ port default vlan 1489
+ traffic-policy huawei inbound
+ qos pq 4 wrr 0 to 3 5 to 7
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet1/0/3
+#
+interface GigabitEthernet1/0/4
+ undo negotiation auto
+ description uT:ZS-SS-NX-OLT-1.MAN.C220:(local)Gi0/2/1
+ eth-trunk 1
+#
+interface GigabitEthernet1/0/5
+ undo negotiation auto
+ description uT:ZS-SS-NX-OLT-1.MAN.C220:(local)Gi0/3/1
+ eth-trunk 1
+#
+interface GigabitEthernet1/0/6
+ shutdown
+#
+interface GigabitEthernet1/0/7
+ shutdown
+#
+interface GigabitEthernet1/0/8
+#
+interface GigabitEthernet1/0/9
+#
+interface GigabitEthernet1/0/10
+#
+interface GigabitEthernet1/0/11
+#
+interface GigabitEthernet1/0/12
+#
+interface GigabitEthernet1/0/13
+#
+interface GigabitEthernet1/0/14
+#
+interface GigabitEthernet1/0/15
+#
+interface GigabitEthernet1/0/16
+ traffic-policy 2M outbound
+#
+interface GigabitEthernet1/0/17
+#
+interface GigabitEthernet1/0/18
+#
+interface GigabitEthernet1/0/19
+#
+interface GigabitEthernet1/0/20
+#
+interface GigabitEthernet1/0/21
+#
+interface GigabitEthernet1/0/22
+#
+interface GigabitEthernet1/0/23
+#
+interface GigabitEthernet3/0/0
+ undo negotiation auto
+ speed 100
+ port link-type access
+#
+interface GigabitEthernet3/0/1
+ shutdown
+#
+interface GigabitEthernet3/0/2
+ undo negotiation auto
+ speed 100
+ description NanXin_2#_3(3#)
+ shutdown
+ port link-type dot1q-tunnel
+ port default vlan 1468
+ traffic-policy huawei inbound
+ qos pq 4 wrr 0 to 3 5 to 7
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet3/0/3
+ undo negotiation auto
+ speed 100
+ description NainXin_2#_2
+ port link-type dot1q-tunnel
+ port default vlan 1468
+ traffic-policy huawei inbound
+ qos pq 4 wrr 0 to 3 5 to 7
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet3/0/4
+ undo negotiation auto
+ speed 100
+ description NanXin_1#
+ port link-type dot1q-tunnel
+ port default vlan 1468
+ traffic-policy huawei inbound
+ qos pq 4 wrr 0 to 3 5 to 7
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet3/0/5
+ undo negotiation auto
+ speed 100
+ description NanXin_4#
+ port link-type dot1q-tunnel
+ port default vlan 1468
+ traffic-policy huawei inbound
+ qos pq 4 wrr 0 to 3 5 to 7
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet3/0/6
+ undo negotiation auto
+ speed 10
+ description WeiShengJu_vpn To ZhongYiYuan
+ port link-type access
+#
+interface GigabitEthernet3/0/7
+ description DongHaiLu12HaoXiaoLingTongJiZhanHouMian-WLAN
+ port link-type dot1q-tunnel
+ port default vlan 907
+ traffic-policy huawei inbound
+ qos pq 4 wrr 0 to 3 5 to 7
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet3/0/8
+ undo negotiation auto
+ speed 10
+ port link-type access
+#
+interface GigabitEthernet3/0/9
+ undo negotiation auto
+ speed 100
+ description NanXin_3#
+ port link-type dot1q-tunnel
+ port default vlan 1468
+ traffic-policy huawei inbound
+ qos pq 4 wrr 0 to 3 5 to 7
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet3/0/10
+#
+interface GigabitEthernet3/0/11
+ undo negotiation auto
+ speed 100
+ description DongFangHangYunGongSi-QiYeWangGuan
+ port link-type access
+ port default vlan 3899
+#
+interface GigabitEthernet3/0/12
+ undo negotiation auto
+ speed 100
+ description JiaoTongJV-Guang
+ port link-type access
+ port default vlan 3888
+#
+interface GigabitEthernet3/0/13
+ undo negotiation auto
+ speed 100
+ description YiFangNong57Hao-WLAN
+ port link-type dot1q-tunnel
+ port default vlan 907
+ traffic-policy huawei inbound
+ qos pq 4 wrr 0 to 3 5 to 7
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet3/0/14
+ undo negotiation auto
+ speed 100
+ description QiCheZhan_Wlan
+ port link-type dot1q-tunnel
+ port default vlan 907
+#
+interface GigabitEthernet3/0/15
+ undo negotiation auto
+ speed 100
+ description JiaoJingDaLou-Wlan
+ port link-type dot1q-tunnel
+ port default vlan 907
+ traffic-policy huawei inbound
+#
+interface GigabitEthernet3/0/16
+ undo negotiation auto
+ speed 100
+ description TianGongLu24Hao-WLAN
+ port link-type dot1q-tunnel
+ port default vlan 907
+ traffic-policy huawei inbound
+ qos pq 4 wrr 0 to 3 5 to 7
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet3/0/17
+ undo negotiation auto
+ speed 100
+ description WLAN
+ port link-type dot1q-tunnel
+ port default vlan 901
+ traffic-policy huawei inbound
+ qos pq 4 wrr 0 to 3 5 to 7
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet3/0/18
+ undo negotiation auto
+ speed 100
+ description GongAnJianKong_3.0
+ port link-type access
+ port default vlan 3162
+ traffic-policy huawei inbound
+#
+interface GigabitEthernet3/0/19
+ description JiaoTongJv-Sheng-Vpn
+ port link-type access
+ port default vlan 976
+ traffic-policy huawei inbound
+#
+interface GigabitEthernet3/0/20
+ undo negotiation auto
+ speed 100
+ description JiaoTongJu-Lan
+ port link-type access
+ port default vlan 3887
+#
+interface GigabitEthernet3/0/21
+ undo negotiation auto
+ speed 100
+ description NanQingWaiQiang-WLAN
+ port link-type dot1q-tunnel
+ port default vlan 907
+ traffic-policy huawei inbound
+ qos pq 4 wrr 0 to 3 5 to 7
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet3/0/22
+ description KeYunZhan_vpn-JiaoTongJu
+ port link-type access
+ port default vlan 3004
+ traffic-policy huawei inbound
+#
+interface GigabitEthernet3/0/23
+ undo negotiation auto
+ speed 10
+ description HaiChengGongCheng_PPPoE
+ port link-type access
+ port default vlan 1822
+ traffic-policy huawei inbound
+#
+interface GigabitEthernet3/0/24
+ undo negotiation auto
+ speed 100
+ description ZhenXingShanMao_PPPoE
+ port link-type access
+ port default vlan 1821
+ traffic-policy huawei inbound
+#
+interface GigabitEthernet3/0/25
+ undo negotiation auto
+ speed 100
+ description KeYunZhan-ShouPiaoWang
+ port link-type access
+ port default vlan 3004
+ traffic-policy huawei inbound
+#
+interface GigabitEthernet3/0/26
+ undo negotiation auto
+ speed 10
+ description XinDiJianSheKaiFaGongSi-pppoe
+ port link-type access
+ port default vlan 1814
+ traffic-policy huawei inbound
+#
+interface GigabitEthernet3/0/27
+ port link-type access
+ traffic-policy huawei inbound
+#
+interface GigabitEthernet3/0/28
+ undo negotiation auto
+ speed 100
+ description WLAN-HengShanYuan8&1
+ port link-type dot1q-tunnel
+ port default vlan 907
+#
+interface GigabitEthernet3/0/29
+ undo negotiation auto
+ speed 100
+ description WLAN-HengShanYuan10&1
+ port link-type dot1q-tunnel
+ port default vlan 907
+#
+interface GigabitEthernet3/0/30
+ undo negotiation auto
+ speed 100
+ description WLAN-HengShanYuan15&1
+ port link-type dot1q-tunnel
+ port default vlan 907
+#
+interface GigabitEthernet3/0/31
+ description VPN-GongGuanSuo
+ port link-type access
+ port default vlan 993
+#
+interface GigabitEthernet3/0/32
+ undo negotiation auto
+ speed 100
+ description WLAN-ShenJiJv
+ port link-type dot1q-tunnel
+ port default vlan 907
+#
+interface GigabitEthernet3/0/33
+ undo negotiation auto
+ speed 10
+ description JiaoTongJv-VPN
+ port link-type access
+ port default vlan 3012
+#
+interface GigabitEthernet3/0/34
+ shutdown
+#
+interface GigabitEthernet3/0/35
+ description LAN-PPPoE-NX-WeiKenBan
+ port link-type access
+#
+interface GigabitEthernet3/0/36
+#
+interface GigabitEthernet3/0/37
+#
+interface GigabitEthernet3/0/38
+#
+interface GigabitEthernet3/0/39
+#
+interface GigabitEthernet3/0/40
+#
+interface GigabitEthernet3/0/41
+#
+interface GigabitEthernet3/0/42
+#
+interface GigabitEthernet3/0/43
+#
+interface GigabitEthernet3/0/44
+#
+interface GigabitEthernet3/0/45
+#
+interface GigabitEthernet3/0/46
+#
+interface GigabitEthernet3/0/47
+#
+interface NULL0
+#
+ip route-static 0.0.0.0 0.0.0.0 61.130.242.129
+ip route-static 10.208.0.0 255.255.0.0 10.208.21.33
+#
+snmp-agent
+snmp-agent local-engineid 000007DB7FFFFFFF0000785B
+snmp-agent community read cipher %$%$lJfVA6yX@GR<-}T5}A"4N#k#+^R[.X2l1/}b7}Tr&LP2#k&N2_h/&B8340q|Nh24+-V!k/N#%$%$ acl 2000
+snmp-agent sys-info contact HuaWei HangZhou China ,TEL:800-8302118
+snmp-agent sys-info location ZhouShan Telecom,ShengSi-NanXin Office
+snmp-agent sys-info version all
+snmp-agent trap enable feature-name TRUNK
+snmp-agent trap enable feature-name bgp
+snmp-agent trap enable feature-name MPLS_LSPM trap-name hwMplsStaticLspUp
+snmp-agent trap enable feature-name MPLS_LSPM trap-name hwMplsStaticLspDown
+snmp-agent trap enable feature-name MPLS_LSPM trap-name hwMplsStaticCRLspUp
+snmp-agent trap enable feature-name MPLS_LSPM trap-name hwMplsStaticCRLspDown
+snmp-agent trap enable feature-name MPLS_LSPM trap-name mplsTunnelReoptimized
+snmp-agent trap enable feature-name MPLS_LSPM trap-name mplsTunnelRerouted
+snmp-agent trap enable feature-name MPLS_LSPM trap-name hwMplsTeFrrSwitch
+snmp-agent trap enable feature-name MPLS_LSPM trap-name hwMplsTeFrrResume
+snmp-agent trap enable feature-name MPLS_LSPM trap-name hwMplsTunnelHSBSwitch
+snmp-agent trap enable feature-name MPLS_LSPM trap-name hwMplsTunnelHSBResume
+snmp-agent trap enable feature-name MPLS_LSPM trap-name hwMplsTunnelOBSwitch
+snmp-agent trap enable feature-name MPLS_LSPM trap-name hwMplsTunnelOBResume
+snmp-agent trap enable feature-name MPLS_LSPM trap-name hwMplsTeFrrProtAval
+snmp-agent trap enable feature-name MPLS_LSPM trap-name hwMplsTeFrrProtNotAval
+snmp-agent trap enable feature-name MPLS_LSPM trap-name hwmplsTunnelChangeBW
+snmp-agent trap enable feature-name TUNNEL-TE trap-name hwMplsPsSwitchWtoP
+snmp-agent trap enable feature-name TUNNEL-TE trap-name hwMplsPsSwitchPtoW
+snmp-agent trap enable feature-name l3vpn
+snmp-agent trap enable feature-name MPLS-OAM
+snmp-agent trap enable feature-name L2VPN trap-name hwCCCVcDown
+snmp-agent trap enable feature-name L2VPN trap-name hwCCCVcUp
+snmp-agent trap enable feature-name L2VPN trap-name hwVplsVcDown
+snmp-agent trap enable feature-name L2VPN trap-name hwVplsVcUp
+snmp-agent trap enable feature-name L2VPN trap-name hwVplsVsiDown
+snmp-agent trap enable feature-name L2VPN trap-name hwVplsVsiUp
+snmp-agent trap enable feature-name L2VPN trap-name hwKompellaVcDown
+snmp-agent trap enable feature-name L2VPN trap-name hwKompellaVcUp
+snmp-agent trap enable feature-name L2VPN trap-name hwKompellaSwitchWtoP
+snmp-agent trap enable feature-name L2VPN trap-name hwKompellaSwitchPtoW
+snmp-agent trap enable feature-name L2VPN trap-name hwPWVcDown
+snmp-agent trap enable feature-name L2VPN trap-name hwPWVcUp
+snmp-agent trap enable feature-name L2VPN trap-name hwPWVcSwitchWtoP
+snmp-agent trap enable feature-name L2VPN trap-name hwPWVcSwitchPtoW
+snmp-agent trap enable feature-name L2VPN trap-name hwSvcDown
+snmp-agent trap enable feature-name L2VPN trap-name hwSvcUp
+snmp-agent trap enable feature-name L2VPN trap-name hwVplsVcBackup
+snmp-agent trap enable feature-name L2VPN trap-name hwPWVcBackup
+snmp-agent trap enable feature-name l2-multicast
+snmp-agent trap enable feature-name ldp trap-name Session-Retry
+snmp-agent trap enable feature-name ldp trap-name Session-PVL
+snmp-agent trap enable feature-name ldp trap-name Session-Up-MIB
+snmp-agent trap enable feature-name ldp trap-name Session-Down-MIB
+snmp-agent trap enable feature-name EOAM-1AG
+snmp-agent trap enable feature-name MSTP
+snmp-agent trap enable feature-name LACP
+snmp-agent trap enable feature-name EFM
+snmp-agent trap enable feature-name BFD
+snmp-agent trap enable feature-name IFNET trap-name hwIfMonitorInputRateRising
+snmp-agent trap enable feature-name IFNET trap-name hwIfMonitorInputRateResume
+snmp-agent trap enable feature-name IFNET trap-name hwIfMonitorOutputRateRising
+snmp-agent trap enable feature-name IFNET trap-name hwIfMonitorOutputRateResume
+snmp-agent trap enable feature-name IFNET trap-name linkDown
+snmp-agent trap enable feature-name IFNET trap-name linkUp
+snmp-agent trap enable feature-name CONFIGURATION
+snmp-agent trap enable feature-name SNMP trap-name authenticationFailure
+snmp-agent trap enable feature-name DLDP
+snmp-agent trap enable feature-name LDTTRAP
+snmp-agent trap enable feature-name LLDPTRAP
+snmp-agent trap enable feature-name VFS
+snmp-agent trap enable feature-name BASETRAP
+#
+header login information " WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!"
+#
+user-interface con 0
+user-interface vty 0 4
+ acl 2000 inbound
+ authentication-mode aaa
+user-interface vty 16 20
+#
+return
+<ZS-SS-NXSZ-ASW-1.MAN.9303>

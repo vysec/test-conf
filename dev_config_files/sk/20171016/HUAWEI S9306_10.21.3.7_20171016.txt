@@ -1,0 +1,877 @@
+
+!Software Version V200R008C00SPC500
+#
+sysname QZ-QZ-AJSQ-DSW-1.MAN.S9306
+#
+super password level 3 cipher %$%$pb5Q6Ev#hBEeT],Qw{B"#b<k>ys#;~2qXVWH(I;k`rzPb<n#%$%$
+#
+info-center source default channel 2 log level warning trap level warning
+info-center source default channel 4 log level notification
+info-center source SHELL channel 4 log level notification
+info-center source NTP channel 4 log state off 
+info-center loghost source Vlanif20
+info-center loghost 10.192.0.11 facility local4
+info-center loghost 10.192.0.12 facility local4
+#
+vlan batch 20 to 24 26 to 28 561 702 712 717 724 741 779 933
+vlan batch 936 961 1205 1208 1296 1366 to 1367 1370 1372 1652 to 1656 1658 to 1679
+vlan batch 3214 3400 3404 3602 3624 3627 3752 to 3753 3755 3757 to 3758 3760
+vlan batch 3763 to 3764 3841
+#
+undo authentication unified-mode
+#
+set save-configuration interval 43200 delay 30
+#
+transceiver phony-alarm-disable
+#
+telnet server enable
+telnet ipv6 server enable
+#
+qos car 4m cir 4000 pir 4096 cbs 500000 pbs 512000
+qos car 50m cir 50000 pir 51200 cbs 6250000 pbs 6400000
+qos car 2m cir 2000 pir 2048 cbs 250000 pbs 256000
+qos car 30m cir 30000 pir 30720 cbs 3750000 pbs 3840000
+qos car 10m cir 10000 pir 10240 cbs 1250000 pbs 1280000
+#
+lldp enable
+#
+undo http server enable
+undo http secure-server enable
+#
+undo management-port isolate enable
+undo management-plane isolate enable
+#
+clock timezone GMT add 08:00:00
+#
+diffserv domain default
+#
+hwtacacs-server template zjdx
+ hwtacacs-server authentication 70.0.0.32
+ hwtacacs-server authorization 70.0.0.32
+ hwtacacs-server accounting 70.0.0.32
+ hwtacacs-server source-ip 10.21.3.7
+ hwtacacs-server shared-key cipher %^%#IXC*3V|i#T^|K{'@TO%A`@I]3zhj,.g8<]R1A8W'%^%#
+ hwtacacs-server timer response-timeout 30
+ undo hwtacacs-server user-name domain-included
+#
+acl number 2000  
+ description SNMP
+ rule 10 permit source 10.192.0.0 0.0.0.255 
+ rule 20 permit source 10.31.255.0 0.0.0.255 
+ rule 30 permit source 70.0.1.0 0.0.0.127 
+ rule 100 deny 
+acl number 2001  
+ description Telnet
+ rule 10 permit source 10.10.0.0 0.0.1.255 
+ rule 20 permit source 10.192.0.0 0.0.0.31 
+ rule 30 permit source 10.21.3.0 0.0.0.255 
+ rule 40 permit source 10.31.255.0 0.0.0.255 
+ rule 50 permit source 70.0.0.0 0.0.3.255 
+ rule 100 deny 
+acl number 2002  
+ description NTP
+ rule 10 permit source 70.0.0.32 0 
+ rule 100 deny 
+#
+traffic classifier tcAny operator or precedence 15
+ if-match any
+traffic classifier tcCritical operator or precedence 5
+ if-match vlan-id 3599 to 3600
+traffic classifier tcIAD operator or precedence 10
+ if-match cvlan-id 3599 to 3600
+#
+traffic behavior tb100m
+ permit
+ car cir 102400 pir 102400 cbs 12800000 pbs 12800000 mode color-blind green pass yellow pass red discard
+traffic behavior tb10m
+ permit
+ car cir 10240 pir 10240 cbs 1280000 pbs 1280000 mode color-blind green pass yellow pass red discard
+traffic behavior tb1m
+ permit
+ car cir 1024 pir 1024 cbs 128000 pbs 128000 mode color-blind green pass yellow pass red discard
+traffic behavior tb20m
+ permit
+ car cir 20480 pir 20480 cbs 2560000 pbs 2560000 mode color-blind green pass yellow pass red discard
+traffic behavior tb2m
+ permit
+ car cir 2048 pir 2048 cbs 256000 pbs 256000 mode color-blind green pass yellow pass red discard
+traffic behavior tb4m
+ permit
+ car cir 4096 pir 4096 cbs 512000 pbs 512000 mode color-blind green pass yellow pass red discard
+traffic behavior tb50m
+ permit
+ car cir 51200 pir 51200 cbs 6400000 pbs 6400000 mode color-blind green pass yellow pass red discard
+traffic behavior tb6m
+ permit
+ car cir 6144 pir 6144 cbs 768000 pbs 768000 mode color-blind green pass yellow pass red discard
+traffic behavior tb8m
+ permit
+ car cir 8192 pir 8192 cbs 1024000 pbs 1024000 mode color-blind green pass yellow pass red discard
+traffic behavior tbCritical
+ permit
+ remark 8021p 4
+traffic behavior tbIAD
+ permit
+ remark 8021p 4
+#
+traffic policy 100m match-order auto
+ classifier tcAny behavior tb100m
+traffic policy 10m match-order auto
+ classifier tcAny behavior tb10m
+traffic policy 1m match-order auto
+ classifier tcAny behavior tb1m
+traffic policy 20m match-order auto
+ classifier tcAny behavior tb20m
+traffic policy 2m match-order auto
+ classifier tcAny behavior tb2m
+traffic policy 4m match-order auto
+ classifier tcAny behavior tb4m
+traffic policy 50m match-order auto
+ classifier tcAny behavior tb50m
+traffic policy 6m match-order auto
+ classifier tcAny behavior tb6m
+traffic policy 8m match-order auto
+ classifier tcAny behavior tb8m
+traffic policy tpCritical match-order auto
+ classifier tcCritical behavior tbCritical
+traffic policy tpIAD match-order auto
+ classifier tcIAD behavior tbIAD
+#
+drop-profile default
+#
+vlan 20
+ description For-Management
+vlan 21
+ description Manager_UT-ADSL
+vlan 23
+ description Manager_JieDian_L2Switch-NQ
+vlan 24
+ description Manager_ShouFaQi-NQ
+vlan 26
+ description Manager_HuaWei_VDSL-NQ
+vlan 27
+ description Manager_DongLiJianKong_NQ
+vlan 28
+ description Wlan_MAG
+vlan 561
+ description Vpn_GuoShui_ShiJu
+vlan 702
+ description DZZW_ShiXingZhengFuWuZhongXin
+vlan 712
+ description DZZW_QZShiWei610BanGongShi
+vlan 717
+ description DZZW_ShiLaoGanBuJu
+vlan 741
+ description DZZW_YaoJianJU
+vlan 779
+ description DZZW_ZhengFaWeiDaLou
+vlan 933
+ description Gov_ZhengFaWei
+vlan 936
+ description Gov_610BanGongShi
+vlan 961
+ description Gov_LvYouJu
+vlan 1205
+ description WanHaoHotel_Wlan
+vlan 1208
+ description NongYeJu-Wlan
+vlan 1296
+ description Wlan_WanHaoHotel
+vlan 1366
+ description AnJu4Qi-5300
+vlan 1367
+ description AnJu4Qi-5306
+vlan 1370
+ description AnJu4Qi-9210-1-1
+vlan 1372
+ description MeiHuaYuan8220
+vlan 1652
+ description AJ4Q50#1
+vlan 1653
+ description AJ4Q_49#2
+vlan 1654
+ description AJ4Q_62#2
+vlan 1655
+ description AJ4Q_61#1
+vlan 1656
+ description AJ4Q_59#2
+vlan 1658
+ description AJ4Q_63#2
+vlan 1659
+ description AJ4Q_47#1
+vlan 1660
+ description VLAN1989
+vlan 1661
+ description AJ4Q_57#1
+vlan 1662
+ description AJ4Q_44#2
+vlan 1663
+ description AJ4Q_46#
+vlan 1664
+ description AJ4Q_46#2
+vlan 1665
+ description AJ4Q_64#1
+vlan 1666
+ description AnJu4Qi-54#-pppoe
+vlan 1667
+ description AJ4Q_53#2
+vlan 1668
+ description AJ4Q_47#3
+vlan 1669
+ description AJ4Q_71#
+vlan 1670
+ description AJ4Q_45#3
+vlan 1671
+ description AJ4Q_45#1
+vlan 1672
+ description AJ4Q_72#2
+vlan 1673
+ description AJ4Q_79#
+vlan 1674
+ description AJ4Q_80#2
+vlan 1675
+ description AJ4Q_80#4
+vlan 1676
+ description AJ4Q_76#2
+vlan 1677
+ description AJ4Q_77#3
+vlan 1678
+ description VLAN1971
+vlan 1679
+ description AJ4Q_78#1
+vlan 3214
+ description HBYiYuan-NQHeXiWeiShengFuWuZhan
+vlan 3400
+ description Hotel_NQ-WanHaoDaJiuDian
+vlan 3404
+ description NQ_WanHaoDaJiuDia
+vlan 3602
+ description AJ45_New_XinTian_Netbar203
+vlan 3624
+ description AJ93_ZhaoTouBiaoZhongXin
+vlan 3627
+ description AJ40_Netbar_LanQingTing
+vlan 3752
+ description AJ40_ZhouNianCheng-1
+vlan 3753
+ description AJ40_ZhouNianCheng-2
+vlan 3755
+ description AJ40_LaoGanBuJu
+vlan 3757
+ description AJ40_ZhengFangWuLiu
+vlan 3758
+ description AJ40_ZhengFangWuLiu-WaiWang
+vlan 3760
+ description AJ40_HuaHuiGongChengSheJi
+vlan 3763
+ description AJ93_DeJiLvShiShiWuSuo
+vlan 3764
+ description AJ40_XuZhiPing
+vlan 3841
+ description AJ93_Netbar_FengNiao
+#
+aaa
+ authentication-scheme default
+ authentication-scheme zjdx
+  authentication-mode hwtacacs local
+ authorization-scheme default
+ authorization-scheme zjdx
+  authorization-mode  hwtacacs local
+ accounting-scheme default
+ accounting-scheme zjdx
+  accounting-mode hwtacacs
+  accounting start-fail online
+ recording-scheme zjdx
+  recording-mode hwtacacs zjdx
+ cmd recording-scheme zjdx
+ outbound recording-scheme zjdx
+ system recording-scheme zjdx
+ domain default
+ domain default_admin
+  authentication-scheme zjdx
+  accounting-scheme zjdx
+  authorization-scheme zjdx
+  hwtacacs-server zjdx
+ local-user admin password irreversible-cipher %^%#nBvS0Gl9\HaAr*CH5i,2L<|VHq'~aUx|un2[}\gX|X11CX#^J64p/WG/9_B&%^%#
+ local-user admin service-type http
+ local-user local password irreversible-cipher %^%#ROMlJibStXvuXQ$R9piS=-)kUX=WuSt-.@<tH9%EQ*Fr&;_t2/a&YX2[P}o'%^%#
+ local-user local privilege level 3
+ local-user local service-type telnet terminal
+ local-user zjnoc password irreversible-cipher %^%#`Y2!JcRa<7K,|YJ^ENc-LGoO*15`*Ry&aNM%'^dFsc5wLOnZ;HpyC!!PG}y'%^%#
+ local-user zjnoc privilege level 3
+ local-user zjnoc service-type telnet terminal
+#
+ntp-service access peer 2002
+ntp-service unicast-server 70.0.0.32 version 2 source-interface Vlanif20 preference
+#
+interface Vlanif20
+ description For-Management
+ ip address 10.21.3.7 255.255.255.0
+#
+interface Eth-Trunk5
+ description uT:QZ-QZ-NQ-DSW-2.MAN.S9306:Eth-Trunk5(GE4/0/12,GE6/0/12)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 20 to 24 26 to 28 561 702 712 717 724 741 779 933
+ port trunk allow-pass vlan 936 959 961 1205 1208 1296 1366 to 1367 1370 1372 1652 to 1656
+ port trunk allow-pass vlan 1658 to 1679 3214 3400 3404 3602 3624 3627 3752 to 3753 3755 3757 to 3758
+ port trunk allow-pass vlan 3760 3763 to 3764 3841
+ bpdu bridge enable
+#
+interface Ethernet0/0/0
+ shutdown
+#
+interface Ethernet1/0/0
+ shutdown
+#
+interface Ethernet1/0/1
+ description WLAN-NongYeJu
+ port link-type access
+ port default vlan 1208
+ bpdu bridge enable
+#
+interface Ethernet1/0/2
+ shutdown
+#
+interface Ethernet1/0/3
+ shutdown
+ port link-type access
+ port default vlan 561
+#
+interface Ethernet1/0/4
+ shutdown
+#
+interface Ethernet1/0/5
+ shutdown
+ port link-type access
+ port default vlan 3755
+ qos car inbound 30m 
+#
+interface Ethernet1/0/6
+ shutdown
+ port link-type access
+ port default vlan 779
+#
+interface Ethernet1/0/7
+ shutdown
+ port link-type access
+ port default vlan 712
+#
+interface Ethernet1/0/8
+ shutdown
+#
+interface Ethernet1/0/9
+ shutdown
+ port link-type access
+ port default vlan 702
+#
+interface Ethernet1/0/10
+ shutdown
+ port link-type access
+ port default vlan 724
+#
+interface Ethernet1/0/11
+ shutdown
+ port link-type access
+ port default vlan 936
+#
+interface Ethernet1/0/12
+ shutdown
+ port link-type access
+ port default vlan 3763
+ qos car inbound 10m 
+#
+interface Ethernet1/0/13
+ shutdown
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 26 2500
+#
+interface Ethernet1/0/14
+ description AJ45_Netbar_FengNiao::kehu
+ port link-type access
+ port default vlan 3841
+#
+interface Ethernet1/0/15
+ shutdown
+ port link-type access
+ port default vlan 933
+ qos car inbound 2m 
+#
+interface Ethernet1/0/16
+ shutdown
+#
+interface Ethernet1/0/17
+ shutdown
+#
+interface Ethernet1/0/18
+ shutdown
+#
+interface Ethernet1/0/19
+ shutdown
+#
+interface Ethernet1/0/20
+ shutdown
+#
+interface Ethernet1/0/21
+ shutdown
+#
+interface Ethernet1/0/22
+ shutdown
+#
+interface Ethernet1/0/23
+ shutdown
+#
+interface Ethernet1/0/24
+ shutdown
+#
+interface Ethernet1/0/25
+ shutdown
+#
+interface Ethernet1/0/26
+ shutdown
+#
+interface Ethernet1/0/27
+ shutdown
+#
+interface Ethernet1/0/28
+ shutdown
+#
+interface Ethernet1/0/29
+ shutdown
+#
+interface Ethernet1/0/30
+ shutdown
+#
+interface Ethernet1/0/31
+ shutdown
+#
+interface Ethernet1/0/32
+ description dT:QZ-QZ-AJ4Q47#-LSW-1.2826:(47-1)::kehu
+ port link-type dot1q-tunnel
+ port default vlan 1659
+#
+interface Ethernet1/0/33
+ shutdown
+#
+interface Ethernet1/0/34
+ shutdown
+#
+interface Ethernet1/0/35
+ shutdown
+ port link-type access
+ port default vlan 22
+#
+interface Ethernet1/0/36
+ shutdown
+#
+interface Ethernet1/0/37
+ shutdown
+#
+interface Ethernet1/0/38
+ shutdown
+#
+interface Ethernet1/0/39
+ shutdown
+#
+interface Ethernet1/0/40
+ shutdown
+#
+interface Ethernet1/0/41
+ shutdown
+#
+interface Ethernet1/0/42
+ description DHJK::kehu
+ port link-type access
+ port default vlan 27
+#
+interface Ethernet1/0/43
+ shutdown
+#
+interface Ethernet1/0/44
+ shutdown
+ port link-type dot1q-tunnel
+ port default vlan 1366
+#
+interface Ethernet1/0/45
+ shutdown
+ port link-type dot1q-tunnel
+ port default vlan 1367
+#
+interface Ethernet1/0/46
+ description dT:QZ-QZ-AJ4Q-DSL-1.MAN.9210:(local)FE16/0
+ port link-type access
+ port default vlan 22
+ traffic-policy tpCritical inbound
+#
+interface Ethernet1/0/47
+ shutdown
+#
+interface Ethernet3/0/0
+ shutdown
+#
+interface Ethernet3/0/1
+ shutdown
+ port link-type access
+ port default vlan 961
+#
+interface Ethernet3/0/2
+ description Description Missing::kehu
+ port link-type dot1q-tunnel
+ port default vlan 1664
+#
+interface Ethernet3/0/3
+ description dT:QZ-QZ-AJ4Q50#-LSW-1.2826::kehu
+ port link-type dot1q-tunnel
+ port default vlan 1652
+#
+interface Ethernet3/0/4
+ description dT:QZ-QZ-AJ4Q49#-LSW-1.2826::kehu
+ port link-type dot1q-tunnel
+ port default vlan 1653
+#
+interface Ethernet3/0/5
+ description dT:QZ-QZ-AJ4Q62#-LSW-1.2826:(62-2)::kehu
+ port link-type dot1q-tunnel
+ port default vlan 1654
+#
+interface Ethernet3/0/6
+ description dT:QZ-QZ-AJ4Q61#-LSW-1.2826::kehu
+ port link-type dot1q-tunnel
+ port default vlan 1655
+#
+interface Ethernet3/0/7
+ description dT:QZ-QZ-AJ4Q59#-LSW-1.2826::kehu
+ port link-type dot1q-tunnel
+ port default vlan 1656
+#
+interface Ethernet3/0/8
+ shutdown
+ port link-type trunk
+ port trunk allow-pass vlan 26
+#
+interface Ethernet3/0/9
+ description dT:QZ-QZ-AJ4Q63#-LSW-1.2826::kehu
+ port link-type dot1q-tunnel
+ port default vlan 1658
+#
+interface Ethernet3/0/10
+ shutdown
+#
+interface Ethernet3/0/11
+ description WanHao_hotel::kehu
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 28 1205 1296 3400 3404
+#
+interface Ethernet3/0/12
+ shutdown
+ port link-type access
+ port default vlan 3760
+ qos car inbound 4m 
+#
+interface Ethernet3/0/13
+ shutdown
+#
+interface Ethernet3/0/14
+ shutdown
+#
+interface Ethernet3/0/15
+ shutdown
+#
+interface Ethernet3/0/16
+ description AJ40_Netbar_LanQingTing
+ port link-type access
+ port default vlan 3627
+ qos car inbound 50m 
+#
+interface Ethernet3/0/17
+ description YaoJianJu::kehu
+ port link-type access
+ port default vlan 741
+#
+interface Ethernet3/0/18
+ description dT:QZ-QZ-AJ4Q51#-LSW-1.2826::kehu
+ port link-type dot1q-tunnel
+ port default vlan 1660
+#
+interface Ethernet3/0/19
+ description dT:QZ-QZ-AJ4Q57#-LSW-1.2826::kehu
+ port link-type dot1q-tunnel
+ port default vlan 1661
+#
+interface Ethernet3/0/20
+ description dT:QZ-QZ-AJ4Q44#-LSW-1.2826:(44-2)::kehu
+ port link-type dot1q-tunnel
+ port default vlan 1662
+#
+interface Ethernet3/0/21
+ description dT:QZ-QZ-AJ4Q43#-LSW-1.2826::kehu
+ port link-type dot1q-tunnel
+ port default vlan 1663
+#
+interface Ethernet3/0/22
+ description Description Missing::kehu
+ port link-type dot1q-tunnel
+ port default vlan 1665
+#
+interface Ethernet3/0/23
+ shutdown
+ port link-type dot1q-tunnel
+ port default vlan 1665
+#
+interface Ethernet3/0/24
+ description dT:QZ-QZ-AJ4Q54#-LSW-1.2826::kehu
+ port link-type dot1q-tunnel
+ port default vlan 1666
+#
+interface Ethernet3/0/25
+ description dT:QZ-QZ-AJ4Q53#-LSW-1.2826::kehu
+ port link-type dot1q-tunnel
+ port default vlan 1667
+#
+interface Ethernet3/0/26
+ description dT:QZ-QZ-AJ4Q47#-LSW-2.2826:(47-3)::kehu
+ port link-type dot1q-tunnel
+ port default vlan 1668
+#
+interface Ethernet3/0/27
+ description dT:QZ-QZ-AJ4Q71#-LSW-1.2826:(71-2)::kehu
+ port link-type dot1q-tunnel
+ port default vlan 1669
+#
+interface Ethernet3/0/28
+ description dT:QZ-QZ-AJ4Q45#-LSW-1.2826::kehu
+ port link-type dot1q-tunnel
+ port default vlan 1670
+#
+interface Ethernet3/0/29
+ shutdown
+ port link-type access
+ port default vlan 3602
+ qos car inbound 50m 
+#
+interface Ethernet3/0/30
+ description AJ45_LaoGanBuJu::kehu
+ port link-type access
+ port default vlan 717
+#
+interface Ethernet3/0/31
+ description dT:QZ-QZ-AJ4Q45#-LSW-1.2826:(45-1)::kehu
+ port link-type dot1q-tunnel
+ port default vlan 1671
+#
+interface Ethernet3/0/32
+ description dT:QZ-QZ-AJ4Q72#-LSW-1.2826:(72-2)::kehu
+ port link-type dot1q-tunnel
+ port default vlan 1672
+#
+interface Ethernet3/0/33
+ shutdown
+ port link-type dot1q-tunnel
+ port default vlan 1673
+#
+interface Ethernet3/0/34
+ description dT:QZ-QZ-AJ4Q80#-LSW-1.2826:(82-2)::kehu
+ port link-type dot1q-tunnel
+ port default vlan 1674
+#
+interface Ethernet3/0/35
+ shutdown
+ port link-type dot1q-tunnel
+ port default vlan 1675
+#
+interface Ethernet3/0/36
+ shutdown
+ port link-type dot1q-tunnel
+ port default vlan 1676
+#
+interface Ethernet3/0/37
+ description dT:QZ-QZ-AJ4Q76#-LSW-1.2826:(76-3)::kehu
+ port link-type dot1q-tunnel
+ port default vlan 1677
+#
+interface Ethernet3/0/38
+ shutdown
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 26 2520 2532
+#
+interface Ethernet3/0/39
+ description dT:QZ-QZ-AJ4Q77#-LSW-1.2826:(77-3)::kehu
+ port link-type dot1q-tunnel
+ port default vlan 1678
+#
+interface Ethernet3/0/40
+ description dT:QZ-QZ-AJ4Q78#-LSW-1.2826:(78-2)::kehu
+ port link-type dot1q-tunnel
+ port default vlan 1679
+#
+interface Ethernet3/0/41
+ shutdown
+ port link-type access
+#
+interface Ethernet3/0/42
+ shutdown
+ port link-type access
+#
+interface Ethernet3/0/43
+ shutdown
+ port link-type access
+ port default vlan 3624
+#
+interface Ethernet3/0/44
+ shutdown
+ port link-type access
+ port default vlan 3214
+ qos car inbound 2m 
+#
+interface Ethernet3/0/45
+ shutdown
+#
+interface Ethernet3/0/46
+ shutdown
+#
+interface Ethernet3/0/47
+ shutdown
+#
+interface GigabitEthernet6/0/0
+ shutdown
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet6/0/1
+ shutdown
+#
+interface GigabitEthernet6/0/2
+ shutdown
+#
+interface GigabitEthernet6/0/3
+ shutdown
+#
+interface GigabitEthernet6/0/4
+ description uT:QZ-QZ-NQ-DSW-2.MAN.S9306:(F1006040013)GE4/0/12
+ eth-trunk 5
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/5
+ description uT:QZ-QZ-NQ-DSW-2.MAN.S9306:(F1006040014)GE6/0/12
+ eth-trunk 5
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/6
+ shutdown
+#
+interface GigabitEthernet6/0/7
+ shutdown
+#
+interface GigabitEthernet6/0/8
+ shutdown
+#
+interface GigabitEthernet6/0/9
+ shutdown
+#
+interface GigabitEthernet6/0/10
+ shutdown
+#
+interface GigabitEthernet6/0/11
+ shutdown
+#
+interface GigabitEthernet6/0/12
+ description dT:QZ-QZ-AJ4Q-DSL-1.MAN.9210:(local)GE16/7
+ shutdown
+ port link-type dot1q-tunnel
+ port default vlan 1370
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet6/0/13
+ shutdown
+#
+interface GigabitEthernet6/0/14
+ description dT:QZ-QZ-MeiHY-ASW-1.MAN.Z3228:(F0906290004)GE3/1
+ port hybrid pvid vlan 1372
+ port hybrid tagged vlan 21 to 24 27 3752 to 3753 3757 to 3758 3764
+ port hybrid untagged vlan 1372
+ port vlan-stacking vlan 101 to 580 stack-vlan 1372
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet6/0/15
+ shutdown
+#
+interface GigabitEthernet6/0/16
+ shutdown
+#
+interface GigabitEthernet6/0/17
+ shutdown
+#
+interface GigabitEthernet6/0/18
+ shutdown
+#
+interface GigabitEthernet6/0/19
+ shutdown
+#
+interface GigabitEthernet6/0/20
+ shutdown
+#
+interface GigabitEthernet6/0/21
+ shutdown
+#
+interface GigabitEthernet6/0/22
+ shutdown
+#
+interface GigabitEthernet6/0/23
+ shutdown
+#
+interface NULL0
+#
+ip route-static 0.0.0.0 0.0.0.0 10.21.3.1
+#
+snmp-agent
+snmp-agent local-engineid 000007DB7FFFFFFF00004A01
+snmp-agent community read cipher %^%#/Pv#B61g,@eYo/F|V745D&Qf(U+X{V.^'aUd1EE90z!V#d0)g0Bx;{!Rn4Z$Cx$>Av#75JBQIY/9b_y!%^%# acl 2000
+snmp-agent sys-info contact QZ-QZ-NQ
+snmp-agent sys-info location QZ-QZ-AJ4Q
+snmp-agent sys-info version all
+snmp-agent target-host trap address udp-domain 10.192.0.11 params securityname cipher %^%#+<5`QqX"f64/uT4q_2m13='XW`)Ol*XuQ9!mhjL6%^%# v2c
+snmp-agent target-host trap address udp-domain 10.192.0.12 params securityname cipher %^%#iaUvUWSX1~xW{s7q9TNH=QCJA#K,+"HEgo<<*p#"%^%# v2c
+snmp-agent trap source Vlanif20
+snmp-agent trap enable
+#
+ssh server compatible-ssh1x enable
+#
+header login information " WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!"
+#
+user-interface con 0
+ idle-timeout 0 0
+ screen-length 0
+user-interface vty 0 4
+ acl 2001 inbound
+ authentication-mode aaa
+ idle-timeout 5 0
+ protocol inbound telnet
+user-interface vty 16 20
+ authentication-mode password
+ user privilege level 1
+ set authentication password cipher %^%#$oPBK`F_`BoKdM((Gn\=kdx#:VxF\Y1[Jh(n*x*#,U<R>7!..7t,{P*$P"LK%^%#
+ protocol inbound telnet
+#
+assistant task savelogfile
+ if-match timer cron * 0 0/1 * * * *
+ perform 1 batch-file savelogfile.bat
+#
+return
+<QZ-QZ-AJSQ-DSW-1.MAN.S9306>

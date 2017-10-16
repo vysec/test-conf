@@ -1,0 +1,973 @@
+
+#
+!Software Version V200R001C00SPC300
+sysname QZ-CSJYJ-HUAWEI-9306-A
+#
+super password level 3 cipher %$%$c}I(B}1+],S&.J5)`dE6,jaX]+huH[f6qD,Ws-7MaX3+.pgb%$%$
+#
+router id 10.198.0.1
+#
+vlan batch 2 20 50 to 58 60 70 200 to 218 220 246 to 247 249 to 250 252 to 253
+vlan batch 257 to 261 320 1023
+#
+assign resource-mode 2 slot 1
+assign resource-mode 2 slot 3
+assign resource-mode 2 slot 4
+#
+lldp enable
+#
+undo http server enable
+#
+undo nap slave enable
+#
+ dba-profile default0 type3 assure 40000 max 80000
+#
+arp anti-attack gateway-duplicate enable
+#
+diffserv domain default
+#
+ip vpn-instance telecom
+ description For_Telecom_Device_Management
+ ipv4-family
+  route-distinguisher 64750:11
+  vpn-target 64750:11 export-extcommunity
+  vpn-target 64750:11 import-extcommunity
+#
+ip vpn-instance xxt
+ ipv4-family
+  route-distinguisher 64570:100
+  vpn-target 64570:100 export-extcommunity
+  vpn-target 64570:100 import-extcommunity
+#
+ line-profile default0
+#
+ service-profile default0
+#
+mpls lsr-id 10.255.247.50
+mpls
+#
+mpls ldp
+#
+#
+acl number 2000
+ rule 5 permit source 10.10.1.0 0.0.0.255
+ rule 10 permit source 10.20.0.0 0.0.255.255
+ rule 15 permit source 10.21.0.0 0.0.255.255
+ rule 20 permit source 10.13.45.0 0.0.0.255
+#
+acl number 2008
+ rule 5 permit source 10.193.12.101 0
+#
+acl number 3001
+ rule 0 deny tcp destination-port eq 135
+ rule 5 deny tcp destination-port eq 137
+ rule 10 deny tcp destination-port eq 138
+ rule 15 deny tcp destination-port eq 139
+ rule 20 deny tcp destination-port eq 445
+ rule 25 permit ip
+#
+traffic classifier worm operator or precedence 5
+ if-match acl 3001
+#
+traffic behavior worm
+ permit
+#
+traffic policy worm
+ classifier worm behavior worm
+#
+drop-profile default
+#
+vlan 2
+ description temp
+vlan 20
+ description For_Telecom_Device_Management
+vlan 50
+ description CSJYJ-9306-A_To_QZJYJ-PE
+ traffic-policy worm inbound
+vlan 51
+ description CSJYJ-9306-A_To_CS-JYW-FW
+ traffic-policy worm inbound
+vlan 52
+ description CSJYJ-9306-A_To_CS-JYW-FW
+ traffic-policy worm inbound
+vlan 53
+ description CSJYJ-9306-A_To_CSJYW-Service-SW
+ traffic-policy worm inbound
+vlan 54
+ description CSJYJ-9306-A_To_CSJYJ-SW-3528
+ traffic-policy worm inbound
+vlan 55
+ description CSJYJ-9306-A_To_CSJYJ-9306-B
+ traffic-policy worm inbound
+vlan 56
+ description CSJYJ-9306-A_To_CSJYW-ZX-CE-1.9303
+ traffic-policy worm inbound
+vlan 57
+ description CSJYJ-9306-A_To_CSJYW-FC-CE-1.9303
+ traffic-policy worm inbound
+vlan 58
+ description CSJYJ-9306-A_To_CSJYW-HQG-CE-1.9303
+ traffic-policy worm inbound
+vlan 60
+ description CSJYJ-9306-A_To_CSJYJ-9306-B::global
+ traffic-policy worm inbound
+vlan 70
+ description WangGuanPingTaiFuWuQi
+vlan 200
+ description TianMaZhongXue
+vlan 201
+ description ChangShanYiXiao
+vlan 202
+ description ChangShanYiZhong
+vlan 203
+ description ChengGuanZhongXue
+vlan 204
+ description ChengNanZhongXue
+vlan 205
+ description ErDuQiaoXiaoXue
+vlan 206
+ description HeJiaChuZhong
+vlan 207
+ description HeJiaXiaoXue
+vlan 208
+ description HuDongXiaoXue
+vlan 209
+ description HuiBuXiaoXue
+vlan 210
+ description JiaoGongYouErYuan
+vlan 211
+ description JingXiuXiaoJiaoYanShi
+vlan 212
+ description PuTangXiaoXue
+vlan 213
+ description SanQuZhongXue
+vlan 214
+ description ShiZiKouXiaoXue
+vlan 215
+ description ShiZiKouChuZhong
+vlan 216
+ description ShiYanXiaoXue
+vlan 217
+ description TianMaYiXiao
+vlan 218
+ description TianMaErXiao
+vlan 220
+ description ZiGangZhongXue
+vlan 246
+ description FuZuShanXiaoXue
+vlan 247
+ description dT:LaoJiaoYuJu
+vlan 249
+ description ZhiYeZhongZhuanKuoRong
+vlan 250
+ description JinDunBaoAnLinShiCeShi
+vlan 252
+ description DianXinSiLouYanShiTing
+vlan 253
+ description YiJianBaoJing
+vlan 258
+ description PeiZhiXueXiao
+vlan 260
+ description XinChangYiZhong
+vlan 261
+ description TianMaZhongXue
+vlan 320
+ description XiaoYuanJianKong
+#
+aaa
+ authentication-scheme default
+ authorization-scheme default
+ accounting-scheme default
+ domain default
+ domain default_admin
+ local-user admin password cipher %$%$I6.ASV)hJET,p"Dn.YM%3aXO%$%$
+ local-user admin service-type http
+ local-user aaa@huawei password cipher %$%$.,U+/phig129ag#;q!`BL90'%$%$
+#
+interface Vlanif2
+ ip address 192.168.0.2 255.255.255.0
+#
+interface Vlanif20
+ description For_Telecom_Device_Management
+ ip binding vpn-instance telecom
+ ip address 10.21.16.11 255.255.255.248
+#
+interface Vlanif50
+ description CSJYJ-9306-A_To_QZJYJ-PE
+ mtu 1546
+ ip address 210.32.106.226 255.255.255.252
+ mpls
+#
+interface Vlanif51
+ description CSJYJ-9306-A_To_CS-JYW-FW
+ ip address 10.198.2.2 255.255.255.252
+#
+interface Vlanif53
+ description CSJYJ-9306-A_To_CSJYW-Service-SW
+ ip address 10.198.2.5 255.255.255.252
+#
+interface Vlanif54
+ description CSJYJ-9306-A_To_CSJYJ-SW-3528
+ ip address 10.198.2.9 255.255.255.252
+#
+interface Vlanif55
+ description CSJYJ-9306-A_To_CSJYJ-9306-B
+ ip address 10.198.2.13 255.255.255.252
+#
+interface Vlanif56
+ description CSJYJ-9306-A_To_CSJYW-ZX-CE-1.9303
+ ip address 10.198.2.65 255.255.255.252
+#
+interface Vlanif57
+ description CSJYJ-9306-A_To_CSJYW-FC-CE-1.9303
+ ip address 10.198.2.69 255.255.255.252
+#
+interface Vlanif58
+ description CSJYJ-9306-A_To_CSJYW-HQG-CE-1.9303
+ ip address 10.198.2.73 255.255.255.252
+#
+interface Vlanif70
+ description WangGuanPingTaiFuWuQi
+#
+interface Vlanif200
+ description TianMaZhongXue
+ ip address 10.198.3.1 255.255.255.252
+#
+interface Vlanif201
+ description ChangShanYiXiao
+ ip address 10.198.3.5 255.255.255.252
+#
+interface Vlanif202
+ description ChangShanYiZhong
+ ip address 10.198.3.9 255.255.255.252
+#
+interface Vlanif203
+ description ChengGuanZhongXue
+ ip address 10.198.3.13 255.255.255.252
+#
+interface Vlanif204
+ description ChengNanZhongXue
+ ip address 10.198.3.17 255.255.255.252
+#
+interface Vlanif205
+ description ErDuQiaoXiaoXue
+ ip address 10.198.3.21 255.255.255.252
+#
+interface Vlanif206
+ description HeJiaChuZhong
+ ip address 10.198.3.25 255.255.255.252
+#
+interface Vlanif207
+ description HeJiaXiaoXue
+ ip address 10.198.3.29 255.255.255.252
+#
+interface Vlanif208
+ description HuDongXiaoXue
+ ip address 10.198.3.33 255.255.255.252
+#
+interface Vlanif209
+ description HuiBuXiaoXue
+ ip address 10.198.3.37 255.255.255.252
+#
+interface Vlanif210
+ description JiaoGongYouErYuan
+ ip address 10.198.3.41 255.255.255.252
+#
+interface Vlanif211
+ description JingXiuXiaoJiaoYanShi
+ ip address 10.198.3.45 255.255.255.252
+#
+interface Vlanif212
+ description PuTangXiaoXue
+ ip address 10.198.3.49 255.255.255.252
+#
+interface Vlanif213
+ description SanQuZhongXue
+ ip address 10.198.3.53 255.255.255.252
+#
+interface Vlanif214
+ description ShiZiKouXiaoXue
+ ip address 10.198.3.57 255.255.255.252
+#
+interface Vlanif215
+ description ShiZiKouChuZhong
+ ip address 10.198.3.61 255.255.255.252
+#
+interface Vlanif216
+ description ShiYanXiaoXue
+ shutdown
+ ip address 10.198.3.65 255.255.255.252
+#
+interface Vlanif217
+ description TianMaYiXiao
+ ip address 10.198.3.69 255.255.255.252
+#
+interface Vlanif218
+ description TianMaErXiao
+ ip address 10.198.3.73 255.255.255.252
+#
+interface Vlanif220
+ description ZiGangZhongXue
+ ip address 10.198.3.81 255.255.255.252
+#
+interface Vlanif246
+ description FuZuShanXiaoXue
+ ip address 10.198.3.185 255.255.255.252
+#
+interface Vlanif247
+ description LaoJiaoYuJu
+ ip address 10.198.3.189 255.255.255.252
+#
+interface Vlanif249
+ ip address 10.198.3.198 255.255.255.252
+#
+interface Vlanif250
+ ip address 10.198.3.201 255.255.255.252
+#
+interface Vlanif252
+ description DianXinSiLouYanShiTing
+ ip address 10.198.3.209 255.255.255.252
+#
+interface Vlanif253
+ ip address 10.198.3.213 255.255.255.252
+#
+interface Vlanif257
+ ip address 10.198.3.229 255.255.255.252
+#
+interface Vlanif258
+ description PeiZhiXueXiao
+ ip address 10.198.3.233 255.255.255.252
+#
+interface Vlanif259
+ description JiaoGongYouErYuanXingYueWan
+ ip address 10.198.3.237 255.255.255.252
+#
+interface Vlanif260
+ description XinChangYiZhong
+ ip address 10.198.3.241 255.255.255.252
+#
+interface Vlanif261
+ description TianMaZhongXue
+ ip address 10.198.3.245 255.255.255.252
+#
+interface Vlanif1023
+ ip address 172.18.0.1 255.255.255.252
+#
+interface Eth-Trunk1
+ description uT:CS-JYW-FW.HW100E:()Eth-trunk3
+ port link-type access
+ port default vlan 51
+ traffic-policy worm inbound
+ mode lacp-static
+#
+interface Eth-Trunk2
+ description uT:CS-JYW-FW.HW100E:()Eth-trunk2
+ port link-type access
+ port default vlan 52
+ mode lacp-static
+#
+interface Eth-Trunk3
+ description dT:QZ-CS-Service-SW-1.JYW.S5328:()Eth-Trunk1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 53
+ mode lacp-static
+#
+interface Eth-Trunk4
+ description dT:QZ-CS-JYJ-SW-1.JYW.S5328:()Eth-Trunk1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 54
+ mode lacp-static
+#
+interface Ethernet0/0/0
+ ip address 192.168.100.1 255.255.255.252
+#
+interface GigabitEthernet3/0/0
+ undo negotiation auto
+ description uT:QZ-QZ-PE-1.JYW.9306:()::kehu
+ port link-type access
+ port default vlan 50
+#
+interface GigabitEthernet3/0/1
+ description uT:QZ-CS-FW.JYW.HW1000e:(Local)GE1/0/2
+ eth-trunk 1
+#
+interface GigabitEthernet3/0/2
+ description uT:QZ-CS-FW.JYW.HW1000e:(Local)GE1/0/3
+ eth-trunk 1
+#
+interface GigabitEthernet3/0/3
+ description dT:QZ-CS-FW.JYW.HW1000e:(Local)GE1/0/0
+ eth-trunk 2
+#
+interface GigabitEthernet3/0/4
+ description dT:QZ-CS-FW.JYW.HW1000e:(Local)GE1/0/1
+ eth-trunk 2
+#
+interface GigabitEthernet3/0/5
+ description dT:ChangShanYiZhong
+ port link-type access
+ port default vlan 320
+#
+interface GigabitEthernet3/0/6
+ description dT:QZ-CS-XDL-DSW-1.MAN.S9306:(Local)GE4/0/8
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 20
+#
+interface GigabitEthernet3/0/7
+ description JiangBinYouErYuan
+ port link-type access
+ port default vlan 320
+#
+interface GigabitEthernet3/0/8
+ description dT:LaoJiaoYuJu::kehu
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 247
+ dot1x enable
+#
+interface GigabitEthernet3/0/9
+ description dT:TianMaErXiao::kehu
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 218 320
+#
+interface GigabitEthernet3/0/10
+ description dT:TianMaYiXiao::kehu
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 217 320
+#
+interface GigabitEthernet3/0/11
+ description dT:ErDuQiaoXiaoXue::kehu
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 205 320
+#
+interface GigabitEthernet3/0/12
+ description dT:ShiZhiKouChuZhong::kehu
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 215 320
+#
+interface GigabitEthernet3/0/13
+ description dT:HuiBuXiaoXue::kehu
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 209 320
+#
+interface GigabitEthernet3/0/14
+ description dT:HuDongXiaoXue::kehu
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 208 320
+#
+interface GigabitEthernet3/0/15
+ description dT:ChangShanYiZhong::kehu
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 202
+#
+interface GigabitEthernet3/0/16
+ description dT:ChengGuanZhongXue::kehu
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 203
+#
+interface GigabitEthernet3/0/17
+ description ZiGangZhongXue::kehu
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 220
+#
+interface GigabitEthernet3/0/18
+ description dT:HeJiaXiaoXue::kehu
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 207 320
+#
+interface GigabitEthernet3/0/19
+ description dT:JinXiuXiaoJiaoYanShi::kehu
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 211
+#
+interface GigabitEthernet3/0/20
+ description dT:HeJiaChuZhong::kehu
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 206 320
+#
+interface GigabitEthernet3/0/21
+ description dT:SanQuZhongXue::kehu
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 213 320
+#
+interface GigabitEthernet3/0/22
+ description dT:ShiZiKouXiaoXue::kehu
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 214 320
+#
+interface GigabitEthernet3/0/23
+ description WangGuan::kehu
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 20
+#
+interface GigabitEthernet4/0/0
+ shutdown
+ port link-type access
+#
+interface GigabitEthernet4/0/1
+ port link-type access
+ port default vlan 70
+#
+interface GigabitEthernet4/0/2
+ description 110XiaoYuanJianKong::kehu
+ port link-type access
+ port default vlan 320
+#
+interface GigabitEthernet4/0/3
+ description JiFangCeShiIP
+ port link-type access
+#
+interface GigabitEthernet4/0/4
+ description DianXinSiLouYanShiTing::kehu
+ port link-type access
+ port default vlan 252
+#
+interface GigabitEthernet4/0/5
+ description dT:ChangShanYiZhong::kehu
+ port link-type access
+ port default vlan 320
+#
+interface GigabitEthernet4/0/6
+ description ::kehu
+ port link-type access
+ port default vlan 320
+#
+interface GigabitEthernet4/0/7
+ description JiaoYuJianKong::kehu
+ port link-type access
+ port default vlan 320
+#
+interface GigabitEthernet4/0/8
+ description JiaoYuJianKong::kehu
+ port link-type access
+ port default vlan 320
+#
+interface GigabitEthernet4/0/9
+ description ::kehu
+#
+interface GigabitEthernet4/0/10
+ description JiaoGongYouErYuanXingYueWan-YiJianBaoJing::kehu
+ port link-type access
+ port default vlan 320
+#
+interface GigabitEthernet4/0/11
+ description YuCaiXiaoXue-YiJianBaoJing::kehu
+ port link-type access
+ port default vlan 320
+#
+interface GigabitEthernet4/0/12
+ description YuCaiXiaoXue-YiJianBaoJing::kehu
+ port link-type access
+ port default vlan 320
+#
+interface GigabitEthernet4/0/13
+#
+interface GigabitEthernet4/0/14
+#
+interface GigabitEthernet4/0/15
+#
+interface GigabitEthernet4/0/16
+#
+interface GigabitEthernet4/0/17
+#
+interface GigabitEthernet4/0/18
+#
+interface GigabitEthernet4/0/19
+#
+interface GigabitEthernet4/0/20
+#
+interface GigabitEthernet4/0/21
+#
+interface GigabitEthernet4/0/22
+#
+interface GigabitEthernet4/0/23
+#
+interface GigabitEthernet4/0/24
+#
+interface GigabitEthernet4/0/25
+#
+interface GigabitEthernet4/0/26
+#
+interface GigabitEthernet4/0/27
+#
+interface GigabitEthernet4/0/28
+#
+interface GigabitEthernet4/0/29
+#
+interface GigabitEthernet4/0/30
+#
+interface GigabitEthernet4/0/31
+#
+interface GigabitEthernet4/0/32
+#
+interface GigabitEthernet4/0/33
+#
+interface GigabitEthernet4/0/34
+#
+interface GigabitEthernet4/0/35
+#
+interface GigabitEthernet4/0/36
+#
+interface GigabitEthernet4/0/37
+#
+interface GigabitEthernet4/0/38
+#
+interface GigabitEthernet4/0/39
+#
+interface GigabitEthernet4/0/40
+#
+interface GigabitEthernet4/0/41
+#
+interface GigabitEthernet4/0/42
+#
+interface GigabitEthernet4/0/43
+#
+interface GigabitEthernet4/0/44
+#
+interface GigabitEthernet4/0/45
+#
+interface GigabitEthernet4/0/46
+#
+interface GigabitEthernet4/0/47
+#
+interface GigabitEthernet6/0/0
+ description ::kehu
+ port link-type access
+ port default vlan 320
+#
+interface GigabitEthernet6/0/1
+ description ::kehu
+ port link-type access
+ port default vlan 320
+#
+interface GigabitEthernet6/0/2
+ description ::kehu
+ port link-type access
+ port default vlan 320
+#
+interface GigabitEthernet6/0/3
+ description ::kehu
+ port link-type access
+ port default vlan 320
+#
+interface GigabitEthernet6/0/4
+ description ::kehu
+ port link-type access
+ port default vlan 320
+#
+interface GigabitEthernet6/0/5
+ description ::kehu
+ port link-type access
+ port default vlan 320
+#
+interface GigabitEthernet6/0/6
+ description ::kehu
+ port link-type access
+ port default vlan 320
+#
+interface GigabitEthernet6/0/7
+ description ::kehu
+ port link-type access
+ port default vlan 320
+#
+interface GigabitEthernet6/0/8
+ description ::kehu
+ port link-type access
+ port default vlan 320
+#
+interface GigabitEthernet6/0/9
+ description ::kehu
+ port link-type access
+ port default vlan 320
+#
+interface GigabitEthernet6/0/10
+ description ::kehu
+ port link-type access
+ port default vlan 320
+#
+interface GigabitEthernet6/0/11
+ port link-type access
+ port default vlan 320
+#
+interface GigabitEthernet6/0/12
+ description XinChangYiZhong::kehu
+ port link-type access
+ port default vlan 320
+#
+interface GigabitEthernet6/0/13
+ description YuCaiYouErYuan::kehu
+ port link-type access
+ port default vlan 320
+#
+interface GigabitEthernet6/0/14
+ description ::kehu
+ port link-type access
+ port default vlan 320
+#
+interface GigabitEthernet6/0/15
+ description DongLuXiaoXue
+ port link-type access
+ port default vlan 320
+#
+interface GigabitEthernet6/0/16
+ description ::kehu
+ port link-type access
+ port default vlan 320
+#
+interface GigabitEthernet6/0/17
+ description TianMaYiXiaoJianKong::kehu
+ port link-type access
+ port default vlan 320
+#
+interface GigabitEthernet6/0/18
+ description ::kehu
+ port link-type access
+ port default vlan 320
+#
+interface GigabitEthernet6/0/19
+ description ::kehu
+ port link-type access
+ port default vlan 320
+#
+interface GigabitEthernet6/0/20
+ description ::kehu
+ port link-type access
+ port default vlan 320
+#
+interface GigabitEthernet6/0/21
+ description DongAnXiaoXue
+ port link-type access
+ port default vlan 320
+#
+interface GigabitEthernet6/0/22
+ port link-type access
+ port default vlan 320
+#
+interface GigabitEthernet6/0/23
+ port link-type access
+ port default vlan 320
+#
+interface GigabitEthernet6/0/24
+ description ::kehu
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 257
+#
+interface GigabitEthernet6/0/25
+ description ::kehu
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 258
+#
+interface GigabitEthernet6/0/26
+ undo negotiation auto
+ description ::kehu
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 259
+#
+interface GigabitEthernet6/0/27
+ description XinChangYiZhong::kehu
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 260
+#
+interface GigabitEthernet6/0/28
+ description TianMaZhongXue::kehu
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 261
+#
+interface GigabitEthernet6/0/29
+#
+interface GigabitEthernet6/0/30
+#
+interface GigabitEthernet6/0/31
+#
+interface GigabitEthernet6/0/32
+#
+interface GigabitEthernet6/0/33
+#
+interface GigabitEthernet6/0/34
+#
+interface GigabitEthernet6/0/35
+#
+interface GigabitEthernet6/0/36
+#
+interface GigabitEthernet6/0/37
+#
+interface GigabitEthernet6/0/38
+#
+interface GigabitEthernet6/0/39
+#
+interface GigabitEthernet6/0/40
+#
+interface GigabitEthernet6/0/41
+#
+interface GigabitEthernet6/0/42
+#
+interface GigabitEthernet6/0/43
+#
+interface GigabitEthernet6/0/44
+#
+interface GigabitEthernet6/0/45
+#
+interface GigabitEthernet6/0/46
+#
+interface GigabitEthernet6/0/47
+#
+interface XGigabitEthernet1/0/0
+ description pT:QZ-CSJYJ-HUAWEI-9306-B:(Local)10GE1/0/0
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 20 55 60 320
+#
+interface XGigabitEthernet1/0/1
+ description dT:QZ-CS-ZX-CE-1.JYW.S9303:()XG1/0/0
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 56
+#
+interface XGigabitEthernet1/0/2
+ description dT:QZ-CS-FC-CE-1.JYW.S9303:()XG1/0/0::kehu
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 57
+#
+interface XGigabitEthernet1/0/3
+ description dT:QZ-CS-HQG-CE-1.JYW.S9303:()XG1/0/0
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 58
+#
+interface NULL0
+#
+interface LoopBack0
+ ip address 10.255.247.50 255.255.255.255
+#
+interface LoopBack1
+ ip address 10.198.0.1 255.255.255.255
+#
+bgp 64570
+ peer 10.255.255.25 as-number 64570
+ peer 10.255.255.25 connect-interface LoopBack0
+ #
+ ipv4-family unicast
+  undo synchronization
+  aggregate 6.126.0.0 255.255.0.0 as-set detail-suppressed
+  aggregate 6.198.0.0 255.255.0.0 as-set detail-suppressed
+  aggregate 10.126.0.0 255.255.0.0 as-set detail-suppressed
+  aggregate 10.198.0.0 255.255.0.0 as-set detail-suppressed
+  import-route direct
+  import-route static
+  peer 10.255.255.25 enable
+#
+ospf 1
+ default-route-advertise
+ import-route direct
+ import-route static
+ bandwidth-reference 10000
+ area 0.0.0.0
+  network 10.198.0.1 0.0.0.0
+  network 10.198.2.88 0.0.0.3
+  network 10.198.2.64 0.0.0.3
+  network 10.198.2.68 0.0.0.3
+  network 10.198.2.72 0.0.0.3
+  network 10.198.2.12 0.0.0.3
+#
+ip route-static 0.0.0.0 0.0.0.0 10.198.2.1
+ip route-static 6.126.0.0 255.255.0.0 NULL0
+ip route-static 6.198.0.0 255.255.0.0 NULL0
+ip route-static 10.126.0.0 255.255.0.0 NULL0
+ip route-static 10.198.0.0 255.255.0.0 NULL0
+ip route-static 10.198.8.0 255.255.252.0 10.198.3.2 description TianMaZhongXue
+ip route-static 10.198.16.0 255.255.248.0 10.198.3.10 description ChangShanYiZhong
+ip route-static 10.198.24.0 255.255.248.0 10.198.3.14 description ChengGuanZhongXue
+ip route-static 10.198.32.0 255.255.252.0 10.198.3.18 description ChengNanZhongXue
+ip route-static 10.198.36.0 255.255.254.0 10.198.3.22 description ErDuQiaoXiaoXue
+ip route-static 10.198.38.0 255.255.254.0 10.198.3.30 description HeJiaXiaoXue
+ip route-static 10.198.40.0 255.255.252.0 10.198.3.26 description HeJiaChuZhong
+ip route-static 10.198.44.0 255.255.254.0 10.198.3.34 description HuDongXiaoXue
+ip route-static 10.198.46.0 255.255.254.0 10.198.3.38 description HuiBuXiaoXue
+ip route-static 10.198.48.0 255.255.254.0 10.198.3.42 description JiaoGongYouErYuan
+ip route-static 10.198.50.0 255.255.254.0 10.198.3.46 description JingXiuXiaoJiaoYanShi
+ip route-static 10.198.52.0 255.255.254.0 10.198.3.50 description PuTangXiaoXue
+ip route-static 10.198.54.0 255.255.254.0 10.198.3.58 description ShiZiKouXiaoXue
+ip route-static 10.198.56.0 255.255.248.0 10.198.3.54 description SanQuZhongXue
+ip route-static 10.198.64.0 255.255.252.0 10.198.3.62 description ShiZiKouChuZhong
+ip route-static 10.198.72.0 255.255.252.0 10.198.3.70 description TianMaYiXiao
+ip route-static 10.198.76.0 255.255.252.0 10.198.3.74 description TianMaErXiao
+ip route-static 10.198.80.0 255.255.252.0 10.198.3.78 description ZhiYeZhongZhuan
+ip route-static 10.198.88.0 255.255.248.0 10.198.3.82 description ZiGangZhongXue
+ip route-static 10.198.160.0 255.255.248.0 10.198.3.199 description ZhiYeZhongZhuanKuoRong
+ip route-static 10.198.161.0 255.255.255.0 10.198.3.190 description LaoJiaoYuJu
+ip route-static 10.198.162.0 255.255.254.0 10.198.3.195 description JiaoGongYouErYuan
+ip route-static 10.198.164.0 255.255.252.0 10.198.3.230 description YuCaiXiaoXue
+ip route-static 10.198.176.0 255.255.255.0 10.198.3.234 description PeiZhiXueXiao
+ip route-static 10.198.177.0 255.255.255.0 10.198.3.238 description JiaoGongYouErYuanXingYueWan
+ip route-static 10.198.184.0 255.255.248.0 10.198.3.242 description XinChangYiZhong
+ip route-static 10.198.192.0 255.255.255.0 10.198.3.246 description TianMaZhongXue
+ip route-static 10.255.255.25 255.255.255.255 210.32.106.225
+ip route-static 210.14.145.228 255.255.255.252 10.198.2.1
+ip route-static vpn-instance telecom 10.0.0.0 255.0.0.0 10.21.16.9
+ip route-static vpn-instance telecom 10.0.0.0 255.0.0.0 10.21.6.1
+ip route-static vpn-instance telecom 70.0.0.0 255.255.252.0 10.21.6.1
+#
+snmp-agent
+snmp-agent local-engineid 800007DB03E468A39B0AD0
+snmp-agent community read cipher %$%$0a5uV1k%WNJ}}A%z}VDFKQH~%$%$
+snmp-agent community read cipher %$%$O\K<<8De=7,nz[+,.KM<_g^U%$%$
+snmp-agent community read cipher %$%$BwO.A+>/:7#]>E6T3-$~K6-$%$%$
+snmp-agent community write cipher %$%$(SCKYPVr0Z~ZvMJ'jqX2K;2)%$%$
+snmp-agent community read cipher %$%$05e]4%vVWQ^SsO-CC="&GB90%$%$
+snmp-agent sys-info location quzhou
+snmp-agent sys-info version all
+snmp-agent target-host trap address udp-domain 10.198.2.34 params securityname eSight
+snmp-agent trap source LoopBack1
+snmp-agent trap enable
+#
+nqa test-instance imclinktopologypleaseignore ping
+ test-type icmp
+ destination-address ipv4 210.32.106.225
+ frequency 270
+ probe-count 1
+ start now
+#
+user-interface maximum-vty 15
+user-interface con 0
+ authentication-mode password
+ set authentication password cipher %$%$zn_s"srH=YbP4;<$~-65}wnesJaP"Scx4/Pe1O(lL\`OT}to%$%$
+ screen-length 30
+user-interface vty 0 4
+ authentication-mode password
+ user privilege level 3
+ set authentication password cipher %$%$*r9mA&}6nOya5LNv!jU2}sjaQ#fbIddZEXX<Q[)]=;$HTypk%$%$
+ idle-timeout 5 0
+ screen-length 25
+user-interface vty 5 14
+ authentication-mode aaa
+ user privilege level 3
+ idle-timeout 0 0
+ screen-length 0
+user-interface vty 16 20
+#
+return
+<QZ-CSJYJ-HUAWEI-9306-A>

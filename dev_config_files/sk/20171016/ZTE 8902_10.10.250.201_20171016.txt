@@ -1,0 +1,1116 @@
+
+Building configuration...
+!
+!
+vlan 18
+name ONU-MANAGEVLAN
+!
+vlan 27
+name OLT-Managevlan
+!
+vlan 29
+name Cisco-Manager
+!
+vlan 1338
+name PPPOE-ZhuLong-HuaWei
+!
+vlan 1339
+name PPPOE-BiLong-ZX
+!
+vlan 1340
+name PPPOE-GaoShan
+!
+vlan 1341
+name PPPOE-LiShuPing-hwadsl
+!
+vlan 1461
+name BaoXi5680-ftth
+!
+vlan 1765
+name baoxi5680fttb
+!
+vlan 1786
+name epon-vlan
+!
+vlan 1789
+name Epon-ONU
+!
+vlan 2332
+name PPPOE-GR-ZhuLongWangBiYue
+!
+vlan 2390
+name PPPOE-BaoXiXiaoXue
+!
+vlan 2409
+name PPPOE-ZhuLongLinYeGongZuoZhan
+!
+vlan 3129
+name VPN-SheBaoWang
+!
+vlan 3130
+name SheBao-VPN
+!
+vlan 3336
+name VPN-JJY-LQ-ZhuLongXiaoXue
+!
+vlan 3345
+name Vpn-JYJ-BaoXiXiaoXue
+!
+vlan 3422
+name ZFW-BaoXi-XinVLAN3422
+!
+vlan 3432
+name Gov-Vpn-ZhuLongZhenFu
+!
+vlan 3473
+name Gov-Vpn-Switch-manager
+!
+vlan 3479
+name GOV-VPN-ShiPin
+!
+vlan 3576
+name BaoXiLinYeZhan
+!
+vlan 3770
+name LQ-IP-ShuangCeng
+!
+vlan 3823
+name VPN-BaoXiSiFaJu
+!
+vlan 3856
+name VPN-JK-GaoShanCunAoMen
+!
+vlan list 1
+vlan list 21
+vlan list 23-24
+vlan list 30
+vlan list 40
+vlan list 69
+vlan list 1313
+vlan list 1427
+vlan list 2333
+vlan list 2396
+vlan list 2446
+vlan list 3161
+vlan list 3490
+vlan list 3599
+vlan list 3741
+vlan list 3811
+vlan list 3870
+!
+!
+!
+!
+!
+iptv view-profile name DEFVAL id 0
+iptv view-profile name DEFVAL count 3
+iptv view-profile name DEFVAL duration 120
+iptv view-profile name DEFVAL blackout 60
+iptv view-profile name DEFVAL recotime 4
+!
+!
+!
+epon
+!
+!
+!
+interface loopback1
+  ip address 10.10.250.201 255.255.255.255
+  out_index 101
+!
+interface vlan 30
+  ip address 10.10.74.201 255.255.255.224
+  out_index 100
+!
+interface null1
+  out_index 1
+!
+interface smartgroup2
+  out_index 99
+  description To EPON-BaoXi-ZXPON C200
+  switchport mode trunk
+  switchport trunk native vlan 1786
+  switchport trunk vlan 18
+  switchport trunk vlan 27
+  switchport trunk vlan 69
+  switchport trunk vlan 1786
+  switchport trunk vlan 3599
+  smartgroup mode on
+!
+interface smartgroup3
+  out_index 102
+  description LQ-BaoXi-OLT-C320-GPON-1-1
+  switchport mode trunk
+  switchport trunk native vlan 1427
+  switchport trunk vlan 21
+  switchport trunk vlan 1427
+  smartgroup mode on
+!
+interface gei_1/1
+  out_index 3
+  description uT:LS-LQ-ShangYang-SW2-C8905-1.MAN Gi2/5
+  no negotiation auto
+  ip access-group 10 vfp
+  switchport mode trunk
+  switchport trunk native vlan 30
+  switchport trunk vlan 18
+  switchport trunk vlan 21
+  switchport trunk vlan 27
+  switchport trunk vlan 30
+  switchport trunk vlan 40
+  switchport trunk vlan 69
+  switchport trunk vlan 1313
+  switchport trunk vlan 1340
+  switchport trunk vlan 1427
+  switchport trunk vlan 1786
+  switchport trunk vlan 2390
+  switchport trunk vlan 2446
+  switchport trunk vlan 3129-3130
+  switchport trunk vlan 3345
+  switchport trunk vlan 3422
+  switchport trunk vlan 3473
+  switchport trunk vlan 3479
+  switchport trunk vlan 3490
+  switchport trunk vlan 3576
+  switchport trunk vlan 3599
+  switchport trunk vlan 3741
+  switchport trunk vlan 3770
+  switchport trunk vlan 3823
+  switchport trunk vlan 3856
+  switchport trunk vlan 3870
+  switchport qinq normal
+  vfp session 1 enhanced ingress-invlan 101-999 ingress-outvlan 3870 in 10 rule 1 egress-invlan untag
+  vfp session 2 enhanced ingress-invlan 101-200 ingress-outvlan 3770 in 10 rule 1 egress-invlan untag
+!
+interface gei_1/2
+  out_index 4
+  description DSLAM-BaoXi
+  negotiation auto
+  ip access-group 200 in
+  ip access-group 10 vfp
+  switchport mode hybrid
+  switchport hybrid native vlan 1313
+  switchport hybrid vlan 1313 untag
+  switchport qinq customer
+  queue-mode wrr 0 5
+  queue-mode wrr 1 5
+  queue-mode wrr 2 5
+  queue-mode wrr 3 5
+  queue-mode wrr 5 15
+  queue-mode wrr 6 5
+  queue-mode wrr 7 5
+  vfp session 1 invlan any in 10 rule 1 ovlan 1313
+!
+interface gei_1/3
+  out_index 5
+  description To EPON-BaoXi-ZXPON C200
+  negotiation auto
+  switchport mode trunk
+  switchport trunk native vlan 1786
+  switchport trunk vlan 18
+  switchport trunk vlan 27
+  switchport trunk vlan 69
+  switchport trunk vlan 1786
+  switchport trunk vlan 3599
+  switchport qinq normal
+  smartgroup 2 mode on
+!
+interface gei_1/4
+  out_index 6
+  description To EPON-BaoXi-ZXPON C200
+  negotiation auto
+  switchport mode trunk
+  switchport trunk native vlan 1786
+  switchport trunk vlan 18
+  switchport trunk vlan 27
+  switchport trunk vlan 69
+  switchport trunk vlan 1786
+  switchport trunk vlan 3599
+  switchport qinq normal
+  smartgroup 2 mode on
+!
+interface gei_1/5
+  out_index 7
+  description JYW-iXiaoXueJiaoYuWang
+  negotiation auto
+  switchport access vlan 3345
+  switchport qinq normal
+!
+interface gei_1/6
+  out_index 8
+  description LQ-BaoXi-OLT-C320-GPON-1-1-3-1
+  no negotiation auto
+  switchport mode trunk
+  switchport trunk native vlan 1427
+  switchport trunk vlan 21
+  switchport trunk vlan 1427
+  switchport qinq normal
+  smartgroup 3 mode on
+!
+interface gei_1/7
+  out_index 9
+  description LQ-BaoXi-OLT-C320-GPON-1-1-4-1
+  no negotiation auto
+  switchport mode trunk
+  switchport trunk native vlan 1427
+  switchport trunk vlan 21
+  switchport trunk vlan 1427
+  switchport qinq normal
+  smartgroup 3 mode on
+!
+interface gei_1/8
+  out_index 10
+  description iwife-BaoXiBaKeShu
+  negotiation auto
+  switchport mode trunk
+  switchport trunk native vlan 40
+  switchport trunk vlan 40
+  switchport qinq normal
+!
+interface gei_1/9
+  out_index 11
+  description rkjk-BaoXiWeiShenYuna
+  negotiation auto
+  switchport access vlan 3870
+  switchport qinq customer
+!
+interface gei_1/10
+  out_index 12
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/11
+  out_index 13
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/12
+  out_index 14
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/13
+  out_index 15
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/14
+  out_index 16
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/15
+  out_index 17
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/16
+  out_index 18
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/17
+  out_index 19
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/18
+  out_index 20
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/19
+  out_index 21
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/20
+  out_index 22
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/21
+  out_index 23
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/22
+  out_index 24
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/23
+  out_index 25
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/24
+  out_index 26
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/25
+  out_index 27
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/26
+  out_index 28
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/27
+  out_index 29
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/28
+  out_index 30
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/29
+  out_index 31
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/30
+  out_index 32
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/31
+  out_index 33
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/32
+  out_index 34
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/33
+  out_index 35
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/34
+  out_index 36
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/35
+  out_index 37
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/36
+  out_index 38
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/37
+  out_index 39
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/38
+  out_index 40
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/39
+  out_index 41
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/40
+  out_index 42
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/41
+  out_index 43
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/42
+  out_index 44
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/43
+  out_index 45
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/44
+  out_index 46
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/45
+  out_index 47
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/46
+  out_index 48
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/47
+  out_index 49
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_1/48
+  out_index 50
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_2/1
+  out_index 51
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_2/2
+  out_index 52
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_2/3
+  out_index 53
+  description GOV-VPN-BaoXiXiangZhenFu
+  no negotiation auto
+  speed 10
+  switchport mode trunk
+  switchport trunk native vlan 3490
+  switchport trunk vlan 3422
+  switchport trunk vlan 3473
+  switchport trunk vlan 3490
+  switchport qinq normal
+!
+interface gei_2/4
+  out_index 54
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_2/5
+  out_index 55
+  description GOV-VPN-BaoXiXiangZhenFuShiPin
+  negotiation auto
+  switchport access vlan 3479
+  switchport qinq normal
+!
+interface gei_2/6
+  out_index 56
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_2/7
+  out_index 57
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_2/8
+  out_index 58
+  description PPPOE-BaoXiXiaoXue
+  negotiation auto
+  switchport access vlan 3345
+  switchport qinq normal
+  traffic-limit rate-limit 10240 bucket-size 4096 in
+  traffic-shape data-rate 10240 burst-size 4096
+!
+interface gei_2/9
+  out_index 59
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_2/10
+  out_index 60
+  description Dslam-GaoShan-MA5105-1-0
+  no negotiation auto
+  speed 100
+  ip access-group 200 in
+  ip access-group 10 vfp
+  switchport mode hybrid
+  switchport hybrid native vlan 1340
+  switchport hybrid vlan 1340 untag
+  switchport qinq customer
+  queue-mode wrr 0 5
+  queue-mode wrr 1 5
+  queue-mode wrr 2 5
+  queue-mode wrr 3 5
+  queue-mode wrr 5 15
+  queue-mode wrr 6 5
+  queue-mode wrr 7 5
+  vfp session 1 invlan any in 10 rule 1 ovlan 1340
+!
+interface gei_2/11
+  out_index 61
+  description VPN-JK-GaoShanCunAoMen::kehu
+  negotiation auto
+  switchport access vlan 3856
+  switchport qinq customer
+!
+interface gei_2/12
+  out_index 62
+  description VPN-BaoXiSiFaJu::kehu
+  negotiation auto
+  switchport access vlan 3823
+  switchport qinq normal
+!
+interface gei_2/13
+  out_index 63
+  description VPN-SheBaoDaoBaoXi::kehu
+  negotiation auto
+  switchport mode trunk
+  switchport trunk native vlan 1
+  switchport trunk vlan 3129-3130
+  switchport qinq normal
+  traffic-limit rate-limit 10240 bucket-size 4096 in
+  traffic-shape data-rate 10240 burst-size 4096
+!
+interface gei_2/14
+  out_index 64
+  description ZFW-BaoXiLinYeZhan
+  negotiation auto
+  switchport access vlan 3576
+  switchport qinq normal
+!
+interface gei_2/15
+  out_index 65
+  description pppoe -BaoXiZhuJianSheWenHuaChuanYi
+  shutdown
+  negotiation auto
+  switchport access vlan 2446
+  switchport qinq normal
+!
+interface gei_2/16
+  out_index 66
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_2/17
+  out_index 67
+  shutdown
+  negotiation auto
+  switchport access vlan 3161
+  switchport qinq normal
+!
+interface gei_2/18
+  out_index 68
+  description iwife-BaoXiBaKeShu
+  negotiation auto
+  switchport mode trunk
+  switchport trunk native vlan 40
+  switchport trunk vlan 40
+  switchport qinq normal
+!
+interface gei_2/19
+  out_index 69
+  description pppoe -BaoXiZhuJianSheWenHuaChuanYi::kehu
+  negotiation auto
+  switchport access vlan 3741
+  switchport qinq normal
+!
+interface gei_2/20
+  out_index 70
+  description ip-BaoXiXiTouZhuJianShewenHuaCHuangYi
+  shutdown
+  negotiation auto
+  switchport access vlan 3741
+  switchport qinq normal
+!
+interface gei_2/21
+  out_index 71
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_2/22
+  out_index 72
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_2/23
+  out_index 73
+  shutdown
+  negotiation auto
+  switchport mode trunk
+  switchport trunk native vlan 30
+  switchport trunk vlan 18
+  switchport trunk vlan 27
+  switchport trunk vlan 30
+  switchport trunk vlan 1313
+  switchport trunk vlan 1340
+  switchport trunk vlan 1786
+  switchport trunk vlan 2390
+  switchport trunk vlan 3345
+  switchport trunk vlan 3422
+  switchport trunk vlan 3473
+  switchport trunk vlan 3479
+  switchport trunk vlan 3490
+  switchport trunk vlan 3823
+  switchport trunk vlan 3856
+  switchport qinq normal
+!
+interface gei_2/24
+  out_index 74
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_2/25
+  out_index 75
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_2/26
+  out_index 76
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_2/27
+  out_index 77
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_2/28
+  out_index 78
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_2/29
+  out_index 79
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_2/30
+  out_index 80
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_2/31
+  out_index 81
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_2/32
+  out_index 82
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_2/33
+  out_index 83
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_2/34
+  out_index 84
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_2/35
+  out_index 85
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_2/36
+  out_index 86
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_2/37
+  out_index 87
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_2/38
+  out_index 88
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_2/39
+  out_index 89
+  negotiation auto
+  ip access-group 10 vfp
+  switchport mode hybrid
+  switchport hybrid native vlan 3870
+  switchport hybrid vlan 3870 untag
+  switchport qinq customer
+  vfp session 1 enhanced  ingress-invlan untag ingress-outvlan untag in 10 rule 1 egress-outvlan 3870 egress-invlan 106
+!
+interface gei_2/40
+  out_index 90
+  negotiation auto
+  switchport access vlan 3870
+  switchport qinq normal
+!
+interface gei_2/41
+  out_index 91
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_2/42
+  out_index 92
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_2/43
+  out_index 93
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_2/44
+  out_index 94
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_2/45
+  out_index 95
+  shutdown
+  negotiation auto
+  switchport access vlan 1
+  switchport qinq normal
+!
+interface gei_2/46
+  out_index 96
+  description LQ-BaoXiXiangZhengFuShiPingHuiyi-IP
+  negotiation auto
+  ip access-group 10 vfp
+  switchport mode hybrid
+  switchport hybrid native vlan 3770
+  switchport hybrid vlan 3770 untag
+  switchport hybrid vlan 3870 untag
+  switchport qinq customer
+  vfp session 2 enhanced  ingress-invlan untag ingress-outvlan untag in 10 rule 1 egress-outvlan 3770 egress-invlan 122
+!
+interface gei_2/47
+  out_index 97
+  description uT:LS-LQ-ShangYang-SW2-C8905-1.MAN GE5/4
+  shutdown
+  negotiation auto
+  switchport access vlan 3479
+  switchport qinq normal
+!
+interface gei_2/48
+  out_index 98
+  description Test
+  negotiation auto
+  switchport access vlan 2390
+  switchport qinq normal
+!
+!
+ip route 0.0.0.0 0.0.0.0 10.10.74.193
+!
+ztp vlan 1
+!
+multicast-limit 1024
+ip igmp snooping
+ip igmp snooping qinq-in-label
+no ip igmp snooping ssm-mapping
+!
+!
+time-range disable
+!
+acl standard number 10
+  rule 1 permit any 
+!
+acl standard number 99
+  rule 1 permit 202.96.114.0 0.0.0.255 
+  rule 2 permit 218.74.120.0 0.0.0.255 
+  rule 3 permit 218.74.121.0 0.0.0.255 
+  rule 4 permit 218.74.123.0 0.0.0.255 
+  rule 5 permit 218.74.126.0 0.0.0.255 
+  rule 6 permit 61.174.94.0 0.0.0.255 
+  rule 7 permit 61.174.95.0 0.0.0.255 
+  rule 9 permit 218.74.127.128 0.0.0.127 
+  rule 10 permit 10.10.1.0 0.0.0.255 
+  rule 11 permit 10.10.74.0 0.0.0.255 
+!
+acl link number 200
+  rule 1 permit ip dinvlan 3599-3600 ingress any egress any 
+  rule 2 permit any ingress any egress any 
+!
+priority-mark 200 rule-id 1 cos 4
+loop-detect reopen-time 10
+!
+nas 
+!
+bfd-version 1
+!
+bfd-packet normal
+!
+!
+!
+!
+version V4.08.24R1
+!
+nvram mng-ip-address 10.40.88.173 255.255.0.0 
+!
+nvram boot-username target
+!
+nvram boot-password target
+!
+nvram boot-server 10.40.88.170
+!
+nvram default-gateway 10.40.88.170
+!
+nvram imgfile-location local flash img/zxr10.zar
+!
+hostname LQ-BaoXi-ZTE-8902-1
+!
+enable secret level 15 5 RcMLuUKvnFZX9kNAV6A/UA==
+!
+username admin password ws1gbhjdb
+username zxr10 password zxr10
+!
+multi-user configure
+!
+user-authentication-type tacacs+
+user-authorization-type tacacs+
+!
+line console 0
+  no login authentication
+!
+banner incoming @
+    *************************************************************************
+    Welcome to ZXR10 Carrier-class High-end Routing Switch of ZTE Corporation
+    *************************************************************************
+@
+!
+!
+!
+!
+snmp-server location No.19, Huayuan East Road, Haidian District, Beijing, China
+snmp-server contact +86-010-82960000
+snmp-server trap-source 10.10.74.201
+snmp-server engine-id 830900020300010289d64401
+snmp-server community ls578@zjnoc view AllView ro
+snmp-server view AllView internet included 
+snmp-server view DefaultView system included 
+!
+!
+!
+protect
+tcp synflood-protect disable
+tcp synflood-protect defence 0 waittime 30 num 1
+tcp synflood-protect max-connect high 90 low 60 
+tcp synflood-protect one-minute high 80 low 50 
+!
+no ftp-server enable listen 21 
+ftp-server top-directory  /flash/ 
+!
+logging on
+logging buffer 200
+logging mode fullcycle
+logging console notifications
+logging level notifications
+logging timestamps datetime localtime
+syslog-server facility local0
+!
+environ
+  alarm cpuload on
+  alarm temperature on
+  alarm fan on
+  alarm power on
+  alarm memory on
+  check cpuload interval 3
+  check temperature interval 3
+  check fan interval 3
+  check power interval 3
+  check memory interval 3
+  cpuload-threshold high-grade 95 middle-grade 85 low-grade 75
+  memory-threshold 80
+  temper-threshold 55
+!
+line console idle-timeout 120 
+line console absolute-timeout 1440 
+line telnet idle-timeout 10 
+line telnet absolute-timeout 60 
+line telnet max-link 10 
+!
+ssh server authentication ispgroup 1
+ssh server authentication mode local
+ssh server authentication type chap
+no ssh server only
+ssh server version 2
+!
+!
+radius auto-change off
+!
+!
+!
+!
+!
+!
+!
+!
+tacacs enable 
+tacacs-server timeout 20
+tacacs-server packet 1024
+tacacs-client 10.10.74.201 
+!
+tacacs-server host 10.10.1.238 key ws1gblzlbx
+!
+aaa group-server tacacs+ lsdx
+  server 10.10.1.238 
+!
+!
+aaa authentication login default group lsdx local 
+aaa authorization exec default group lsdx local 
+aaa accounting commands 15 default stop-only group lsdx 
+aaa authentication enable default local 
+!
+!
+ip stream disable
+esm
+  $
+!
+!
+fw
+!
+!
+dpi
+  tos-remap disable
+  default-packet-tos 0x00
+  peer-list disable
+!
+!
+!
+end
+LQ-BaoXi-ZTE-8902-1#

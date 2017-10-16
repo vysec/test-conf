@@ -1,0 +1,356 @@
+
+Building configuration...
+
+Current configuration : 7380 bytes
+!
+version 12.1
+no service pad
+service timestamps debug datetime localtime
+service timestamps log datetime localtime
+service password-encryption
+!
+hostname QZ-JS-ShangCT-ASW-1.MAN.C3550
+!
+enable secret 5 $1$lnGL$Wg/sDMp3.uEO29xgx.xY0.
+enable password 7 121A0C041104
+!
+no errdisable detect cause loopback
+ip subnet-zero
+!
+ip name-server 202.107.245.11
+vtp mode transparent
+!
+class-map match-all XianSu
+  match ip dscp 0
+!
+!
+policy-map 80M
+  class XianSu
+    police 82000000 1000000 exceed-action drop
+policy-map 50M
+  class XianSu
+    police 53000000 1000000 exceed-action drop
+policy-map 40M
+  class XianSu
+    police 42000000 1000000 exceed-action drop
+policy-map 10M
+  class XianSu
+    police 10496000 1000000 exceed-action drop
+policy-map 30M
+  class XianSu
+    police 32000000 1000000 exceed-action drop
+policy-map 20M
+  class XianSu
+    police 21000000 1000000 exceed-action drop
+policy-map 8M
+  class XianSu
+    police 8400000 800000 exceed-action drop
+policy-map 4M
+  class XianSu
+    police 4200000 300000 exceed-action drop
+policy-map 6M
+  class XianSu
+    police 6296000 600000 exceed-action drop
+policy-map 450M
+  class XianSu
+    police 450000000 1000000 exceed-action drop
+policy-map 650M
+  class XianSu
+    police 650000000 1000000 exceed-action drop
+policy-map 300M
+  class XianSu
+    police 300000000 1000000 exceed-action drop
+policy-map policy2M
+  class XianSu
+    police 2096000 200000 exceed-action drop
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+lacp system-priority 100
+!
+!
+!
+!
+vlan 23
+ name management
+!
+vlan 26
+ name LaoDao_admin
+!
+vlan 27 
+!
+vlan 208
+ name JiZhenSuo_LianWang
+!
+vlan 523,547,1168,1193 
+!
+vlan 1333
+ name shangcuantang9210-10.20.33.6
+!
+vlan 1334
+ name P_NanYuanXiaoQu_DL3218
+!
+vlan 1335
+ name P_XiShiJie_DL3218
+!
+vlan 1336
+ name P_TO_ShangChuangTan_HWVDSl
+!
+vlan 2027
+ name old_P_TO_ShangChuangTan_HWVDSl
+!
+vlan 2063
+ name old_P_XiShiJie_DL3218
+!
+vlan 2069
+ name old_P_NanYuanXiaoQu_DL3218
+!
+vlan 2177
+ name old_shangcuantang9210-10.20.33.6
+!
+vlan 3220
+ name public_Vpn_QZ_GongLuGuanLiChu
+!
+vlan 3238
+ name GongLuGuanLiZhan
+!
+vlan 3411
+ name Hotel_JS_JiaoTongBinGuan
+!
+vlan 3415
+ name Hotel_JS_BaiYunBinGuan
+!
+vlan 3418
+ name Hotel_JS_FengHuaBinGuan
+!
+vlan 3421
+ name Hotel_JS_YuLongBinGuan
+!
+vlan 3433 
+!
+vlan 3436
+ name baiyuanbingguan
+!
+vlan 3437,3443 
+!
+vlan 3486
+ name jiaotongbinguan
+!
+vlan 3492-3493 
+!
+vlan 3523
+ name to-meiyifushi
+!
+vlan 3531
+ name jiaotongbingguan
+!
+vlan 3561 
+!
+vlan 3571
+ name WeiDa-NetBar
+!
+vlan 3575,3584,3597 
+!
+vlan 3706
+ name wangxiangjianzuo
+!
+vlan 3712,3757,3770,3772-3773,3870,3992 
+!
+interface Port-channel1
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 700-900,903,908
+ switchport mode trunk
+!
+interface FastEthernet0/1
+ description to-meiyifushi::kehu
+ switchport access vlan 3523
+ switchport mode access
+!
+interface FastEthernet0/2
+ description to-jiaotongbinguan::kehu
+ switchport access vlan 3411
+ switchport mode access
+!
+interface FastEthernet0/3
+ description to-baiyunbingguan::kehu
+ switchport access vlan 3415
+ switchport mode access
+!
+interface FastEthernet0/4
+ description to-wangxiangjianzuo::kehu
+ switchport access vlan 3706
+ switchport mode access
+ service-policy input 4M
+ service-policy output 4M
+!
+interface FastEthernet0/5
+ switchport access vlan 3757
+ switchport mode access
+ shutdown
+ service-policy input 4M
+ service-policy output 4M
+!
+interface FastEthernet0/6
+ switchport access vlan 1333
+ switchport mode dot1q-tunnel
+ shutdown
+!
+interface FastEthernet0/7
+ description to-gonglujizhengshu
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 26,208,523,3232
+ switchport mode trunk
+ shutdown
+!
+interface FastEthernet0/8
+ description ChuanShuYong
+ switchport access vlan 3597
+ switchport mode access
+!
+interface FastEthernet0/9
+ description ::kehu
+ switchport access vlan 27
+ switchport mode access
+!
+interface FastEthernet0/10
+ description to-fenghuabinguan
+ switchport access vlan 3418
+ switchport mode access
+ service-policy input 4M
+ service-policy output 4M
+!
+interface FastEthernet0/11
+ description WeiDa-NatBar::kehu
+ switchport access vlan 3571
+ switchport mode access
+!
+interface FastEthernet0/12
+ description to-yurongbinguan
+ switchport access vlan 3421
+ switchport mode access
+ shutdown
+ service-policy input policy2M
+ service-policy output policy2M
+!
+interface FastEthernet0/13
+ description to-yuhuabinfuan
+ switchport access vlan 3430
+ switchport mode access
+ shutdown
+ service-policy input 10M
+ service-policy output 10M
+!
+interface FastEthernet0/14
+ description to-NetBar-shenxun::kehu
+ switchport access vlan 3584
+ switchport mode access
+!
+interface FastEthernet0/15
+ switchport access vlan 3561
+ switchport mode access
+ shutdown
+ service-policy input 50M
+ service-policy output 50M
+!
+interface FastEthernet0/16
+ description TO-JianShanGuanLiDuan
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 3220,3238
+ switchport mode trunk
+!
+interface FastEthernet0/17
+ description dT:QZ-JS-XiShiJie38-1-LSW-1.MAN.2403:#(F0511090009#)Eth0/1::kehu
+ switchport access vlan 1335
+ switchport mode dot1q-tunnel
+ no cdp enable
+ spanning-tree bpdufilter enable
+!
+interface FastEthernet0/18
+ description dT:QZ-JS-NanYuanXiaoQu3-LSW-1.MAN.2403:#(F0510270049#)Eth0/1::kehu
+ switchport access vlan 1334
+ switchport mode dot1q-tunnel
+ no cdp enable
+ spanning-tree bpdufilter enable
+!
+interface FastEthernet0/19
+ description to-shangcuntangVDSL-10.1.240.92
+ switchport access vlan 1336
+ switchport mode dot1q-tunnel
+ shutdown
+!
+interface FastEthernet0/20
+ description to-WLAN-jiaotongbinguan
+ switchport access vlan 1193
+ switchport mode dot1q-tunnel
+ no cdp enable
+ spanning-tree bpdufilter enable
+!
+interface FastEthernet0/21
+ description to-xiyuebinguan::kehu
+ switchport access vlan 3437
+ switchport mode access
+ service-policy input 10M
+ service-policy output 10M
+!
+interface FastEthernet0/22
+ description to-shuanluguan::kehu
+ switchport access vlan 3443
+ switchport mode access
+ service-policy input 20M
+ service-policy output 20M
+!
+interface FastEthernet0/23
+ description TO_DongWang_NetBar
+ switchport access vlan 3575
+ switchport mode access
+!
+interface FastEthernet0/24
+ description to-WLAN-guanchengjiudian
+ switchport access vlan 1168
+ switchport mode dot1q-tunnel
+ no cdp enable
+ spanning-tree bpdufilter enable
+!
+interface GigabitEthernet0/1
+ description uT:QZ-JS-CZ4L-DSW-1.MAN.8905:(F0707110001)GE2/6
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 23,26,27,208,523,547,1168,1193,1333-1336,2027
+ switchport trunk allowed vlan add 2063,2069,2177,3220,3238,3411,3415,3418,3421
+ switchport trunk allowed vlan add 3430,3433,3436,3437,3443,3486,3492,3493,3523
+ switchport trunk allowed vlan add 3561,3571,3572,3575,3584,3597,3706,3712,3757
+ switchport trunk allowed vlan add 3770,3772,3773,3781,3870
+ switchport mode trunk
+!
+interface GigabitEthernet0/2
+ description dT:QZ-JS-ShanCuanTang-DSL-1.MAN.9210: (local)GE16/8
+ switchport access vlan 1333
+ switchport mode dot1q-tunnel
+!
+interface Vlan1
+ no ip address
+!
+interface Vlan23
+ description management
+ ip address 10.20.34.24 255.255.255.0
+!
+ip default-gateway 10.20.34.1
+ip classless
+ip http server
+!
+snmp-server community qzptt2001 RO
+snmp-server community qzdxkd2001 RW
+snmp-server host 10.192.0.11 qzptt2001 
+!
+line con 0
+line vty 0 4
+ password 7 00071A150754
+ login
+line vty 5 15
+ password 7 1511021F0725
+ login
+!
+!
+end
+
+QZ-JS-ShangCT-ASW-1.MAN.C3550#

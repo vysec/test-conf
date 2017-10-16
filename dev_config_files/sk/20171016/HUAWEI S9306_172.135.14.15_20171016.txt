@@ -1,0 +1,467 @@
+
+!Software Version V200R003C00SPC500
+#
+sysname NBYZ-D-NBSH-9306
+#
+super password level 3 cipher %$%$X3SW%]yD4U&AFw2"'b4$9<[eiF^)#H=IWV`m2M(1DW|O<[h9%$%$
+#
+vlan batch 7 to 8 40 42 93 1000 to 1001 1111 1752 1864 1867 2009
+vlan batch 2503 to 2504 2801 to 2812 2814 to 2826 2831 to 2832 3000 3963 3980
+#
+undo http server enable
+undo http secure-server enable
+#
+undo nap slave enable
+#
+ dba-profile default0 type3 assure 40000 max 80000
+#
+diffserv domain default
+#
+hwtacacs-server template nbdx
+ hwtacacs-server authentication 172.200.100.249
+ hwtacacs-server authorization 172.200.100.249
+ hwtacacs-server accounting 172.200.100.249
+ hwtacacs-server source-ip 172.93.12.148
+ hwtacacs-server shared-key cipher %@%@KEd(!RNzcXDs>J5uJ#RFjX*E%@%@
+ undo hwtacacs-server user-name domain-included
+#
+ line-profile default0
+#
+ service-profile default0
+#
+acl number 2015
+ description For-SNMP
+ rule 10 permit source 172.200.100.12 0
+ rule 20 permit source 172.200.100.6 0
+ rule 30 permit source 172.200.100.13 0
+ rule 40 permit source 172.200.100.7 0
+ rule 50 permit source 172.200.100.8 0
+ rule 60 permit source 172.200.100.9 0
+ rule 70 permit source 172.200.100.10 0
+ rule 80 permit source 172.200.100.11 0
+ rule 90 permit source 172.200.100.14 0
+ rule 100 permit source 172.200.100.15 0
+ rule 150 deny
+#
+drop-profile default
+#
+vlan 7
+ description raisecom
+vlan 8
+ description manager
+vlan 93
+ description 93_manager
+vlan 1111
+ description test
+vlan 1864
+ description ShuiJie-ZTE-GPONE-OLT-1-SW1864
+vlan 1867
+ description ShuiJie-ZTE-GPONE-OLT-1-SW1867
+vlan 2503
+ description ShuiJie-ZTE-GPONE-OLT-1-ITV2503
+vlan 2504
+ description ShuiJie-ZTE-GPONE-OLT-1-ITV2504
+vlan 2801
+ description V_BuLiJie_AG
+vlan 2802
+ description V_ShanShan_AG
+vlan 2803
+ description V_NingBo-bank_AG
+vlan 2804
+ description V_HuaMao_AG
+vlan 2805
+ description V_luoMeng_AG
+vlan 2806
+ description V_ShuiJie_AG
+vlan 2807
+ description V_HeHe_AG
+vlan 2808
+ description V_BoNa_AG
+vlan 2809
+ description V_GuoHua_AG
+vlan 2810
+ description V_ZhongJi_AG
+vlan 2811
+ description V_HengYuan_AG
+vlan 2812
+ description V_DongHang_AG
+vlan 2814
+ description V_AuLiSai_AG
+vlan 2815
+ description V_RiYue_AG
+vlan 2816
+ description V_GuangBo_AG
+vlan 2817
+ description V_NBSH_AG
+vlan 2818
+ description V_QiaoShang_association_AG
+vlan 2819
+ description V_HuaXiang_AG
+vlan 2820
+ description V_AUX_AG
+vlan 2821
+ description V_SangDeZi_AG
+vlan 2822
+ description V_HongJu_AG
+vlan 2823
+ description V_AiYiMei_AG
+vlan 2824
+ description V_HengWei_AG
+vlan 2825
+ description V_HuiGang_AG
+vlan 2826
+ description V_nanya_airlines_AG
+vlan 2831
+ description V_HengJia_AG
+vlan 2832
+ description AG_NanYuan_xincheng
+vlan 3963
+ description V-GongAn-LvGuan
+#
+aaa
+ authentication-scheme default
+ authentication-scheme defualt
+ authentication-scheme nbdx
+  authentication-mode hwtacacs local
+ authorization-scheme default
+ authorization-scheme nbdx
+  authorization-mode hwtacacs local
+ accounting-scheme default
+ accounting-scheme nbdx
+  accounting-mode hwtacacs
+  accounting realtime 3
+  accounting start-fail online
+ recording-scheme scheme0
+  recording-mode hwtacacs nbdx
+ cmd recording-scheme scheme0
+ outbound recording-scheme scheme0
+ domain default
+ domain default_admin
+  authentication-scheme nbdx
+  accounting-scheme nbdx
+  authorization-scheme nbdx
+  hwtacacs-server nbdx
+ local-user admin password cipher %@%@ZJo~BbBNcFwbFu'1*x7*9<\K%@%@
+ local-user admin privilege level 3
+ local-user admin service-type telnet
+ local-user zjnoc password cipher %@%@e/d8*YDvZ7N6L\DT+ItYjW*!%@%@
+ local-user zjnoc privilege level 3
+ local-user zjnoc service-type telnet terminal
+ local-user huawei password cipher %@%@A^m)Kc|'@R"y<]'bhn[N9<\U%@%@
+ local-user huawei privilege level 3
+ local-user huawei service-type telnet terminal ssh
+#
+ntp-service unicast-server 172.93.1.125 preference
+ntp-service unicast-server 172.93.1.126
+#
+interface Vlanif8
+ ip address 172.135.14.15 255.255.255.0
+#
+interface Vlanif93
+ ip address 172.93.12.148 255.255.255.224
+#
+interface Vlanif1000
+ ip address 10.23.121.44 255.255.255.248
+#
+interface Vlanif1111
+ ip address 218.71.239.178 255.255.255.252
+#
+interface Eth-Trunk1
+ description uT:NB-YZ-ZXQ-SR-1.MAN.7750:lag-6
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 8 2803 2815 to 2826 2831 3000
+ load-balance src-mac
+#
+interface Eth-Trunk2
+ description uT:B-YZ-SQ-SR-1.MAN.7750-lag4
+ port link-type trunk
+ port trunk allow-pass vlan 2803 2815 to 2826 2831
+ load-balance src-mac
+#
+interface Eth-Trunk3
+ description uT:NB-YZ-SQ-BAS-1.M2N.ME60-Eth-Trunk1:61.175.0.227
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 2801 to 2812 2814 to 2826 2831 to 2832
+ load-balance src-mac
+#
+interface Eth-Trunk4
+ description uT:NB-YZ-ZXQ-BAS-1.M2N.ME60:Eth-Trunk1(GE1/1/9,GE5/1/9)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 2801 to 2812 2814 to 2826 2831 to 2832
+ mode lacp
+ load-balance src-mac
+#
+interface Eth-Trunk5
+ description uT:NB-YZ-ZXQ-DSW-2.MAN.9312(2G)Eth-Trunk8
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 40 42 93 1752 1864 1867 2009 2503 to 2504 3963 3980
+ mode lacp
+ load-balance src-mac
+ lacp preempt enable
+#
+interface Eth-Trunk21
+ description dT:EPONG-NBSH-ZTE-OLT1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 40 42 1752 2009 3980
+ mode lacp
+ load-balance dst-mac
+#
+interface Eth-Trunk31
+ description NB-YZ-ShuiJie-ZTE-GPONE-OLT-1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 40 1864 1867 2503 to 2504 3963 4000
+ mode lacp
+ load-balance dst-mac
+#
+interface Ethernet0/0/0
+#
+interface GigabitEthernet1/0/0
+ undo negotiation auto
+ description uT:NB-YZ-ZXQ-SR-1.MAN.7750:(F1707070707)GE4/1/19
+ eth-trunk 1
+#
+interface GigabitEthernet1/0/1
+ undo negotiation auto
+ description uT:NB-YZ-ZXQ-BAS-1.M2N.ME60:(local)GE1/1/9
+ eth-trunk 4
+#
+interface GigabitEthernet1/0/2
+ shutdown
+#
+interface GigabitEthernet1/0/3
+ shutdown
+#
+interface GigabitEthernet1/0/4
+#
+interface GigabitEthernet1/0/5
+ description dT:NB-YZ-ShuiJie-ZTE-GPONE-OLT-1:(F17081715611)GE1/19/3
+ eth-trunk 31
+#
+interface GigabitEthernet1/0/6
+ undo negotiation auto
+ speed 100
+ description To HongJuDaSha_WLAN-1
+ shutdown
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet1/0/7
+ undo negotiation auto
+ speed 100
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 1606 to 1609 1698
+#
+interface GigabitEthernet1/0/8
+ undo negotiation auto
+ speed 100
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 1606 to 1609 1698
+#
+interface GigabitEthernet1/0/9
+ undo negotiation auto
+ speed 100
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 100 1606 to 1608 1698
+#
+interface GigabitEthernet1/0/10
+ undo negotiation auto
+ speed 100
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 100 1606 to 1608 1698
+#
+interface GigabitEthernet1/0/11
+ undo negotiation auto
+ speed 100
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 1606 to 1608 1698
+#
+interface GigabitEthernet1/0/12
+ undo negotiation auto
+ speed 100
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 100 1606 to 1608 1698
+#
+interface GigabitEthernet1/0/13
+ undo negotiation auto
+ speed 100
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 100 1606 to 1608 1698
+#
+interface GigabitEthernet1/0/14
+ undo negotiation auto
+ speed 100
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 1600 1616
+#
+interface GigabitEthernet1/0/15
+ undo negotiation auto
+ speed 100
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 1600 1616
+#
+interface GigabitEthernet1/0/16
+ undo negotiation auto
+ speed 100
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 1600 1617
+#
+interface GigabitEthernet1/0/17
+ undo negotiation auto
+ speed 100
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 1600 1617
+#
+interface GigabitEthernet1/0/18
+ undo negotiation auto
+ speed 100
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 1600 1619
+#
+interface GigabitEthernet1/0/19
+ undo negotiation auto
+ speed 100
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 1600 1618
+#
+interface GigabitEthernet1/0/20
+ undo negotiation auto
+ description dT:NB-YZ-NBSH-EPON-ZTE-OLT1:(local)GE0/19/0
+ eth-trunk 21
+#
+interface GigabitEthernet1/0/21
+ undo negotiation auto
+ description dT:NB-YZ-NBSH-EPON-ZTE-OLT1:(local)GE0/20/0
+ eth-trunk 21
+#
+interface GigabitEthernet1/0/22
+ undo negotiation auto
+ description uT:NB-YZ-ZXQ-DSW-2.MAN.9312:(35,36/144_1#)GE1/0/18
+ eth-trunk 5
+#
+interface GigabitEthernet1/0/23
+ undo negotiation auto
+ description dT:NB-YZ-A-NBSH-S3552:(local)GE1/1/1.14.250
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 8 2801 to 2812 2814 to 2826 2831 to 2832 3000
+#
+interface GigabitEthernet2/0/0
+ undo negotiation auto
+ description uT:NB-YZ-SQ-SR-1.MAN.7750:(F1707070707)GE3/1/19
+ eth-trunk 2
+#
+interface GigabitEthernet2/0/1
+ undo negotiation auto
+ description uT:NB-YZ-SQ-BAS-1.M2N.ME60:(F1707070707)GE1/1/9
+ eth-trunk 3
+#
+interface GigabitEthernet2/0/2
+#
+interface GigabitEthernet2/0/3
+#
+interface GigabitEthernet2/0/4
+ undo negotiation auto
+ description uT:NB-YZ-ZXQ-BAS-1.M2N.ME60:(9PF000960730)GE5/1/9
+ eth-trunk 4
+#
+interface GigabitEthernet2/0/5
+ description dT:NB-YZ-ShuiJie-ZTE-GPONE-OLT-1:(F17081715610)GE1/20/3
+ eth-trunk 31
+#
+interface GigabitEthernet2/0/6
+#
+interface GigabitEthernet2/0/7
+#
+interface GigabitEthernet2/0/8
+#
+interface GigabitEthernet2/0/9
+#
+interface GigabitEthernet2/0/10
+#
+interface GigabitEthernet2/0/11
+#
+interface GigabitEthernet2/0/12
+#
+interface GigabitEthernet2/0/13
+#
+interface GigabitEthernet2/0/14
+#
+interface GigabitEthernet2/0/15
+#
+interface GigabitEthernet2/0/16
+#
+interface GigabitEthernet2/0/17
+#
+interface GigabitEthernet2/0/18
+#
+interface GigabitEthernet2/0/19
+#
+interface GigabitEthernet2/0/20
+ undo negotiation auto
+ description dT:EPONG-NBSH-ZTE-OLT1:(local)GE0/20/0
+ eth-trunk 21
+#
+interface GigabitEthernet2/0/21
+ undo negotiation auto
+ description dT:EPONG-NBSH-ZTE-OLT1:(local)GE0/19/1
+ eth-trunk 21
+#
+interface GigabitEthernet2/0/22
+ undo negotiation auto
+ description uT:NB-YZ-ZXQ-DSW-2.MAN.9312:(31,32/144(3))GE2/0/18
+ eth-trunk 5
+#
+interface GigabitEthernet2/0/23
+ undo negotiation auto
+ description dT:NBYZ-A-NBSH-S3500-2:(local)GE1/1/1(14.22)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 7 to 8 2801 to 2812 2814 to 2826 2831 to 2832
+#
+interface NULL0
+#
+ip route-static 0.0.0.0 0.0.0.0 172.135.14.1
+ip route-static 172.0.0.0 255.0.0.0 172.93.12.158
+#
+snmp-agent
+snmp-agent local-engineid 800007DB03AC4E91448390
+snmp-agent community read cipher %$%$6SCQ5a/XX:>2F-UD`:Q;9<d]9/l(7J9.MJX0(\<PC8O4<d`9.Shp6)=5XBU0.[1D2Ed7di9<%$%$
+snmp-agent community read cipher %$%$+,v/+h%y:/hfq;;ZV@."jWdW2VZO'on#nFYAeoRpB)E>WdZjBis_NJN^/C85QE+Sd/y*dcjW%$%$ acl 2015
+snmp-agent sys-info contact R&D Nanjing, Huawei Technologies co.,Ltd.
+snmp-agent sys-info location NBYZ-D-NBSH-9306
+snmp-agent sys-info version all
+snmp-agent target-host trap address udp-domain 172.200.100.5 udp-port 161 params securityname cipher %@%@$JtyN0bC(K8pK~;$N0A(9<e/%@%@
+undo snmp-agent trap enable feature-name DLDP
+undo snmp-agent trap enable feature-name LDTTRAP
+undo snmp-agent trap enable feature-name LLDPTRAP
+snmp-agent trap enable feature-name BASETRAP
+#
+header login information " WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!"
+#
+user-interface con 0
+user-interface vty 0 4
+ authentication-mode aaa
+ idle-timeout 30 0
+user-interface vty 16 20
+#
+return
+<NBYZ-D-NBSH-9306>

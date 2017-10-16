@@ -1,0 +1,308 @@
+--------------------show run--------------------
+
+Building configuration...
+
+Current configuration : 5805 bytes
+!
+! Last configuration change at 10:42:27 UTC Sun Jul 16 2017 by cisco
+! NVRAM config last updated at 10:42:31 UTC Sun Jul 16 2017 by cisco
+!
+version 12.2
+no service pad
+service tcp-keepalives-in
+service tcp-keepalives-out
+service timestamps debug datetime msec localtime show-timezone
+service timestamps log datetime msec localtime show-timezone
+service password-encryption
+!
+hostname JX-QH-CSHY-ASW.MAN.3550
+!
+logging buffered 32768 debugging
+enable secret 5 $1$c1In$yezwYNivL/yxeNxCGSiFm1
+!
+username cisco privilege 0 password 7 002E0B2200645B544C73151C5D
+no aaa new-model
+errdisable recovery cause udld
+errdisable recovery cause bpduguard
+errdisable recovery cause security-violation
+errdisable recovery cause channel-misconfig
+errdisable recovery cause pagp-flap
+errdisable recovery cause dtp-flap
+errdisable recovery cause link-flap
+errdisable recovery cause gbic-invalid
+errdisable recovery cause l2ptguard
+errdisable recovery cause psecure-violation
+errdisable recovery cause dhcp-rate-limit
+errdisable recovery cause unicast-flood
+errdisable recovery cause vmps
+errdisable recovery cause storm-control
+errdisable recovery cause arp-inspection
+errdisable recovery cause loopback
+mls qos
+ip subnet-zero
+no ip domain-lookup
+!
+vtp mode transparent
+!
+!
+!
+port-channel load-balance dst-mac
+no file verify auto
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+no spanning-tree vlan 1,33,99,101-1600
+!
+vlan internal allocation policy ascending
+!
+vlan 99
+ name KuanDai_JiaoHuanJi_NetManager_1
+!
+vlan 1700-1719 
+!
+vlan 3006
+ name 112_VPN
+!
+vlan 3559 
+!
+vlan 3577
+ name ChengBeiDianZi_Co.,Ltd
+!
+vlan 3603
+ name LianHe_SiDai
+!
+vlan 3604 
+!
+vlan 3647
+ name ShiShangHuanQiu_ShiZhuang
+!
+vlan 3708,3714-3715,3732,3808 
+!
+class-map match-all 10M
+  match ip dscp default 
+class-map match-all 2M
+  match ip dscp default 
+!
+!
+policy-map 50M
+  class 10M
+    police 500000000 2000000 exceed-action drop
+policy-map 10M
+  class 10M
+    police 100000000 800000 exceed-action drop
+policy-map 20M
+  class 10M
+    police 200000000 1600000 exceed-action drop
+policy-map 50m
+  class 10M
+    police 50000000 2000000 exceed-action drop
+policy-map 4M
+  class 10M
+    police 4000000 800000 exceed-action drop
+policy-map 2M
+  class 2M
+    police 2000000 800000 exceed-action drop
+!
+!
+interface FastEthernet0/1
+ switchport mode access
+ shutdown
+!
+interface FastEthernet0/2
+ description To ShiShangHuanQiuShiZhuang
+ switchport access vlan 3647
+ switchport mode access
+ service-policy input 10M
+ service-policy output 10M
+!
+interface FastEthernet0/3
+ description To 112.VPN
+ switchport access vlan 3006
+ switchport mode access
+ shutdown
+!
+interface FastEthernet0/4
+ description To KaiRuoQiChe(QQY)
+ switchport access vlan 3808
+ switchport mode access
+ service-policy input 50M
+ service-policy output 50M
+!
+interface FastEthernet0/5
+ description To LingYan
+ switchport access vlan 1702
+ switchport mode access
+ service-policy input 2M
+ service-policy output 2M
+!
+interface FastEthernet0/6
+ switchport mode access
+ switchport protected
+ shutdown
+!
+interface FastEthernet0/7
+ description To ChunQiuJianShe
+ switchport access vlan 1703
+ switchport mode access
+!
+interface FastEthernet0/8
+ description 5731LAN02167249:HuaXiangFangZhi::kehu
+ switchport access vlan 3714
+ switchport mode access
+!
+interface FastEthernet0/9
+ description 5731LAN01735870:iTaiXieYe
+ switchport access vlan 3715
+ switchport mode access
+!
+interface FastEthernet0/10
+ description To TongRenWuZi
+ switchport access vlan 1701
+ switchport mode access
+!
+interface FastEthernet0/11
+ description To LiGenBao.itv
+ switchport access vlan 1706
+ switchport mode access
+!
+interface FastEthernet0/12
+ switchport mode access
+ shutdown
+!
+interface FastEthernet0/13
+ switchport mode access
+ shutdown
+!
+interface FastEthernet0/14
+ switchport mode access
+ shutdown
+!
+interface FastEthernet0/15
+ description To ZhenXingLuDianXinWangBa
+ switchport mode access
+ shutdown
+!
+interface FastEthernet0/16
+ description To:5731LAN01097732LiHaoZhiYi
+ switchport access vlan 3708
+ switchport mode access
+ service-policy input 50m
+ service-policy output 50m
+!
+interface FastEthernet0/17
+ switchport mode access
+ shutdown
+!
+interface FastEthernet0/18
+ switchport mode access
+ shutdown
+!
+interface FastEthernet0/19
+ description To MaiEnKeJi
+ switchport mode access
+ shutdown
+!
+interface FastEthernet0/20
+ description To ZhongHaiJianshe
+ switchport access vlan 3604
+ switchport mode access
+ service-policy input 10M
+ service-policy output 10M
+!
+interface FastEthernet0/21
+ description To ChengBeiDianZi
+ switchport access vlan 3577
+ switchport mode access
+ speed 10
+!
+interface FastEthernet0/22
+ description To TianDiJiaQiShiPing
+ switchport access vlan 3559
+ switchport mode access
+!
+interface FastEthernet0/23
+ description To LianHeSiDai
+ switchport access vlan 1705
+ switchport mode access
+!
+interface FastEthernet0/24
+ description To BaoluoXingchengFushi
+ switchport access vlan 1704
+ switchport mode access
+!
+interface GigabitEthernet0/1
+ switchport trunk allowed vlan 1-3565,3567-4094
+ switchport mode dynamic desirable
+ shutdown
+!
+interface GigabitEthernet0/2
+ description uT:JX-QH-CSHY-ASW.MAN.3352:(local)GE0/2
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 99,1700-1749,3006,3559,3577,3603,3604,3647,3708
+ switchport trunk allowed vlan add 3714,3715,3808
+ switchport mode trunk
+ speed nonegotiate
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan99
+ ip address 10.133.250.84 255.255.255.0
+!
+ip default-gateway 10.133.250.1
+ip classless
+no ip http server
+!
+snmp-server engineID local 00000009020000075023BDC0
+snmp-server community jxipnet RO
+!
+control-plane
+!
+!
+line con 0
+ password 7 032E432F0230711E0D5B405743
+ login
+line vty 0 4
+ login local
+line vty 5 15
+ login local
+!
+ntp clock-period 17180279
+ntp server 10.3.4.1
+ntp server 10.3.4.65
+!
+end
+
+JX-QH-CSHY-ASW.MAN.3550#
+--------------------show interfaces status--------------------
+
+
+Port      Name               Status       Vlan       Duplex  Speed Type
+Fa0/1                        disabled     1            auto   auto 10/100BaseTX
+Fa0/2     To ShiShangHuanQiu connected    3647       a-full  a-100 10/100BaseTX
+Fa0/3     To 112.VPN         disabled     3006         auto   auto 10/100BaseTX
+Fa0/4     To KaiRuoQiChe(QQY connected    3808       a-full  a-100 10/100BaseTX
+Fa0/5     To LingYan         connected    1702       a-full  a-100 10/100BaseTX
+Fa0/6                        disabled     1            auto   auto 10/100BaseTX
+Fa0/7     To ChunQiuJianShe  connected    1703       a-full  a-100 10/100BaseTX
+Fa0/8     5731LAN02167249:Hu connected    3714       a-full  a-100 10/100BaseTX
+Fa0/9     5731LAN01735870:iT connected    3715       a-full  a-100 10/100BaseTX
+Fa0/10    To TongRenWuZi     connected    1701       a-full  a-100 10/100BaseTX
+Fa0/11    To LiGenBao.itv    notconnect   1706         auto   auto 10/100BaseTX
+Fa0/12                       disabled     1            auto   auto 10/100BaseTX
+Fa0/13                       disabled     1            auto   auto 10/100BaseTX
+Fa0/14                       disabled     1            auto   auto 10/100BaseTX
+Fa0/15    To ZhenXingLuDianX disabled     1            auto   auto 10/100BaseTX
+Fa0/16    To:5731LAN01097732 connected    3708       a-full  a-100 10/100BaseTX
+Fa0/17                       disabled     1            auto   auto 10/100BaseTX
+Fa0/18                       disabled     1            auto   auto 10/100BaseTX
+Fa0/19    To MaiEnKeJi       disabled     1            auto   auto 10/100BaseTX
+Fa0/20    To ZhongHaiJianshe connected    3604       a-full  a-100 10/100BaseTX
+Fa0/21    To ChengBeiDianZi  connected    3577       a-full     10 10/100BaseTX
+Fa0/22    To TianDiJiaQiShiP connected    3559       a-full  a-100 10/100BaseTX
+Fa0/23    To LianHeSiDai     connected    1705       a-full  a-100 10/100BaseTX
+Fa0/24    To BaoluoXingcheng connected    1704       a-full  a-100 10/100BaseTX
+Gi0/1                        disabled     1            auto   auto unknown
+Gi0/2     uT:JX-QH-CSHY-ASW. connected    trunk      a-full a-1000 1000BaseLX
+JX-QH-CSHY-ASW.MAN.3550#

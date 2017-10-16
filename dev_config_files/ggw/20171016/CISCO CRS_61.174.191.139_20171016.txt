@@ -1,0 +1,2425 @@
+
+Sun Oct 15 05:00:14.364 beijing
+Building configuration...
+!! IOS XR Configuration 4.2.4
+!! Last configuration change at Mon Sep 18 15:34:52 2017 by chenyx
+!
+hostname WZ-YQ-KFQ-BR-1.MAN.CRS
+clock timezone beijing 8
+banner motd c WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user! c
+logging trap informational
+logging buffered 1024000
+logging buffered informational
+logging facility local2
+logging 115.239.131.2 vrf default
+logging 202.96.102.226 vrf default
+logging 61.153.176.173 vrf default
+logging source-interface Loopback0
+service timestamps log datetime localtime msec show-timezone
+service timestamps debug datetime localtime msec show-timezone
+telnet vrf default ipv4 server max-servers 100
+domain name-server 202.101.172.35
+taskgroup only-show
+ task read fr
+ task read aaa
+ task read acl
+ task read atm
+ task read bfd
+ task read bgp
+ task read cdp
+ task read cef
+ task read ppp
+ task read qos
+ task read rib
+ task read rip
+ task read sbc
+ task read bcdl
+ task read boot
+ task read diag
+ task read hdlc
+ task read hsrp
+ task read ipv4
+ task read ipv6
+ task read isis
+ task read lpts
+ task read ospf
+ task read ouni
+ task read snmp
+ task read vlan
+ task read vrrp
+ task read admin
+ task read eigrp
+ task read l2vpn
+ task read bundle
+ task read crypto
+ task read fabric
+ task read static
+ task read sysmgr
+ task read system
+ task read tunnel
+ task read drivers
+ task read logging
+ task read monitor
+ task read mpls-te
+ task read netflow
+ task read network
+ task read pos-dpt
+ task read firewall
+ task read mpls-ldp
+ task read pkg-mgmt
+ task read fault-mgr
+ task read interface
+ task read inventory
+ task read multicast
+ task read route-map
+ task read sonet-sdh
+ task read transport
+ task read ext-access
+ task read filesystem
+ task read tty-access
+ task read config-mgmt
+ task read ip-services
+ task read mpls-static
+ task read route-policy
+ task read host-services
+ task read basic-services
+ task read config-services
+ task write basic-services
+ task execute basic-services
+!
+usergroup priv1
+ taskgroup only-show
+!
+usergroup priv15
+ taskgroup sysadmin
+ taskgroup root-system
+ taskgroup cisco-support
+!
+tacacs source-interface Loopback0 vrf default
+tacacs-server host 61.153.176.164 port 1812
+ key 7 111E0348141D1909
+!
+tacacs-server host 115.239.131.9 port 49
+ key 7 150801020B29
+!
+tacacs-server host 122.229.8.65 port 49
+ key 7 05110C012E4F
+!
+username zjnoc
+ group sysadmin
+ group root-system
+ group cisco-support
+ password 7 045E190F0C701C1B59
+!
+username zjdxnoc
+ group sysadmin
+ group root-system
+ group cisco-support
+ secret 5 $1$A9k6$xc3koIFmjFkCF7SzXaXbK.
+!
+aaa accounting exec default start-stop group tacacs+ none
+aaa accounting exec local-only start-stop group tacacs+ none
+aaa accounting commands default start-stop group tacacs+ none
+aaa accounting commands local-only start-stop group tacacs+ none
+aaa authorization exec default group tacacs+ none
+aaa authorization exec local-only local
+aaa authorization commands default group tacacs+ none
+aaa authorization commands local-only none
+aaa authentication login default group tacacs+ local
+aaa authentication login local-only local
+line console
+ accounting exec local-only
+ accounting commands local-only
+ authorization exec local-only
+ authorization commands local-only
+ login authentication local-only
+ exec-timeout 20 0
+!
+line default
+ exec-timeout 20 0
+ access-class ingress acl_telnet
+ transport input telnet ssh
+!
+vty-pool default 0 5 line-template default
+snmp-server ifindex persist
+snmp-server community monWZitor RO acl_snmp
+snmp-server community zj2008snmp RO acl_snmp
+snmp-server traps copy-complete
+snmp-server traps snmp
+snmp-server traps flash removal
+snmp-server traps flash insertion
+snmp-server traps sonet
+snmp-server traps config
+snmp-server traps entity
+snmp-server traps syslog
+snmp-server contact WZ-CORE
+snmp-server trap-source Loopback0
+ntp
+ server 204.152.184.72
+ server 209.81.9.7 prefer
+!
+control-plane
+ management-plane
+  inband
+   interface all
+    allow SNMP
+    allow Telnet peer
+     address ipv4 61.153.176.169
+     address ipv4 61.153.176.170
+     address ipv4 61.153.176.171
+     address ipv4 61.153.176.172
+     address ipv4 61.153.176.173
+     address ipv4 61.153.176.174
+     address ipv4 61.153.176.179
+     address ipv4 61.153.176.180
+     address ipv4 61.153.176.181
+     address ipv4 61.153.176.182
+     address ipv4 202.96.102.47
+     address ipv4 202.96.102.84
+     address ipv4 202.96.102.139
+     address ipv4 202.96.102.221
+     address ipv4 202.96.102.240
+     address ipv4 202.96.102.244
+     address ipv4 202.96.103.164
+     address ipv4 202.96.103.188
+    !
+   !
+  !
+ !
+!
+ipv4 access-list acl-rp-1
+ 10 permit ipv4 any 233.18.205.0 0.0.0.255
+ 20 permit ipv4 any 233.18.206.0 0.0.0.255
+ 30 permit ipv4 any 233.18.208.0 0.0.0.255
+!
+ipv4 access-list acl-rp-2
+ 10 permit ipv4 any 233.18.207.0 0.0.0.255
+!
+ipv4 access-list acl-rp-3
+ 10 permit ipv4 any 239.53.0.0 0.0.1.255
+ 20 permit ipv4 any 233.18.206.0 0.0.0.255
+!
+ipv4 access-list acl-rp-4
+ 10 permit ipv4 233.50.200.0 0.0.3.255 any
+ 20 permit ipv4 233.60.200.0 0.0.0.255 any
+!
+ipv4 access-list acl_snmp
+ 10 permit ipv4 host 202.96.102.139 any
+ 20 permit ipv4 host 202.96.102.221 any
+ 30 permit ipv4 host 202.96.103.35 any
+ 40 permit ipv4 host 202.96.103.54 any
+ 50 permit ipv4 host 115.239.131.74 any
+ 60 permit ipv4 host 61.153.176.179 any
+ 70 permit ipv4 host 61.153.176.180 any
+ 80 permit ipv4 host 61.153.176.182 any
+ 90 permit ipv4 host 61.153.176.169 any
+ 100 permit ipv4 host 61.153.176.170 any
+ 110 permit ipv4 host 61.153.176.171 any
+ 120 permit ipv4 host 61.153.176.172 any
+ 130 permit ipv4 host 61.153.176.173 any
+ 140 permit ipv4 host 61.153.176.174 any
+ 150 permit ipv4 host 61.153.176.181 any
+ 160 permit ipv4 host 61.153.176.162 any
+ 170 permit ipv4 host 61.153.176.166 any
+ 180 permit ipv4 host 202.96.103.164 any
+!
+ipv4 access-list acl_telnet
+ 10 permit ipv4 202.107.222.64 0.0.0.7 any
+ 20 permit ipv4 61.175.206.0 0.0.0.63 any
+ 30 permit ipv4 61.153.176.160 0.0.0.31 any
+ 40 permit ipv4 202.96.102.0 0.0.0.255 any
+ 50 permit ipv4 202.96.103.0 0.0.0.255 any
+!
+ipv4 access-list ldp-filter
+ 20 permit ipv4 host 61.174.72.70 any
+ 30 permit ipv4 host 61.174.72.71 any
+ 40 permit ipv4 host 61.174.72.72 any
+ 50 permit ipv4 host 61.174.72.73 any
+ 60 permit ipv4 host 61.174.72.74 any
+ 350 permit ipv4 host 61.174.191.66 any
+ 360 permit ipv4 61.174.190.0 0.0.0.255 any
+ 370 permit ipv4 61.174.191.0 0.0.0.255 any
+ 380 permit ipv4 220.186.248.160 0.0.0.15 any
+!
+ipv4 access-list acl_MAN_Interface_in
+ 10 deny udp any any range 1433 1434
+ 20 deny udp any any range 135 netbios-ss
+ 30 deny udp any any eq 445
+ 40 deny tcp any any eq 4444
+ 50 deny tcp any any eq 445
+ 60 deny tcp any any eq 5554
+ 70 deny 0 any any
+ 80 deny 255 any any
+ 90 permit ipv4 any any
+!
+class-map match-any cmCritical
+ match mpls experimental topmost 4 
+ match precedence ipv4 flash-override 
+ end-class-map
+!
+class-map match-any cmPlatinum
+ match mpls experimental topmost 5 7 
+ match precedence ipv4 critical network 
+ end-class-map
+!
+class-map match-any cmNetworkControl
+ match mpls experimental topmost 6 
+ match precedence ipv4 internet 
+ end-class-map
+!
+class-map match-any cmGoldSilverCopper
+ match mpls experimental topmost 1 2 3 
+ match precedence ipv4 priority immediate flash 
+ end-class-map
+!
+policy-map IPTV-MARK
+ class class-default
+  set precedence critical
+ !
+ end-policy-map
+!
+policy-map pmCRS-Out
+ class cmCritical
+  police rate percent 10 
+   conform-action transmit
+   exceed-action drop
+  !
+  priority level 1 
+ !
+ class cmPlatinum
+  bandwidth percent 30 
+ !
+ class cmNetworkControl
+  bandwidth percent 1 
+ !
+ class cmGoldSilverCopper
+  bandwidth percent 1 
+ !
+ class class-default
+  bandwidth remaining percent 90 
+ !
+ end-policy-map
+!
+interface Bundle-Ether3
+ description dT:WZ-YQ-XDL-EMS-SW-1.ITV.9312
+ mtu 3000
+!
+interface Bundle-Ether3.102
+ description dT:WZ-YQ-XDL-EMS-SW-1.ITV.9312
+ service-policy input IPTV-MARK
+ ipv4 mtu 1500
+ ipv4 address 202.101.174.225 255.255.255.252
+ ipv4 unreachables disable
+ dot1q vlan 102
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface Loopback0
+ ipv4 address 61.174.191.139 255.255.255.255
+ ipv6 address 240e:1c:4052:1000::1/128
+ ipv6 enable
+!
+interface MgmtEth0/RP0/CPU0/0
+ shutdown
+!
+interface MgmtEth0/RP1/CPU0/0
+ shutdown
+!
+interface TenGigE0/0/0/0
+ shutdown
+!
+interface TenGigE0/0/1/0
+ description uT:WZ-WZ-XDL-CR-1.MAN.NCS:(F1107280078)10GE0/1/0/56
+ mtu 3000
+ ipv4 mtu 1500
+ ipv4 address 61.174.183.150 255.255.255.252
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4111:1521::7/127
+ ipv6 enable
+ load-interval 30
+ dampening
+!
+interface TenGigE0/0/2/0
+ shutdown
+!
+interface TenGigE0/0/4/0
+ description dT:WZ-YQ-XDL-BAS-1.MAN.ME60:()10GE2/0/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 mtu 1600
+ ipv4 address 220.186.238.50 255.255.255.254
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4152:1512::4/127
+ ipv6 enable
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/1/0/0
+ description uT:WZ-WZ-XDL-CR-1.MAN.NCS:(F0611160010)10GE0/0/0/56
+ mtu 1614
+ ipv4 mtu 1600
+ ipv4 address 61.174.183.46 255.255.255.252
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4111:1521::3/127
+ ipv6 enable
+ load-interval 30
+ dampening
+!
+interface TenGigE0/1/1/0
+ description pT:WZ-YQ-XDL-BR-1.MAN.CRS:(F1106220084)10GE0/1/1/0
+ mtu 3000
+ ipv4 mtu 1500
+ ipv4 address 61.174.183.154 255.255.255.252
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4152:1511::2/127
+ ipv6 enable
+ load-interval 30
+ dampening
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/1/2/0
+ shutdown
+!
+interface TenGigE0/1/4/0
+ description dT:WZ-YQ-KFQ-BAS-1.MAN.ME60:()10GE2/0/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 mtu 1600
+ ipv4 address 220.186.238.90 255.255.255.254
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4152:1523::4/127
+ ipv6 enable
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/2/0/0
+ description uT:WZ-WZ-XC-CR-1.MAN.NCS:(S-64N0002IP)10GE0/4/0/49
+ mtu 1614
+ ipv4 mtu 1600
+ ipv4 address 61.174.182.94 255.255.255.252
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4112:1521::5/127
+ ipv6 enable
+ load-interval 30
+ dampening
+!
+interface TenGigE0/2/1/0
+ description dT:WZ-YQ-XDL-BAS-1.M2N.ME60:(F1110110017)10GE6/0/0
+ mtu 3000
+ service-policy output pmCRS-Out
+ ipv4 mtu 1600
+ ipv4 address 220.186.233.193 255.255.255.252
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4152:1514::2/127
+ ipv6 enable
+ load-interval 30
+ dampening
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/2/2/0
+ shutdown
+!
+interface TenGigE0/2/4/0
+ description dT:WZ-YQ-HQ-SR-1.MAN.NE40E:()10GE2/0/0
+ mtu 3000
+ ipv4 mtu 1500
+ ipv4 address 220.186.226.29 255.255.255.252
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4152:1531::2/127
+ ipv6 enable
+ load-interval 30
+ dampening
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/3/0/0
+ description dT:WZ-YQ-HQ-SR-2.MAN.NE40E:()10GE2/0/0
+ mtu 3000
+ ipv4 mtu 1500
+ ipv4 address 220.186.227.57 255.255.255.252
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4152:1532::2/127
+ ipv6 enable
+ load-interval 30
+ dampening
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/3/1/0
+ description dT:WZ-YQ-XDL-S-8908-1.IPTV XGE4/4 10G
+ mtu 3000
+!
+interface TenGigE0/3/1/0.104
+ description dT:WZ-YQ-XDL-S-8908-1.IPTV XGE4/4 10G
+ service-policy input IPTV-MARK
+ ipv4 mtu 1500
+ ipv4 address 61.174.184.233 255.255.255.252
+ ipv4 unreachables disable
+ load-interval 30
+ dot1q vlan 104
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/3/2/0
+ shutdown
+!
+interface TenGigE0/3/4/0
+ description dT:WZ-YQ-CG-BAS-1.M2N.ME60:(F1605280008)10GE4/1/0
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 mtu 1600
+ ipv4 address 61.174.181.130 255.255.255.254
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4152:1544::4/127
+ ipv6 enable
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/4/0/0
+ description uT:WZ-WZ-XC-CR-1.MAN.NCS:(S-64N0001IP)10GE0/4/0/48
+ mtu 1614
+ ipv4 mtu 1600
+ ipv4 address 61.174.183.182 255.255.255.252
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4112:1521::3/127
+ ipv6 enable
+ load-interval 30
+ dampening
+!
+interface TenGigE0/4/1/0
+ shutdown
+!
+interface TenGigE0/4/2/0
+ shutdown
+!
+interface TenGigE0/4/4/0
+ shutdown
+!
+interface TenGigE0/5/0/0
+ description dT:WZ-YQ-XDL-EMS-SW-1.ITV.9312-Te12/0/3
+ bundle id 3 mode active
+!
+interface TenGigE0/5/1/0
+ description dT:WZ-YQ-XDL-BAS-2.MAN.ME60:()10GE2/1/0
+ mtu 3000
+ service-policy output pmCRS-Out
+ ipv4 mtu 1500
+ ipv4 address 220.186.226.37 255.255.255.252
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4152:1513::2/127
+ ipv6 enable
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/5/2/0
+ description dT:WZ-YQ-HQ-SR-1.MAN.NE40E:(F1601140017)10GE5/1/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 mtu 1600
+ ipv4 address 220.186.238.106 255.255.255.254
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4152:1531::6/127
+ ipv6 enable
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/5/4/0
+ description dT:WZ-YQ-CG-SR-1.MAN.NE80E:()10GE7/0/0
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.186.226.17 255.255.255.252
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4152:1541::2/127
+ ipv6 enable
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/6/0/0
+ description dT:WZ-YQ-KFQ-BAS-6.MAN.ME60:()10GE2/1/0
+ mtu 3000
+ service-policy output pmCRS-Out
+ ipv4 mtu 1500
+ ipv4 address 220.186.226.45 255.255.255.252
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4152:1527::2/127
+ ipv6 enable
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/6/1/0
+ description dT:WZ-YQ-XDL-EMS-SW-1.ITV.9312-Te11/0/3
+ bundle id 3 mode active
+!
+interface TenGigE0/6/2/0
+ description dT:WZ-YQ-CG-BAS-1.M2N.ME60:(local)10GE6/0/0
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 mtu 1600
+ ipv4 address 220.186.233.217 255.255.255.252
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4152:1544::2/127
+ ipv6 enable
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/6/4/0
+ description dT:WZ-YQ-KFQ-SR-1.MAN.NE80E:()10GE6/0/0
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 address 220.186.226.5 255.255.255.252
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4152:1522::2/127
+ ipv6 enable
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/7/0/0
+ description dT:WZ-YQ-KFQ-BAS-1.M2N.ME60:(local)10GE4/1/0
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 mtu 1600
+ ipv4 address 220.186.233.201 255.255.255.252
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4152:1528::2/127
+ ipv6 enable
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/7/1/0
+ description dT:WZ-YQ-KFQ-BAS-5.MAN.ME60:()10GE4/0/0
+ mtu 3000
+ service-policy output pmCRS-Out
+ ipv4 mtu 1500
+ ipv4 address 220.186.238.73 255.255.255.252
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4152:1526::2/127
+ ipv6 enable
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/7/2/0
+ description dT:WZ-YQ-CG-BAS-2.MAN.ME60:()10GE6/0/0
+ mtu 3000
+ service-policy output pmCRS-Out
+ ipv4 mtu 1500
+ ipv4 address 220.186.238.41 255.255.255.252
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4152:1543::2/127
+ ipv6 enable
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/7/4/0
+ description dT:WZ-YQ-KFQ-BAS-4.MAN.ME60:(local)10GE2/1/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 mtu 1600
+ ipv4 address 220.186.238.114 255.255.255.254
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4152:1529::4/127
+ ipv6 enable
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/8/0/0
+ description uT:WZ-WZ-XDL-CR-1.MAN.NCS:(10G0010IP)10GE0/7/0/19
+ mtu 3000
+ ipv4 mtu 1600
+ ipv4 address 220.186.216.14 255.255.255.252
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4111:1521::5/127
+ ipv6 enable
+ load-interval 30
+ dampening
+!
+interface TenGigE0/8/1/0
+ description uT:WZ-WZ-XC-CR-1.MAN.NCS:(10G0003IP)10GE0/7/0/19
+ mtu 3000
+ ipv4 mtu 1600
+ ipv4 address 220.186.216.34 255.255.255.252
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4112:1521::7/127
+ ipv6 enable
+ load-interval 30
+ dampening
+!
+interface TenGigE0/8/4/0
+ description dT:WZ-YQ-KFQ-BAS-6.MAN.ME60:(local)10GE7/0/1
+ mtu 3000
+ service-policy output pmCRS-Out
+ ipv4 mtu 1614
+ ipv4 address 61.174.181.110 255.255.255.254
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4152:1527::6/127
+ ipv6 enable
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/9/0/0
+ description dT:WZ-YQ-KFQ-BAS-4.MAN.ME60:(local)10GE2/0/0
+ mtu 3000
+ service-policy output pmCRS-Out
+ ipv4 mtu 1614
+ ipv4 address 220.186.238.21 255.255.255.252
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4152:1529::2/127
+ ipv6 enable
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/9/1/0
+ description dT:WZ-YQ-HQ-SR-2.MAN.NE40E:(F1601140036)10GE5/1/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 mtu 1600
+ ipv4 address 220.186.238.110 255.255.255.254
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4152:1532::6/127
+ ipv6 enable
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/9/2/0
+ description dT:WZ-YQ-KFQ-BAS-6.MAN.ME60:(local)10GE5/0/0
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 mtu 1600
+ ipv4 address 220.186.238.118 255.255.255.254
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4152:1527::4/127
+ ipv6 enable
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/9/4/0
+ description dT:WZ-YQ-KFQ-BAS-1.M2N.ME60:(local)10GE7/0/1
+ mtu 1614
+ ipv4 mtu 1614
+ ipv4 address 61.174.181.106 255.255.255.254
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4152:1528::6/127
+ ipv6 enable
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/10/0/0
+ description uT:WZ-WZ-XDL-CR-1.MAN.NCS:(10G0024IP)10GE0/0/0/36
+ mtu 1614
+ ipv4 mtu 1600
+ ipv4 address 220.186.245.167 255.255.255.254
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4111:1521::9/127
+ ipv6 enable
+ load-interval 30
+ dampening
+!
+interface TenGigE0/10/1/0
+ description uT:WZ-WZ-XC-CR-1.MAN.NCS:(10G0027IP)10GE0/3/0/42
+ mtu 1614
+ ipv4 mtu 1600
+ ipv4 address 220.186.255.167 255.255.255.254
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4112:1521::9/127
+ ipv6 enable
+ load-interval 30
+ dampening
+!
+interface TenGigE0/10/2/0
+ description dT:WZ-YQ-XDL-BAS-1.MAN.ME60:()10GE1/0/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 mtu 1600
+ ipv4 address 220.186.238.48 255.255.255.254
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4152:1512::2/127
+ ipv6 enable
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/10/4/0
+ description dT:WZ-YQ-KFQ-BAS-1.MAN.ME60:(Local)10GE1/0/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 mtu 1600
+ ipv4 address 220.186.238.88 255.255.255.254
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4152:1523::2/127
+ ipv6 enable
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/11/0/0
+ description uT:WZ-WZ-XDL-CR-1.MAN.NCS:(10G0023IP)10GE0/0/0/33
+ mtu 1614
+ ipv4 mtu 1600
+ ipv4 address 220.186.245.195 255.255.255.254
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4111:1521::b/127
+ ipv6 enable
+ load-interval 30
+ dampening
+!
+interface TenGigE0/11/1/0
+ description uT:WZ-WZ-XC-CR-1.MAN.NCS:(10G0031IP)10GE0/3/0/43
+ mtu 1614
+ ipv4 mtu 1600
+ ipv4 address 220.186.255.195 255.255.255.254
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4112:1521::b/127
+ ipv6 enable
+ load-interval 30
+ dampening
+!
+interface TenGigE0/11/2/0
+ description dT:WZ-YQ-KFQ-BAS-7.MAN.ME60:(Local)10GE2/0/0
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 mtu 1600
+ ipv4 address 220.186.238.94 255.255.255.254
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4152:1525::2/127
+ ipv6 enable
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/11/4/0
+ description dT:WZ-YQ-HQ-SR-1.MAN.NE40E:()10GE4/1/0
+ mtu 3000
+ service-policy output pmCRS-Out
+ ipv4 mtu 1600
+ ipv4 address 220.186.238.98 255.255.255.254
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4152:1531::8/127
+ ipv6 enable
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/12/0/0
+ description dT:WZ-YQ-HQ-SR-2.MAN.NE40E:()10GE4/1/0
+ mtu 3000
+ service-policy output pmCRS-Out
+ ipv4 mtu 1600
+ ipv4 address 220.186.238.102 255.255.255.254
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4152:1532::4/127
+ ipv6 enable
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/12/1/0
+ description dT:WZ-YQ-KFQ-BAS-1.M2N.ME60:(local)10GE6/1/1
+ mtu 1614
+ ipv4 mtu 1614
+ ipv4 address 61.174.181.102 255.255.255.254
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4152:1528::4/127
+ ipv6 enable
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/12/4/0
+ description dT:WZ-YQ-KFQ-BAS-1.MAN.ME60:(Local)10GE3/1/1
+ mtu 3000
+ service-policy output pmCRS-Out
+ ipv4 mtu 1500
+ ipv4 address 61.174.181.98 255.255.255.254
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4152:1523::6/127
+ ipv6 enable
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/12/5/0
+ description dT:WZ-YQ-KFQ-BAS-4.MAN.ME60:(local)10GE4/0/0
+ mtu 3000
+ service-policy output pmCRS-Out
+ ipv4 mtu 1614
+ ipv4 address 61.174.181.114 255.255.255.254
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4152:1529::6/127
+ ipv6 enable
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/13/0/0
+ description dT:WZ-YQ-KFQ-BAS-5.MAN.ME60:(local)10GE6/0/1
+ mtu 3000
+ service-policy output pmCRS-Out
+ ipv4 mtu 1600
+ ipv4 address 61.174.181.78 255.255.255.254
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4152:1526::4/127
+ ipv6 enable
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/13/1/0
+ description dT:WZ-YQ-KFQ-BAS-7.MAN.ME60:(local)10GE3/0/1
+ mtu 1614
+ service-policy output pmCRS-Out
+ ipv4 mtu 1600
+ ipv4 address 61.174.181.80 255.255.255.254
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4152:1525::4/127
+ ipv6 enable
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/13/2/0
+ description dT:WZ-YQ-CG-BAS-2.MAN.ME60:(F0911240069)10GE7/0/1
+ mtu 3000
+ service-policy output pmCRS-Out
+ ipv4 mtu 1600
+ ipv4 address 61.174.181.82 255.255.255.254
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4152:1543::4/127
+ ipv6 enable
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/13/4/0
+ description dT:WZ-YQ-XDL-BAS-1.M2N.ME60:(F1605310040)10GE6/1/1
+ mtu 3000
+ service-policy output pmCRS-Out
+ ipv4 mtu 1600
+ ipv4 address 61.174.181.94 255.255.255.254
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4152:1514::4/127
+ ipv6 enable
+ load-interval 30
+ dampening
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface TenGigE0/14/0/0
+ description uT:WZ-WZ-XDL-CR-1.MAN.NCS:(10G0060IP)10GE0/6/0/49
+ mtu 1614
+ ipv4 mtu 1600
+ ipv4 address 220.186.245.83 255.255.255.254
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4111:1521::d/127
+ ipv6 enable
+ load-interval 30
+ dampening
+!
+interface TenGigE0/14/1/0
+ description uT:WZ-WZ-XDL-CR-1.MAN.NCS:(10G0061IP)10GE0/7/0/48
+ mtu 1614
+ ipv4 mtu 1600
+ ipv4 address 220.186.245.85 255.255.255.254
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4111:1521::13/127
+ ipv6 enable
+ load-interval 30
+ dampening
+!
+interface TenGigE0/14/4/0
+ description uT:WZ-WZ-XC-CR-1.MAN.NCS:(10G0057IP)10GE0/6/0/49
+ mtu 1614
+ ipv4 mtu 1600
+ ipv4 address 220.186.255.83 255.255.255.254
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4112:1521::13/127
+ ipv6 enable
+ load-interval 30
+ dampening
+!
+interface TenGigE0/14/5/0
+ description uT:WZ-WZ-XC-CR-1.MAN.NCS:(10G0058IP)10GE0/6/0/48
+ mtu 1614
+ ipv4 mtu 1600
+ ipv4 address 220.186.255.81 255.255.255.254
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4112:1521::d/127
+ ipv6 enable
+ load-interval 30
+ dampening
+!
+interface TenGigE0/15/0/0
+ description uT:WZ-WZ-XDL-CR-1.MAN.NCS:(10G0062IP)10GE0/7/0/49
+ mtu 1614
+ ipv4 mtu 1600
+ ipv4 address 220.186.245.87 255.255.255.254
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4111:1521::15/127
+ ipv6 enable
+ load-interval 30
+ dampening
+!
+interface TenGigE0/15/1/0
+ description uT:WZ-WZ-XC-CR-1.MAN.NCS:(10G0056IP)10GE0/7/0/48
+ mtu 1614
+ ipv4 mtu 1600
+ ipv4 address 220.186.255.85 255.255.255.254
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4112:1521::15/127
+ ipv6 enable
+ load-interval 30
+ dampening
+!
+interface TenGigE0/15/2/0
+ description uT:WZ-WZ-XC-CR-1.MAN.NCS:(10G0059IP)10GE0/7/0/49
+ mtu 1614
+ ipv4 mtu 1600
+ ipv4 address 220.186.255.87 255.255.255.254
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4112:1521::17/127
+ ipv6 enable
+ load-interval 30
+ dampening
+!
+interface TenGigE0/15/4/0
+ description dT:WZ-YQ-XDL-BAS-2.MAN.ME60:(F1605310038)10GE6/0/1
+ mtu 3000
+ service-policy output pmCRS-Out
+ ipv4 mtu 1500
+ ipv4 address 61.174.181.90 255.255.255.254
+ ipv4 unreachables disable
+ ipv6 mtu 1600
+ ipv6 address 240e:1c:4152:1513::4/127
+ ipv6 enable
+ ipv4 access-group acl_MAN_Interface_in ingress
+!
+interface preconfigure GigabitEthernet0/0/0/0
+ shutdown
+!
+interface preconfigure GigabitEthernet0/0/0/1
+ shutdown
+!
+interface preconfigure GigabitEthernet0/0/0/2
+ shutdown
+!
+interface preconfigure GigabitEthernet0/0/0/3
+ shutdown
+!
+interface preconfigure GigabitEthernet0/0/0/4
+ shutdown
+!
+interface preconfigure GigabitEthernet0/0/0/5
+ shutdown
+!
+interface preconfigure GigabitEthernet0/0/0/6
+ shutdown
+!
+interface preconfigure GigabitEthernet0/0/0/7
+ shutdown
+!
+interface preconfigure GigabitEthernet0/0/0/8
+ shutdown
+!
+interface preconfigure GigabitEthernet0/0/0/9
+ shutdown
+!
+interface preconfigure GigabitEthernet0/0/2/0
+ shutdown
+!
+interface preconfigure GigabitEthernet0/0/2/1
+ shutdown
+!
+interface preconfigure GigabitEthernet0/0/2/2
+ shutdown
+!
+interface preconfigure GigabitEthernet0/0/2/3
+ shutdown
+!
+interface preconfigure GigabitEthernet0/0/2/4
+ shutdown
+!
+interface preconfigure GigabitEthernet0/0/2/5
+ shutdown
+!
+interface preconfigure GigabitEthernet0/0/2/6
+ shutdown
+!
+interface preconfigure GigabitEthernet0/0/2/7
+ shutdown
+!
+interface preconfigure GigabitEthernet0/0/2/8
+ shutdown
+!
+interface preconfigure GigabitEthernet0/0/2/9
+ shutdown
+!
+interface preconfigure GigabitEthernet0/1/2/0
+ shutdown
+!
+interface preconfigure GigabitEthernet0/1/2/1
+ shutdown
+!
+interface preconfigure GigabitEthernet0/1/2/2
+ shutdown
+!
+interface preconfigure GigabitEthernet0/1/2/3
+ shutdown
+!
+interface preconfigure GigabitEthernet0/1/2/4
+ shutdown
+!
+interface preconfigure GigabitEthernet0/1/2/5
+ shutdown
+!
+interface preconfigure GigabitEthernet0/1/2/6
+ shutdown
+!
+interface preconfigure GigabitEthernet0/1/2/7
+ shutdown
+!
+interface preconfigure GigabitEthernet0/1/2/8
+ shutdown
+!
+interface preconfigure GigabitEthernet0/1/2/9
+ shutdown
+!
+interface preconfigure GigabitEthernet0/2/2/0
+ shutdown
+!
+interface preconfigure GigabitEthernet0/2/2/1
+ shutdown
+!
+interface preconfigure GigabitEthernet0/2/2/2
+ shutdown
+!
+interface preconfigure GigabitEthernet0/2/2/3
+ shutdown
+!
+interface preconfigure GigabitEthernet0/2/2/4
+ shutdown
+!
+interface preconfigure GigabitEthernet0/2/2/5
+ shutdown
+!
+interface preconfigure GigabitEthernet0/2/2/6
+ shutdown
+!
+interface preconfigure GigabitEthernet0/2/2/7
+ shutdown
+!
+interface preconfigure GigabitEthernet0/2/2/8
+ shutdown
+!
+interface preconfigure GigabitEthernet0/2/2/9
+ mtu 1542
+ service-policy output pmCRS-Out
+ shutdown
+!
+interface preconfigure GigabitEthernet0/3/2/1
+ shutdown
+!
+interface preconfigure GigabitEthernet0/3/2/2
+ shutdown
+!
+interface preconfigure GigabitEthernet0/3/2/3
+ shutdown
+!
+interface preconfigure GigabitEthernet0/3/2/4
+ shutdown
+!
+interface preconfigure GigabitEthernet0/3/2/5
+ shutdown
+!
+interface preconfigure GigabitEthernet0/3/2/6
+ shutdown
+!
+interface preconfigure GigabitEthernet0/3/2/7
+ mtu 1542
+ service-policy output pmCRS-Out
+ shutdown
+!
+interface preconfigure GigabitEthernet0/3/2/8
+ shutdown
+!
+interface preconfigure GigabitEthernet0/3/2/9
+ shutdown
+!
+interface preconfigure GigabitEthernet0/4/2/0
+ shutdown
+!
+interface preconfigure GigabitEthernet0/4/2/1
+ shutdown
+!
+interface preconfigure GigabitEthernet0/4/2/2
+ shutdown
+!
+interface preconfigure GigabitEthernet0/4/2/3
+ shutdown
+!
+interface preconfigure GigabitEthernet0/4/2/5
+ shutdown
+!
+interface preconfigure GigabitEthernet0/4/2/6
+ shutdown
+!
+interface preconfigure GigabitEthernet0/4/2/7
+ shutdown
+!
+interface preconfigure GigabitEthernet0/4/2/8
+ shutdown
+!
+interface preconfigure GigabitEthernet0/4/2/9
+ shutdown
+!
+interface preconfigure POS0/4/4/0
+ shutdown
+!
+interface preconfigure POS0/4/4/1
+ shutdown
+!
+interface preconfigure POS0/4/4/2
+ shutdown
+!
+interface preconfigure POS0/4/4/3
+ shutdown
+!
+controller preconfigure SONET0/1/0/0
+ path
+  ais-shut
+ !
+ framing sdh
+ clock source line
+!
+controller preconfigure SONET0/4/4/0
+ path
+  ais-shut
+ !
+ framing sdh
+ clock source internal
+!
+controller preconfigure SONET0/4/4/1
+ path
+  ais-shut
+ !
+ framing sdh
+ clock source internal
+!
+controller preconfigure SONET0/4/4/2
+ path
+  ais-shut
+ !
+ framing sdh
+ clock source internal
+!
+prefix-set plDefaultRoute
+  0.0.0.0/0
+end-set
+!
+prefix-set plDefaultRoute_IPv6
+  ::/0 le 0
+end-set
+!
+route-policy rpCONN
+  if destination in plDefaultRoute then
+    drop
+  else
+    pass
+  endif
+end-policy
+!
+route-policy rpCONN_IPv6
+  if destination in plDefaultRoute_IPv6 then
+    drop
+  else
+    pass
+  endif
+end-policy
+!
+route-policy rpStaticToBGP
+  if tag eq 100 then
+    pass
+  else
+    drop
+  endif
+end-policy
+!
+route-policy rpStaticToISIS
+  if tag eq 10 then
+    pass
+  else
+    drop
+  endif
+end-policy
+!
+route-policy rpStaticToOspf
+  if tag eq 10 then
+    pass
+  else
+    drop
+  endif
+end-policy
+!
+route-policy rpStaticToBGP_IPv6
+  if tag eq 100 then
+    pass
+  else
+    drop
+  endif
+end-policy
+!
+router static
+ address-family ipv4 unicast
+  220.186.210.64/26 TenGigE0/3/1/0.104 61.174.184.234 tag 10 description IPTV2
+  220.186.213.64/26 Bundle-Ether3.102 202.101.174.226 tag 10 description ToIPTV
+ !
+!
+router isis wenzhou
+ set-overload-bit on-startup 15
+ is-type level-2-only
+ net 86.4757.0577.0611.7419.1139.00
+ log adjacency changes
+ max-lsp-lifetime 65500 level 2
+ address-family ipv4 unicast
+  metric-style wide level 2
+  metric 100000 level 2
+  ispf level 2
+  maximum-paths 32
+  redistribute static route-policy rpStaticToISIS
+  distance 155
+ !
+ address-family ipv6 unicast
+  metric-style wide level 2
+  metric 100000 level 2
+  ispf level 2
+  maximum-paths 32
+  single-topology
+  adjacency-check disable
+ !
+ interface Loopback0
+  passive
+  circuit-type level-2-only
+  address-family ipv4 unicast
+  !
+  address-family ipv6 unicast
+  !
+ !
+ interface TenGigE0/0/1/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+  address-family ipv6 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/0/4/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 3000
+  !
+  address-family ipv6 unicast
+   metric 3000
+  !
+ !
+ interface TenGigE0/1/0/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+  address-family ipv6 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/1/1/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 20
+  !
+  address-family ipv6 unicast
+   metric 20
+  !
+ !
+ interface TenGigE0/1/4/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 3000
+  !
+  address-family ipv6 unicast
+   metric 3000
+  !
+ !
+ interface TenGigE0/2/0/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+  address-family ipv6 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/2/1/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 3000
+  !
+  address-family ipv6 unicast
+   metric 3000
+  !
+ !
+ interface TenGigE0/2/4/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 3000
+  !
+  address-family ipv6 unicast
+   metric 3000
+  !
+ !
+ interface TenGigE0/3/0/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 3000
+  !
+  address-family ipv6 unicast
+   metric 3000
+  !
+ !
+ interface TenGigE0/3/4/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 3000
+  !
+  address-family ipv6 unicast
+   metric 3000
+  !
+ !
+ interface TenGigE0/4/0/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+  address-family ipv6 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/5/1/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 3000
+  !
+  address-family ipv6 unicast
+   metric 3000
+  !
+ !
+ interface TenGigE0/5/2/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 3000
+  !
+  address-family ipv6 unicast
+   metric 3000
+  !
+ !
+ interface TenGigE0/5/4/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 3000
+  !
+  address-family ipv6 unicast
+   metric 3000
+  !
+ !
+ interface TenGigE0/6/0/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 3000
+  !
+  address-family ipv6 unicast
+   metric 3000
+  !
+ !
+ interface TenGigE0/6/2/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 3000
+  !
+  address-family ipv6 unicast
+   metric 3000
+  !
+ !
+ interface TenGigE0/6/4/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 3000
+  !
+  address-family ipv6 unicast
+   metric 3000
+  !
+ !
+ interface TenGigE0/7/0/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 3000
+  !
+  address-family ipv6 unicast
+   metric 3000
+  !
+ !
+ interface TenGigE0/7/1/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 3000
+  !
+  address-family ipv6 unicast
+   metric 3000
+  !
+ !
+ interface TenGigE0/7/2/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 3000
+  !
+  address-family ipv6 unicast
+   metric 3000
+  !
+ !
+ interface TenGigE0/7/4/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 3000
+  !
+  address-family ipv6 unicast
+   metric 3000
+  !
+ !
+ interface TenGigE0/8/0/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+  address-family ipv6 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/8/1/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+  address-family ipv6 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/8/4/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 3000
+  !
+  address-family ipv6 unicast
+   metric 3000
+  !
+ !
+ interface TenGigE0/9/0/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 3000
+  !
+  address-family ipv6 unicast
+   metric 3000
+  !
+ !
+ interface TenGigE0/9/1/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 3000
+  !
+  address-family ipv6 unicast
+   metric 3000
+  !
+ !
+ interface TenGigE0/9/2/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 3000
+  !
+  address-family ipv6 unicast
+   metric 3000
+  !
+ !
+ interface TenGigE0/9/4/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 3000
+  !
+  address-family ipv6 unicast
+   metric 3000
+  !
+ !
+ interface TenGigE0/10/0/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+  address-family ipv6 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/10/1/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+  address-family ipv6 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/10/2/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 3000
+  !
+  address-family ipv6 unicast
+   metric 3000
+  !
+ !
+ interface TenGigE0/10/4/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 3000
+  !
+  address-family ipv6 unicast
+   metric 3000
+  !
+ !
+ interface TenGigE0/11/0/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+  address-family ipv6 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/11/1/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+  address-family ipv6 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/11/2/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 3000
+  !
+  address-family ipv6 unicast
+   metric 3000
+  !
+ !
+ interface TenGigE0/11/4/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 3000
+  !
+  address-family ipv6 unicast
+   metric 3000
+  !
+ !
+ interface TenGigE0/12/0/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 3000
+  !
+  address-family ipv6 unicast
+   metric 3000
+  !
+ !
+ interface TenGigE0/12/1/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 3000
+  !
+  address-family ipv6 unicast
+   metric 3000
+  !
+ !
+ interface TenGigE0/12/4/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 3000
+  !
+  address-family ipv6 unicast
+   metric 3000
+  !
+ !
+ interface TenGigE0/12/5/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 3000
+  !
+  address-family ipv6 unicast
+   metric 3000
+  !
+ !
+ interface TenGigE0/13/0/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 3000
+  !
+  address-family ipv6 unicast
+   metric 3000
+  !
+ !
+ interface TenGigE0/13/1/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 3000
+  !
+  address-family ipv6 unicast
+   metric 3000
+  !
+ !
+ interface TenGigE0/13/2/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 3000
+  !
+  address-family ipv6 unicast
+   metric 3000
+  !
+ !
+ interface TenGigE0/13/4/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 3000
+  !
+  address-family ipv6 unicast
+   metric 3000
+  !
+ !
+ interface TenGigE0/14/0/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+  address-family ipv6 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/14/1/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+  address-family ipv6 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/14/4/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+  address-family ipv6 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/14/5/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+  address-family ipv6 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/15/0/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+  address-family ipv6 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/15/1/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+  address-family ipv6 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/15/2/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 1500
+  !
+  address-family ipv6 unicast
+   metric 1500
+  !
+ !
+ interface TenGigE0/15/4/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   metric 3000
+  !
+  address-family ipv6 unicast
+   metric 3000
+  !
+ !
+!
+router ospf 100
+ router-id 61.174.191.139
+ maximum paths 32
+ auto-cost reference-bandwidth 1000000
+ distance 160
+ area 0
+  network point-to-point
+  interface Loopback0
+  !
+  interface Loopback1
+  !
+  interface TenGigE0/0/1/0
+   network point-to-point
+  !
+  interface TenGigE0/0/4/0
+   network point-to-point
+  !
+  interface TenGigE0/1/0/0
+   network point-to-point
+  !
+  interface TenGigE0/1/1/0
+   network point-to-point
+  !
+  interface TenGigE0/1/4/0
+   network point-to-point
+  !
+  interface TenGigE0/2/0/0
+   network point-to-point
+  !
+  interface TenGigE0/2/1/0
+   network point-to-point
+  !
+  interface TenGigE0/2/4/0
+   network point-to-point
+  !
+  interface TenGigE0/3/0/0
+   network point-to-point
+  !
+  interface TenGigE0/3/4/0
+   network point-to-point
+  !
+  interface TenGigE0/4/0/0
+   network point-to-point
+  !
+  interface TenGigE0/5/1/0
+   network point-to-point
+  !
+  interface TenGigE0/5/2/0
+   network point-to-point
+  !
+  interface TenGigE0/5/4/0
+   network point-to-point
+  !
+  interface TenGigE0/6/0/0
+   network point-to-point
+  !
+  interface TenGigE0/6/2/0
+   network point-to-point
+  !
+  interface TenGigE0/6/4/0
+   network point-to-point
+  !
+  interface TenGigE0/7/0/0
+   network point-to-point
+  !
+  interface TenGigE0/7/1/0
+   network point-to-point
+  !
+  interface TenGigE0/7/2/0
+   network point-to-point
+  !
+  interface TenGigE0/7/4/0
+   network point-to-point
+  !
+  interface TenGigE0/8/0/0
+   network point-to-point
+  !
+  interface TenGigE0/8/1/0
+   network point-to-point
+  !
+  interface TenGigE0/8/4/0
+   network point-to-point
+  !
+  interface TenGigE0/9/0/0
+   network point-to-point
+  !
+  interface TenGigE0/9/1/0
+   network point-to-point
+  !
+  interface TenGigE0/9/2/0
+   network point-to-point
+  !
+  interface TenGigE0/9/4/0
+   network point-to-point
+  !
+  interface TenGigE0/10/0/0
+   network point-to-point
+  !
+  interface TenGigE0/10/1/0
+   network point-to-point
+  !
+  interface TenGigE0/10/2/0
+   network point-to-point
+  !
+  interface TenGigE0/10/4/0
+   network point-to-point
+  !
+  interface TenGigE0/11/0/0
+   network point-to-point
+  !
+  interface TenGigE0/11/1/0
+   network point-to-point
+  !
+  interface TenGigE0/11/2/0
+   network point-to-point
+  !
+  interface TenGigE0/11/4/0
+   network point-to-point
+  !
+  interface TenGigE0/12/0/0
+   network point-to-point
+  !
+  interface TenGigE0/12/1/0
+   network point-to-point
+  !
+  interface TenGigE0/12/4/0
+   network point-to-point
+  !
+  interface TenGigE0/12/5/0
+   network point-to-point
+  !
+  interface TenGigE0/13/0/0
+   network point-to-point
+  !
+  interface TenGigE0/13/1/0
+   network point-to-point
+  !
+  interface TenGigE0/13/2/0
+   network point-to-point
+  !
+  interface TenGigE0/13/4/0
+   network point-to-point
+  !
+  interface TenGigE0/14/0/0
+   network point-to-point
+  !
+  interface TenGigE0/14/1/0
+   network point-to-point
+  !
+  interface TenGigE0/14/4/0
+   network point-to-point
+  !
+  interface TenGigE0/14/5/0
+   network point-to-point
+  !
+  interface TenGigE0/15/0/0
+   network point-to-point
+  !
+  interface TenGigE0/15/1/0
+   network point-to-point
+  !
+  interface TenGigE0/15/2/0
+   network point-to-point
+  !
+  interface TenGigE0/15/4/0
+   network point-to-point
+  !
+ !
+!
+router bgp 64757
+ bgp router-id 61.174.191.139
+ address-family ipv4 unicast
+  distance bgp 20 200 200
+  maximum-paths ebgp 8
+  maximum-paths ibgp 8
+  redistribute connected route-policy rpCONN
+  redistribute static route-policy rpStaticToBGP
+ !
+ address-family ipv6 unicast
+  distance bgp 20 200 200
+  bgp dampening
+  maximum-paths ebgp 8
+  maximum-paths ibgp 8
+  redistribute connected route-policy rpCONN_IPv6
+  redistribute static route-policy rpStaticToBGP_IPv6
+ !
+ neighbor-group pgCR
+  remote-as 64757
+  update-source Loopback0
+  address-family ipv4 unicast
+  !
+ !
+ neighbor-group pgCR_IPv6
+  remote-as 64757
+  update-source Loopback0
+  address-family ipv6 unicast
+   next-hop-self
+  !
+ !
+ neighbor 61.174.191.131
+  use neighbor-group pgCR
+  description TO WZ-WZ-XDL-CR-1.MAN.CRS
+ !
+ neighbor 61.174.191.132
+  use neighbor-group pgCR
+  description TO WZ-WZ-XC-CR-1.MAN.CRS
+ !
+ neighbor 240e:1c:4011:1000::1
+  use neighbor-group pgCR_IPv6
+  description TO WZ-WZ-XDL-CR-1.MAN.CRS
+ !
+ neighbor 240e:1c:4012:1000::1
+  use neighbor-group pgCR_IPv6
+  description TO WZ-WZ-XC-CR-1.MAN.CRS
+ !
+!
+mpls ldp
+ router-id Loopback0
+ discovery hello holdtime 15
+ holdtime 45
+ label
+  allocate for ldp-filter
+ !
+ log
+  neighbor
+  session-protection
+ !
+ interface GigabitEthernet0/3/2/0.54
+ !
+ interface GigabitEthernet0/3/2/7.54
+ !
+ interface TenGigE0/0/1/0
+ !
+ interface TenGigE0/0/4/0
+ !
+ interface TenGigE0/0/4/0.54
+ !
+ interface TenGigE0/1/0/0
+ !
+ interface TenGigE0/1/1/0
+ !
+ interface TenGigE0/1/4/0
+ !
+ interface TenGigE0/1/4/0.54
+ !
+ interface TenGigE0/2/0/0
+ !
+ interface TenGigE0/2/1/0
+ !
+ interface TenGigE0/2/1/0.54
+ !
+ interface TenGigE0/2/4/0
+ !
+ interface TenGigE0/3/0/0
+ !
+ interface TenGigE0/3/4/0
+ !
+ interface TenGigE0/4/0/0
+ !
+ interface TenGigE0/5/1/0
+ !
+ interface TenGigE0/5/2/0
+ !
+ interface TenGigE0/5/4/0
+ !
+ interface TenGigE0/6/0/0
+ !
+ interface TenGigE0/6/2/0
+ !
+ interface TenGigE0/6/4/0
+ !
+ interface TenGigE0/7/0/0
+ !
+ interface TenGigE0/7/0/0.54
+ !
+ interface TenGigE0/7/1/0
+ !
+ interface TenGigE0/7/2/0
+ !
+ interface TenGigE0/7/4/0
+ !
+ interface TenGigE0/7/4/0.54
+ !
+ interface TenGigE0/8/0/0
+ !
+ interface TenGigE0/8/1/0
+ !
+ interface TenGigE0/8/4/0
+ !
+ interface TenGigE0/9/0/0
+ !
+ interface TenGigE0/9/1/0
+ !
+ interface TenGigE0/9/2/0
+ !
+ interface TenGigE0/9/4/0
+ !
+ interface TenGigE0/10/0/0
+ !
+ interface TenGigE0/10/1/0
+ !
+ interface TenGigE0/10/2/0
+ !
+ interface TenGigE0/10/4/0
+ !
+ interface TenGigE0/11/0/0
+ !
+ interface TenGigE0/11/1/0
+ !
+ interface TenGigE0/11/2/0
+ !
+ interface TenGigE0/11/4/0
+ !
+ interface TenGigE0/12/0/0
+ !
+ interface TenGigE0/12/1/0
+ !
+ interface TenGigE0/12/4/0
+ !
+ interface TenGigE0/12/5/0
+ !
+ interface TenGigE0/13/0/0
+ !
+ interface TenGigE0/13/1/0
+ !
+ interface TenGigE0/13/2/0
+ !
+ interface TenGigE0/13/4/0
+ !
+ interface TenGigE0/14/0/0
+ !
+ interface TenGigE0/14/1/0
+ !
+ interface TenGigE0/14/4/0
+ !
+ interface TenGigE0/14/5/0
+ !
+ interface TenGigE0/15/0/0
+ !
+ interface TenGigE0/15/1/0
+ !
+ interface TenGigE0/15/2/0
+ !
+ interface TenGigE0/15/4/0
+ !
+ interface POS0/4/0/0
+ !
+!
+multicast-routing
+ address-family ipv4
+  interface TenGigE0/0/1/0
+   enable
+  !
+  interface TenGigE0/0/4/0
+   enable
+  !
+  interface TenGigE0/1/0/0
+   enable
+  !
+  interface TenGigE0/1/4/0
+   enable
+  !
+  interface TenGigE0/2/0/0
+   enable
+  !
+  interface TenGigE0/2/1/0
+   enable
+  !
+  interface TenGigE0/3/4/0
+   enable
+  !
+  interface TenGigE0/4/0/0
+   enable
+  !
+  interface TenGigE0/5/2/0
+   enable
+  !
+  interface TenGigE0/6/2/0
+   enable
+  !
+  interface TenGigE0/7/0/0
+   enable
+  !
+  interface TenGigE0/7/4/0
+   enable
+  !
+  interface TenGigE0/8/0/0
+   enable
+  !
+  interface TenGigE0/8/1/0
+   enable
+  !
+  interface TenGigE0/8/4/0
+   enable
+  !
+  interface TenGigE0/9/1/0
+   enable
+  !
+  interface TenGigE0/9/2/0
+   enable
+  !
+  interface TenGigE0/9/4/0
+   enable
+  !
+  interface TenGigE0/10/0/0
+   enable
+  !
+  interface TenGigE0/10/1/0
+   enable
+  !
+  interface TenGigE0/11/0/0
+   enable
+  !
+  interface TenGigE0/11/1/0
+   enable
+  !
+  interface TenGigE0/12/1/0
+   enable
+  !
+  interface TenGigE0/12/4/0
+   enable
+  !
+  interface TenGigE0/12/5/0
+   enable
+  !
+  interface TenGigE0/13/0/0
+   enable
+  !
+  interface TenGigE0/13/1/0
+   enable
+  !
+  interface TenGigE0/13/2/0
+   enable
+  !
+  interface TenGigE0/13/4/0
+   enable
+  !
+  interface TenGigE0/14/0/0
+   enable
+  !
+  interface TenGigE0/14/1/0
+   enable
+  !
+  interface TenGigE0/14/4/0
+   enable
+  !
+  interface TenGigE0/14/5/0
+   enable
+  !
+  interface TenGigE0/15/0/0
+   enable
+  !
+  interface TenGigE0/15/1/0
+   enable
+  !
+  interface TenGigE0/15/4/0
+   enable
+  !
+  multipath
+  interface all enable
+ !
+!
+snmp-server traps fabric plane
+snmp-server traps fabric bundle link
+snmp-server traps fabric bundle state
+snmp-server traps sensor
+snmp-server traps fru-ctrl
+router pim
+ address-family ipv4
+  rp-address 115.233.6.200 acl-rp-3
+  rp-address 122.229.7.137 acl-rp-4
+  rp-address 220.191.138.18 acl-rp-1
+  rp-address 220.191.138.19 acl-rp-2
+  interface TenGigE0/0/4/0
+  !
+  interface TenGigE0/1/0/0
+  !
+  interface TenGigE0/1/4/0
+  !
+  interface TenGigE0/2/0/0
+  !
+  interface TenGigE0/3/4/0
+  !
+  interface TenGigE0/4/0/0
+  !
+  interface TenGigE0/5/2/0
+  !
+  interface TenGigE0/6/2/0
+  !
+  interface TenGigE0/7/0/0
+  !
+  interface TenGigE0/7/4/0
+  !
+  interface TenGigE0/8/4/0
+  !
+  interface TenGigE0/9/1/0
+  !
+  interface TenGigE0/9/2/0
+  !
+  interface TenGigE0/9/4/0
+  !
+  interface TenGigE0/10/0/0
+  !
+  interface TenGigE0/10/1/0
+  !
+  interface TenGigE0/11/0/0
+  !
+  interface TenGigE0/11/1/0
+  !
+  interface TenGigE0/12/1/0
+  !
+  interface TenGigE0/12/2/0
+  !
+  interface TenGigE0/12/4/0
+  !
+  interface TenGigE0/12/5/0
+  !
+  interface TenGigE0/13/0/0
+  !
+  interface TenGigE0/13/1/0
+  !
+  interface TenGigE0/13/2/0
+  !
+  interface TenGigE0/13/4/0
+  !
+  interface TenGigE0/14/0/0
+  !
+  interface TenGigE0/14/1/0
+  !
+  interface TenGigE0/14/4/0
+  !
+  interface TenGigE0/14/5/0
+  !
+  interface TenGigE0/15/0/0
+  !
+  interface TenGigE0/15/1/0
+  !
+  interface TenGigE0/15/2/0
+  !
+  interface TenGigE0/15/4/0
+  !
+ !
+!
+end
+
+RP/0/RP0/CPU0:WZ-YQ-KFQ-BR-1.MAN.CRS#

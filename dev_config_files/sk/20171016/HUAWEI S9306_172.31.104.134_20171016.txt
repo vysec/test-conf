@@ -1,0 +1,460 @@
+
+!Software Version V200R003C00SPC500
+#
+sysname JH-PJ-GYY-SW2-S9306-1.MAN
+#
+info-center source IP channel 3 log level error
+info-center loghost source Vlanif49
+info-center loghost 220.188.118.249 language Chinese facility local3
+#
+vlan batch 30 32 41 48 to 49 1023 1486 1495 1506 1537 1602
+vlan batch 1638 3054 3071 3092 3799 to 3801 3818 to 3819 3836 3845 3853 3941 to 3944
+vlan batch 3947 3949
+#
+igmp-snooping enable
+#
+undo http server enable
+undo http secure-server enable
+#
+undo nap slave enable
+#
+ dba-profile default0 type3 assure 40000 max 80000
+#
+diffserv domain default
+#
+radius-server template telnet
+ radius-server shared-key cipher %@%@hOHyK'atJA~89QLiJ|43^}JD%@%@
+ undo radius-server user-name domain-included
+#
+hwtacacs-server template telnet
+ hwtacacs-server authentication 61.175.255.41
+ hwtacacs-server authorization 61.175.255.41
+ hwtacacs-server accounting 61.175.255.41
+ hwtacacs-server shared-key cipher %@%@IYV52u(ufY"NH%N4Y%(-E9^v%@%@
+#
+ line-profile default0
+#
+ service-profile default0
+#
+drop-profile default
+#
+vlan 30
+ description DSLAM_GuanLi_NEW
+vlan 32
+ description For0Dslam-NetManagement
+ igmp-snooping enable
+vlan 41
+ description JH_DongLiHuanJingJK_VPN
+vlan 48
+ description NetManagement
+vlan 49
+ description switch-management
+vlan 1486
+ description PJ-QiLi-HW-MA5600-2
+vlan 1495
+ description JH-PJ-ShangMaoZhongXin-HW-MA5600
+vlan 1506
+ description JH-PJ-TeSeGongYeYuan-MA5600
+vlan 1537
+ description pj-TeSeYuanQu_ALC_ADSL
+vlan 1602
+ description pj-ShuGuang-7302-ADSL
+vlan 1638
+ description PJ-TeSeGongYeYuan-1-ACL-DSLAM
+vlan 3071
+ description to_DaZhongBaoXian_VPN
+vlan 3092
+ description QuanQiuYan_JianKong
+vlan 3799
+ description pj_ChuangYeDaSha_com
+vlan 3800
+ description pj_MuTongXieYe_com
+vlan 3801
+ description pj_AiOuNiYa_NetBar
+vlan 3818
+ description to_PJ_JianChaYuan_COM
+vlan 3819
+ description PJ-BUBUGAo-BAR
+vlan 3836
+ description PJ_ChangCheng_NetBar
+vlan 3845
+ description to_ShenTongKuaiDi2_COM
+vlan 3853
+ description pj_HaiDiJiaFang_com
+vlan 3941
+ description pj_LanTian_NetBar
+vlan 3942
+ description pj_XinLang_Netbar
+vlan 3943
+ description pj_XingShiJiChuangShang_com
+vlan 3944
+ description pj_XingDongLi_Netbar
+vlan 3947
+ description PJ_XingChengGongYe_com
+vlan 3949
+ description pj_ZhongShan_Netbar
+#
+aaa
+ authentication-scheme default
+ authentication-scheme telent
+  authentication-mode hwtacacs local
+ authentication-scheme telnet
+  authentication-mode hwtacacs local
+ authorization-scheme default
+ authorization-scheme telnet
+  authorization-mode hwtacacs local
+ accounting-scheme default
+ accounting-scheme telnet
+  accounting-mode hwtacacs
+  accounting start-fail online
+ domain default
+ domain default_admin
+  authentication-scheme telnet
+  accounting-scheme telnet
+  authorization-scheme telnet
+  hwtacacs-server telnet
+ local-user admin password cipher %@%@,o[<:N1U.:$QtM>4,03D^}LL%@%@
+ local-user admin privilege level 3
+ local-user admin service-type http
+ local-user huawei123 password cipher %@%@WGKc$g\6PWB3<c@cYbjF^}LV%@%@
+ local-user huawei123 privilege level 3
+ local-user huawei123 service-type telnet
+ local-user aaa@huawei.com password cipher %@%@5hcb-Cd[h(4\C"/2x|P~^}LY%@%@
+#
+ntp-service unicast-server 61.175.255.59
+#
+interface Vlanif49
+ description switch-management
+ ip address 172.31.104.134 255.255.255.224
+#
+interface Vlanif1023
+ ip address 172.18.0.1 255.255.255.252
+#
+interface Eth-Trunk1
+ description To JH-PJ-JN-SW1-S9306-1.MAN
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 30 32 41 48 to 49 1486 1495 1506 1537 1602 1638
+ port hybrid tagged vlan 3071 to 3072 3092 3799 to 3801 3818 to 3819 3827 3836 3845 3852 to 3853 3941 to 3944 3947
+ port hybrid tagged vlan 3949
+ mode lacp
+#
+interface Ethernet0/0/0
+ ip address 192.168.1.2 255.255.255.0
+#
+interface GigabitEthernet5/0/0
+#
+interface GigabitEthernet5/0/1
+#
+interface GigabitEthernet5/0/2
+#
+interface GigabitEthernet5/0/3
+#
+interface GigabitEthernet5/0/4
+ description dT:JH-PJ-JN-SW1-S9306-1.MAN:(F0803310015)GE6/0/9
+ eth-trunk 1
+#
+interface GigabitEthernet5/0/5
+ description dT:JH-PJ-JN-SW1-S9306-1.MAN:(F0908270012)GE5/0/2
+ eth-trunk 1
+#
+interface GigabitEthernet5/0/6
+ undo negotiation auto
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 30 32
+ port hybrid untagged vlan 1506
+ port vlan-stacking vlan 101 to 996 stack-vlan 1506
+ port vlan-stacking vlan 3600 stack-vlan 1506
+ stp disable
+#
+interface GigabitEthernet5/0/7
+ undo negotiation auto
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 30 32
+ port hybrid untagged vlan 1495
+ port vlan-stacking vlan 101 to 996 stack-vlan 1495
+ port vlan-stacking vlan 3600 stack-vlan 1495
+ stp disable
+#
+interface GigabitEthernet5/0/8
+ undo negotiation auto
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 30 32
+ port hybrid untagged vlan 1602
+ port vlan-stacking vlan 101 to 1600 stack-vlan 1602
+ port vlan-stacking vlan 3600 stack-vlan 1602
+ stp disable
+#
+interface GigabitEthernet5/0/9
+ undo negotiation auto
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 30 32
+ port hybrid untagged vlan 1486
+ port vlan-stacking vlan 101 to 1600 stack-vlan 1486
+ port vlan-stacking vlan 3600 stack-vlan 1486
+ stp disable
+#
+interface GigabitEthernet5/0/10
+ description uT:JH-PJ-JN-sw1-9306-1.MAN:(1412220006)GE1/0/10
+ eth-trunk 1
+#
+interface GigabitEthernet5/0/11
+#
+interface GigabitEthernet5/0/12
+#
+interface GigabitEthernet5/0/13
+#
+interface GigabitEthernet5/0/14
+#
+interface GigabitEthernet5/0/15
+#
+interface GigabitEthernet5/0/16
+#
+interface GigabitEthernet5/0/17
+#
+interface GigabitEthernet5/0/18
+#
+interface GigabitEthernet5/0/19
+#
+interface GigabitEthernet5/0/20
+#
+interface GigabitEthernet5/0/21
+#
+interface GigabitEthernet5/0/22
+#
+interface GigabitEthernet5/0/23
+#
+interface GigabitEthernet5/0/24
+#
+interface GigabitEthernet5/0/25
+#
+interface GigabitEthernet5/0/26
+#
+interface GigabitEthernet5/0/27
+#
+interface GigabitEthernet5/0/28
+#
+interface GigabitEthernet5/0/29
+#
+interface GigabitEthernet5/0/30
+#
+interface GigabitEthernet5/0/31
+#
+interface GigabitEthernet5/0/32
+#
+interface GigabitEthernet5/0/33
+#
+interface GigabitEthernet5/0/34
+#
+interface GigabitEthernet5/0/35
+#
+interface GigabitEthernet5/0/36
+#
+interface GigabitEthernet5/0/37
+#
+interface GigabitEthernet5/0/38
+#
+interface GigabitEthernet5/0/39
+#
+interface GigabitEthernet5/0/40
+#
+interface GigabitEthernet5/0/41
+#
+interface GigabitEthernet5/0/42
+#
+interface GigabitEthernet5/0/43
+#
+interface GigabitEthernet5/0/44
+#
+interface GigabitEthernet5/0/45
+#
+interface GigabitEthernet5/0/46
+#
+interface GigabitEthernet5/0/47
+#
+interface GigabitEthernet6/0/0
+ description To  ShendTngKuaiDi2_COM::kehu
+ port link-type access
+ port default vlan 3845
+#
+interface GigabitEthernet6/0/1
+ description To pj_AiOuNiYa_NetBar::kehu
+ port link-type access
+ port default vlan 3801
+#
+interface GigabitEthernet6/0/2
+ description To  pj_ChuangYeDaSha_com::kehu
+ port link-type access
+ port default vlan 3799
+#
+interface GigabitEthernet6/0/3
+ description To  bubugao-netbar::kehu
+ port link-type access
+ port default vlan 3819
+#
+interface GigabitEthernet6/0/4
+ description To  PJ_JianChaYuan_COM::kehu
+ port link-type access
+ port default vlan 3818
+#
+interface GigabitEthernet6/0/5
+ shutdown
+ port link-type access
+#
+interface GigabitEthernet6/0/6
+ description To  pj_MudTngXieYe_com::kehu
+ port link-type access
+ port default vlan 3800
+#
+interface GigabitEthernet6/0/7
+ description To pj_LanTian_NetBar
+ port link-type access
+ port default vlan 3941
+#
+interface GigabitEthernet6/0/8
+ description To  pj_XingShiJiChuangShang_com::kehu
+ port link-type access
+ port default vlan 3943
+#
+interface GigabitEthernet6/0/9
+ description To pj_XingDongLi_Netbar
+ shutdown
+ port link-type access
+ port default vlan 3944
+#
+interface GigabitEthernet6/0/10
+ shutdown
+#
+interface GigabitEthernet6/0/11
+ description To  pj_ZhongShan_Netbar::kehu
+ port link-type access
+ port default vlan 3949
+#
+interface GigabitEthernet6/0/12
+ description To  pj_HaiDiJiaFang_com::kehu
+ port link-type access
+ port default vlan 3853
+#
+interface GigabitEthernet6/0/13
+ description To  PJ_ChangCheng_NetBar::kehu
+ port link-type access
+ port default vlan 3836
+#
+interface GigabitEthernet6/0/14
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 30 32
+ port hybrid untagged vlan 1537
+ port vlan-stacking vlan 101 to 900 stack-vlan 1537
+ port vlan-stacking vlan 3600 stack-vlan 1537
+ stp disable
+#
+interface GigabitEthernet6/0/15
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 30 32
+ port hybrid untagged vlan 1638
+ port vlan-stacking vlan 101 to 900 stack-vlan 1638
+ port vlan-stacking vlan 3600 stack-vlan 1638
+ stp disable
+#
+interface GigabitEthernet6/0/16
+ undo negotiation auto
+ speed 100
+ description To  JH_DongLiHuanJingJK_VPN::kehu
+ port link-type access
+ port default vlan 41
+#
+interface GigabitEthernet6/0/17
+ shutdown
+#
+interface GigabitEthernet6/0/18
+#
+interface GigabitEthernet6/0/19
+#
+interface GigabitEthernet6/0/20
+#
+interface GigabitEthernet6/0/21
+#
+interface GigabitEthernet6/0/22
+#
+interface GigabitEthernet6/0/23
+#
+interface GigabitEthernet6/0/24
+#
+interface GigabitEthernet6/0/25
+#
+interface GigabitEthernet6/0/26
+#
+interface GigabitEthernet6/0/27
+#
+interface GigabitEthernet6/0/28
+#
+interface GigabitEthernet6/0/29
+#
+interface GigabitEthernet6/0/30
+#
+interface GigabitEthernet6/0/31
+#
+interface GigabitEthernet6/0/32
+#
+interface GigabitEthernet6/0/33
+#
+interface GigabitEthernet6/0/34
+#
+interface GigabitEthernet6/0/35
+#
+interface GigabitEthernet6/0/36
+#
+interface GigabitEthernet6/0/37
+#
+interface GigabitEthernet6/0/38
+#
+interface GigabitEthernet6/0/39
+#
+interface GigabitEthernet6/0/40
+#
+interface GigabitEthernet6/0/41
+#
+interface GigabitEthernet6/0/42
+#
+interface GigabitEthernet6/0/43
+#
+interface GigabitEthernet6/0/44
+#
+interface GigabitEthernet6/0/45
+#
+interface GigabitEthernet6/0/46
+#
+interface GigabitEthernet6/0/47
+#
+interface NULL0
+#
+ip route-static 0.0.0.0 0.0.0.0 172.31.104.129
+#
+snmp-agent
+snmp-agent local-engineid 800007DB03D4B110ABED00
+snmp-agent community read cipher %$%$(LnR;lAr4Q35lK)k3Jt~^}OEr*qJ1s=BOF=gR!4oX#hO}OH^lZn2AUrhE.S67n=2My0AOQ^}%$%$
+snmp-agent sys-info version all
+#
+user-interface maximum-vty 15
+user-interface con 0
+ authentication-mode password
+ set authentication password cipher %@%@!agGMvw<M2$5\oTV[{1I^}OB$YYy~o5KsU\rl|4q94>N}OE^%@%@
+ idle-timeout 0 0
+ screen-length 0
+user-interface vty 0 4
+ authentication-mode aaa
+ user privilege level 1
+ idle-timeout 0 0
+ screen-length 0
+user-interface vty 5 14
+ authentication-mode aaa
+ user privilege level 3
+ idle-timeout 0 0
+ screen-length 0
+user-interface vty 16 20
+#
+return
+<JH-PJ-GYY-SW2-S9306-1.MAN>

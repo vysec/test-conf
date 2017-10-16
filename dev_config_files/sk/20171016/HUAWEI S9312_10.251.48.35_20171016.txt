@@ -1,0 +1,1419 @@
+
+!Software Version V200R008C00SPC500
+#
+sysname SX-SY-BG-DSW-1.MAN.S9312
+#
+vlan batch 2 4 to 6 199 202 206 to 209 211 213 to 217 219 517 to 518 1303
+vlan batch 1324 1353 1355 1433 1497 to 1498 1506 to 1507 1511 1515 1518 1552
+vlan batch 1554 1556 to 1560 1563 to 1564 1566 to 1567 1569 to 1570 1574 1637 1657 1665 1702
+vlan batch 1733 to 1735 1737 1739 to 1740 1742 1744 to 1745 1747 to 1748 1750 1752 1754 to 1755 1758
+vlan batch 1760 1762 to 1763 1766 1768 to 1770 1772 to 1775 1777 to 1783 1786 1792 to 1799 1848 1868
+vlan batch 2206 2218 to 2220 2222 to 2227 2238 to 2240 2243 2251 2253 to 2254 2257 2265 2273 to 2274
+vlan batch 2284 2288 2295 to 2296 2300 2402 to 2411 2413 to 2417 2419 to 2420 2430 to 2433 2440 2588 to 2591
+vlan batch 2614 2634 2639 2686 2689 to 2694 2801 3000 3106 3734 3964 to 3979
+vlan batch 3995 to 3997 4051
+#
+undo authentication unified-mode
+#
+telnet server enable
+telnet ipv6 server enable
+#
+dot1x enable
+#
+undo http server enable
+undo http secure-server enable
+#
+undo management-port isolate enable
+undo management-plane isolate enable
+#
+clock timezone PRC add 08:00:00
+#
+observe-port 1 interface GigabitEthernet11/0/0
+#
+diffserv domain default
+#
+hwtacacs-server template sxacs
+ hwtacacs-server authentication 10.249.32.12
+ hwtacacs-server authentication 75.255.254.12 secondary
+ hwtacacs-server authorization 10.249.32.12
+ hwtacacs-server authorization 75.255.254.12 secondary
+ hwtacacs-server accounting 10.249.32.12
+ hwtacacs-server accounting 75.255.254.12 secondary
+ hwtacacs-server source-ip 10.251.48.35
+ hwtacacs-server shared-key cipher %^%#,|(H/cH2"A9WA81AMt081GK~/r:tFTfi&y7SA>L&%^%#
+ undo hwtacacs-server user-name domain-included
+#
+acl number 2000  
+ description For-SNMP-Control
+ rule 5 permit source 10.249.32.0 0.0.0.255 
+ rule 10 permit source 10.31.255.0 0.0.0.31 
+ rule 100 deny 
+acl number 2001  
+ description For-Telnet-Control
+ rule 5 permit source 10.248.0.0 0.7.255.255 
+ rule 10 permit source 10.31.255.0 0.0.0.31 
+ rule 100 deny 
+#
+acl number 3001  
+ rule 10 permit icmp source 10.251.48.1 0 destination 10.251.49.51 0 
+acl number 3002  
+ rule 10 permit icmp source 10.251.49.51 0 destination 10.251.48.1 0 
+#
+traffic classifier 1795 operator or precedence 5
+ if-match vlan-id 1795 cvlan-id 250
+traffic classifier 3001_in operator or precedence 15
+ if-match acl 3001
+traffic classifier 3002_out operator or precedence 20
+ if-match acl 3002
+traffic classifier zht operator and precedence 10
+ if-match source-mac e024-7ffb-f4a8
+ if-match vlan-id 1795
+#
+traffic behavior 1795
+ permit
+ mirroring to observe-port 1 
+traffic behavior 3001_in
+ permit
+ statistic enable
+traffic behavior 3002_out
+ permit
+ statistic enable
+traffic behavior zht
+ permit
+ statistic enable
+#
+traffic policy 1795 match-order auto
+ classifier 1795 behavior 1795
+traffic policy 3001_in match-order auto
+ classifier 3001_in behavior 3001_in
+traffic policy 3002_out match-order auto
+ classifier 3002_out behavior 3002_out
+traffic policy zht match-order auto
+ classifier zht behavior zht
+traffic policy zht1 match-order auto
+ classifier zht behavior 1795
+#
+drop-profile default
+#
+vlan 2
+ description Management-VLAN
+vlan 4
+ description WG-ShuJu
+vlan 6
+ description VP-LAN-WG
+vlan 199
+ description HL-SXDJ-NE80E-1-TO-SYBG-5200F-1
+vlan 202
+ description TV-SYMinShengShangWuBinGuan
+vlan 206
+ description TV-ShaChenXiuXianJuLeBu
+vlan 207
+ description TV-SYQiXiangJv
+vlan 208
+ description TV-MingShengYinHang
+vlan 209
+ description IPTV-BaiGuanJieDaoChengBeiYangShengZhuDao
+vlan 211
+ description IPTV-ShangYuQingFengNuanTongSheBeiLtd
+vlan 213
+ description IPTV-SYQiXiangJv-2
+vlan 214
+ description IPTV-BaiShiDeKaFeiHuiSuo
+vlan 215
+ description IPTV-ZhongGuoYinHeZhengQuanLtd
+vlan 216
+ description IPTV-LianLiYu
+vlan 217
+ description IPTV-ChengBeiKaiXuanMenAoMenDouLao
+vlan 219
+ description IPTV-ShunQuanBingGuan
+vlan 517
+ description TO-HW-A8010-163
+vlan 518
+ description MP-DL110-JianKongShi
+vlan 1303
+ description AD-B11HWB010-LuDong
+vlan 1324
+ description B11ZXD001
+vlan 1353
+ description B11ZXD008
+vlan 1355
+ description B11ZXD011
+vlan 1433
+ description AD-B11ZXD045-ShengFenXinCun
+vlan 1497
+ description AD-B11ZXD014-ShiMinZhongXin
+vlan 1498
+ description AD-B11ZXD015-ShenFengXinCun
+vlan 1506
+ description AD-B11ZXD020-ShiDaiGuangChang
+vlan 1507
+ description AD-B91ZXD004-ShiShi
+vlan 1511
+ description AD-B11ZXD021-XinShangHaiHuaYuan
+vlan 1515
+ description AD-B11ZXD024-GuoDa
+vlan 1518
+ description AD-B11ZXD026-ShenFengXinCun
+vlan 1552
+ description To-FengYi-OLT2-pevlan
+vlan 1554
+ description ShangHaiHuaYuan-OLT3-pevlan
+vlan 1556
+ description TO-OLT3-C300-FTTN-Pvlan
+vlan 1557
+ description TO-BaiGuan-HW5680T-1-FTTN-Pvlan
+vlan 1558
+ description To-CZ-OLT1-C220-Pvlan
+vlan 1559
+ description TO-ShangHaiHuaYuan-OLT3-PuTong-Pvlan
+vlan 1560
+ description TO-NanHu-OLT-C300-E-Pvlan-PuTong
+vlan 1563
+ description TO-SHHY-OLT5-C300-E-Pvlan
+vlan 1564
+ description To-CZ-OLT1-C220-Pvlan
+vlan 1566
+ description TO-BG-OLT3.MAN.ZTE.C300
+vlan 1567
+ description TO-FY-OLT-2-C220-PuTong
+vlan 1569
+ description To-SHHY-OLT5-C300-E
+vlan 1570
+ description To-BG-OLT-3-C300-EPON
+vlan 1574
+ description TO-BG-OLT3-C300-E-Pevlan
+vlan 1637
+ description To-BG-OLT10-C300-G-FTTH-PPPoE
+vlan 1657
+ description BG-OLT-10-GPON-PPPOE-PEVLAN
+vlan 1665
+ description AD-B11ZXD053-GaoFengJiaYuan
+vlan 1702
+ description PPPOE-XinShiJiHuaYuan
+vlan 1733
+ description EP-TouJia-Pvlan-1733
+vlan 1734
+ description EP-ChengZhong-Pvlan-1734
+vlan 1735
+ description EP-BaiGuan-Pvlan-1735
+vlan 1737
+ description EP-BaiGuan-Pvlan-1737
+vlan 1739
+ description EP-BaiGuan-Pvlan-1739
+vlan 1740
+ description EPON-BG-OLT-3-Pvlan
+vlan 1742
+ description EP-BaiGuan-Pvlan-1742
+vlan 1744
+ description EP-ChengZhong-Pvlan-5
+vlan 1745
+ description EP-BaiGuan-Pvlan-1745
+vlan 1747
+ description EP-TouJia-Pvlan-1747-FTTH
+vlan 1748
+ description EP-BaiGuan-Pvlan-1748
+vlan 1750
+ description EP-ChengZhong-Pvlan-4
+vlan 1752
+ description EP-BaiGuan-Pvlan-1752
+vlan 1754
+ description EPON-FengYi-BG-9306
+vlan 1755
+ description EP-BaiGuan-Pvlan-1755
+vlan 1758
+ description EP-BaiGuan-Pvlan-1758
+vlan 1760
+ description EP-BaiGuan-Pvlan-1760
+vlan 1762
+ description EP-BaiGuan-Pvlan-1762
+vlan 1763
+ description EP-ChengZhong-Pvlan-3
+vlan 1766
+ description EP-BaiGuan-Pvlan-1766
+vlan 1768
+ description EP-BaiGuan-Pvlan-1768
+vlan 1769
+ description EP-BaiGuan-Pvlan-1769
+vlan 1770
+ description EP-BaiGuan-Pvlan-1770
+vlan 1772
+ description EP-ChengZhong-Pvlan-1772
+vlan 1773
+ description EP-BaiGuan-Pvlan-1773
+vlan 1774
+ description EP-ShangHaiHuaYuan-Pvlan
+vlan 1775
+ description EP-BaiGuan-Pvlan-1775
+vlan 1777
+ description EP-BaiGuan-Pvlan-1777
+vlan 1778
+ description EP-BaiGuan-Pvlan-1778
+vlan 1779
+ description EP-BaiGuan-Pvlan-1779
+vlan 1780
+ description EP-TouJia-Pvlan-1780
+vlan 1781
+ description EP-ChengZhong-Pvlan-1781
+vlan 1782
+ description EP-ChengZhong-Pvlan-1
+vlan 1783
+ description EP-BaiGuan-Pvlan-1783
+vlan 1786
+ description EP-BG-OLT-6-Pvlan-FTTH
+vlan 1792
+ description EP-BG-OLT-5-Pvlan-FTTH
+vlan 1793
+ description EP-BG-OLT-5-Pvlan-FTTH
+vlan 1794
+ description EP-BaiGuan-Pvlan-1/5
+vlan 1795
+ description EP-BaiGuan-Pvlan-1/4
+vlan 1796
+ description EP-ChengZhong-Pvlan-2
+vlan 1797
+ description EP-BG-OLT-5-Pvlan-FTTH
+vlan 1798
+ description EP-BG-OLT-5-Pvlan-FTTH
+vlan 1799
+ description EP-BG-OLT-5-Pvlan-FTTH
+vlan 1848
+ description To-BG-OLT10-C300-G-FTTH-ITV
+vlan 1868
+ description BG-OLT-10-GPON-ITV-PEVLAN
+vlan 2206
+ description EP-FTTH-ChengZhong-Pvlan-2206
+vlan 2218
+ description EP-ChongZhong-OLT-2-Pvlan
+vlan 2219
+ description EP-BaiGuan-OLT-4-Pvlan
+vlan 2220
+ description EP-BG-OLT-6-Pvlan-FTTH
+vlan 2222
+ description EP-BG-OLT-7-Pvlan-FTTH
+vlan 2223
+ description EP-BG-OLT-7-Pvlan-FTTH
+vlan 2224
+ description EP-BG-OLT-7-Pvlan-FTTH
+vlan 2225
+ description EP-BG-OLT-7-Pvlan-FTTH
+vlan 2226
+ description EP-BG-OLT-7-Pvlan-FTTH
+vlan 2227
+ description EP-ChengZhong-OLT-2-Pvlan-FTTH
+vlan 2238
+ description EP-SHHY-OLT-1-Pvlan
+vlan 2239
+ description EP-BG-OLT-4-Pvlan
+vlan 2240
+ description EP-FY-OLT-1-Pvlan
+vlan 2243
+ description EP-ChengZhong-OLT-2-Pvlan
+vlan 2251
+ description EP-NH-C300-1-Pvlan
+vlan 2253
+ description EP-C220-4-Pvlan
+vlan 2254
+ description EP-BG-C220-4-Pvlan
+vlan 2257
+ description EP-BG-C300-1-Pvlan
+vlan 2265
+ description EP-CZ-OLT-2-Pvlan
+vlan 2273
+ description EP-ShangHaiHuaYuan-OLT-3-Pvlan
+vlan 2274
+ description EPON-BG-OLT-3-C300-Pvlan
+vlan 2284
+ description EPON-ChengZhong-OLT-1-Pvlan
+vlan 2288
+ description EP-FengYi-OLT-1-QYShanXun-Pvlan
+vlan 2295
+ description QYShanXun-SYBinGuanSuShe
+vlan 2296
+ description QYShanXun-LeiDiSenWanJinJiuDian
+vlan 2300
+ description EPON-QianShuiWan-FTTH
+vlan 2402
+ description Vlan-BaiGuan3952-1
+vlan 2403
+ description Vlan-BaiGuan3952-2
+vlan 2404
+ description Vlan-BaiGuan3952-3
+vlan 2405
+ description Vlan-BaiGuan3952-4
+vlan 2406
+ description Vlan-BaiGuan3952-6
+vlan 2407
+ description Vlan-ShiDaiGuangChang
+vlan 2408
+ description Vlan-ShangHaiHuaYuan
+vlan 2409
+ description Vlan-QianJiang
+vlan 2410
+ description Vlan-LuDong
+vlan 2411
+ description Vlan-LiangHu
+vlan 2413
+ description Vlan-HengTang
+vlan 2414
+ description Vlan-FengYi
+vlan 2415
+ description Vlan-ShiZhengFu
+vlan 2416
+ description Vlan-BaiGuan4506
+vlan 2417
+ description VLan-XinShiJiHuaYuan
+vlan 2419
+ description Pvlan-SheBaoJv@BianMingZhongXin-S3952-1
+vlan 2420
+ description BianMingZX-1Lou-S3928-Pvlan
+vlan 2430
+ description MP-JiaoYuWang
+vlan 2431
+ description VP-DaTongShangCheng-Pvlan
+vlan 2432
+ description VP-GuoTuZiYuanJu-Pvlan
+vlan 2433
+ description VP-DaTongShangCheng-Pvlan2
+vlan 2588
+ description VP-ShangYuDaTongShangChengVPN1
+vlan 2589
+ description VP-ShangYuDaTongShangChengVPN2
+vlan 2590
+ description VP-ShangYuDaTongShangChengVPN3
+vlan 2591
+ description VP-ShangYuDaTongShangChengVPN4
+vlan 2614
+ description VP-DaTongShangChengVPN
+vlan 2634
+ description VP-GongLuDuan
+vlan 2639
+ description VP-ShangYuTianRanQiGongSi
+vlan 2686
+ description SHHY-OLT-1-PEVLAN
+vlan 2689
+ description CZ-OLT-2-PEVLAN
+vlan 2690
+ description CZ-OLT-1-PEVLAN
+vlan 2691
+ description BG-OLT-3-PEVLAN
+vlan 2692
+ description BG-OLT-4-PEVLAN
+vlan 2693
+ description BG-OLT-2-PEVLAN
+vlan 2694
+ description BG-OLT-1-PEVLAN
+vlan 2801
+ description AG-XiaJieLiangZhan
+vlan 3106
+ description VP-ShangYuXinHuaShuDianLtd
+vlan 3734
+ description VP-ZhengYuan(ShaoXin)
+vlan 3964
+ description TEST-SheBaoJv(ZhuJiTuoGuan)
+vlan 3965
+ description Test-VP-YiYaoGongSi
+vlan 3966
+ description Test-SYRenKouJiHuaShengYuJv
+vlan 3967
+ description Test-VP-SYYiBai
+vlan 3968
+ description VP-YBW-Test
+vlan 3969
+ description IP-XinShiTong(DianXin)
+vlan 3970
+ description MP-JiaoYuWang-test
+vlan 3971
+ description MP-SYGOV-TEST(2Lou)
+vlan 3972
+ description WLAN-ErLou
+vlan 3973
+ description MP-SunHeZhaoMing-Test
+vlan 3974
+ description WLAN-WuXianBan-ZhengJieQiang
+vlan 3975
+ description VP-ChengHuiZhaoMing
+vlan 3976
+ description VPN-YanCaoGongSi-TEST
+vlan 3977
+ description TEST-YanCaoGongSiVPN
+vlan 3978
+ description TEST-GongLuGuanLiDuan
+vlan 3995
+ description VP-V5WangGuan
+vlan 3996
+ description IP-ZhengFuWang(FangHuoQiang)
+vlan 3997
+ description MP-ZhengFuWang(FangHuoQiang)
+vlan 4051
+ description IPTV-EMS-TEST
+#
+aaa
+ authentication-scheme default
+  authentication-mode hwtacacs local
+  authentication-super hwtacacs super
+ authorization-scheme default
+  authorization-mode  hwtacacs local
+ accounting-scheme default
+  accounting-mode hwtacacs
+  accounting start-fail online
+ domain default
+ domain default_admin
+  hwtacacs-server sxacs
+ local-user admin password irreversible-cipher %^%#ipBgRbwJjL7H{Y9h/mGM9&+#N\{2S)"-pDUPK!u6mfC2MDG8K*2L0-7Hl;C2%^%#
+ local-user admin service-type http
+ local-user huawi password cipher %^%#<Un1&|:q{$ls$KKwz_kN^E!JE2}0x9TjWc#S".m4%^%#
+ local-user huawi service-type telnet terminal ssh ftp ppp web x25-pad bind 8021x http
+ local-user huawei password irreversible-cipher %^%#eFW@~64jOHL@J4~gjYC+Rw#&,/|%ZHolgo=$3PZ66xdB6Xcl4Eh.tu%`qEO.%^%#
+ local-user huawei privilege level 3
+ local-user huawei service-type telnet terminal
+#
+ntp-service unicast-server 10.251.48.1 source-interface Vlanif5 preference
+#
+interface Vlanif5
+ ip address 10.251.48.35 255.255.248.0
+#
+interface Eth-Trunk1
+#
+interface Eth-Trunk6
+ description description uT:SX-SY-BG-BAS-1.MAN.ME60:Eth-Trunk3(10GE3/0/0,10GE3/1/0)
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 202 206 to 209 211 213 to 217 219 1303 1324 1353 1355 1433
+ port hybrid tagged vlan 1492 1497 to 1498 1506 to 1507 1511 1515 1518 1556 1558 1564 1566
+ port hybrid tagged vlan 1570 1574 1637 1657 1665 1702 1733 to 1735 1737 1739 to 1740 1742
+ port hybrid tagged vlan 1744 to 1745 1747 to 1748 1750 to 1752 1755 1758 1760 1762 to 1763 1766 1768 to 1770 1772 to 1775
+ port hybrid tagged vlan 1777 to 1783 1794 to 1796 1848 1868 2206 2218 to 2219 2227 2238 to 2239 2243 2253 to 2254
+ port hybrid tagged vlan 2257 2265 2274 2284 2295 to 2296 2300 4051
+ mode lacp
+#
+interface Eth-Trunk17
+ description uT:SX-SY-BG-SR-1.MAN.NE80E:ETH17(GE5/0/4,GE6/0/2,GE7/0/2)
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 4 to 6 1552 1554 1556 to 1560 1563 to 1564 1566 to 1567 1569 to 1570 1574 2401 to 2411 2413 to 2414
+ port hybrid tagged vlan 2430 to 2433 2588 to 2591 2614 2634 2639 3106 3964 to 3979 3995 to 3997 4051
+ traffic-policy 3001_in inbound
+ traffic-policy 3002_out outbound
+#
+interface Eth-Trunk18
+ description uT:SX-SY-BG-SR-1.MAN.NE80E:ETH18(GE11/0/4,GE12/0/4)
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 199 1733 to 1735 1737 1739 to 1740 1742 1744 to 1745 1747 to 1748 1750 1752 1754 to 1755
+ port hybrid tagged vlan 1758 1760 1762 to 1763 1766 1768 to 1770 1772 to 1775 1777 to 1783 1786 1792 to 1799 2206
+ port hybrid tagged vlan 2218 to 2220 2222 to 2226 2238 to 2240 2251 2253 to 2254 2257 2265 2273 to 2274 2284 2288
+ port hybrid tagged vlan 2295 to 2296 2300 2415 to 2420 2440 2801
+ traffic-policy zht1 inbound
+#
+interface Eth-Trunk19
+ description dT:SX-SY-BG-OLT-3.MAN.ZTE.C300:SG1(GE1/19/1-4,GE1/20/1-4)
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5 1556 1566 1570 1574 1737 1740 1777 1779 2257
+ port hybrid tagged vlan 2274 2296 2691
+#
+interface Eth-Trunk21
+ description dT:SX-SY-CZ-OLT-2.MAN.ZTE.C220:SG1(GE1/2/1,GE1/3/1)
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5 219 1734 1772 1781 2206 2218 2227 2243 2265
+ port hybrid tagged vlan 2689 2801
+#
+interface Eth-Trunk22
+ description dT:SX-SY-SHHY-OLT-1.MAN.ZTE.C220:SG1(GE1/2/1,GE1/3/1)
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5 1733 1747 1774 1780 2238 2300 2686
+#
+interface Eth-Trunk23
+ description dT:SX-SY-BG-OLT-4.MAN.ZTE.C220:SG1(GE1/2/1,GE1/3/1)
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5 1735 1739 1769 1783 2219 2239 2253 to 2254 2296 2588 to 2591
+ port hybrid tagged vlan 2692
+#
+interface Eth-Trunk25
+ description dT:SX-SY-BG-OLT-1.MAN.ZTE.C220:SG1(GE1/2/1-4,GE1/3/1-4)
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5 206 208 to 209 215 to 217 1742 1770 1773 1775 1777 to 1779 1794 to 1795
+ port hybrid tagged vlan 2588 to 2591 2694
+ mode lacp
+#
+interface Eth-Trunk26
+ description dT:SX-SY-BG-OLT-2.MAN.ZTE.C220:SG1(GE1/2/1,GE1/3/1)
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5 207 1745 1748 1752 1755 1758 1760 1762 1766
+ port hybrid tagged vlan 1768 2588 to 2591 2693 2801
+#
+interface Eth-Trunk28
+ description dT:SX-SY-CZ-OLT-1.MAN.ZTE.C220:SG1(GE1/2/1,GE1/3/1)
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5 1558 1564 1744 1750 1763 1782 1796 2284 2295
+ port hybrid tagged vlan 2588 to 2591 2690
+#
+interface Eth-Trunk29
+ description uT:SX-SY-BG-DSW-1.MAN.H3C12510F:LA90(10GE1/0/0/12,10GE2/0/0/12)
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 2 5 1557 2686 2689 to 2694
+ mode lacp
+#
+interface Eth-Trunk30
+ description dT:SX-SY-BG-OLT-10.MAN.ZTE.C300(G):SG1(GE1/19/1,GE1/20/1)
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5 1637 1657 1848 1868
+ mode lacp
+#
+interface Ethernet0/0/0
+#
+interface GigabitEthernet4/0/0
+ description dT:AD-B11ZXD014-ShiMinZhongXin:(F3060902514)GE7/0/0
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5 2634
+ port hybrid untagged vlan 1497
+ port vlan-stacking vlan 101 to 580 stack-vlan 1497
+ port vlan-stacking vlan 3600 stack-vlan 1497
+#
+interface GigabitEthernet4/0/1
+ description dT:AD-B11ZXD008-GongAnDaLou:(F3060902470)GE7/0/0
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5
+ port hybrid untagged vlan 1353
+ port vlan-stacking vlan 101 to 580 stack-vlan 1353
+ port vlan-stacking vlan 3600 stack-vlan 1353
+#
+interface GigabitEthernet4/0/2
+ shutdown
+#
+interface GigabitEthernet4/0/3
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet4/0/4
+ description uT:SX-SY-BG-SR-1.MAN.NE80E:(Local)GE5/0/4
+ eth-trunk 17
+#
+interface GigabitEthernet4/0/5
+ description dT:SX-SY-CZ-OLT-1.MAN.ZTE.C220:(F1301210026)GE1/3/1
+ eth-trunk 28
+#
+interface GigabitEthernet4/0/6
+ description dT:SX-SY-BG-OLT-3.MAN.ZTE.C300:(Local)GE1/19/2
+ eth-trunk 19
+#
+interface GigabitEthernet4/0/7
+#
+interface GigabitEthernet4/0/8
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 2
+#
+interface GigabitEthernet4/0/9
+ description dT:SX-SY-BG-OLT-1.MAN.ZTE.C220:(Local)GE1/2/3
+ eth-trunk 25
+#
+interface GigabitEthernet4/0/10
+#
+interface GigabitEthernet4/0/11
+#
+interface GigabitEthernet4/0/12
+ description dT:SX-SY-BG-OLT-1.MAN.ZTE.C220:(Local)GE1/2/4
+ eth-trunk 25
+#
+interface GigabitEthernet4/0/13
+ description dT:SX-SY-BG-OLT-3.MAN.ZTE.C300:(Local)GE1/19/3
+ eth-trunk 19
+#
+interface GigabitEthernet4/0/14
+ description dT:SX-SY-BG-OLT-3.MAN.ZTE.C300:(Local)GE1/19/4
+ eth-trunk 19
+#
+interface GigabitEthernet4/0/15
+#
+interface GigabitEthernet4/0/16
+#
+interface GigabitEthernet4/0/17
+#
+interface GigabitEthernet4/0/18
+#
+interface GigabitEthernet4/0/19
+#
+interface GigabitEthernet4/0/20
+#
+interface GigabitEthernet4/0/21
+#
+interface GigabitEthernet4/0/22
+ undo negotiation auto
+ description dT:SX-SY-HBJ-DSW-1.MAN.S3928:(F3060902498)GE1/1/1
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5
+ port hybrid untagged vlan 2411
+ port vlan-stacking vlan 3001 to 3050 stack-vlan 2411
+#
+interface GigabitEthernet4/0/23
+ undo negotiation auto
+ description dT:ErLou3928.MAN:(Local)GE1/1/1
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 4 to 6 202 517 2614 3964 to 3979 3993
+ port hybrid untagged vlan 2296
+ port vlan-stacking vlan 600 to 800 stack-vlan 2296
+ port vlan-stacking vlan 3001 to 3100 stack-vlan 2296
+#
+interface GigabitEthernet5/0/0
+ undo negotiation auto
+ description uT:SX-SY-BG-SR-1.MAN.NE80E:(Local)G4/0/2
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 517 to 518 3734
+#
+interface GigabitEthernet5/0/1
+ shutdown
+#
+interface GigabitEthernet5/0/2
+ shutdown
+#
+interface GigabitEthernet5/0/3
+ description dT:SX-SY-BG-OLT-3.MAN.ZTE.C300:(Local)GE1/20/3
+ eth-trunk 19
+#
+interface GigabitEthernet5/0/4
+ undo negotiation auto
+ description dT:HengTang-S3928.MAN:(F3051001316)GE1/1/1
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5
+ port hybrid untagged vlan 2413 2430
+ port vlan-stacking vlan 3001 to 3050 stack-vlan 2413
+ port vlan-stacking vlan 3100 to 3200 stack-vlan 2430
+#
+interface GigabitEthernet5/0/5
+ description dT:SX-SY-BG-OLT-3.MAN.ZTE.C300:(Local)GE1/20/4
+ eth-trunk 19
+#
+interface GigabitEthernet5/0/6
+ description dT:SX-SY-BG-OLT-3.MAN.ZTE.C300:(Local)GE1/20/2
+ eth-trunk 19
+#
+interface GigabitEthernet5/0/7
+ description uT:SX-SY-BG-SR-1.MAN.NE80E:(Local)GE11/0/4
+ eth-trunk 18
+#
+interface GigabitEthernet5/0/8
+ description dT:SX-SY-BG-OLT-3.MAN.ZTE.C300:(Local)GE1/19/1
+ eth-trunk 19
+#
+interface GigabitEthernet5/0/9
+ shutdown
+#
+interface GigabitEthernet5/0/10
+ description dT:SX-SY-BG-OLT-4.MAN.ZTE.C220:(Local)GE1/2/1
+ eth-trunk 23
+#
+interface GigabitEthernet5/0/11
+#
+interface GigabitEthernet5/0/12
+ undo negotiation auto
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet5/0/13
+ undo negotiation auto
+ description dT:AD-B11ZXD053-GaoFengJiaYuan:(F3100737514)GE7/0/0
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5
+ port hybrid untagged vlan 1665
+ port vlan-stacking vlan 101 to 580 stack-vlan 1665
+ port vlan-stacking vlan 600 to 800 stack-vlan 1665
+#
+interface GigabitEthernet5/0/14
+ undo negotiation auto
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet5/0/15
+ description dT:SX-SY-CZ-OLT-2.MAN.ZTE.C220:(F3100939869)GE1/2/1
+ eth-trunk 21
+#
+interface GigabitEthernet5/0/16
+ description dT:SX-SY-SHHY-OLT-1.MAN.ZTE.C220:(F1011050012)GE1/2/1
+ eth-trunk 22
+#
+interface GigabitEthernet5/0/17
+#
+interface GigabitEthernet5/0/18
+ description dT:SX-SY-BG-OLT-2.MAN.ZTE.C220:(Local)GE1/3/1
+ eth-trunk 26
+#
+interface GigabitEthernet5/0/19
+ undo negotiation auto
+ description dT:SX-SY-BaiGuan-3952-3:(Local)GE1/1/1
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5 213
+ port hybrid untagged vlan 2404
+ port vlan-stacking vlan 3001 to 3050 stack-vlan 2404
+#
+interface GigabitEthernet5/0/20
+ undo negotiation auto
+ description dT:SX-SY-BaiGuan-3952-2:(Local)GE1/1/1
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 4 to 5
+ port hybrid untagged vlan 2403
+ port vlan-stacking vlan 3001 to 3050 stack-vlan 2403
+#
+interface GigabitEthernet5/0/21
+ undo negotiation auto
+ description dT:SX-SY-BG-OLT-1.MAN.ZTE.C220:(Local)GE1/2/2
+ eth-trunk 25
+#
+interface GigabitEthernet5/0/22
+ undo negotiation auto
+ description dT:SX-SY-LuDong-DSW-1.MAN.S3952:(F3051001304)G1/1/1
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5 1303
+ port hybrid untagged vlan 2410 2430
+ port vlan-stacking vlan 3001 to 3050 stack-vlan 2410
+ port vlan-stacking vlan 3100 to 3200 stack-vlan 2430
+#
+interface GigabitEthernet5/0/23
+ description dT:SheBaoJv@BianMingZhongXin-S3952-1.MAN:(F3071103596)GE1/1/1
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5
+ port hybrid untagged vlan 2419
+ port vlan-stacking vlan 3001 to 3050 stack-vlan 2419
+#
+interface GigabitEthernet6/0/0
+ description uT:SX-SY-BG-SR-1.MAN.NE80E:(Local)GE6/0/2
+ eth-trunk 17
+#
+interface GigabitEthernet6/0/1
+ undo negotiation auto
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 6
+ port hybrid untagged vlan 1702 2417
+ port vlan-stacking vlan 600 to 800 stack-vlan 1702
+ port vlan-stacking vlan 3001 to 3050 stack-vlan 2417
+#
+interface GigabitEthernet6/0/2
+ shutdown
+#
+interface GigabitEthernet6/0/3
+ shutdown
+#
+interface GigabitEthernet6/0/4
+ undo negotiation auto
+ description dT:ShiDaiGuangChang-S3928.MAN:(F3071103626)GE1/1/1
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5 209 214 1506
+ port hybrid untagged vlan 2407
+ port vlan-stacking vlan 3001 to 3050 stack-vlan 2407
+#
+interface GigabitEthernet6/0/5
+ undo negotiation auto
+ description dT:QianJiang-S3952.MAN:(F3051001001)GE1/1/1
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5 2433
+ port hybrid untagged vlan 2409 2430
+ port vlan-stacking vlan 3001 to 3050 stack-vlan 2409
+ port vlan-stacking vlan 3100 to 3200 stack-vlan 2430
+#
+interface GigabitEthernet6/0/6
+ undo negotiation auto
+ description dT:FengYi-S3928.MAN:(F3060702188)GE1/1/1
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5 1433 1498 1518
+ port hybrid untagged vlan 2414
+ port vlan-stacking vlan 3001 to 3050 stack-vlan 2414
+#
+interface GigabitEthernet6/0/7
+ undo negotiation auto
+ description dT:NanHu-S3928.MAN:(Local)GE1/1/1
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet6/0/8
+ undo negotiation auto
+ description dT:ShiZhengFu-S3928.MAN:(F3051001401)GE1/1/1
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5 1324
+ port hybrid untagged vlan 2415
+ port vlan-stacking vlan 3001 to 3050 stack-vlan 2415
+#
+interface GigabitEthernet6/0/9
+ undo negotiation auto
+ description dT:ShangHaiHuaYuan-S3928.MAN:(F3080103890)GE1/1/1
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5 1511 2639
+ port hybrid untagged vlan 2408 2430
+ port vlan-stacking vlan 3001 to 3050 stack-vlan 2408
+ port vlan-stacking vlan 3100 to 3200 stack-vlan 2430
+#
+interface GigabitEthernet6/0/10
+ undo negotiation auto
+ description TV-SYMinShengShangWuBinGuan(F3080404100)
+ port link-type access
+ port default vlan 202
+#
+interface GigabitEthernet6/0/11
+ undo negotiation auto
+ description dT:BaiGuan3952-4.MAN:(Local)GE1/1/1
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5
+ port hybrid untagged vlan 2405
+ port vlan-stacking vlan 3001 to 3050 stack-vlan 2405
+#
+interface GigabitEthernet6/0/12
+ description dT:SX-SY-BG-OLT-1.MAN.ZTE.C220:(Local)GE1/2/1
+ eth-trunk 25
+#
+interface GigabitEthernet6/0/13
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet6/0/14
+ shutdown
+#
+interface GigabitEthernet6/0/15
+ undo negotiation auto
+ description dT:AD-B11ZXD036-BaiGuan:(Local)GE7/0/0
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet6/0/16
+ shutdown
+#
+interface GigabitEthernet6/0/17
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet6/0/18
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet6/0/19
+ undo negotiation auto
+ description dT:AD-B11ZXD024-GuoDa:(F3080103918)GE7/0/0
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5
+ port hybrid untagged vlan 1515
+ port vlan-stacking vlan 101 to 516 stack-vlan 1515
+#
+interface GigabitEthernet6/0/20
+ shutdown
+#
+interface GigabitEthernet6/0/21
+ shutdown
+#
+interface GigabitEthernet6/0/22
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet6/0/23
+ shutdown
+#
+interface GigabitEthernet7/0/0
+ description uT:SX-SY-BG-SR-1.MAN.NE80E:(Local)GE7/0/2
+ eth-trunk 17
+#
+interface GigabitEthernet7/0/1
+ description dT:SX-SY-BaiGuan-3352-1:(Local)GE0/0/1
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5
+ port hybrid untagged vlan 2416 2430 2440
+ port vlan-stacking vlan 3001 to 3050 stack-vlan 2416
+ port vlan-stacking vlan 3100 to 3200 stack-vlan 2440
+#
+interface GigabitEthernet7/0/2
+ description dT:SX-SY-CZ-OLT-1.MAN.ZTE.C220:(F3090618302)GE1/2/1
+ eth-trunk 28
+#
+interface GigabitEthernet7/0/3
+ description dT:SX-SY-BG-OLT-2.MAN.ZTE.C220:(Local)GE1/2/1
+ eth-trunk 26
+#
+interface GigabitEthernet7/0/4
+ undo negotiation auto
+ description dT:BaiGuan3952-1.MAN:(Local)GE1/1/1
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5 211
+ port hybrid untagged vlan 2402
+ port vlan-stacking vlan 3001 to 3050 stack-vlan 2402
+#
+interface GigabitEthernet7/0/5
+ undo negotiation auto
+ description dT:BaiGuan3952-5.MAN:(Local)GE1/1/2
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5 2431 to 2432
+ port hybrid untagged vlan 2406 2430
+ port vlan-stacking vlan 800 to 900 stack-vlan 2406
+ port vlan-stacking vlan 3001 to 3050 stack-vlan 2406
+ port vlan-stacking vlan 3100 to 3200 stack-vlan 2430
+#
+interface GigabitEthernet7/0/6
+#
+interface GigabitEthernet7/0/7
+ description uT:SX-SY-BG-SR-1.MAN.NE80E:(Local)GE12/0/4
+ eth-trunk 18
+#
+interface GigabitEthernet7/0/8
+ shutdown
+#
+interface GigabitEthernet7/0/9
+ undo negotiation auto
+ description dT:SX-SY-BG-OLT-1.MAN.ZTE.C220:(Local)GE1/3/3
+ eth-trunk 25
+#
+interface GigabitEthernet7/0/10
+ undo negotiation auto
+ description dT:SX-SY-BG-OLT-1.MAN.ZTE.C220:(Local)GE1/3/2
+ eth-trunk 25
+#
+interface GigabitEthernet7/0/11
+ shutdown
+#
+interface GigabitEthernet7/0/12
+ shutdown
+#
+interface GigabitEthernet7/0/13
+ undo negotiation auto
+ description dT:BianMinZHongXin1Lou-S3928.MAN:(F3080504184)GE1/1/1
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5
+ port hybrid untagged vlan 2420
+ port vlan-stacking vlan 3001 to 3098 stack-vlan 2420
+#
+interface GigabitEthernet7/0/14
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet7/0/15
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet7/0/16
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet7/0/17
+ undo negotiation auto
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet7/0/18
+ undo negotiation auto
+ description dT:AD-B11ZXD011-LvCheng:(F3061102650)GE7/0/0
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5
+ port hybrid untagged vlan 1355
+ port vlan-stacking vlan 101 to 580 stack-vlan 1355
+ port vlan-stacking vlan 3600 stack-vlan 1355
+#
+interface GigabitEthernet7/0/19
+ undo negotiation auto
+ description dT:AD-B91ZXD004-ShiShi:(F3071203748)GE7/0/0
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5
+ port hybrid untagged vlan 1507
+ port vlan-stacking vlan 101 to 580 stack-vlan 1507
+ port vlan-stacking vlan 3600 stack-vlan 1507
+#
+interface GigabitEthernet7/0/20
+ shutdown
+#
+interface GigabitEthernet7/0/21
+ undo negotiation auto
+ description IP-ZhengFuWang(FangHuoQiang)::kehu
+ port link-type access
+ port default vlan 3996
+#
+interface GigabitEthernet7/0/22
+ undo negotiation auto
+ description MP-ZhengFuWang(FangHuoQiang)::kehu
+ port link-type access
+ port default vlan 3997
+#
+interface GigabitEthernet7/0/23
+ description TO-MA5200-g25
+ port link-type access
+ port default vlan 199
+#
+interface GigabitEthernet8/0/0
+ description pT:SX-SY-BG-DSW-1.MAN.S9306:(Local)GE1/0/23
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 4 to 6 1552 1554 1557 1559 to 1560 1563 1567 1569 1748 1754 to 1755
+ port hybrid tagged vlan 1766 1786 1792 to 1793 1797 to 1799 2220 2222 to 2226 2240 2251 2273 2288
+#
+interface GigabitEthernet8/0/1
+#
+interface GigabitEthernet8/0/2
+ shutdown
+#
+interface GigabitEthernet8/0/3
+ undo negotiation auto
+ description dT:SX-SY-BG-OLT-1.MAN.ZTE.C220:(Local)GE1/3/1
+ eth-trunk 25
+#
+interface GigabitEthernet8/0/4
+#
+interface GigabitEthernet8/0/5
+ undo negotiation auto
+ description dT:SX-SY-BG-OLT-1.MAN.ZTE.C220:(Local)GE1/3/4
+ eth-trunk 25
+#
+interface GigabitEthernet8/0/6
+ undo negotiation auto
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet8/0/7
+ undo negotiation auto
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet8/0/8
+ description dT:SX-SY-BG-OLT-3.MAN.ZTE.C300:(Local)GE1/20/1
+ eth-trunk 19
+#
+interface GigabitEthernet8/0/9
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet8/0/10
+ description dT:SX-SY-BG-OLT-4.MAN.ZTE.C220:(Local)GE1/3/1
+ eth-trunk 23
+#
+interface GigabitEthernet8/0/11
+ shutdown
+#
+interface GigabitEthernet8/0/12
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet8/0/13
+ undo negotiation auto
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet8/0/14
+ undo negotiation auto
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet8/0/15
+ description dT:SX-SY-CZ-OLT-2.MAN.ZTE.C220:(F3100939871)GE1/3/1
+ eth-trunk 21
+#
+interface GigabitEthernet8/0/16
+ shutdown
+#
+interface GigabitEthernet8/0/17
+ undo negotiation auto
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet8/0/18
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet8/0/19
+ description dT:SX-SY-SHHY-OLT-1.MAN.ZTE.C220:(F1011050013)GE1/3/1
+ eth-trunk 22
+#
+interface GigabitEthernet8/0/20
+ shutdown
+#
+interface GigabitEthernet8/0/21
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet8/0/22
+ undo negotiation auto
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet8/0/23
+ undo negotiation auto
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet11/0/0
+#
+interface GigabitEthernet11/0/1
+#
+interface GigabitEthernet11/0/2
+#
+interface GigabitEthernet11/0/3
+#
+interface GigabitEthernet11/0/4
+#
+interface GigabitEthernet11/0/5
+#
+interface GigabitEthernet11/0/6
+#
+interface GigabitEthernet11/0/7
+#
+interface GigabitEthernet11/0/8
+#
+interface GigabitEthernet11/0/9
+#
+interface GigabitEthernet11/0/10
+#
+interface GigabitEthernet11/0/11
+#
+interface GigabitEthernet11/0/12
+#
+interface GigabitEthernet11/0/13
+#
+interface GigabitEthernet11/0/14
+#
+interface GigabitEthernet11/0/15
+#
+interface GigabitEthernet11/0/16
+#
+interface GigabitEthernet11/0/17
+#
+interface GigabitEthernet11/0/18
+#
+interface GigabitEthernet11/0/19
+#
+interface GigabitEthernet11/0/20
+#
+interface GigabitEthernet11/0/21
+#
+interface GigabitEthernet11/0/22
+#
+interface GigabitEthernet11/0/23
+#
+interface GigabitEthernet11/0/24
+#
+interface GigabitEthernet11/0/25
+#
+interface GigabitEthernet11/0/26
+#
+interface GigabitEthernet11/0/27
+#
+interface GigabitEthernet11/0/28
+#
+interface GigabitEthernet11/0/29
+#
+interface GigabitEthernet11/0/30
+#
+interface GigabitEthernet11/0/31
+#
+interface GigabitEthernet11/0/32
+#
+interface GigabitEthernet11/0/33
+#
+interface GigabitEthernet11/0/34
+#
+interface GigabitEthernet11/0/35
+#
+interface GigabitEthernet11/0/36
+#
+interface GigabitEthernet11/0/37
+#
+interface GigabitEthernet11/0/38
+#
+interface GigabitEthernet11/0/39
+#
+interface GigabitEthernet11/0/40
+#
+interface GigabitEthernet11/0/41
+#
+interface GigabitEthernet11/0/42
+#
+interface GigabitEthernet11/0/43
+#
+interface GigabitEthernet11/0/44
+#
+interface GigabitEthernet11/0/45
+#
+interface GigabitEthernet11/0/46
+#
+interface GigabitEthernet11/0/47
+#
+interface GigabitEthernet12/0/0
+#
+interface GigabitEthernet12/0/1
+#
+interface GigabitEthernet12/0/2
+#
+interface GigabitEthernet12/0/3
+#
+interface GigabitEthernet12/0/4
+ undo negotiation auto
+ speed 10
+ port link-type access
+ port default vlan 5
+#
+interface GigabitEthernet12/0/5
+ undo negotiation auto
+ speed 10
+ port link-type access
+ port default vlan 5
+#
+interface GigabitEthernet12/0/6
+ undo negotiation auto
+ speed 10
+ port link-type access
+ port default vlan 5
+#
+interface GigabitEthernet12/0/7
+ undo negotiation auto
+ speed 10
+ port link-type access
+ port default vlan 5
+#
+interface GigabitEthernet12/0/8
+ undo negotiation auto
+ speed 10
+ port link-type access
+ port default vlan 5
+#
+interface GigabitEthernet12/0/9
+ undo negotiation auto
+ speed 100
+ description TO-SiLouJianKongJiFang
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 4 to 6 517 to 518 3995
+#
+interface GigabitEthernet12/0/10
+ shutdown
+#
+interface GigabitEthernet12/0/11
+ undo negotiation auto
+ speed 10
+ port link-type access
+ port default vlan 5
+#
+interface GigabitEthernet12/0/12
+ undo negotiation auto
+ speed 10
+ port link-type access
+ port default vlan 5
+#
+interface GigabitEthernet12/0/13
+ undo negotiation auto
+ speed 10
+ port link-type access
+ port default vlan 5
+#
+interface GigabitEthernet12/0/14
+#
+interface GigabitEthernet12/0/15
+ undo negotiation auto
+ speed 10
+ port link-type access
+ port default vlan 3997
+#
+interface GigabitEthernet12/0/16
+#
+interface GigabitEthernet12/0/17
+#
+interface GigabitEthernet12/0/18
+#
+interface GigabitEthernet12/0/19
+#
+interface GigabitEthernet12/0/20
+#
+interface GigabitEthernet12/0/21
+#
+interface GigabitEthernet12/0/22
+#
+interface GigabitEthernet12/0/23
+#
+interface GigabitEthernet12/0/24
+#
+interface GigabitEthernet12/0/25
+#
+interface GigabitEthernet12/0/26
+#
+interface GigabitEthernet12/0/27
+#
+interface GigabitEthernet12/0/28
+#
+interface GigabitEthernet12/0/29
+#
+interface GigabitEthernet12/0/30
+#
+interface GigabitEthernet12/0/31
+#
+interface GigabitEthernet12/0/32
+#
+interface GigabitEthernet12/0/33
+#
+interface GigabitEthernet12/0/34
+#
+interface GigabitEthernet12/0/35
+#
+interface GigabitEthernet12/0/36
+#
+interface GigabitEthernet12/0/37
+#
+interface GigabitEthernet12/0/38
+#
+interface GigabitEthernet12/0/39
+#
+interface GigabitEthernet12/0/40
+#
+interface GigabitEthernet12/0/41
+#
+interface GigabitEthernet12/0/42
+#
+interface GigabitEthernet12/0/43
+#
+interface GigabitEthernet12/0/44
+#
+interface GigabitEthernet12/0/45
+#
+interface GigabitEthernet12/0/46
+#
+interface GigabitEthernet12/0/47
+#
+interface XGigabitEthernet1/0/0
+ description uT:SX-SY-BG-BAS-1.MAN.ME60:(Local)10GE3/0/0
+ eth-trunk 6
+#
+interface XGigabitEthernet1/0/1
+ description uT:SX-SY-BG-BAS-1.MAN.ME60:(Local)10GE3/1/0
+ eth-trunk 6
+#
+interface XGigabitEthernet1/0/2
+ description uT:SX-SY-BG-DSW-1.MAN.H3C12510F:(Local)10GE1/0/0/12
+ eth-trunk 29
+#
+interface XGigabitEthernet1/0/3
+ description uT:SX-SY-BG-DSW-1.MAN.H3C12510F:(Local)10GE2/0/0/12
+ eth-trunk 29
+#
+interface NULL0
+#
+ip route-static 0.0.0.0 0.0.0.0 10.251.48.1
+#
+snmp-agent
+snmp-agent local-engineid 000007DB7FFFFFFF0000785B
+snmp-agent community read cipher %^%#K/>SG'8#rSA/J"%+#[uCH.dIAkw2x*vrhNAw2|Z$QuHf810c<M9X{>'Xj}mK^]s-'69"s4/Q/{/&q>T6%^%# acl 2000
+snmp-agent sys-info contact R&D Nanjing, Huawei Technologies co.,Ltd.
+snmp-agent sys-info location Nanjing China
+snmp-agent sys-info version all
+undo snmp-agent trap enable feature-name DLDP
+undo snmp-agent trap enable feature-name LDTTRAP
+undo snmp-agent trap enable feature-name LLDPTRAP
+snmp-agent trap enable feature-name BASETRAP
+#
+ssh server compatible-ssh1x enable
+#
+header login information " WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!"
+#
+user-interface maximum-vty 15
+user-interface con 0
+ idle-timeout 0 0
+ screen-length 30
+user-interface vty 0 4
+ acl 2001 inbound
+ authentication-mode aaa
+ user privilege level 15
+ idle-timeout 20 0
+ screen-length 30
+ protocol inbound telnet
+user-interface vty 5 14
+ authentication-mode none
+ user privilege level 3
+ idle-timeout 20 0
+ screen-length 0
+ protocol inbound telnet
+user-interface vty 16 20
+ protocol inbound telnet
+#
+return
+<SX-SY-BG-DSW-1.MAN.S9312>

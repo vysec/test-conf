@@ -1,0 +1,618 @@
+
+!Software Version V200R008C00SPC500
+#
+sysname NB-CX-SS-DSW-1.MAN.9306
+#
+super password level 3 cipher %$%$<v]R..*B8OY8]E6S>_W>(;_U=8NH(PXt^!&}r=C*<fY4;_X(%$%$
+#
+info-center source default channel 2 log level warning trap level warning
+info-center source SHELL channel 4 log level informational
+info-center loghost source Vlanif50
+info-center loghost 10.254.0.1 facility local4
+info-center loghost 122.224.79.2 facility local4
+#
+vlan batch 8 22 50 78 to 79 93 212 225 1010 1030 1186 to 1187
+vlan batch 1510 1536 1538 1555 1567 1572 to 1573 1608 1676 to 1684 3050 to 3052 3055
+vlan batch 3062 3081 3102 3105 3113 3115 3119 3222 3231 3848
+vlan batch 3920 3924 to 3929 3947 3949 3958 3980 3982
+#
+undo authentication unified-mode
+#
+telnet server enable
+telnet ipv6 server enable
+#
+undo http server enable
+undo http secure-server enable
+#
+undo management-port isolate enable
+undo management-plane isolate enable
+#
+clock timezone BJ add 08:00:00
+#
+observe-port 1 interface GigabitEthernet2/0/47
+#
+diffserv domain default
+#
+hwtacacs-server template nbdx
+ hwtacacs-server authentication 172.200.100.249
+ hwtacacs-server authorization 172.200.100.249
+ hwtacacs-server accounting 172.200.100.249
+ hwtacacs-server source-ip 172.93.24.68
+ hwtacacs-server shared-key cipher %^%#!*"<@cESL&ndrs+golLU:Id_7vR"O%VkvR3"f@mG%^%#
+ undo hwtacacs-server user-name domain-included
+#
+acl number 2000  
+ description For_Telnet
+ rule 5 permit source 61.153.82.90 0 
+ rule 10 permit source 202.96.102.247 0 
+ rule 15 permit source 202.96.102.0 0.0.1.255 
+ rule 20 permit source 202.101.167.192 0.0.0.63 
+ rule 25 permit source 61.153.112.128 0.0.0.31 
+ rule 30 permit source 172.93.0.0 0.0.255.255 
+ rule 35 permit source 172.200.100.0 0.0.0.255 
+ rule 40 permit source 202.96.112.0 0.0.0.31 
+ rule 45 permit source 61.130.21.96 0.0.0.7 
+ rule 50 permit source 61.175.19.0 0.0.0.255 
+ rule 55 permit source 218.75.80.0 0.0.0.255 
+ rule 60 permit source 61.175.200.64 0.0.0.15 
+acl number 2015  
+ description For-SNMP
+ rule 10 permit source 172.200.100.12 0 
+ rule 20 permit source 172.200.100.6 0 
+ rule 30 permit source 172.200.100.13 0 
+ rule 40 permit source 172.200.100.7 0 
+ rule 50 permit source 172.200.100.8 0 
+ rule 60 permit source 172.200.100.9 0 
+ rule 70 permit source 172.200.100.10 0 
+ rule 80 permit source 172.200.100.11 0 
+ rule 90 permit source 172.200.100.14 0 
+ rule 100 permit source 172.200.100.15 0 
+ rule 110 permit source 172.200.100.5 0 
+ rule 120 permit source 172.200.100.4 0 
+ rule 130 permit source 172.200.100.3 0 
+ rule 1500 deny 
+#
+traffic classifier tcCritical operator or precedence 5
+ if-match cvlan-id 3599
+ if-match cvlan-id 3600
+#
+traffic behavior tcCritical
+ permit
+ remark 8021p 4
+#
+traffic policy tcCritical match-order auto
+ classifier tcCritical behavior tcCritical
+#
+drop-profile default
+#
+vlan 8
+ description Managment
+vlan 22
+ description Telecom_VPN
+vlan 50
+ description For-S8505-NetManagement
+vlan 78
+ description WLAN_management
+vlan 79
+ description WLAN_manager
+vlan 93
+ description WH-GK93manager
+vlan 212
+ description For_HuaWei_DSLAM_NetManagement
+vlan 225
+ description For_Alcaltel_DSLAM_NetManagement
+vlan 1010
+ description WLAN_VLAN_H3C
+vlan 1030
+ description WALN-VLAN_NETGEAR
+vlan 1186
+ description Town_GOV_WLAN
+vlan 1187
+ description Telecom_Business_office_WLAN
+vlan 1536
+ description SS_ShengNan_MA5600-1/B_DSLAM
+vlan 1538
+ description SS_MA5600-2/A_DSLAM
+vlan 1555
+ description ShengShan_MA5600-1/C_DSLAM
+vlan 1567
+ description SS_ShengXi_MA5600-1/B_DSLAM
+vlan 1572
+ description ShengShan_MA5600-1/B
+vlan 1608
+ description ShengShan_MA5600/B_DSLAM
+vlan 1676
+ description kangdunsitang-ADSL(MA5100)-DSLAM
+vlan 1677
+ description shengxi-ADSL2(MA5600)-DSLAM
+vlan 1678
+ description shengxi-ADSL1(MA5100)-DSLAM
+vlan 1679
+ description shengnan-MA5600-DSLAM
+vlan 1680
+ description shawanglu-ADSL(MA5100)-DSLAM
+vlan 1681
+ description dawang-MA5100-DSLAM
+vlan 1682
+ description Alcatel-ADSL2(XD)-DSLAM
+vlan 1683
+ description Alcatel-ADSL1(UD)-DSLAM
+vlan 1684
+ description Huawei-MA5100-DSLAM
+vlan 3050
+ description V-GongAn-VPN-2
+vlan 3051
+ description V-GongAn-VPN-3
+vlan 3052
+ description GongAn2_VPN
+vlan 3055
+ description V-CiXiDangZhengWang-VPN
+vlan 3081
+ description baixing-yaodian
+vlan 3102
+ description KANDUN_gov_VPN
+vlan 3105
+ description shengshan-village
+vlan 3113
+ description Gov_VPN
+vlan 3222
+ description Telecom_business_office_ge
+vlan 3848
+ description Zhongshihua_Jiayouzhan_MPLS
+vlan 3920
+ description gongluguanli-vpn
+vlan 3924
+ description V-CiXiZhuZhiWang-VPN
+vlan 3925
+ description V-NongBaoWang-VPN
+vlan 3926
+ description V-YiBao-VPN
+vlan 3927
+ description V-CiKeLong-VPN
+vlan 3928
+ description V-ZhengYuanDaYaoFang-VPN
+vlan 3929
+ description GongAn_VPN
+vlan 3949
+ description V-ShengShanNongJingWang-ADSL-VPN
+vlan 3958
+ description V-JiaYaoZhan-VPN
+vlan 3980
+ description V-GongAnYingZhang-VPN
+vlan 3982
+ description V-JiaoTongBank-VPN
+#
+aaa
+ authentication-scheme default
+ authentication-scheme nbdx
+  authentication-mode hwtacacs local
+ authorization-scheme default
+ authorization-scheme nbdx
+  authorization-mode  hwtacacs local
+ accounting-scheme default
+ accounting-scheme nbdx
+  accounting-mode hwtacacs
+  accounting realtime 3
+  accounting start-fail online
+ recording-scheme scheme0
+  recording-mode hwtacacs nbdx
+ cmd recording-scheme scheme0
+ outbound recording-scheme scheme0
+ domain default
+ domain default_admin
+  authentication-scheme nbdx
+  accounting-scheme nbdx
+  authorization-scheme nbdx
+  hwtacacs-server nbdx
+ local-user admin password irreversible-cipher %^%#8'~\My@W]=;0:E;em||I0Uu:W%z7WFoy:vJyb'~,B/&OKv:N$76x)eC!PQ~6%^%#
+ local-user admin service-type telnet
+ local-user zjnoc password irreversible-cipher %^%#4!;|#ZsFe="9B_2@C-=@-ntaH:'4H01yx*PlLNtA[h8=Yylc<J`xMDJt\CUR%^%#
+ local-user zjnoc privilege level 3
+ local-user zjnoc service-type telnet terminal
+#
+ntp-service source-interface Vlanif93
+ntp-service unicast-server 172.93.1.125 preference
+ntp-service unicast-server 172.93.1.126
+#
+interface Vlanif50
+ description For_S9306-NetManagement
+ shutdown
+ ip address 61.175.19.139 255.255.255.224
+#
+interface Vlanif93
+ description WH-GK93manager
+ ip address 172.93.24.68 255.255.255.224
+#
+interface Vlanif212
+ ip address 172.151.3.104 255.255.252.0
+#
+interface Eth-Trunk2
+ description uT:NB-CX-DS-DSW-2.MAN.9312-2:ETH5(G10/0/0~1,G10/0/8,G12/0/6)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 22 50 78 to 79 93 212 225 1010 1030 1186 to 1187 1510
+ port trunk allow-pass vlan 1536 1538 1555 1567 1572 to 1573 1608 1676 to 1684 3050 to 3052 3055 3081
+ port trunk allow-pass vlan 3102 3105 3113 3115 3119 3222 3231 3848 3920 3924 to 3929
+ port trunk allow-pass vlan 3947 3949 3958 3980 3982
+ traffic-policy tcCritical inbound
+#
+interface Ethernet0/0/0
+ ip address 1.1.1.1 255.255.255.252
+#
+interface GigabitEthernet2/0/0
+ shutdown
+#
+interface GigabitEthernet2/0/1
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet2/0/2
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet2/0/3
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet2/0/4
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet2/0/5
+ description dT:NB-CX-SS-telecom_business_office-sw.wlan::kehu
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 78 3222
+ port hybrid untagged vlan 79 1030 1187
+ port vlan-stacking vlan 1601 to 1604 stack-vlan 79
+ port vlan-stacking vlan 1605 to 1650 stack-vlan 79
+ port vlan-stacking vlan 3300 to 3400 stack-vlan 1187
+ traffic-policy tcCritical inbound
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet2/0/6
+ description dT:NB-CX-SS-GOV-SW-1.WLAN::kehu
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 78
+ port hybrid untagged vlan 79 1030 1186
+ port vlan-stacking vlan 1601 to 1605 stack-vlan 79
+ port vlan-stacking vlan 3200 to 3400 stack-vlan 1186
+ traffic-policy tcCritical inbound
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet2/0/7
+ description dT:NB-CX-SS.WLAN::kehu
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 50 93
+ port hybrid untagged vlan 79
+ port vlan-stacking vlan 1601 to 1604 stack-vlan 79
+ port vlan-stacking vlan 1605 to 1650 stack-vlan 79
+ traffic-policy tcCritical inbound
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet2/0/8
+ shutdown
+#
+interface GigabitEthernet2/0/9
+ shutdown
+#
+interface GigabitEthernet2/0/10
+ shutdown
+#
+interface GigabitEthernet2/0/11
+ shutdown
+#
+interface GigabitEthernet2/0/12
+ shutdown
+#
+interface GigabitEthernet2/0/13
+ shutdown
+#
+interface GigabitEthernet2/0/14
+ shutdown
+#
+interface GigabitEthernet2/0/15
+ shutdown
+#
+interface GigabitEthernet2/0/16
+ shutdown
+#
+interface GigabitEthernet2/0/17
+ shutdown
+#
+interface GigabitEthernet2/0/18
+ shutdown
+#
+interface GigabitEthernet2/0/19
+ shutdown
+#
+interface GigabitEthernet2/0/20
+ shutdown
+#
+interface GigabitEthernet2/0/21
+ shutdown
+#
+interface GigabitEthernet2/0/22
+ shutdown
+#
+interface GigabitEthernet2/0/23
+ shutdown
+#
+interface GigabitEthernet2/0/24
+ shutdown
+#
+interface GigabitEthernet2/0/25
+ shutdown
+#
+interface GigabitEthernet2/0/26
+ shutdown
+#
+interface GigabitEthernet2/0/27
+ shutdown
+#
+interface GigabitEthernet2/0/28
+ shutdown
+#
+interface GigabitEthernet2/0/29
+ shutdown
+#
+interface GigabitEthernet2/0/30
+ shutdown
+#
+interface GigabitEthernet2/0/31
+ shutdown
+#
+interface GigabitEthernet2/0/32
+ shutdown
+#
+interface GigabitEthernet2/0/33
+ shutdown
+#
+interface GigabitEthernet2/0/34
+ shutdown
+#
+interface GigabitEthernet2/0/35
+ shutdown
+#
+interface GigabitEthernet2/0/36
+ shutdown
+#
+interface GigabitEthernet2/0/37
+ shutdown
+#
+interface GigabitEthernet2/0/38
+ shutdown
+#
+interface GigabitEthernet2/0/39
+ shutdown
+#
+interface GigabitEthernet2/0/40
+ shutdown
+#
+interface GigabitEthernet2/0/41
+ shutdown
+#
+interface GigabitEthernet2/0/42
+ shutdown
+#
+interface GigabitEthernet2/0/43
+ shutdown
+#
+interface GigabitEthernet2/0/44
+ shutdown
+#
+interface GigabitEthernet2/0/45
+ port hybrid untagged vlan 1684
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1684
+#
+interface GigabitEthernet2/0/46
+ port link-type access
+ port default vlan 3119
+#
+interface GigabitEthernet2/0/47
+#
+interface GigabitEthernet6/0/0
+ undo negotiation auto
+ description uT:NB-CX-DS-DSW-2.MAN.9312-2:(local)GE10/0/0
+ eth-trunk 2
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/1
+ undo negotiation auto
+ description uT:NB-CX-DS-DSW-2.MAN.9312-2:(local)GE10/0/1
+ eth-trunk 2
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/2
+ undo negotiation auto
+ description uT:NB-CX-DS-DSW-2.MAN.9312-2:(F0811180002)GE10/0/8
+ eth-trunk 2
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/3
+ undo negotiation auto
+ description uT:NB-CX-DS-DSW-2.MAN.9312-2:(F0803220005)GE12/0/6
+ eth-trunk 2
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/4
+ shutdown
+#
+interface GigabitEthernet6/0/5
+ shutdown
+#
+interface GigabitEthernet6/0/6
+ shutdown
+#
+interface GigabitEthernet6/0/7
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet6/0/8
+ undo negotiation auto
+ port hybrid tagged vlan 1 22 212 3081 3105 3929 3980
+ port hybrid untagged vlan 1677
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1677
+ port vlan-stacking vlan 3600 stack-vlan 1677
+ traffic-policy tcCritical inbound
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/9
+ shutdown
+#
+interface GigabitEthernet6/0/10
+ shutdown
+#
+interface GigabitEthernet6/0/11
+ shutdown
+#
+interface GigabitEthernet6/0/12
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet6/0/13
+ shutdown
+#
+interface GigabitEthernet6/0/14
+ shutdown
+#
+interface GigabitEthernet6/0/15
+ shutdown
+#
+interface GigabitEthernet6/0/16
+ shutdown
+#
+interface GigabitEthernet6/0/17
+ shutdown
+#
+interface GigabitEthernet6/0/18
+ shutdown
+#
+interface GigabitEthernet6/0/19
+ shutdown
+#
+interface GigabitEthernet6/0/20
+ shutdown
+#
+interface GigabitEthernet6/0/21
+ shutdown
+#
+interface GigabitEthernet6/0/22
+ shutdown
+#
+interface GigabitEthernet6/0/23
+ shutdown
+#
+interface NULL0
+#
+cpu-defend policy 1
+ auto-port-defend protocol arp-request arp-reply dhcp icmp ip-fragment
+#
+ip route-static 0.0.0.0 0.0.0.0 61.175.19.158
+ip route-static 172.0.0.0 255.0.0.0 172.93.24.65
+#
+snmp-agent
+snmp-agent local-engineid 000007DB7FFFFFFF0000735F
+snmp-agent community read cipher %^%#RPb4~q\AH*[piX2;s/*YJaB:K)LY$GOeFyMwGYJ!;:eW(x2HJ)=[x$:+Ky)G,)6-6V%fT,ihlE;l>=d/%^%# acl 2015
+snmp-agent community read cipher %^%#g_f_6+th{8##XY7.MOG333s#Fn>G21'Xb&(I'_\TlI&tJ8bx}"qTS3HEd-;Rp4mB1J\lmF71I#U<Lf%M%^%#
+snmp-agent sys-info contact HuaWei 800-8302118
+snmp-agent sys-info location NB_CX_ShengShan
+snmp-agent sys-info version all
+snmp-agent target-host trap address udp-domain 202.96.112.17 params securityname cipher %^%#Ga]f)jf@^,y4ld~aI})9v[pXJ"CbW~@/C8~%|1:F%^%#
+snmp-agent target-host trap address udp-domain 218.75.80.158 udp-port 161 params securityname cipher %^%#F3S.);n*W,wLzdMRN^#H&+0M$6t:=G2p{MG#H0P/%^%#
+snmp-agent target-host trap address udp-domain 61.153.112.129 udp-port 161 params securityname cipher %^%#>jo8Q1R3$K(9u,0g5IF)**o@)I^R+8ycJ(K,iBwU%^%#
+snmp-agent target-host trap address udp-domain 61.153.112.133 udp-port 161 params securityname cipher %^%#![OB24},:<HA2y+0x/sSrJN+0R;O[)&RX,;&X[e7%^%#
+snmp-agent target-host trap address udp-domain 61.153.112.134 udp-port 161 params securityname cipher %^%#JKHU!)|H><~48}Tna|6;leWxACJl6IDbUqWwMU5L%^%#
+snmp-agent trap enable feature-name IFNET trap-name linkDown
+snmp-agent trap enable feature-name IFNET trap-name linkUp
+snmp-agent trap enable feature-name CONFIGURATION
+snmp-agent trap enable feature-name SNMP trap-name authenticationFailure
+undo snmp-agent trap enable feature-name L2IFPPI trap-name hwMacFlappingAlarm
+undo snmp-agent trap enable feature-name DLDP
+undo snmp-agent trap enable feature-name LDTTRAP
+undo snmp-agent trap enable feature-name LLDPTRAP
+snmp-agent trap enable feature-name VFS
+snmp-agent trap enable feature-name BASETRAP
+#
+ssh server compatible-ssh1x enable
+#
+header login information " WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!"
+#
+cpu-defend-policy 1 global
+cpu-defend-policy 1
+#
+user-interface maximum-vty 15
+user-interface con 0
+ idle-timeout 0 0
+user-interface vty 0 4
+ acl 2000 inbound
+ authentication-mode aaa
+ user privilege level 1
+ idle-timeout 5 0
+ protocol inbound all
+user-interface vty 5 14
+ acl 2000 inbound
+ authentication-mode none
+ user privilege level 3
+ idle-timeout 0 0
+ protocol inbound all
+user-interface vty 16 20
+ protocol inbound telnet
+#
+return
+<NB-CX-SS-DSW-1.MAN.9306>

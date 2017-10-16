@@ -1,0 +1,284 @@
+
+!Software Version V200R003C00SPC500
+#
+sysname HZ-HZ-SanDunQK-DSW-1.XYW.S9306
+#
+vlan batch 50 1616 to 1620
+#
+domain default_admin
+#
+dot1x enable
+#
+undo http server enable
+undo http secure-server enable
+#
+undo nap slave enable
+#
+ dba-profile default0 type3 assure 40000 max 80000
+#
+diffserv domain default
+#
+radius-server template newhzdx
+ radius-server shared-key cipher %@%@T3og+wWq(6LV$L:O4wy08`.v%@%@
+ radius-server authentication 61.164.19.211 1812 weight 80
+ radius-server authentication 61.164.19.213 1812 weight 80
+ radius-server accounting 61.164.19.211 1813 weight 80
+ radius-server accounting 61.164.19.213 1813 weight 80
+ undo radius-server user-name domain-included
+ radius-server attribute translate
+ radius-attribute disable HW-Exec-Privilege receive
+#
+ line-profile default0
+#
+ service-profile default0
+#
+acl number 2000
+ rule 5 permit source 172.16.254.252 0
+ rule 10 permit source 202.96.102.253 0
+ rule 15 permit source 202.96.102.254 0
+ rule 20 permit source 10.254.0.0 0.0.0.255
+ rule 25 permit source 192.168.11.0 0.0.0.255
+ rule 30 permit source 192.168.1.0 0.0.0.255
+ rule 31 permit source 10.10.10.34 0
+ rule 32 permit source 10.10.10.35 0
+ rule 33 permit source 10.31.255.0 0.0.0.31
+ rule 35 deny
+#
+acl number 2001
+ rule 5 permit source 172.16.254.252 0
+ rule 10 permit source 202.96.102.253 0
+ rule 15 permit source 202.96.102.254 0
+ rule 25 permit source 192.168.208.0 0.0.0.255
+ rule 30 permit source 192.168.209.0 0.0.0.255
+ rule 35 permit source 192.168.210.0 0.0.0.255
+ rule 40 permit source 192.168.0.0 0.0.127.255
+ rule 45 permit source 10.254.0.0 0.0.0.31
+ rule 50 permit source 172.28.0.0 0.0.255.255
+ rule 51 permit source 10.10.10.34 0
+ rule 52 permit source 10.10.10.35 0
+ rule 55 permit source 10.31.255.0 0.0.0.31
+ rule 100 deny
+#
+acl number 2006
+ rule 51 permit source 10.10.10.34 0
+ rule 52 permit source 10.10.10.35 0
+#
+acl number 2016
+ rule 1 permit source 172.16.247.0 0.0.0.31
+ rule 2 permit source 172.16.254.0 0.0.0.15
+ rule 3 permit source 10.254.0.0 0.0.0.31
+ rule 4 permit source 10.31.255.0 0.0.0.255
+ rule 5 permit source 10.254.3.0 0.0.0.255
+ rule 6 permit source 10.10.10.0 0.0.0.63
+ rule 7 permit source 192.168.100.0 0.0.0.3
+ rule 8 permit source 172.16.0.0 0.0.0.7
+ rule 9 permit source 10.20.200.14 0
+ rule 10 permit source 10.20.200.18 0
+ rule 11 permit source 192.168.1.0 0.0.0.255
+ rule 12 permit source 192.168.4.0 0.0.0.255
+ rule 13 permit source 192.168.8.0 0.0.0.255
+ rule 14 permit source 192.168.11.0 0.0.0.255
+ rule 15 permit source 192.168.119.0 0.0.0.255
+ rule 16 permit source 192.168.105.0 0.0.0.255
+ rule 17 permit source 192.168.67.0 0.0.0.255
+ rule 18 permit source 172.28.11.251 0
+ rule 19 permit source 192.168.101.0 0.0.0.255
+ rule 20 permit source 192.168.48.0 0.0.0.255
+ rule 1000 deny
+#
+drop-profile default
+#
+vlan 50
+ description manager
+vlan 1616
+ description XDZXXY_ZL
+vlan 1617
+ description XDZXXY_FL
+vlan 1618
+ description SGBDSDX_BOY
+vlan 1619
+ description SGBDSDX_GIRL
+vlan 1620
+ description AKSW
+#
+aaa
+ authentication-scheme default
+ authentication-scheme hzdx
+ authentication-scheme newhzdx
+  authentication-mode radius local
+ authorization-scheme default
+ authorization-scheme hzdx
+ accounting-scheme default
+ accounting-scheme hzdx
+  accounting start-fail online
+ accounting-scheme newhzdx
+  accounting-mode radius
+ domain default
+ domain default_admin
+  authentication-scheme newhzdx
+  accounting-scheme newhzdx
+  authorization-scheme hzdx
+  radius-server newhzdx
+ local-user admin password cipher %@%@5d~9:M^ipCfL\iB)EQd>3Uwe%@%@
+ local-user admin service-type http
+ local-user huawei password cipher %@%@WlmLXL@UrBO{Yc:qui.5WU"p%@%@
+ local-user huawei privilege level 3
+ local-user huawei service-type telnet
+#
+ntp-service unicast-server 61.164.1.7 source-interface Vlanif50 preference
+ntp-service unicast-server 61.130.120.35 source-interface Vlanif50
+#
+interface Vlanif50
+ ip address 10.32.100.2 255.255.255.252
+#
+interface Eth-Trunk1
+ description uT:HZ-HZ-XH-BAS-1.ME60.XYW:()ETH3(GE2/0/9,2/0/10,3/0/9)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 50 1616 to 1620
+ mode lacp
+#
+interface Eth-Trunk2
+ description uT:HZ-HZ-XH-BAS-1.ME60.XYW:()ETH5(7/0/0,7/1/0)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 50 1616 to 1620
+ mode lacp
+#
+interface Ethernet0/0/0
+#
+interface GigabitEthernet2/0/0
+ undo negotiation auto
+ description uT:HZ-HZ-XH-BAS-1.XYW.ME60:()GE3/0/9
+ eth-trunk 1
+#
+interface GigabitEthernet2/0/1
+ undo negotiation auto
+ description DownLink_XDZXXY_ZL_2326_1_0/0/25
+ port link-type dot1q-tunnel
+ port default vlan 1616
+#
+interface GigabitEthernet2/0/2
+ undo negotiation auto
+ description DownLink_XDZXXY_FL_2326_1_0/0/25
+ port link-type dot1q-tunnel
+ port default vlan 1617
+#
+interface GigabitEthernet2/0/3
+ undo negotiation auto
+ description dOwnLink_SGBDSDX_BOY_2326_1_0/0/25
+ port link-type dot1q-tunnel
+ port default vlan 1618
+#
+interface GigabitEthernet2/0/4
+ undo negotiation auto
+ description DownLink_SGBDSDX_GIRL_2352_1_0/0/49
+ port link-type dot1q-tunnel
+ port default vlan 1619
+#
+interface GigabitEthernet2/0/5
+ undo negotiation auto
+ description AKSW_2326_1_0/0/25
+ port link-type dot1q-tunnel
+ port default vlan 1620
+#
+interface GigabitEthernet2/0/6
+#
+interface GigabitEthernet2/0/7
+#
+interface GigabitEthernet2/0/8
+#
+interface GigabitEthernet2/0/9
+#
+interface GigabitEthernet2/0/10
+#
+interface GigabitEthernet2/0/11
+#
+interface GigabitEthernet2/0/12
+#
+interface GigabitEthernet2/0/13
+#
+interface GigabitEthernet2/0/14
+#
+interface GigabitEthernet2/0/15
+#
+interface GigabitEthernet2/0/16
+#
+interface GigabitEthernet2/0/17
+#
+interface GigabitEthernet2/0/18
+#
+interface GigabitEthernet2/0/19
+#
+interface GigabitEthernet2/0/20
+#
+interface GigabitEthernet2/0/21
+#
+interface GigabitEthernet2/0/22
+ undo negotiation auto
+ description uT:HZ-HZ-XH-BAS-1.XYW.ME60:()GE2/0/9
+ eth-trunk 1
+#
+interface GigabitEthernet2/0/23
+ undo negotiation auto
+ description uT:HZ-HZ-XH-BAS-1.XYW.ME60:()GE2/0/10
+ eth-trunk 1
+#
+interface XGigabitEthernet1/0/0
+ description uT:HZ-HZ-XH-BAS-1.ME60.XYW:(F1501270147)7/0/0
+ eth-trunk 2
+#
+interface XGigabitEthernet1/0/1
+ shutdown
+#
+interface XGigabitEthernet1/0/2
+#
+interface XGigabitEthernet1/0/3
+#
+interface XGigabitEthernet3/0/0
+ description uT:HZ-HZ-XH-BAS-1.ME60.XYW:(F1008030115)7/1/0
+ eth-trunk 2
+#
+interface XGigabitEthernet3/0/1
+#
+interface XGigabitEthernet3/0/2
+#
+interface XGigabitEthernet3/0/3
+#
+interface NULL0
+#
+ip route-static 0.0.0.0 0.0.0.0 10.32.100.1
+#
+snmp-agent
+snmp-agent local-engineid 000007DB7FFFFFFF000042C2
+snmp-agent community read cipher %$%$'Ak2D3\_`Baz,/U].QO8fqE:Ih/W(l:Y$Cdv*3HalkcOqE=fl9V&&oz}s7mR~}PDq@-JEFfq%$%$ acl 2000
+snmp-agent community read cipher %$%$m,wl4oE0R(s*WG0xcrL2WU(o(r'eQ|<|%7>D%@2V15.>U(rW\zL_&cfvb;$%TaV;PVBL({WU%$%$
+snmp-agent sys-info contact BeiJing China
+snmp-agent sys-info location Nanjing China
+snmp-agent sys-info version all
+snmp-agent trap source Vlanif50
+undo snmp-agent trap enable feature-name DLDP
+undo snmp-agent trap enable feature-name LDTTRAP
+undo snmp-agent trap enable feature-name LLDPTRAP
+snmp-agent trap enable feature-name BASETRAP
+#
+user-interface maximum-vty 15
+user-interface con 0
+ authentication-mode password
+ set authentication password cipher %@%@(bXE8[>nG*#P~d)~<RFJG&'g0w+lI*0`j,0-mTJ;ZNS6&'jG%@%@
+ idle-timeout 5 0
+ screen-length 50
+user-interface vty 0 4
+ acl 2016 inbound
+ authentication-mode aaa
+ user privilege level 15
+ idle-timeout 5 0
+user-interface vty 5 14
+ authentication-mode aaa
+ user privilege level 3
+ idle-timeout 5 0
+ screen-length 0
+user-interface vty 16 20
+#
+return
+<HZ-HZ-SanDunQK-DSW-1.XYW.S9306>

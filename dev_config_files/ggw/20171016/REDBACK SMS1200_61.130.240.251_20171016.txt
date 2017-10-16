@@ -1,0 +1,2276 @@
+
+Building configuration...
+
+Current configuration:
+!
+!  Configuration last changed by user '<NO USER>' at Sun Oct 15 22:56:04 2017
+!
+!
+!
+ppp pppoe-large-mru
+!
+!
+aaa global authentication subscriber radius context local
+aaa global accounting subscriber radius context local
+aaa global reject empty-username
+aaa last-resort context vrPPPoE 
+!
+service-policy name JiaoYuWang
+ allow domain name HYXY.XY
+ allow domain name XY
+ allow context name vrJiaoYuWang
+ deny pppoe service-name ZJZSH-CMNET-MX960-1
+ deny pppoe service-name ZJZS-BDA-ME60-X16-B1
+!
+service-policy name iptv
+ allow domain name itv
+ allow domain name iptv
+ allow context name vrIPTV
+!
+!
+service multiple-contexts
+!
+service inter-context routing
+!
+! 
+! 
+ software license
+  l2tp all encrypted 1 $1$PXJYy0dN$y4ik0poZFVB1YfsKYoX1c.
+  mpls encrypted 1 $1$EzQncudX$mSIlBqNax4o4OO.Sr4NCG0
+  subscriber high-availability encrypted 1 $1$nrLkiYME$J3ey1F02IttDkQ8QWLjml.
+  subscriber active 16000 encrypted 1 $1$xU5hmyRg$My.da/5P0jUjeQByfUCSU0
+  subscriber bandwidth 250 encrypted 1 $1$3Ta5Gv.F$SIGP7toIm017a9fi8v1kJ0
+  ccod encrypted 1 $1$cIlYkW4x$4DKqQEfYVqNdYgZact.y..
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+context local
+! 
+ no ip domain-lookup
+!
+ router-id 61.130.240.251
+!
+ interface Loopback0 loopback
+  description for Network Management and Radius authentication source(vr local)
+  ip address 61.130.240.251/32
+   ip source-address telnet snmp radius tacacs+ syslog 
+!
+ interface ge-1/6:100
+  description uT:ZS-DH-NZ-CRS1-1.MAN GI0/3/0/1.100 1G::for local
+  ip address 61.130.243.34/30
+  ip mtu 1500
+!
+ interface ge-2/1:100 p2p
+  description uT:ZS-DH-NZ-CRS-1.MAN:()GE0/14/0/0.100 10G::for local
+  ip address 61.130.245.74/30
+  ip mtu 1500
+!
+ interface ge-4/1:100 p2p
+  description uT:ZS-PT-DG-CRS-1.MAN:()GE0/14/0/0.100 10G::for local
+  ip address 61.130.245.86/30
+  ip mtu 1500
+!
+ interface ge-6/3:100
+  description uT:ZS-DH-NZ-CRS-1.MAN GI0/0/2/5.100 1G::for local
+  ip address 61.130.240.146/30
+  ip mtu 1500
+!
+ interface ge-6/4:100
+  description uT:ZS-PT-SJM-CRS-1.MAN GI0/0/2/4.100 1G::for local
+  ip address 61.130.240.154/30
+  ip mtu 1500
+!
+ interface ge-9/3:100
+  description uT:ZS-DH-NZ-CRS-1.MAN GI0/8/2/8.100  1G::for local
+  ip address 61.130.240.150/30
+  ip mtu 1500
+!
+ interface ge-9/4:100
+  description uT:ZS-PT-SJM-CRS-1.MAN GI0/4/0/5.100  1G::for local
+  ip address 61.130.240.158/30
+  ip mtu 1500
+ logging filter syslog notice
+ no logging console
+ logging syslog 220.187.27.222 facility local7
+ logging syslog 115.239.131.2 facility local7
+!
+ router isis zhoushan
+  net 86.4754.0580.0611.3024.0251.00
+  is type level-2-only 
+  distance 155
+  dynamic-hostname router-name ZS-DH-CD-SE1200-1.MAN
+  no graceful-restart
+  address-family ipv4 unicast
+ !
+  interface Loopback0
+   passive-interface
+   address-family ipv4 unicast
+ !
+  interface ge-2/1:100
+   ! bind to ethernet 2/1 dot1q pvc 100
+   circuit type level-2-only
+   hello padding never
+   metric 3000 level-2
+   address-family ipv4 unicast
+ !
+  interface ge-4/1:100
+   ! bind to ethernet 4/1 dot1q pvc 100
+   circuit type level-2-only
+   hello padding never
+   metric 3000 level-2
+   address-family ipv4 unicast
+!
+ ip access-list admin
+  seq 10 permit tcp host 202.96.102.240 any eq telnet
+  seq 15 permit tcp host 202.96.102.84 any eq telnet
+  seq 20 permit tcp host 202.96.103.188 any eq telnet
+  seq 25 permit tcp host 202.96.102.244 any eq telnet
+  seq 30 permit tcp host 220.187.27.220 any eq telnet
+  seq 35 permit tcp host 202.96.102.47 any eq telnet
+  seq 40 permit tcp host 220.187.27.219 any eq telnet
+  seq 45 permit tcp host 220.187.27.222 any eq telnet
+  seq 50 permit tcp host 220.187.27.221 any eq telnet
+  seq 55 permit tcp host 202.96.102.139 any eq telnet
+  seq 60 permit tcp host 202.96.102.221 any eq telnet
+  seq 270 permit udp host 220.187.27.220 any eq snmp
+  seq 275 permit udp host 220.187.27.219 any eq snmp
+  seq 280 permit udp host 220.187.27.222 any eq snmp
+  seq 285 permit udp host 220.187.27.221 any eq snmp
+  seq 290 permit udp host 202.96.102.139 any eq snmp
+  seq 295 permit udp host 202.96.102.221 any eq snmp
+  seq 500 deny tcp any any eq telnet
+  seq 510 deny tcp any any eq ftp
+  seq 520 deny udp any any eq snmp
+  seq 530 deny tcp any any eq ssh
+  seq 1000 permit ip any any
+!
+ policy access-list downlink-out-class-acl
+  seq 10 permit ip any any precedence critical class iptv
+  seq 20 permit ip any any precedence flash-override class iad
+!
+ ip prefix-list loopback-only
+  seq 10 permit 0.0.0.0/0 eq 32
+!
+ ip prefix-list loopback-only-out
+  seq 10 permit 61.130.240.251/32 eq 32
+!
+ ip prefix-list plDefaultRoute
+  seq 10 permit 0.0.0.0/0
+!
+ ip prefix-list plPrivateRoute
+  seq 10 permit 10.0.0.0/8 le 32
+  seq 20 permit 172.16.0.0/12 le 32
+  seq 30 permit 192.168.0.0/16 le 32
+!
+ route-map rpFROMCR_IN permit 10
+  match ip address prefix-list plDefaultRoute
+!
+ route-map rpSET_COMM_OUT deny 10
+  match ip address prefix-list plDefaultRoute
+ route-map rpSET_COMM_OUT deny 20
+  match ip address prefix-list plPrivateRoute
+ route-map rpSET_COMM_OUT permit 30
+  set community 64754:1401 64754:11024 
+!
+ route-map rpStaticToBGP permit 10
+  match tag 100
+!
+ router mpls
+  propagate qos from mpls
+  interface ge-2/1:100
+  interface ge-4/1:100
+!
+ router ldp
+  label-binding prefix-list loopback-only in
+  label-binding prefix-list loopback-only-out out
+  interface ge-2/1:100
+  interface ge-4/1:100
+!
+ router bgp 64754
+  router-id 61.130.240.251
+  multi-paths external 8 internal 8
+  address-family ipv4 unicast
+   distance 20 200 200
+   redistribute static route-map rpStaticToBGP
+!
+  peer-group mpls-vpn internal
+    update-source Loopback0
+    next-hop-self
+   no address-family ipv4 unicast
+   address-family ipv4 vpn
+!
+  peer-group pgCR internal
+    update-source Loopback0
+    next-hop-self
+   address-family ipv4 unicast
+      route-map rpFROMCR_IN in
+      route-map rpSET_COMM_OUT out
+!
+  neighbor 61.174.92.236 internal
+    peer-group pgCR
+!
+  neighbor 61.174.92.237 internal
+    peer-group pgCR
+!
+  neighbor 220.187.29.1 internal
+    peer-group mpls-vpn
+!
+  neighbor 220.187.29.2 internal
+    peer-group mpls-vpn
+!
+ enable encrypted 1 $1$........$DampJHrpnHFEpY831yVi.1
+ enable authentication tacacs+ local 
+!
+ aaa authentication administrator console local  
+ aaa authentication administrator vty tacacs+ local 
+ aaa authentication administrator maximum sessions 16
+ aaa accounting subscriber radius
+ aaa accounting administrator tacacs+
+ aaa accounting commands 10 tacacs+
+ radius accounting server 61.130.242.178 encrypted-key 1244A993ADFCE771E2F45DC360B09ECB
+ radius accounting server 115.239.134.44 encrypted-key F3DD6D5DCEED0C49
+ radius coa server 61.130.242.178 encrypted-key 85A4445B98164A8F port 1812
+ tacacs+ deadtime 30
+ tacacs+ max-retries 5
+ tacacs+ strip-domain
+ tacacs+ timeout 30
+ tacacs+ server 202.96.102.141 encrypted-key 8404790C8D43B52B
+ tacacs+ server 61.153.176.183 encrypted-key 8404790C8D43B52B
+!
+ administrator redback encrypted 1 $1$........$4qhlVuh2HDOCu/EbYfbM6.
+   privilege start 15
+   privilege max 15
+ administrator zjnoc encrypted 1 $1$........$5cJ3wp3mV72AhRO4Aiulp.
+   privilege start 10
+   privilege max 15
+ administrator zoomac encrypted 1 $1$........$dHFEctAq6a.ZMrL6f9mBH1
+   privilege start 15
+   privilege max 15
+ administrator zsadmin encrypted 1 $1$........$.4K2lmp8PGhZaB2q3YDv9.
+   privilege start 15
+   privilege max 15
+!
+ radius attribute nas-ip-address interface Loopback0
+ radius accounting max-retries 2
+!
+ subscriber profile tianyi_20m
+   port-limit 2
+   qos policy policing up-2m
+   qos policy metering 20m
+   qos policy queuing Share20M-Assure8M-Out
+ subscriber profile iptv_4m
+   port-limit 2
+   qos policy policing up-512k
+   qos policy metering 3m
+   qos policy queuing Share4M-Assure3M-Out
+ subscriber profile iptv_10m
+   port-limit 2
+   qos policy policing up-1m
+   qos policy metering 10m
+   qos policy queuing Share10M-Assure8M-Out
+!
+ ip route 61.130.241.175/32 context vrSL2TP tag 100
+ ip route 61.130.241.176/32 context vrWLAN tag 100
+ ip route 123.96.161.0/24 context vrWLAN tag 100
+ service ftp client
+ service tftp 
+ no service ssh 
+ no service rcp client
+ service telnet 
+!
+ admin-access-group admin in
+!
+!
+!
+context vrSL2TP
+ domain 413.QY  
+ domain FZXD.QY  
+ domain HSJT.QY  
+ domain JHCY.QY  
+ domain JHJT.QY  
+ domain LCMZ.QY  
+ domain LCOH.QY  
+ domain PTDZ.QY  
+ domain WJZD.QY  
+ domain WZCC.QY  
+ domain YCJD.QY  
+ domain ZLSP.QY  
+ domain ZSMD.QY  
+ domain claim.zhej.picc.com.cn  
+ domain d.vpdn.zj  
+ domain hzfcc.vpdn.zj  
+ domain r.vpdn.zj  
+ domain vpdn1.zhej.picc.com.cn  
+ domain vpdn2.zhej.picc.com.cn  
+ domain vpdn3.zhej.picc.com.cn  
+ domain z.vpdn.zj  
+ domain zjkdcs.vpdn.zj  
+ domain zs.test  
+ domain zs.zjfc  
+ domain zs.zjjc  
+ domain zs.zjtc  
+ domain zsgabb.vpdn.zj  
+ domain zsgs  
+ domain zshnt.vpdn.zj  
+ domain zw.zs.vpdn.zj  
+! 
+ no ip domain-lookup
+!
+ interface Loopback0 loopback
+  description for vrL2TP-Static
+  ip address 61.130.241.175/32
+ no logging console
+!
+ aaa authentication administrator local  
+ aaa authentication administrator maximum sessions 1
+ aaa authentication subscriber none  
+!
+!
+ subscriber default
+   tunnel domain
+ subscriber profile p8m
+   qos policy policing up-8m
+   qos policy metering 8m
+   qos policy queuing Share6M-Assure3M-Out
+!
+ ip route 0.0.0.0/0 context local
+!
+ l2tp-peer default local 61.130.241.175
+  dnis generate
+!
+ l2tp-peer name 413SX media udp-ip remote ip 61.130.243.10 local 61.130.241.175
+  local-name 413-lac
+  function lac-only
+  domain 413.QY
+!
+ l2tp-peer name FZXD media udp-ip remote ip 61.130.243.10 local 61.130.241.175
+  local-name FZXD-lac
+  function lac-only
+  domain FZXD.QY
+!
+ l2tp-peer name HSJT media udp-ip remote ip 61.130.243.10 local 61.130.241.175
+  local-name HSJT-lac
+  function lac-only
+  domain HSJT.QY
+!
+ l2tp-peer name JHCY media udp-ip remote ip 61.130.243.10 local 61.130.241.175
+  local-name JHCY-lac
+  function lac-only
+  domain JHCY.QY
+!
+ l2tp-peer name JHJT media udp-ip remote ip 61.130.243.10 local 61.130.241.175
+  local-name JHJT-lac
+  function lac-only
+  domain JHJT.QY
+!
+ l2tp-peer name LCMZ media udp-ip remote ip 61.130.243.10 local 61.130.241.175
+  local-name LCMZ-lac
+  function lac-only
+  domain LCMZ.QY
+!
+ l2tp-peer name LCOH media udp-ip remote ip 61.130.243.10 local 61.130.241.175
+  local-name LCOH-lac
+  function lac-only
+  domain LCOH.QY
+!
+ l2tp-peer name PTDZ media udp-ip remote ip 61.130.243.10 local 61.130.241.175
+  local-name PTDZ-lac
+  function lac-only
+  domain PTDZ.QY
+!
+ l2tp-peer name WJZD media udp-ip remote ip 61.130.243.10 local 61.130.241.175
+  local-name WJZD-lac
+  function lac-only
+  domain WJZD.QY
+!
+ l2tp-peer name WZCC media udp-ip remote ip 61.130.243.10 local 61.130.241.175
+  local-name WZCC-lac
+  function lac-only
+  domain WZCC.QY
+!
+ l2tp-peer name YCJD media udp-ip remote ip 61.130.243.10 local 61.130.241.175
+  local-name YCJD-lac
+  function lac-only
+  domain YCJD.QY
+!
+ l2tp-peer name ZLSP media udp-ip remote ip 61.130.243.10 local 61.130.241.175
+  local-name ZLSP-lac
+  function lac-only
+  domain ZLSP.QY
+!
+ l2tp-peer name ZSMD media udp-ip remote ip 61.130.243.10 local 61.130.241.175
+  local-name ZSMD-lac
+  function lac-only
+  domain ZSMD.QY
+!
+ l2tp-peer name hzfcc-lns media udp-ip remote ip 61.164.1.37 
+  function lac-only
+  local-name jczw-lac
+  domain hzfcc.vpdn.zj
+!
+ l2tp-peer name zj-kdcs-1 media udp-ip remote ip 115.239.128.43 
+  local-name zj-kdcs-lac
+  function lac-only
+  tunnel-auth key zjkdcs
+!
+ l2tp-peer name zj-kdcs-2 media udp-ip remote ip 115.239.128.44 
+  local-name zj-kdcs-lac
+  function lac-only
+  tunnel-auth key zjkdcs
+!
+ l2tp-peer name zj-lns media udp-ip remote ip 202.96.97.241 local 61.130.241.175
+  local-name zj-lac
+  function lac-only
+  domain zsgs
+!
+ l2tp-peer name zj-lns-240 media udp-ip remote ip 202.96.97.240 local 61.130.241.175
+  local-name zj-lac
+  function lac-only
+  domain vpdn1.zhej.picc.com.cn
+!
+ l2tp-peer name zj-lns-240-2 media udp-ip remote ip 202.96.97.240 local 61.130.241.175
+  local-name zsclaimpicc
+  function lac-only
+  domain claim.zhej.picc.com.cn
+!
+ l2tp-peer name zj-lns-240-3 media udp-ip remote ip 202.96.97.240 local 61.130.241.175
+  local-name zspicc
+  function lac-only
+  domain vpdn2.zhej.picc.com.cn
+!
+ l2tp-peer name zj-lns-240-4 media udp-ip remote ip 202.96.97.240 local 61.130.241.175
+  local-name zspicc
+  function lac-only
+  domain vpdn3.zhej.picc.com.cn
+!
+ l2tp-peer name zj-lns-37 media udp-ip remote ip 61.164.1.37 local 61.130.241.175
+  local-name zj-lac
+  function lac-only
+!
+ l2tp-peer name zs-lns-gabb media udp-ip remote ip 61.175.110.14 local 61.130.241.175
+  local-name cd-se1200-1
+  function lac-only
+  tunnel-auth key zshuanbao1
+  domain zsgabb.vpdn.zj
+!
+ l2tp-peer name zsnzvpdnzj media udp-ip remote ip 61.175.110.14 local 61.130.241.175
+  local-name zs-cd-se1200-1
+  function lac-only
+  tunnel-auth key zshuanbao1
+  domain zshnt.vpdn.zj
+!
+ l2tp-peer name zstest media udp-ip remote ip 61.175.176.251 local 61.130.241.175
+  local-name zs.test
+  function lac-only
+  domain zs.test
+!
+ l2tp-peer name zszjfc media udp-ip remote ip 218.75.70.230 local 61.130.241.175
+  local-name zsclient
+  function lac-only
+  domain zs.zjfc
+!
+ l2tp-peer name zszjfc-lns-229 media udp-ip remote ip 218.75.70.229 
+  local-name zs.zjfc
+  function lac-only
+!
+ l2tp-peer name zszjfc-lns-230 media udp-ip remote ip 218.75.70.230 
+  local-name zs.zjfc
+  function lac-only
+!
+ l2tp-peer name zszjtc media udp-ip remote ip 202.96.97.240 local 61.130.241.175
+  local-name zs.zjtc
+  function lac-only
+  domain zs.zjtc
+!
+ l2tp-peer name zszjtc-lns-240 media udp-ip remote ip 202.96.97.240 
+  local-name zs.zjtc
+  function lac-only
+!
+ l2tp-peer name zszjtc-lns-241 media udp-ip remote ip 202.96.97.240 
+  local-name zs.zjtc
+  function lac-only
+!
+ l2tp-peer name zw.zs.vpdn.zj-LNS media udp-ip remote ip 61.164.1.37 local 61.130.241.175
+  function lac-only
+  domain zw.zs.vpdn.zj
+!
+ l2tp-group name zj-kdcs
+  algorithm load-balance
+  domain zjkdcs.vpdn.zj
+  peer name zj-kdcs-1
+  peer name zj-kdcs-2
+!
+ l2tp-group name zj-lns-240-37
+  algorithm load-balance
+  domain zs.zjjc
+  domain r.vpdn.zj
+  domain d.vpdn.zj
+  domain z.vpdn.zj
+  peer name zj-lns-240
+  peer name zj-lns-37
+!
+ l2tp-group name zszjfc-lns-group
+  algorithm load-balance
+  peer name zszjfc-lns-229
+  peer name zszjfc-lns-230
+!
+ l2tp-group name zszjtc-lns-group
+  algorithm load-balance
+  peer name zszjtc-lns-240
+  peer name zszjtc-lns-241
+!
+!
+!
+context vrWLAN
+! 
+ no ip domain-lookup
+!
+ interface Loopback0 loopback
+  ip address 61.130.241.176/32
+   ip source-address radius 
+!
+ interface dhcp1 multibind
+  ip address 123.96.161.1/24
+  dhcp server interface
+ logging console
+!
+ ip access-list anti-virus
+  seq 10 permit icmp any any icmp-type 8 icmp-code 0
+  seq 20 permit icmp any any icmp-type 0 icmp-code 0
+  seq 30 permit icmp any any icmp-type ttl-exceeded
+  seq 40 permit icmp any any icmp-type packet-too-big
+  seq 50 deny icmp any any
+  seq 110 deny tcp any any range 135 139
+  seq 120 deny tcp any any eq 445
+  seq 130 deny tcp any any eq 593
+  seq 140 deny tcp any any eq 707
+  seq 150 deny tcp any any eq 1434
+  seq 160 deny tcp any any eq 4444
+  seq 170 deny udp any any range 135 netbios-ss
+  seq 180 deny udp any any eq 445
+  seq 190 deny udp any any eq 1026
+  seq 200 deny udp any any eq 1027
+  seq 210 deny udp any any eq 1434
+  seq 220 deny ip any 10.0.0.0 0.255.255.255
+  seq 225 deny ip any 172.16.0.0 0.15.255.255
+  seq 230 deny ip any 192.168.0.0 0.0.255.255
+  seq 245 deny ip host 255.255.255.255 any
+  seq 250 permit ip any any
+!
+ policy access-list captiveportalacl
+  seq 10 permit udp any any eq bootps class BOOTPS
+  seq 20 permit udp any any eq domain class DNS
+  seq 30 permit udp any any eq netbios-ns class DNS
+  seq 35 permit tcp any host 122.224.127.11 eq 443 class WEB
+  seq 45 permit ip any 61.130.247.240 0.0.0.15 class C+W
+  seq 100 permit ip any host 122.224.110.108 class WEB
+  seq 101 permit ip any host 122.224.110.100 class WEB
+  seq 102 permit ip any host 60.190.255.30 class WEB
+  seq 103 permit ip any host 61.129.122.135 class WEB
+  seq 104 permit ip any host 123.127.121.41 class WEB
+  seq 105 permit ip any host 219.142.79.192 class WEB
+  seq 106 permit ip any host 61.144.34.107 class WEB
+  seq 107 permit ip any host 219.142.89.66 class WEB
+  seq 108 permit ip any host 218.17.246.185 class WEB
+  seq 109 permit ip any host 61.131.3.98 class WEB
+  seq 110 permit ip any host 219.142.89.142 class WEB
+  seq 111 permit ip any host 222.66.26.201 class WEB
+  seq 112 permit ip any host 124.74.240.140 class WEB
+  seq 113 permit ip any host 123.127.232.192 class WEB
+  seq 114 permit ip any host 211.138.112.238 class WEB
+  seq 115 permit ip any host 202.96.118.167 class WEB
+  seq 116 permit ip any host 202.108.88.50 class WEB
+  seq 117 permit ip any host 219.142.91.50 class WEB
+  seq 118 permit ip any host 61.129.61.164 class WEB
+  seq 119 permit ip any host 60.191.124.236 class WEB
+  seq 120 permit ip any host 218.2.247.77 class WEB
+  seq 121 permit ip any host 124.74.244.6 class WEB
+  seq 122 permit ip any host 222.68.185.229 class WEB
+  seq 123 permit ip any host 124.74.213.12 class WEB
+  seq 126 permit ip any host 122.224.110.120 class WEB
+  seq 127 permit ip any host 60.190.136.36 class WEB
+  seq 128 permit ip any host 118.85.203.210 class WEB
+  seq 129 permit ip any host 212.67.79.45 class WEB
+  seq 130 permit ip any host 218.30.64.121 class WEB
+  seq 199 permit tcp any any eq www class CAPTIVE_PORTAL
+  seq 200 permit ip any class IP
+!
+ http-redirect profile web_login_redirect
+  url "https://wlan.ct10000.com"
+!
+ aaa authentication administrator local  
+ aaa authentication administrator maximum sessions 1
+ aaa authentication subscriber radius  
+ aaa accounting subscriber radius
+ aaa accounting reauthorization subscriber radius
+ aaa accounting event dhcp
+ aaa accounting event reauthorization
+ aaa reauthorization bulk radius
+ radius accounting server 220.191.135.90 encrypted-key 1244A993ADFCE771E2F45DC360B09ECB
+ radius accounting server 220.191.135.91 encrypted-key 1244A993ADFCE771E2F45DC360B09ECB
+!
+ radius server 220.191.135.90 encrypted-key 1244A993ADFCE771E2F45DC360B09ECB
+ radius server 220.191.135.91 encrypted-key 1244A993ADFCE771E2F45DC360B09ECB
+ radius attribute nas-ip-address interface Loopback0
+ radius attribute calling-station-id format slot-port 
+ radius attribute acct-session-id access-request 
+ radius attribute nas-port format slot-port
+ radius attribute nas-port-id format physical
+ radius attribute nas-port-type from-encapsulation 
+!
+ subscriber default
+   ip address pool
+   ip access-group anti-virus in
+   ip access-group anti-virus out
+   timeout idle 5
+   qos policy policing up-512k
+   qos policy metering 8m
+   dhcp max-addrs 1
+   dns primary 220.187.24.2
+   dns secondary 220.187.24.6
+!
+ ip route 0.0.0.0/0 context local
+!
+ dhcp server policy
+   option router 123.96.161.1
+   subnet 123.96.161.0/24
+     range 123.96.161.2 123.96.161.254
+     option subnet-mask 255.255.255.0
+     option router 123.96.161.1
+     option domain-name-server 220.187.24.2 220.187.24.6
+     default-lease-time 600
+!
+!
+context vrIPTV
+ domain iptv  
+ domain itv  
+! 
+ no ip domain-lookup
+!
+ interface Loopback0 loopback
+  description for vrIPTV
+  ip address 61.130.241.173/32
+   ip source-address radius syslog 
+!
+ interface ge-1/6:110
+  description uT:ZS-DH-NZ-CRS1-1.MAN GI0/3/0/1 1G::vrIPTV
+  ip address 61.130.243.30/30
+  ip mtu 1500
+  pim sparse-mode
+!
+ interface ge-2/1:110 p2p
+  description uT:ZS-DH-NZ-CRS-1.MAN:()GE0/14/0/0.110 10G::for vrIPTV
+  ip address 61.130.245.82/30
+  ip mtu 1500
+  pim sparse-mode
+!
+ interface ge-4/1:110 p2p
+  description uT:ZS-PT-DG-CRS-1.MAN:()GE0/14/0/0.110 10G::for vrIPTV
+  ip address 61.130.245.94/30
+  ip mtu 1500
+  pim sparse-mode
+!
+ interface ge-6/3:110
+  description uT:ZS-DH-NZ-CRS-1.MAN GI0/0/2/5 1G::vrIPTV
+  ip address 61.130.240.98/30
+  ip mtu 1500
+  pim sparse-mode
+!
+ interface ge-6/4:110
+  description uT:ZS-PT-SJM-CRS-1.MAN GI0/0/2/4 1G::vrIPTV
+  ip address 61.130.241.10/30
+  ip mtu 1500
+  pim sparse-mode
+!
+ interface ge-9/3:110
+  description uT:ZS-DH-NZ-CRS-1.MAN GI0/8/2/8 1G::vrIPTV
+  ip address 61.130.240.102/30
+  ip mtu 1500
+  pim sparse-mode
+!
+ interface ge-9/4:110
+  description uT:ZS-PT-SJM-CRS-1.MAN GI0/4/0/5 1G::vrIPTV
+  ip address 61.130.241.14/30
+  ip mtu 1500
+  pim sparse-mode
+ no logging console
+!
+ router isis zhoushan
+  net 86.4754.0580.0611.3024.1173.00
+  is type level-2-only 
+  distance 155
+  dynamic-hostname router-name ZS-DH-CD-SE1200-1.MAN
+  no graceful-restart
+  address-family ipv4 unicast
+ !
+  interface Loopback0
+   passive-interface
+   address-family ipv4 unicast
+ !
+  interface ge-2/1:110
+   ! bind to ethernet 2/1 dot1q pvc 110
+   circuit type level-2-only
+   hello padding never
+   metric 3000 level-2
+   address-family ipv4 unicast
+ !
+  interface ge-4/1:110
+   ! bind to ethernet 4/1 dot1q pvc 110
+   circuit type level-2-only
+   hello padding never
+   metric 3000 level-2
+   address-family ipv4 unicast
+!
+ ip access-list iptv_limit
+  seq 10 permit ip any 220.191.134.0 0.0.0.255
+  seq 20 permit ip any 220.191.136.0 0.0.0.255
+  seq 30 permit ip any 220.191.137.0 0.0.0.255
+  seq 40 permit ip any 220.191.138.0 0.0.0.255
+  seq 50 permit ip any 220.191.139.0 0.0.0.255
+  seq 60 permit ip any 220.191.140.0 0.0.0.255
+  seq 61 permit ip any 220.191.141.0 0.0.0.255
+  seq 70 permit ip any 60.189.0.0 0.0.0.255
+  seq 80 permit ip any 60.189.13.0 0.0.0.255
+  seq 81 permit ip any host 220.187.24.2
+  seq 82 permit ip any host 220.187.24.6
+  seq 83 permit ip any host 220.191.138.18
+  seq 84 permit ip any host 220.191.138.19
+  seq 85 permit ip any host 122.229.7.137
+  seq 86 permit ip any 220.187.28.0 0.0.0.128
+  seq 87 permit ip any 61.175.105.0 0.0.0.255
+  seq 88 permit ip any 61.175.107.0 0.0.0.64
+  seq 89 permit ip any 61.175.106.0 0.0.0.255
+  seq 90 permit ip any 60.189.14.0 0.0.0.255
+  seq 91 permit ip any 61.175.108.0 0.0.0.255
+  seq 100 permit ip any 60.191.134.0 0.0.0.255
+  seq 101 permit ip any 116.255.149.96 0.0.0.15
+  seq 110 permit ip any 218.75.11.0 0.0.0.255
+  seq 120 permit ip any 60.191.98.0 0.0.0.255
+  seq 130 permit ip any 60.191.147.0 0.0.0.255
+  seq 140 permit ip any 202.96.109.0 0.0.0.255
+  seq 150 permit ip any 61.153.40.0 0.0.0.255
+  seq 154 permit ip any 122.229.5.0 0.0.0.255
+  seq 155 permit ip any 122.229.6.0 0.0.0.255
+  seq 156 permit ip any 122.229.7.0 0.0.0.255
+  seq 157 permit ip any 220.187.28.0 0.0.0.128
+  seq 160 permit ip any 10.131.29.0 0.0.0.255
+  seq 170 permit udp any any eq 8000
+  seq 180 permit udp any any eq 6666
+  seq 190 permit udp any any eq 6667
+  seq 200 permit udp any any eq 80
+  seq 210 permit ip any 60.189.15.0 0.0.0.255
+  seq 220 permit ip any 60.191.187.0 0.0.0.255
+  seq 230 permit ip any 60.191.177.0 0.0.0.255
+  seq 240 permit ip any 218.75.3.0 0.0.0.255
+  seq 250 permit ip any 60.191.145.0 0.0.0.255
+  seq 260 permit ip any 61.153.204.0 0.0.0.255
+  seq 270 permit ip any 120.41.254.0 0.0.0.255
+  seq 280 permit ip any 59.56.175.0 0.0.0.255
+  seq 284 permit ip any host 218.75.76.196
+  seq 285 permit ip any host 218.75.76.197
+  seq 286 permit ip any host 61.153.56.10
+  seq 287 permit ip any host 218.75.79.199
+  seq 288 permit ip any 122.224.212.64 0.0.0.31
+  seq 290 permit igmp any any
+  seq 300 permit icmp any any
+  seq 467 permit ip any 122.229.0.0 0.0.0.255
+  seq 480 permit ip any 122.229.2.32 0.0.0.31
+  seq 490 permit ip any host 122.224.205.3
+  seq 500 permit ip any 115.233.12.0 0.0.1.255
+  seq 510 permit ip any 10.255.249.64 0.0.0.31
+  seq 520 permit ip any 10.255.240.0 0.0.15.255
+  seq 530 permit ip any 128.229.16.128 0.0.0.127
+!
+ ip access-list rp1
+  seq 10 permit ip 233.18.205.0 0.0.0.255
+  seq 20 permit ip 233.18.206.0 0.0.0.255
+  seq 30 permit ip 233.18.208.0 0.0.0.255
+  seq 40 permit ip 233.19.205.0 0.0.0.255
+!
+ ip access-list rp2
+  seq 10 permit ip 233.18.207.0 0.0.0.255
+!
+ ip access-list rp3
+  seq 10 permit ip 233.50.200.0 0.0.7.255
+  seq 30 permit ip 233.60.200.0 0.0.0.255
+!
+ policy access-list iptv-sub-in-acl
+  seq 10 permit ip any any class iptv
+!
+ policy access-list iptv-uplink-in-acl
+  seq 10 permit ip any any class iptv
+!
+ ip prefix-list plDefaultRoute
+  seq 10 permit 0.0.0.0/0
+!
+ ip prefix-list plPrivateRoute
+  seq 10 permit 10.0.0.0/8 ge 24 le 32
+  seq 20 permit 172.16.0.0/12 le 32
+  seq 30 permit 192.168.0.0/16 le 32
+!
+ route-map rpFROMCR_IN permit 10
+  match ip address prefix-list plDefaultRoute
+!
+ route-map rpSET_COMM_OUT deny 10
+  match ip address prefix-list plDefaultRoute
+ route-map rpSET_COMM_OUT deny 20
+  match ip address prefix-list plPrivateRoute
+ route-map rpSET_COMM_OUT permit 30
+  set community 64754:1402 64754:11024 
+!
+ route-map rpStaticToBGP permit 10
+  match tag 100
+!
+ router bgp 64754
+  router-id 61.130.241.173
+  multi-paths external 8 internal 8
+  address-family ipv4 unicast
+   distance 20 200 200
+   redistribute static route-map rpStaticToBGP
+!
+  peer-group pgCR internal
+    update-source Loopback0
+    next-hop-self
+   address-family ipv4 unicast
+      route-map rpFROMCR_IN in
+      route-map rpSET_COMM_OUT out
+!
+  neighbor 61.174.92.236 internal
+    peer-group pgCR
+!
+  neighbor 61.174.92.237 internal
+    peer-group pgCR
+!
+ ppp keepalive check-interval seconds 30 retries 4 data-check
+!
+ aaa authentication administrator local  
+ aaa authentication administrator maximum sessions 1
+ aaa authentication subscriber radius  
+ aaa accounting subscriber radius
+ aaa accounting suppress-acct-on-fail
+ aaa authorization tunnel radius
+ radius accounting server 202.101.172.243 encrypted-key 1244A993ADFCE771E2F45DC360B09ECB oldports
+ radius accounting server 220.191.201.18 encrypted-key 1244A993ADFCE771E2F45DC360B09ECB oldports
+!
+ radius server 202.101.172.243 encrypted-key 1244A993ADFCE771E2F45DC360B09ECB oldports
+ radius server 220.191.201.18 encrypted-key 1244A993ADFCE771E2F45DC360B09ECB oldports
+ radius max-retries 3
+ radius attribute nas-ip-address interface Loopback0
+ radius attribute acct-session-id access-request 
+ radius algorithm round-robin
+ radius accounting algorithm round-robin
+ radius strip-domain 
+ radius attribute nas-port format slot-port
+ radius attribute nas-port-id format physical
+!
+ subscriber default
+   ip address pool
+   ip multicast receive permit
+   ip igmp service-profile iptv_igmp_grp
+   ip source-validation
+   qos policy policing iptv-sub-in-mark
+   dns primary 220.187.24.2
+   dns secondary 220.187.24.6
+ subscriber profile p100m
+   qos policy policing up-100m
+   qos policy metering 100m
+ subscriber profile p10m_e9
+   qos policy policing up-10m
+   qos policy metering 10m
+ subscriber profile tianyi_10m
+   qos policy policing up-1m
+   qos policy metering 10m
+ subscriber profile p10m
+   qos policy policing up-10m
+   qos policy metering 10m
+ subscriber profile hdtv_tianyi_12m
+   qos policy policing up-1m
+   qos policy metering 20m
+ subscriber profile iptv_tianyi_4m
+   qos policy policing up-1m
+   qos policy metering 4m
+ subscriber profile iptv_hotel_4m
+   qos policy policing up-1m
+   qos policy metering 4m
+   qos policy queuing Share4M-Assure3M-Out
+ subscriber profile tianyi_iptv_4m
+   qos policy policing up-1m
+   qos policy metering 4m
+ subscriber profile p3m
+   qos policy policing up-3m
+   qos policy metering 3m
+ subscriber profile p4m
+   qos policy policing up-4m
+   qos policy metering 4m
+ subscriber profile iptv_4m
+   port-limit 2
+   qos policy policing up-512k
+   qos policy metering 5m
+   qos policy queuing Share4M-Assure3M-Out
+ subscriber profile p12m
+   qos policy policing qp12m-Out
+   qos policy metering qp12m-In
+   qos policy queuing Share12M-Assure8M-Out
+ subscriber profile iptv_10m
+   port-limit 2
+   qos policy policing up-1m
+   qos policy metering 16m
+   qos policy queuing Share4M-Assure3M-Out
+ subscriber profile fhdtv
+   qos policy policing up-2m
+   qos policy metering 50m
+ subscriber profile uhdtv
+   qos policy policing up-2m
+   qos policy metering 100m
+ subscriber profile iptv_fhd
+   qos policy policing up-2m
+   qos policy metering 30m
+ subscriber profile iptv_uhd
+   qos policy policing up-2m
+   qos policy metering 60m
+!
+ igmp service-profile iptv
+  instant-leave
+!
+ igmp service-profile iptv_igmp_grp
+  instant-leave
+!
+ pim rp-address 220.191.138.18 group-list rp1
+ pim rp-address 220.191.138.19 group-list rp2
+ pim rp-address 122.229.7.137 group-list rp3
+!
+!
+!
+context vrPPPoE
+!
+ description  ZhuJiaJianLvYouXueYuan
+ domain PTKJ.XY  
+ domain ZGHZ.XY  
+! 
+ no ip domain-lookup
+!
+ interface ge-2/1:101 p2p
+  description uT:ZS-DH-NZ-CRS-1.MAN:()GE0/14/0/0.101 10G::for vrPPPoE
+  ip address 61.130.245.78/30
+!
+ interface ge-4/1:101 p2p
+  description uT:ZS-PT-DG-CRS-1.MAN:()GE0/14/0/0.101 10G::for vrPPPoE
+  ip address 61.130.245.90/30
+!
+ interface ge-9/1:1601
+  ip address 10.10.10.1/30
+!
+ interface loopback0 loopback
+  description vrPPPoE
+  ip address 61.130.241.172/32
+   ip source-address radius 
+!
+ interface pool1 multibind
+  ip address 115.209.165.1/24
+  ip verify unicast source reachable-via rx
+  ip pool 115.209.165.0/24
+!
+ interface pool2 multibind
+  ip address 115.209.167.1/24
+  ip verify unicast source reachable-via rx
+  ip pool 115.209.167.0/24
+ no logging console
+!
+ router isis zhoushan
+  net 86.4754.0580.0611.3024.1172.00
+  is type level-2-only 
+  distance 155
+  dynamic-hostname router-name ZS-DH-CD-SE1200-1.MAN
+  no graceful-restart
+  address-family ipv4 unicast
+ !
+  interface ge-2/1:101
+   ! bind to ethernet 2/1 dot1q pvc 101
+   circuit type level-2-only
+   hello padding never
+   metric 3000 level-2
+   address-family ipv4 unicast
+ !
+  interface ge-4/1:101
+   ! bind to ethernet 4/1 dot1q pvc 101
+   circuit type level-2-only
+   hello padding never
+   metric 3000 level-2
+   address-family ipv4 unicast
+ !
+  interface loopback0
+   passive-interface
+   address-family ipv4 unicast
+!
+ ip access-list anti-virus
+  condition 100 time-range
+   periodic weekend weekdays 00:00 to 05:59 deny
+   periodic sunday monday tuesday wednesday thursday 23:00 to 23:59 deny
+  seq 10 permit ip any host 220.191.135.253 condition 100
+  seq 15 permit ip any host 220.191.135.247 condition 100
+  seq 20 permit ip any host 220.191.135.248 condition 100
+  seq 25 permit ip any host 220.187.24.2 condition 100
+  seq 30 permit ip any host 220.187.24.6 condition 100
+  seq 35 permit ip any host 115.239.134.21 condition 100
+  seq 45 permit icmp any any icmp-type 0 icmp-code 0 condition 100
+  seq 50 permit icmp any any icmp-type ttl-exceeded condition 100
+  seq 55 permit icmp any any icmp-type 8 icmp-code 0 condition 100
+  seq 60 permit icmp any any icmp-type packet-too-big condition 100
+  seq 65 deny icmp any any condition 100
+  seq 110 deny udp any any range 135 netbios-ss condition 100
+  seq 120 deny tcp any any range 135 139 condition 100
+  seq 130 deny udp any any eq 445 condition 100
+  seq 140 deny tcp any any eq 445 condition 100
+  seq 150 deny tcp any any eq 593 condition 100
+  seq 160 deny tcp any any eq 1434 condition 100
+  seq 170 deny udp any any eq 1434 condition 100
+  seq 180 deny ip host 255.255.255.255 any condition 100
+  seq 300 permit ip any any condition 100
+!
+ ip access-list ips
+  seq 11 deny udp any host 220.191.165.170 eq 4500
+  seq 12 deny ahp any host 220.191.165.170
+  seq 13 deny esp any host 220.191.165.170
+  seq 14 permit tcp 220.191.165.156 0.0.0.3 any eq telnet
+  seq 21 deny udp any host 220.191.165.158 eq 4500
+  seq 22 deny ahp any host 220.191.165.158
+  seq 23 deny esp any host 220.191.165.158
+  seq 24 permit tcp 220.191.165.168 0.0.0.3 any eq telnet
+  seq 100 deny tcp any eq ssh any
+  seq 4000 permit ip any any
+!
+ ip prefix-list plDefaultRoute
+  seq 10 permit 0.0.0.0/0
+!
+ ip prefix-list plPrivateRoute
+  seq 10 permit 10.0.0.0/8 le 32
+  seq 20 permit 172.16.0.0/12 le 32
+  seq 30 permit 192.168.0.0/16 le 32
+!
+ route-map rpFROMCR_IN permit 10
+  match ip address prefix-list plDefaultRoute
+!
+ route-map rpSET_COMM_OUT deny 10
+  match ip address prefix-list plDefaultRoute
+ route-map rpSET_COMM_OUT deny 20
+  match ip address prefix-list plPrivateRoute
+ route-map rpSET_COMM_OUT permit 30
+  set community 64754:1401 64754:11024 
+!
+ route-map rpStaticToBGP permit 10
+  match tag 100
+!
+ router bgp 64754
+  router-id 61.130.241.172
+  multi-paths external 8 internal 8
+  address-family ipv4 unicast
+   distance 20 200 200
+   redistribute static route-map rpStaticToBGP
+!
+  peer-group pgCR internal
+    update-source loopback0
+    next-hop-self
+   address-family ipv4 unicast
+      route-map rpFROMCR_IN in
+      route-map rpSET_COMM_OUT out
+!
+  neighbor 61.174.92.236 internal
+    peer-group pgCR
+!
+  neighbor 61.174.92.237 internal
+    peer-group pgCR
+!
+ ppp keepalive check-interval seconds 20 retries 4 data-check
+ enable authentication none
+!
+ aaa authentication administrator local  
+ aaa authentication administrator maximum sessions 1
+ aaa authentication subscriber local radius 
+ aaa accounting subscriber radius
+ aaa accounting suppress-acct-on-fail
+ aaa reauthorization bulk radius
+ radius accounting server 122.229.31.56 encrypted-key E2FA473592640E4E
+ radius coa server 122.229.31.56 encrypted-key E2FA473592640E4E port 1812
+ tacacs+ deadtime 0
+ tacacs+ max-retries 5
+ tacacs+ timeout 30
+!
+ radius server 122.229.31.56 encrypted-key E2FA473592640E4E
+ radius max-retries 3
+ radius timeout 10
+ radius attribute nas-ip-address interface loopback0
+ radius algorithm first
+ radius accounting max-retries 3
+ radius accounting timeout 20
+ radius accounting algorithm first
+ radius attribute nas-port format slot-port
+ radius attribute nas-port-id format physical
+!
+ subscriber default
+   ip address pool
+   ip access-group anti-virus in
+   port-limit 1
+   qos policy policing up-1m
+   qos policy metering 2m
+   dns primary 220.187.24.2
+   dns secondary 220.187.24.6
+ subscriber profile p256k
+   qos policy metering 256k
+ subscriber profile p512k
+   qos policy metering 512k
+ subscriber profile p2m
+   qos policy metering 2m
+ subscriber profile p4m
+   qos policy metering 4m
+ subscriber profile 10m
+   qos policy metering 10m
+ subscriber profile p1m
+   qos policy metering 1m
+ subscriber profile p128k
+   qos policy metering 128k
+ subscriber profile p10m
+   qos policy metering 10m
+ subscriber profile p6m
+   qos policy metering 6m
+ subscriber profile p8m
+   qos policy metering 8m
+ subscriber profile p12m
+   qos policy metering 12m
+ subscriber profile p20m
+   qos policy metering 20m
+ subscriber profile p50m
+   qos policy metering 50m
+ subscriber profile p100m
+   qos policy metering 100m
+!
+ ip route 172.16.0.0/16 10.10.10.2
+ ip route 192.168.0.0/16 10.10.10.2
+ ip route 115.209.165.0/24 null0 tag 100
+ ip route 115.209.167.0/24 null0 tag 100
+ no service tftp client
+ no service telnet 
+ l2tp clear-radius-peer 5
+!
+ l2tp-peer unnamed local 61.130.241.172
+  session-auth chap pap
+  function lns-only
+!
+!
+!
+context vrIAD vpn-rd 4809:4501
+! 
+ no ip domain-lookup
+!
+ interface dhcppool multibind
+  dhcp server interface
+ no logging console
+!
+ router bgp vpn
+  address-family ipv4 unicast
+   export route-target 4809:450100
+   import route-target 4809:450100
+   redistribute connected
+   redistribute static
+!
+ aaa authentication administrator local  
+ aaa authentication administrator maximum sessions 1
+!
+!
+ dhcp server policy
+   option domain-name-server 122.229.2.1 122.229.2.2
+   offer-lease-time 120
+   default-lease-time 600
+!
+!
+context vrJiaoYuWang
+ domain HYXY.XY  
+ domain XY  
+! 
+ no ip domain-lookup
+!
+ interface ge-2/1:51 p2p
+  description uT:ZS-DH-NZ-CRS-1.MAN:()GE0/14/0/0.51 10G::vrJiaoYuWang
+  ip address 115.233.241.74/30
+!
+ interface ge-4/1:51 p2p
+  description uT:ZS-PT-DG-CRS-1.MAN:()GE0/14/0/0.51 10G::vrJiaoYuWang
+  ip address 115.233.241.78/30
+!
+ interface ge-6/8:18
+  ip address 172.16.18.203/24
+!
+ interface loopback0 loopback
+  ip address 115.233.240.125/32
+   ip source-address radius 
+!
+ interface pool1 multibind
+  ip address 123.96.64.1/21
+  ip verify unicast source reachable-via rx
+  ip pool 123.96.64.0/21
+!
+ interface pool2 multibind
+  ip address 123.96.72.1/22
+  ip verify unicast source reachable-via rx
+  ip pool 123.96.72.0/22
+ no logging console
+!
+ router isis zhoushan
+  net 86.4754.0580.1152.3324.0125.00
+  is type level-2-only 
+  distance 155
+  dynamic-hostname router-name ZS-DH-CD-SE1200-1.MAN
+  no graceful-restart
+  address-family ipv4 unicast
+ !
+  interface loopback0
+   passive-interface
+   metric 100000 level-2
+   address-family ipv4 unicast
+ !
+  interface ge-2/1:51
+   ! bind to ethernet 2/1 dot1q pvc 51
+   circuit type level-2-only
+   hello padding never
+   metric 1500 level-2
+   address-family ipv4 unicast
+ !
+  interface ge-4/1:51
+   ! bind to ethernet 4/1 dot1q pvc 51
+   circuit type level-2-only
+   hello padding never
+   metric 1500 level-2
+   address-family ipv4 unicast
+!
+ ip access-list anti-virus
+  condition 100 time-range
+   periodic weekend weekdays 00:00 to 05:59 deny
+   periodic sunday monday tuesday wednesday thursday 23:00 to 23:59 deny
+  seq 10 permit ip any host 220.191.135.253 condition 100
+  seq 15 permit ip any host 220.191.135.247 condition 100
+  seq 20 permit ip any host 220.191.135.248 condition 100
+  seq 25 permit ip any host 220.187.24.2 condition 100
+  seq 30 permit ip any host 220.187.24.6 condition 100
+  seq 35 permit ip any host 115.239.134.21 condition 100
+  seq 45 permit icmp any any icmp-type 0 icmp-code 0 condition 100
+  seq 50 permit icmp any any icmp-type ttl-exceeded condition 100
+  seq 55 permit icmp any any icmp-type 8 icmp-code 0 condition 100
+  seq 60 permit icmp any any icmp-type packet-too-big condition 100
+  seq 65 deny icmp any any condition 100
+  seq 110 deny udp any any range 135 netbios-ss condition 100
+  seq 120 deny tcp any any range 135 139 condition 100
+  seq 130 deny udp any any eq 445 condition 100
+  seq 140 deny tcp any any eq 445 condition 100
+  seq 150 deny tcp any any eq 593 condition 100
+  seq 160 deny tcp any any eq 1434 condition 100
+  seq 170 deny udp any any eq 1434 condition 100
+  seq 180 deny ip host 255.255.255.255 any condition 100
+  seq 300 permit ip any any condition 100
+!
+ ip access-list ips
+  seq 11 deny udp any host 220.191.165.170 eq 4500
+  seq 12 deny ahp any host 220.191.165.170
+  seq 13 deny esp any host 220.191.165.170
+  seq 14 permit tcp 220.191.165.156 0.0.0.3 any eq telnet
+  seq 21 deny udp any host 220.191.165.158 eq 4500
+  seq 22 deny ahp any host 220.191.165.158
+  seq 23 deny esp any host 220.191.165.158
+  seq 24 permit tcp 220.191.165.168 0.0.0.3 any eq telnet
+  seq 4000 permit ip any any
+!
+ ip prefix-list plDefaultRoute
+  seq 10 permit 0.0.0.0/0
+!
+ ip prefix-list plJiaoYu
+  seq 10 permit 123.96.64.0/21
+  seq 20 permit 123.96.72.0/22
+!
+ ip prefix-list plPrivateRoute
+  seq 10 permit 10.0.0.0/8 le 32
+  seq 20 permit 172.16.0.0/12 le 32
+  seq 30 permit 192.168.0.0/16 le 32
+!
+ route-map rpFROMCR_IN permit 10
+  match ip address prefix-list plDefaultRoute
+!
+ route-map rpSET_COMM_OUT deny 10
+  match ip address prefix-list plDefaultRoute
+ route-map rpSET_COMM_OUT deny 20
+  match ip address prefix-list plPrivateRoute
+ route-map rpSET_COMM_OUT permit 30
+  match ip address prefix-list plJiaoYu
+  set community 64754:1406 64754:11024 
+!
+ route-map rpStaticToBGP permit 10
+  match tag 100
+!
+ router bgp 64754
+  router-id 115.233.240.125
+  multi-paths external 8 internal 8
+  address-family ipv4 unicast
+   distance 20 200 200
+   redistribute static route-map rpStaticToBGP
+!
+  peer-group pgCR internal
+    update-source loopback0
+    next-hop-self
+   address-family ipv4 unicast
+      route-map rpFROMCR_IN in
+      route-map rpSET_COMM_OUT out
+!
+  neighbor 61.174.92.236 internal
+    peer-group pgCR
+!
+  neighbor 61.174.92.237 internal
+    peer-group pgCR
+!
+ ppp keepalive check-interval seconds 20 retries 4 data-check
+!
+ aaa authentication administrator local  
+ aaa authentication administrator maximum sessions 1
+ aaa authentication subscriber local radius 
+ aaa accounting subscriber radius
+ aaa accounting suppress-acct-on-fail
+ aaa reauthorization bulk radius
+ radius accounting server 122.229.31.56 encrypted-key E2FA473592640E4E
+ radius coa server 122.229.31.56 encrypted-key E2FA473592640E4E port 1812
+!
+ radius server 122.229.31.56 encrypted-key E2FA473592640E4E
+ radius attribute nas-ip-address interface loopback0
+ radius algorithm first
+ radius accounting max-retries 3
+ radius accounting timeout 20
+ radius attribute nas-port format slot-port
+ radius attribute nas-port-id format physical
+!
+ subscriber default
+   ip address pool
+   ip access-group anti-virus in
+   port-limit 1
+   qos policy policing up-1m
+   qos policy metering 2m
+   dns primary 220.187.24.2
+   dns secondary 220.187.24.6
+ subscriber profile p256k
+   qos policy metering 256k
+ subscriber profile p512k
+   qos policy metering 512k
+ subscriber profile p2m
+   qos policy metering 2m
+ subscriber profile p4m
+   qos policy metering 4m
+ subscriber profile 10m
+   qos policy metering 10m
+ subscriber profile p1m
+   qos policy metering 1m
+ subscriber profile p128k
+   qos policy metering 128k
+ subscriber profile p10m
+   qos policy metering 10m
+ subscriber profile p6m
+   qos policy metering 6m
+ subscriber profile p8m
+   qos policy metering 8m
+ subscriber profile p12m
+   qos policy metering 12m
+ subscriber profile p20m
+   qos policy metering 20m
+ subscriber profile p50m
+   qos policy metering 50m
+ subscriber profile p100m
+   qos policy metering 100m
+!
+ ip route 172.16.15.0/24 172.16.18.247
+ ip route 172.16.20.0/24 172.16.18.247
+ ip route 172.16.22.0/24 172.16.18.247
+ ip route 172.16.25.0/24 172.16.18.247
+ ip route 172.16.32.0/24 172.16.18.247
+ ip route 172.16.96.0/24 172.16.18.247
+ ip route 172.16.99.0/24 172.16.18.247
+ ip route 172.17.0.0/17 172.16.18.247
+ ip route 172.31.14.0/24 172.16.18.247
+ ip route 123.96.64.0/21 null0 tag 100
+ ip route 123.96.72.0/22 null0 tag 100
+ no service ssh 
+ no service telnet 
+ l2tp clear-radius-peer 5
+!
+ l2tp-peer unnamed local 115.233.240.125
+  session-auth chap pap
+  function lns-only
+!
+!
+!
+context vrHaiYuan
+ domain isp  
+! 
+ no ip domain-lookup
+!
+ interface ge-2/1:52 p2p
+  description uT:ZS-DH-NZ-CRS-1.MAN:()GE0/14/0/0.52 10G::vrHaiYuan
+  ip address 115.233.241.82/30
+  ip access-group ips in
+!
+ interface ge-4/1:52 p2p
+  description uT:ZS-PT-DG-CRS-1.MAN:()GE0/14/0/0.52 10G::vrHaiYuan
+  ip address 115.233.241.86/30
+  ip access-group ips in
+!
+ interface loopback0 loopback
+  ip address 115.233.240.126/32
+   ip source-address radius 
+!
+ interface pool1 multibind
+  ip verify unicast source reachable-via rx
+ no logging console
+!
+ router isis zhoushan
+  net 86.4754.0580.1152.3324.0126.00
+  is type level-2-only 
+  distance 155
+  no graceful-restart
+  address-family ipv4 unicast
+ !
+  interface ge-2/1:52
+   ! bind to ethernet 2/1 dot1q pvc 52
+   circuit type level-2-only
+   hello padding never
+   metric 1500 level-2
+   address-family ipv4 unicast
+ !
+  interface ge-4/1:52
+   ! bind to ethernet 4/1 dot1q pvc 52
+   circuit type level-2-only
+   hello padding never
+   metric 1500 level-2
+   address-family ipv4 unicast
+ !
+  interface loopback0
+   passive-interface
+   metric 100000 level-2
+   address-family ipv4 unicast
+!
+ ip access-list anti-virus-3
+  seq 10 permit icmp any any icmp-type 8 icmp-code 0
+  seq 20 permit icmp any any icmp-type 0 icmp-code 0
+  seq 30 permit icmp any any icmp-type ttl-exceeded
+  seq 40 permit icmp any any icmp-type packet-too-big
+  seq 50 deny icmp any any
+  seq 110 deny udp any any range 135 netbios-ss
+  seq 120 deny tcp any any range 135 139
+  seq 130 deny udp any any eq 445
+  seq 140 deny tcp any any eq 445
+  seq 145 deny tcp any any eq 593
+  seq 150 deny tcp any any eq 1434
+  seq 160 deny udp any any eq 1434
+  seq 200 deny ip host 255.255.255.255 any
+  seq 250 permit ip any any
+!
+ ip access-list ips
+  seq 11 deny udp any host 220.191.165.170 eq 4500
+  seq 12 deny ahp any host 220.191.165.170
+  seq 13 deny esp any host 220.191.165.170
+  seq 14 permit tcp 220.191.165.156 0.0.0.3 any eq telnet
+  seq 21 deny udp any host 220.191.165.158 eq 4500
+  seq 22 deny ahp any host 220.191.165.158
+  seq 23 deny esp any host 220.191.165.158
+  seq 24 permit tcp 220.191.165.168 0.0.0.3 any eq telnet
+  seq 4000 permit ip any any
+!
+ ip prefix-list plDefaultRoute
+  seq 10 permit 0.0.0.0/0
+!
+ ip prefix-list plPrivateRoute
+  seq 10 permit 10.0.0.0/8 le 32
+  seq 20 permit 172.16.0.0/12 le 32
+  seq 30 permit 192.168.0.0/16 le 32
+!
+ route-map rpFROMCR_IN permit 10
+  match ip address prefix-list plDefaultRoute
+!
+ route-map rpSET_COMM_OUT deny 10
+  match ip address prefix-list plDefaultRoute
+ route-map rpSET_COMM_OUT deny 20
+  match ip address prefix-list plPrivateRoute
+ route-map rpSET_COMM_OUT permit 30
+  match ip address prefix-list plJiaoYu
+  set community 64754:1406 64754:11024 
+!
+ route-map rpStaticToBGP permit 10
+  match tag 100
+!
+ router bgp 64754
+  router-id 115.233.240.126
+  multi-paths external 8 internal 8
+  address-family ipv4 unicast
+   distance 20 200 200
+   redistribute static route-map rpStaticToBGP
+!
+  peer-group pgCR internal
+    update-source loopback0
+    next-hop-self
+   address-family ipv4 unicast
+      route-map rpFROMCR_IN in
+      route-map rpSET_COMM_OUT out
+!
+  neighbor 61.174.92.236 internal
+    peer-group pgCR
+!
+  neighbor 61.174.92.237 internal
+    peer-group pgCR
+!
+!
+!
+ subscriber default
+   ip address pool
+   ip access-group anti-virus-3 in
+   port-limit 1
+   qos policy policing up-1m
+   qos policy metering 2m
+   dns primary 220.187.24.2
+   dns secondary 220.187.24.6
+ subscriber profile p256k
+   qos policy metering 256k
+ subscriber profile p512k
+   qos policy metering 512k
+ subscriber profile p2m
+   qos policy metering 2m
+ subscriber profile p4m
+   qos policy metering 4m
+ subscriber profile 10m
+   qos policy metering 10m
+ subscriber profile p1m
+   qos policy metering 1m
+ subscriber profile p128k
+   qos policy metering 128k
+ subscriber profile p10m
+   qos policy metering 10m
+ subscriber profile p6m
+   qos policy metering 6m
+ subscriber profile p8m
+   qos policy metering 8m
+ subscriber profile p12m
+   qos policy metering 12m
+ no service ssh 
+ no service telnet 
+ l2tp clear-radius-peer 5
+!
+!
+!
+! ** End Context **
+ logging tdm console
+ logging active
+ logging standby short
+!
+!
+ dot1q profile lan-nas-port-type
+  radius attribute nas-port-type 15
+ dot1q profile wlan-profile
+  radius attribute nas-port-type 19
+ dot1q profile CoS-DSCP
+  propagate qos to ethernet
+  propagate qos from ethernet
+!
+qos queue-map default
+ num-queues 2
+  queue 0 priority 0 
+  queue 1 priority 1 2 3 4 5 6 7 
+ num-queues 4
+  queue 0 priority 0 
+  queue 1 priority 1 2 
+  queue 2 priority 3 4 5 6 
+  queue 3 priority 7 
+ num-queues 8
+  queue 0 priority 0 
+  queue 1 priority 1 
+  queue 2 priority 2 
+  queue 3 priority 3 
+  queue 4 priority 4 
+  queue 5 priority 5 
+  queue 6 priority 6 
+  queue 7 priority 7 
+!
+qos queue-map qosmap
+ num-queues 8
+  queue 0 priority 3 
+  queue 1 priority 1 
+  queue 2 priority 0 2 
+  queue 3 priority 4 5 6 
+  queue 4 priority 7 
+!
+qos policy 1.5m metering 
+ rate 1500 burst 150000
+!
+qos policy 100m metering 
+ rate 117760 burst 11776000
+!
+qos policy 10m metering 
+ rate 11776 burst 1177600
+!
+qos policy 12m metering 
+ rate 14144 burst 1414400
+!
+qos policy 16m metering 
+ rate 18841 burst 1884100
+!
+qos policy 1m metering 
+ rate 1216 burst 121600
+!
+qos policy 20m metering 
+ rate 23552 burst 2355200
+!
+qos policy 256k metering 
+ rate 256 burst 25600
+!
+qos policy 2m metering 
+ rate 2368 burst 236800
+!
+qos policy 3m metering 
+ rate 3584 burst 358400
+!
+qos policy 4m metering 
+ rate 5344 burst 534400
+!
+qos policy 50m metering 
+ rate 56320 burst 5632000
+!
+qos policy 512k metering 
+ rate 512 burst 51200
+!
+qos policy 5m metering 
+ rate 5120 burst 512000
+!
+qos policy 60m metering 
+ rate 70656 burst 7065600
+!
+qos policy 6m metering 
+ rate 7104 burst 710400
+!
+qos policy 8m metering 
+ rate 9472 burst 947200
+!
+qos policy IAD-in-mark policing 
+ mark dscp cs4
+!
+qos policy Share100M-Assure3M-Out pwfq 
+ rate maximum 100000
+ queue-map qosmap
+ queue 0 priority 0 weight 100
+ queue 1 priority 1 weight 100
+ queue 2 priority 2 weight 100
+ queue 3 priority 2 weight 100
+ queue 4 priority 3 weight 100
+ queue 5 priority 3 weight 100
+ queue 6 priority 3 weight 100
+ queue 7 priority 3 weight 100
+!
+qos policy Share10M-Assure3M-Out pwfq 
+ rate maximum 10000
+ queue-map qosmap
+ queue 0 priority 0 weight 100
+ queue 1 priority 1 weight 100
+ queue 2 priority 2 weight 100
+ queue 3 priority 2 weight 100
+ queue 4 priority 3 weight 100
+ queue 5 priority 3 weight 100
+ queue 6 priority 3 weight 100
+ queue 7 priority 3 weight 100
+!
+qos policy Share10M-Assure8M-Out pwfq 
+ rate maximum 10000
+ queue-map qosmap
+ queue 0 priority 0 weight 100
+ queue 1 priority 1 weight 100
+ queue 2 priority 2 weight 100
+ queue 3 priority 2 weight 100
+ queue 4 priority 3 weight 100
+ queue 5 priority 3 weight 100
+ queue 6 priority 3 weight 100
+ queue 7 priority 3 weight 100
+ queue priority-group 2 rate 8000
+!
+qos policy Share12M-Assure8M-Out pwfq 
+ rate maximum 12000
+ queue-map qosmap
+ queue 0 priority 0 weight 100
+ queue 1 priority 1 weight 100
+ queue 2 priority 2 weight 100
+ queue 3 priority 2 weight 100
+ queue 4 priority 3 weight 100
+ queue 5 priority 3 weight 100
+ queue 6 priority 3 weight 100
+ queue 7 priority 3 weight 100
+!
+qos policy Share20M-Assure8M-Out pwfq 
+ rate maximum 20000
+ queue-map qosmap
+ queue 0 priority 0 weight 100
+ queue 1 priority 1 weight 100
+ queue 2 priority 2 weight 100
+ queue 3 priority 2 weight 100
+ queue 4 priority 3 weight 100
+ queue 5 priority 3 weight 100
+ queue 6 priority 3 weight 100
+ queue 7 priority 3 weight 100
+!
+qos policy Share3.8M-Assure3M pwfq 
+ rate maximum 3400
+ queue-map qosmap
+ queue 0 priority 0 weight 100
+ queue 1 priority 1 weight 100
+ queue 2 priority 2 weight 100
+ queue 3 priority 2 weight 100
+ queue 4 priority 3 weight 100
+ queue 5 priority 3 weight 100
+ queue 6 priority 3 weight 100
+ queue 7 priority 3 weight 100
+!
+qos policy Share4M-Assure3M pwfq 
+ rate maximum 4544
+ queue-map qosmap
+ queue 0 priority 0 weight 100
+ queue 1 priority 1 weight 100
+ queue 2 priority 2 weight 90
+ queue 3 priority 2 weight 10
+ queue 4 priority 3 weight 25
+ queue 5 priority 3 weight 25
+ queue 6 priority 3 weight 25
+ queue 7 priority 3 weight 25
+!
+qos policy Share4M-Assure3M-Out pwfq 
+ rate maximum 100000
+ queue-map qosmap
+ queue 0 priority 0 weight 100
+ queue 1 priority 1 weight 100
+ queue 2 priority 2 weight 90
+ queue 3 priority 2 weight 10
+ queue 4 priority 3 weight 25
+ queue 5 priority 3 weight 25
+ queue 6 priority 3 weight 25
+ queue 7 priority 3 weight 25
+!
+qos policy Share6M-Assure3M-Out pwfq 
+ rate maximum 6000
+ queue-map qosmap
+ queue 0 priority 0 weight 100
+ queue 1 priority 1 weight 100
+ queue 2 priority 2 weight 100
+ queue 3 priority 2 weight 100
+ queue 4 priority 3 weight 100
+ queue 5 priority 3 weight 100
+ queue 6 priority 3 weight 100
+ queue 7 priority 3 weight 100
+!
+qos policy Share8M-Assure3M-Out pwfq 
+ rate maximum 8000
+ queue-map qosmap
+ queue 0 priority 0 weight 100
+ queue 1 priority 1 weight 100
+ queue 2 priority 2 weight 100
+ queue 3 priority 2 weight 100
+ queue 4 priority 3 weight 100
+ queue 5 priority 3 weight 100
+ queue 6 priority 3 weight 100
+ queue 7 priority 3 weight 100
+!
+qos policy bronze_qos_metering_policy metering 
+ rate 1000 burst 100000
+!
+qos policy bronze_qos_policing_policy policing 
+ rate 1000 burst 100000
+!
+forward policy captiveportal 
+ access-group captiveportalacl vrWLAN
+  class CAPTIVE_PORTAL
+   redirect destination local
+  class IP
+   drop
+!
+qos policy downlink-out-metering metering 
+ rate informational 1000000 burst 1000
+ access-group downlink-out-class-acl local
+  class iad
+   rate percentage 10
+    exceed no-action
+  class iptv
+   rate percentage 30
+    exceed no-action
+!
+qos policy downlink-out-pwfq pwfq 
+ rate maximum 1000000
+ queue-map qosmap
+ queue 0 priority 0 weight 100
+ queue 1 priority 1 weight 100
+ queue 2 priority 2 weight 90
+ queue 3 priority 2 weight 10
+ queue 4 priority 3 weight 25
+ queue 5 priority 3 weight 25
+ queue 6 priority 3 weight 25
+ queue 7 priority 3 weight 25
+!
+qos policy iptv-sub-in-mark policing 
+ mark dscp cs5
+ access-group iptv-sub-in-acl vrIPTV
+  class iptv
+   mark dscp cs5
+!
+qos policy iptv-uplink-in-mark policing 
+ mark dscp cs5
+ access-group iptv-uplink-in-acl vrIPTV
+  class iptv
+   mark dscp cs5
+!
+qos policy iptv_in_mark policing 
+ mark dscp cs5
+!
+qos policy non-rate metering 
+ rate 5 burst 1
+!
+qos policy qp10m-In policing 
+ rate 10000 burst 1000000
+!
+qos policy qp10m-Out metering 
+ rate 10000 burst 1024000
+!
+qos policy qp12m-In metering 
+ rate 12000 burst 1200000
+!
+qos policy qp12m-Out policing 
+ rate 12000 burst 1200000
+!
+qos policy qp4mnew-In policing 
+ rate 4000 burst 400000
+!
+qos policy qp4mnew-Out metering 
+ rate 4000 burst 400000
+!
+qos policy sub-qos pwfq 
+ rate maximum 4000
+ queue-map qosmap
+ queue 0 priority 0 weight 100
+ queue 1 priority 1 weight 100
+ queue 2 priority 2 weight 100
+ queue 3 priority 2 weight 100
+ queue 4 priority 3 weight 100
+ queue 5 priority 3 weight 100
+ queue 6 priority 3 weight 100
+ queue 7 priority 3 weight 100
+ queue priority-group 2 rate 3000
+!
+qos policy up-1.5m policing 
+ rate 1500 burst 150000
+!
+qos policy up-100m policing 
+ rate 102400 burst 10240000
+!
+qos policy up-10m policing 
+ rate 10240 burst 1024000
+!
+qos policy up-12m policing 
+ rate 14144 burst 1414400
+!
+qos policy up-16m policing 
+ rate 16000 burst 1600000
+!
+qos policy up-192k policing 
+ rate 192 burst 48000
+!
+qos policy up-1m policing 
+ rate 1216 burst 121600
+!
+qos policy up-20m policing 
+ rate 23552 burst 2355200
+!
+qos policy up-256k policing 
+ rate 256 burst 25600
+!
+qos policy up-2m policing 
+ rate 2368 burst 236800
+!
+qos policy up-320k policing 
+ rate 320 burst 48000
+!
+qos policy up-384k policing 
+ rate 448 burst 44800
+!
+qos policy up-3m policing 
+ rate 3000 burst 300000
+!
+qos policy up-448k policing 
+ rate 448 burst 48000
+!
+qos policy up-4m policing 
+ rate 5344 burst 534400
+!
+qos policy up-50m policing 
+ rate 51200 burst 5120000
+!
+qos policy up-512k policing 
+ rate 640 burst 64000
+!
+qos policy up-6m policing 
+ rate 6144 burst 614400
+!
+qos policy up-768k policing 
+ rate 896 burst 89600
+!
+qos policy up-8m policing 
+ rate 9472 burst 947200
+!
+qos policy up-i1m policing 
+ rate 1152 burst 1152000 time-excess-burst 1000
+  conform mark dscp cs5
+!
+qos policy up-i512k policing 
+ rate 576 burst 576000 time-excess-burst 1000
+  conform mark dscp cs5
+!
+qos policy up-non-rate policing 
+ rate 5 burst 1
+!
+qos policy uplink-out-pwfq pwfq 
+ rate maximum 1000000
+ queue-map qosmap
+ queue 0 priority 0 weight 100
+ queue 1 priority 1 weight 10
+ queue 2 priority 1 weight 30
+ queue 3 priority 1 weight 10
+ queue 4 priority 1 weight 50
+ queue 5 priority 2 weight 100
+ queue 6 priority 2 weight 100
+ queue 7 priority 2 weight 100
+ queue priority-group 0 rate percentage 10
+!
+forward policy yemiantuisong 
+ access-group yemiantuisong vrPPPoE
+  class WEB
+   redirect destination local
+!
+snmp server
+ traps ifmib ip
+ traps l2tpmib
+ traps nemib non-exclusive
+snmp view allthing internet included
+snmp view npm_view internet included
+snmp view zs-wlan2008 internet included
+snmp community 3edc$RFV5tgb all-contexts view allthing
+snmp community enter123
+snmp community npm_community all-contexts view npm_view read-write
+snmp community zs-wlan2008 all-contexts view zs-wlan2008 read-write
+!
+ system clock timezone CHN 8 0 local
+!
+http-redirect server
+ port 80
+!
+card ge-10-port 1
+!
+port ethernet 1/1
+ description dT:ZS-DH-CD-DSW-2.MAN.9306:(Locla)GE4/0/5
+ mtu 1526
+ no auto-negotiate
+ link-dampening up 2000 down 1000
+ no shutdown
+ encapsulation dot1q
+ dot1q pvc on-demand 1040 profile lan-nas-port-type encapsulation pppoe 
+  idle-down 600
+  bind authentication pap chap maximum 20
+  qos policy queuing Share4M-Assure3M-Out
+ dot1q pvc on-demand 1779 profile lan-nas-port-type encapsulation pppoe 
+  idle-down 600
+  bind authentication pap chap maximum 20
+  qos policy queuing Share4M-Assure3M-Out
+!
+port ethernet 1/2
+ mtu 1526
+ no auto-negotiate
+ link-dampening up 2000 down 1000
+ no shutdown
+!
+port ethernet 1/3
+ mtu 1526
+ no auto-negotiate
+ link-dampening up 2000 down 1000
+ no shutdown
+!
+port ethernet 1/4
+ mtu 1526
+ no auto-negotiate
+ link-dampening up 2000 down 1000
+ no shutdown
+!
+port ethernet 1/5
+ description dT:ZS-DH-HYXY(DW)-OLT-1.C220:(F1408110008)GE2/3
+ mtu 1526
+ no auto-negotiate
+ link-dampening up 2000 down 1000
+ no shutdown
+ encapsulation dot1q
+ dot1q pvc on-demand 1001 through 1029 profile lan-nas-port-type encapsulation pppoe 
+  idle-down 600
+  bind authentication pap service-policy JiaoYuWang maximum 2048
+!
+port ethernet 1/6
+ description dT:ZS-DH-HYXY(DW)-OLT-2.C220:(F1408210009)GE3/3
+ mtu 1526
+ no auto-negotiate
+ link-dampening up 2000 down 1000
+ no shutdown
+ encapsulation dot1q
+ dot1q pvc on-demand 1030 through 1050 profile lan-nas-port-type encapsulation pppoe 
+  idle-down 600
+  bind authentication pap service-policy JiaoYuWang maximum 2048
+!
+port ethernet 1/7
+ mtu 1526
+ no auto-negotiate
+ link-dampening up 2000 down 1000
+ no shutdown
+!
+port ethernet 1/8
+ mtu 1526
+ no auto-negotiate
+ link-dampening up 2000 down 1000
+ no shutdown
+!
+port ethernet 1/9
+ mtu 1526
+ no auto-negotiate
+ link-dampening up 2000 down 1000
+ no shutdown
+!
+port ethernet 1/10
+ no shutdown
+!
+card 10ge-1-port 2
+!
+port ethernet 2/1
+ description uT:ZS-DH-NZ-CR-1.MAN.CRS:(local)10GE0/9/0/9
+ mtu 3000
+ no shutdown
+ encapsulation dot1q
+ dot1q pvc 51 
+  bind interface ge-2/1:51 vrJiaoYuWang
+ dot1q pvc 52 
+  bind interface ge-2/1:52 vrHaiYuan
+ dot1q pvc 100 
+  bind interface ge-2/1:100 local
+ dot1q pvc 101 
+  bind interface ge-2/1:101 vrPPPoE
+ dot1q pvc 110 
+  bind interface ge-2/1:110 vrIPTV
+!
+card 10ge-oc192-1-port 4
+!
+port ethernet 4/1
+ description uT:ZS-PT-SJM-CR-2.MAN.CRS:(local)10GE0/15/0/6
+ mtu 3000
+ no shutdown
+ encapsulation dot1q
+ dot1q pvc 51 
+  bind interface ge-4/1:51 vrJiaoYuWang
+ dot1q pvc 52 
+  bind interface ge-4/1:52 vrHaiYuan
+ dot1q pvc 100 
+  bind interface ge-4/1:100 local
+ dot1q pvc 101 
+  bind interface ge-4/1:101 vrPPPoE
+ dot1q pvc 110 
+  bind interface ge-4/1:110 vrIPTV
+!
+card ge2-10-port 6
+!
+port ethernet 6/1
+ mtu 1526
+ no auto-negotiate
+ link-dampening up 2000 down 1000
+ no shutdown
+!
+port ethernet 6/2
+ mtu 1526
+ no auto-negotiate
+ link-dampening up 2000 down 1000
+ no shutdown
+!
+port ethernet 6/3
+ mtu 1526
+ no auto-negotiate
+ link-dampening up 2000 down 1000
+ no shutdown
+!
+port ethernet 6/4
+ mtu 3000
+ no auto-negotiate
+ link-dampening up 2000 down 1000
+ no shutdown
+!
+port ethernet 6/5
+ description dT:ZS-DH-HYXY(DW)-OLT-2.C220:(F1408110009)GE2/3
+ mtu 1526
+ no auto-negotiate
+ link-dampening up 2000 down 1000
+ no shutdown
+ encapsulation dot1q
+ dot1q pvc on-demand 1030 through 1050 profile lan-nas-port-type encapsulation pppoe 
+  idle-down 600
+  bind authentication pap service-policy JiaoYuWang maximum 2048
+!
+port ethernet 6/6
+ description dT:ZS-DH-HYXY(DW)-OLT-1.C220:(F1408210008)GE3/3
+ mtu 1526
+ no auto-negotiate
+ link-dampening up 2000 down 1000
+ no shutdown
+ encapsulation dot1q
+ dot1q pvc on-demand 1001 through 1029 profile lan-nas-port-type encapsulation pppoe 
+  idle-down 600
+  bind authentication pap service-policy JiaoYuWang maximum 2048
+!
+port ethernet 6/7
+ mtu 1526
+ no auto-negotiate
+ link-dampening up 2000 down 1000
+ no shutdown
+!
+port ethernet 6/8
+ description dT:ZS-DH-HYXY(DW)-DSW-1.H3C:(F0606210016)GE1
+ mtu 1526
+ no auto-negotiate
+ link-dampening up 2000 down 1000
+ no shutdown
+ encapsulation dot1q
+ dot1q pvc 18 
+  bind interface ge-6/8:18 vrJiaoYuWang
+!
+port ethernet 6/9
+ mtu 1526
+ no auto-negotiate
+ link-dampening up 2000 down 1000
+ no shutdown
+!
+port ethernet 6/10
+ description dT:ZS-DH-CD-DSW-1.MAN.9306:(local)GE1/0/17
+ mtu 3000
+ no auto-negotiate
+ link-dampening up 2000 down 1000
+ no shutdown
+!
+!
+port ethernet 7/1
+! XCRP management ports on slot 7 and 8 are configured through 7/1
+ shutdown
+!
+card ge-10-port 9
+!
+port ethernet 9/1
+ description dT:ZS-DH-CD-DSW-2.MAN.9306:(Locla)GE5/0/6
+ mtu 1526
+ no auto-negotiate
+ link-dampening up 2000 down 1000
+ no shutdown
+ encapsulation dot1q
+ dot1q pvc 1601 
+  bind interface ge-9/1:1601 vrPPPoE
+!
+port ethernet 9/2
+ mtu 1526
+ no auto-negotiate
+ link-dampening up 2000 down 1000
+ no shutdown
+!
+port ethernet 9/3
+ mtu 1526
+ no auto-negotiate
+ link-dampening up 2000 down 1000
+ no shutdown
+!
+port ethernet 9/4
+ mtu 1526
+ no auto-negotiate
+ link-dampening up 2000 down 1000
+ no shutdown
+!
+port ethernet 9/5
+ mtu 1526
+ no auto-negotiate
+ link-dampening up 2000 down 1000
+ no shutdown
+!
+port ethernet 9/6
+ mtu 1526
+ no auto-negotiate
+ link-dampening up 2000 down 1000
+ no shutdown
+!
+port ethernet 9/7
+ description dT:ZS-DH-CD-DSW-1.MAN.7609:(local)GE8/10
+ mtu 1526
+ no auto-negotiate
+ link-dampening up 2000 down 1000
+ no shutdown
+ encapsulation dot1q
+ dot1q pvc on-demand 1777 profile lan-nas-port-type encapsulation pppoe 
+  idle-down 600
+  bind authentication pap chap maximum 20
+  qos policy queuing Share4M-Assure3M-Out
+ dot1q pvc 703 encapsulation 1qtunnel 
+  dot1q pvc on-demand 703:1777 through 1779 profile lan-nas-port-type encapsulation pppoe 
+   idle-down 600
+   bind authentication pap maximum 512
+ dot1q pvc 912 encapsulation 1qtunnel 
+  dot1q pvc on-demand 912:3906 through 3907 profile lan-nas-port-type encapsulation pppoe 
+   idle-down 600
+   bind authentication pap service-policy JiaoYuWang maximum 512
+  dot1q pvc on-demand 912:3910 through 3912 profile lan-nas-port-type encapsulation pppoe 
+   idle-down 600
+   bind authentication pap service-policy JiaoYuWang maximum 512
+!
+port ethernet 9/8
+ mtu 3000
+ no auto-negotiate
+ link-dampening up 2000 down 1000
+ no shutdown
+!
+port ethernet 9/9
+ mtu 1526
+ no auto-negotiate
+ link-dampening up 2000 down 1000
+ no shutdown
+!
+port ethernet 9/10
+ mtu 3000
+ no auto-negotiate
+ link-dampening up 2000 down 1000
+ no shutdown
+! 
+ system hostname ZS-DH-CD-BAS-SE1200-1.MAN
+ system location ZhouSan Telecom DingHai ChengDong DeviceRoom
+ timeout session idle 600
+!
+no service console-break
+!
+service crash-dump-dram
+!
+no service auto-system-recovery
+system confirmations context 
+!
+ntp server 61.174.92.236 version 3 prefer source Loopback0 context local
+ntp server 61.174.92.237 version 3  source Loopback0 context local
+ntp server 202.96.115.130 version 3  source Loopback0 context local
+!
+privilege exec inherit level 1 show 
+privilege exec  level 1 terminal length 
+!
+ pppoe service-name accept-all
+ pppoe tag ac-name ZS.ZJ.CTNET
+ pppoe always-send-padt
+ pppoe circuit padr per-mac count 5 allow-time 60 drop-time 120
+!
+end
+[local]ZS-DH-CD-BAS-SE1200-1.MAN#

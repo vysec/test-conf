@@ -1,0 +1,1202 @@
+
+!Software Version V200R008C00SPC500
+#
+sysname HZ-XS-ZTYQ-DSW-1&2.MAN.9306
+#
+info-center source SHELL channel 4 log level informational
+info-center loghost source Vlanif50
+info-center loghost 10.254.0.1 facility local4
+info-center loghost 122.224.79.2 facility local4
+#
+vlan batch 50 to 51 1023 1051 to 1073 2001 2011 4010 4013
+#
+set save-configuration
+#
+transceiver phony-alarm-disable
+#
+telnet server enable
+#
+qos car 450M cir 460800 cbs 86630400
+#
+undo http server enable
+undo http secure-server enable
+#
+clock timezone UTC add 00:00:00
+#
+diffserv domain default
+#
+radius-server template newhzdx
+ radius-server shared-key cipher %^%#Z*ZJ):JGh1(vU$;U'j)+Wf_$5O/c|T]=ih*&'0;V%^%#
+ radius-server authentication 61.164.19.211 1812 weight 80
+ radius-server authentication 61.164.19.213 1812 weight 80
+ radius-server accounting 61.164.19.211 1813 weight 80
+ radius-server accounting 61.164.19.213 1813 weight 80
+ undo radius-server user-name domain-included
+ radius-server attribute translate
+ radius-attribute disable HW-Exec-Privilege receive
+#
+acl number 2000  
+ description SNMP
+ rule 0 permit source 172.16.254.252 0 
+ rule 1 permit source 172.28.11.250 0 
+ rule 2 permit source 172.28.11.251 0 
+ rule 5 permit source 202.96.102.253 0 
+ rule 10 permit source 202.96.102.254 0 
+ rule 15 permit source 10.254.0.0 0.0.0.255 
+ rule 20 permit source 192.168.11.0 0.0.0.255 
+ rule 25 permit source 192.168.1.0 0.0.0.255 
+ rule 31 permit source 10.10.10.34 0 
+ rule 32 permit source 10.10.10.35 0 
+ rule 33 permit source 10.31.255.0 0.0.0.31 
+ rule 100 deny 
+acl number 2001  
+ rule 5 permit source 172.16.254.252 0 
+ rule 10 permit source 202.96.102.253 0 
+ rule 15 permit source 202.96.102.254 0 
+ rule 25 permit source 192.168.208.0 0.0.0.255 
+ rule 30 permit source 192.168.209.0 0.0.0.255 
+ rule 35 permit source 192.168.210.0 0.0.0.255 
+ rule 40 permit source 192.168.0.0 0.0.127.255 
+ rule 45 permit source 10.254.0.0 0.0.0.31 
+ rule 50 permit source 172.28.0.253 0 
+ rule 55 permit source 10.31.255.0 0.0.0.31 
+ rule 100 deny 
+acl number 2002  
+ rule 0 permit source 172.16.254.248 0.0.0.7 
+ rule 5 permit source 10.254.0.0 0.0.0.31 
+ rule 10 permit source 192.168.0.0 0.0.255.255 
+ rule 15 permit source 172.28.0.0 0.0.255.255 
+ rule 100 deny 
+acl number 2016  
+ description telnet
+ rule 1 permit source 172.16.247.0 0.0.0.31 
+ rule 2 permit source 172.16.254.0 0.0.0.15 
+ rule 3 permit source 10.254.0.0 0.0.0.31 
+ rule 4 permit source 10.31.255.0 0.0.0.255 
+ rule 5 permit source 10.254.3.0 0.0.0.255 
+ rule 6 permit source 10.10.10.0 0.0.0.63 
+ rule 7 permit source 192.168.100.0 0.0.0.3 
+ rule 8 permit source 172.16.0.0 0.0.0.7 
+ rule 9 permit source 10.20.200.14 0 
+ rule 10 permit source 10.20.200.18 0 
+ rule 11 permit source 192.168.1.0 0.0.0.255 
+ rule 12 permit source 192.168.4.0 0.0.0.255 
+ rule 13 permit source 192.168.8.0 0.0.0.255 
+ rule 14 permit source 192.168.11.0 0.0.0.255 
+ rule 15 permit source 192.168.119.0 0.0.0.255 
+ rule 16 permit source 192.168.105.0 0.0.0.255 
+ rule 17 permit source 192.168.67.0 0.0.0.255 
+ rule 18 permit source 172.28.11.251 0 
+ rule 19 permit source 192.168.101.0 0.0.0.255 
+ rule 20 permit source 192.168.48.0 0.0.0.255 
+ rule 1000 deny 
+#
+drop-profile default
+#
+vlan 50
+ description Manager-vlan
+vlan 51
+ description Manager-vlan
+#
+aaa
+ authentication-scheme default
+ authentication-scheme newhzdx
+  authentication-mode radius local
+ authorization-scheme default
+ accounting-scheme default
+ accounting-scheme newhzdx
+  accounting-mode radius
+  accounting start-fail online
+ domain default
+  authentication-scheme newhzdx
+  accounting-scheme newhzdx
+  radius-server newhzdx
+ domain default_admin
+  authentication-scheme newhzdx
+  accounting-scheme newhzdx
+  radius-server newhzdx
+ domain hzdx
+  authentication-scheme newhzdx
+  accounting-scheme newhzdx
+  radius-server newhzdx
+ undo local-user admin
+ local-user huawei password irreversible-cipher %^%#7AUVVrdcbGv<lJA7EM2D5*8p)sZ%jE]\`yTNBK<'$&`Y"7eR^D<Ca)I'\Xp;%^%#
+ local-user huawei privilege level 15
+ local-user huawei service-type telnet
+ local-user aaa@huawei password irreversible-cipher %#%#&v:!'AMgfVb:WYTn_p#F(EDl+7oNm%W>"x,oiog;=NP[*{3i7GK$aFIG!zrA%#%#
+ local-user aaa@huawei privilege level 15
+ local-user aaa@huawei service-type telnet
+#
+ntp-service server disable
+ntp-service ipv6 server disable
+ntp-service source-interface Vlanif50
+ntp-service unicast-server 6.6.6.6 preference
+ntp-service unicast-server 7.7.7.7
+ntp-service unicast-server 61.164.1.7 source-interface Vlanif50 preference
+ntp-service unicast-server 61.130.120.35 source-interface Vlanif50
+#
+interface Vlanif50
+ description For-Management
+ ip address 172.29.179.3 255.255.255.240
+#
+interface Vlanif51
+ description For-Management
+ ip address 172.29.179.19 255.255.255.240
+#
+interface Vlanif1023
+ ip address 172.18.0.1 255.255.255.252
+#
+interface Eth-Trunk0
+ description uT:HZ-XS-AT-DSW-1&2.MAN.H3C12510F:BAGG11
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 50 to 51 405 1051 to 1073 2001 2011 4010 4013
+ mode lacp
+#
+interface Eth-Trunk1
+ description dT:HZ-XS-ZTYQ-2FJ-6&7#-SW.1-5352C:(F1605110165,F1605110233):ETH0
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 101 to 148 2001 2011
+ port hybrid untagged vlan 1053
+ port vlan-stacking vlan 101 to 148 stack-vlan 1053
+ mode lacp
+#
+interface Eth-Trunk2
+ description dT:HZ-XS-ZTYQ-2FJ-8#-SW.1-5352C:(F1605110169,F1605110236):ETH0
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 101 to 148 2001 2011
+ port hybrid untagged vlan 1054
+ port vlan-stacking vlan 101 to 148 stack-vlan 1054
+ mode lacp
+#
+interface Eth-Trunk3
+ description dT:HZ-XS-ZTYQ-2FJ-1&2#-SW.1-S5328C:(F1605110220,F1605110267):ETH0
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 101 to 148 2001 2011
+ port hybrid untagged vlan 1051
+ port vlan-stacking vlan 101 to 148 stack-vlan 1051
+ mode lacp
+#
+interface Eth-Trunk4
+ description dT:HZ-XS-ZTYQ-2FJ-5#-SW.1-S5328C:(F1605110222,F1605110270):ETH0
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 101 to 148 2001 2011
+ port hybrid untagged vlan 1052
+ port vlan-stacking vlan 101 to 148 stack-vlan 1052
+ mode lacp
+#
+interface Eth-Trunk5
+ description dT:HZ-XS-ZTYQ-2FJ-9#-SW.1-5352C:(F160516013,F1605160134):ETH0
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 101 to 148 2001 2011
+ port hybrid untagged vlan 1055
+ port vlan-stacking vlan 101 to 148 stack-vlan 1055
+ mode lacp
+#
+interface Eth-Trunk6
+ description dT:HZ-XS-ZTYQ-3F-1#-SW.1-5352C:(F1605110179,F1605110230):ETH0
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 101 to 148 2001 2011
+ port hybrid untagged vlan 1058
+ port vlan-stacking vlan 101 to 148 stack-vlan 1058
+ mode lacp
+#
+interface Eth-Trunk8
+ description dT:HZ-XS-ZTYQ-2FJ-11#-SW.1-5352C:(F1605160149,F1605160150):ETH0
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 101 to 148 2001 2011
+ port hybrid untagged vlan 1057
+ port vlan-stacking vlan 101 to 148 stack-vlan 1057
+ mode lacp
+#
+interface Eth-Trunk9
+ description dT:HZ-XS-ZTYQ-3FJ-4#-2-SW.1-5352C:(F1605110203,F1605110247):ETH0
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 101 to 148 2001 2011
+ port hybrid untagged vlan 1062
+ port vlan-stacking vlan 101 to 148 stack-vlan 1062
+ mode lacp
+#
+interface Eth-Trunk10
+ description dT:HZ-XS-ZTYQ-CSKT2-5#-SW.1-5352C:(F1605110218,F1605110264):ETH0
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 101 to 148 2001 2011
+ port hybrid untagged vlan 1066
+ port vlan-stacking vlan 101 to 148 stack-vlan 1066
+ mode lacp
+#
+interface Eth-Trunk11
+ description dT:HZ-XS-ZTYQ-CSKT1-6#-SW.1-S5328C:(F1605160160,F1605160161):ETH0
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 101 to 148 2001 2011
+ port hybrid untagged vlan 1064
+ port vlan-stacking vlan 101 to 148 stack-vlan 1064
+ mode lacp
+#
+interface Eth-Trunk12
+ description dT:HZ-XS-ZTYQ-2FJ12#-SW.1-5352C:():ETH0
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 101 to 148 2001 2011
+ port hybrid untagged vlan 1067
+ port vlan-stacking vlan 101 to 148 stack-vlan 1067
+ mode lacp
+#
+interface Eth-Trunk13
+ description dT:HZ-XS-ZTYQ-2FJ12#-SW.2-5352C:():ETH0
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 101 to 148 2001 2011
+ port hybrid untagged vlan 1068
+ port vlan-stacking vlan 101 to 148 stack-vlan 1068
+ mode lacp
+#
+interface Eth-Trunk20
+ description dT:HZ-XS-ZTYQ-2FJ12#-SW.3-5328C:():ETH0
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 101 to 148 2001 2011
+ port hybrid untagged vlan 1069
+ port vlan-stacking vlan 101 to 148 stack-vlan 1069
+ mode lacp
+#
+interface Eth-Trunk21
+ description dT:HZ-XS-ZTYQ-3FJ-ZH4#-2-SW.1-5328C:():ETH0
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 101 to 148 2001 2011
+ port hybrid untagged vlan 1070
+ port vlan-stacking vlan 101 to 148 stack-vlan 1070
+ mode lacp
+#
+interface Eth-Trunk22
+ description dT:HZ-XS-ZTYQ-3F-2#-SW.1-S5328C:(F1605110225,F1605110272):ETH0
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 101 to 148 2001 2011
+ port hybrid untagged vlan 1059
+ port vlan-stacking vlan 101 to 148 stack-vlan 1059
+ mode lacp
+#
+interface Eth-Trunk23
+ description dT:HZ-XS-ZTYQ-CSKT1-5#-SW.1-S5328C:(F1605160154,F1605160155):ETH0
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 101 to 148 2001 2011
+ port hybrid untagged vlan 1063
+ port vlan-stacking vlan 101 to 148 stack-vlan 1063
+ mode lacp
+#
+interface Eth-Trunk24
+ description dT:HZ-XS-ZTYQ-CSKT2-5#-2-SW.1-S5328C:():ETH0
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 101 to 148 2001 2011
+ port hybrid untagged vlan 1071
+ port vlan-stacking vlan 101 to 148 stack-vlan 1071
+ mode lacp
+#
+interface Eth-Trunk25
+ description dT:HZ-XS-ZTYQ-CSKT2-4#-SW.1-5352C:ETH0
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 101 to 148 2001 2011
+ port hybrid untagged vlan 1065
+ port vlan-stacking vlan 101 to 148 stack-vlan 1065
+ mode lacp
+#
+interface Eth-Trunk26
+ description dT:HZ-XS-ZTYQ-3F-3#-SW.1-5352C:(F1605110188,F1605110195):ETH0
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 101 to 148 2001 2011
+ port hybrid untagged vlan 1060
+ port vlan-stacking vlan 101 to 148 stack-vlan 1060
+ mode lacp
+#
+interface Eth-Trunk27
+ description dT:HZ-XS-ZTYQ-3F-NLL-SW.1-S5328C:():ETH0
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 101 to 148 2001 2011
+ port hybrid untagged vlan 1072
+ port vlan-stacking vlan 101 to 148 stack-vlan 1072
+ mode lacp
+#
+interface Eth-Trunk28
+ description dT:HZ-XS-ZT1Q-3F-NLL-Y-SW.1-5352C:():ETH0
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 101 to 148 2001 2011
+ port hybrid untagged vlan 1073
+ port vlan-stacking vlan 101 to 148 stack-vlan 1073
+ mode lacp
+#
+interface Ethernet0/0/0/0
+#
+interface GigabitEthernet1/4/0/0
+ description dT:HZ-XS-ZTYQ-2FJ12#-SW.3-5328C:():GE1/1/1
+ eth-trunk 20
+#
+interface GigabitEthernet1/4/0/1
+ description dT:HZ-XS-ZTYQ-3FJ-ZH4#-2-SW.1-5328C:(F1606100018)GE1/1/1
+ eth-trunk 21
+#
+interface GigabitEthernet1/4/0/2
+ description dT:HZ-XS-ZTYQ-3F-2#-SW.1-S5328C:(F1605110225)GE1/1/1
+ eth-trunk 22
+#
+interface GigabitEthernet1/4/0/3
+ description dT:HZ-XS-ZTYQ-CSKT1-5#-SW.1-S5328C:(F1605160154)GE1/1/1
+ eth-trunk 23
+#
+interface GigabitEthernet1/4/0/4
+ description dT:HZ-XS-ZTYQ-CSKT2-5#-2-SW.1-S5328C:(F1606100020)GE1/1/1
+ eth-trunk 24
+#
+interface GigabitEthernet1/4/0/5
+ description dT:HZ-XS-ZTYQ-CSKT2-4#-SW.1-5352C:(F1605110210)GE1/1/1
+ eth-trunk 25
+#
+interface GigabitEthernet1/4/0/6
+ description dT:HZ-XS-ZTYQ-3F-3#-SW.1-5352C:(F1605110188)GE1/1/1
+ eth-trunk 26
+#
+interface GigabitEthernet1/4/0/7
+ description dT:HZ-XS-ZTYQ-3F-NLL-SW.1-S5328C:(F1708180061)GE0/1/1
+ eth-trunk 27
+#
+interface GigabitEthernet1/4/0/8
+ description dT:HZ-XS-ZTYQ-1FLL2-Y-SW.1-S5328C:():GE1/1/1
+#
+interface GigabitEthernet1/4/0/9
+ shutdown
+#
+interface GigabitEthernet1/4/0/10
+ shutdown
+#
+interface GigabitEthernet1/4/0/11
+ shutdown
+#
+interface GigabitEthernet1/4/0/12
+ shutdown
+#
+interface GigabitEthernet1/4/0/13
+ shutdown
+#
+interface GigabitEthernet1/4/0/14
+ shutdown
+#
+interface GigabitEthernet1/4/0/15
+ shutdown
+#
+interface GigabitEthernet1/4/0/16
+ shutdown
+#
+interface GigabitEthernet1/4/0/17
+ shutdown
+#
+interface GigabitEthernet1/4/0/18
+ shutdown
+#
+interface GigabitEthernet1/4/0/19
+ shutdown
+#
+interface GigabitEthernet1/4/0/20
+ shutdown
+#
+interface GigabitEthernet1/4/0/21
+ shutdown
+#
+interface GigabitEthernet1/4/0/22
+ shutdown
+#
+interface GigabitEthernet1/4/0/23
+ shutdown
+#
+interface GigabitEthernet1/4/0/24
+ shutdown
+#
+interface GigabitEthernet1/4/0/25
+ shutdown
+#
+interface GigabitEthernet1/4/0/26
+ shutdown
+#
+interface GigabitEthernet1/4/0/27
+ shutdown
+#
+interface GigabitEthernet1/4/0/28
+ shutdown
+#
+interface GigabitEthernet1/4/0/29
+ shutdown
+#
+interface GigabitEthernet1/4/0/30
+ shutdown
+#
+interface GigabitEthernet1/4/0/31
+ shutdown
+#
+interface GigabitEthernet1/4/0/32
+ shutdown
+#
+interface GigabitEthernet1/4/0/33
+ shutdown
+#
+interface GigabitEthernet1/4/0/34
+ shutdown
+#
+interface GigabitEthernet1/4/0/35
+ shutdown
+#
+interface GigabitEthernet1/4/0/36
+ shutdown
+#
+interface GigabitEthernet1/4/0/37
+ shutdown
+#
+interface GigabitEthernet1/4/0/38
+ shutdown
+#
+interface GigabitEthernet1/4/0/39
+ shutdown
+#
+interface GigabitEthernet1/4/0/40
+ shutdown
+#
+interface GigabitEthernet1/4/0/41
+ shutdown
+#
+interface GigabitEthernet1/4/0/42
+ shutdown
+#
+interface GigabitEthernet1/4/0/43
+ shutdown
+#
+interface GigabitEthernet1/4/0/44
+ shutdown
+#
+interface GigabitEthernet1/4/0/45
+ shutdown
+#
+interface GigabitEthernet1/4/0/46
+ shutdown
+#
+interface GigabitEthernet1/4/0/47
+ shutdown
+#
+interface GigabitEthernet1/5/0/0
+ undo negotiation auto
+ speed 100
+ description 5711UBD23611946
+ port link-type trunk
+ port trunk allow-pass vlan 2001 2011 4010
+#
+interface GigabitEthernet1/5/0/1
+ undo negotiation auto
+ speed 100
+ description UBD23611948
+ port link-type trunk
+ port trunk allow-pass vlan 2001 2011 4013
+#
+interface GigabitEthernet1/5/0/2
+ shutdown
+#
+interface GigabitEthernet1/5/0/3
+ shutdown
+#
+interface GigabitEthernet1/5/0/4
+ shutdown
+#
+interface GigabitEthernet1/5/0/5
+ shutdown
+#
+interface GigabitEthernet1/5/0/6
+ shutdown
+#
+interface GigabitEthernet1/5/0/7
+ shutdown
+#
+interface GigabitEthernet1/5/0/8
+ shutdown
+#
+interface GigabitEthernet1/5/0/9
+ shutdown
+#
+interface GigabitEthernet1/5/0/10
+ shutdown
+#
+interface GigabitEthernet1/5/0/11
+ shutdown
+#
+interface GigabitEthernet1/5/0/12
+ shutdown
+#
+interface GigabitEthernet1/5/0/13
+ shutdown
+#
+interface GigabitEthernet1/5/0/14
+ shutdown
+#
+interface GigabitEthernet1/5/0/15
+ shutdown
+#
+interface GigabitEthernet1/5/0/16
+ shutdown
+#
+interface GigabitEthernet1/5/0/17
+ shutdown
+#
+interface GigabitEthernet1/5/0/18
+ shutdown
+#
+interface GigabitEthernet1/5/0/19
+ shutdown
+#
+interface GigabitEthernet1/5/0/20
+ shutdown
+#
+interface GigabitEthernet1/5/0/21
+ shutdown
+#
+interface GigabitEthernet1/5/0/22
+ shutdown
+#
+interface GigabitEthernet1/5/0/23
+ shutdown
+#
+interface GigabitEthernet1/5/0/24
+ shutdown
+#
+interface GigabitEthernet1/5/0/25
+ shutdown
+#
+interface GigabitEthernet1/5/0/26
+ shutdown
+#
+interface GigabitEthernet1/5/0/27
+ shutdown
+#
+interface GigabitEthernet1/5/0/28
+ shutdown
+#
+interface GigabitEthernet1/5/0/29
+ shutdown
+#
+interface GigabitEthernet1/5/0/30
+ shutdown
+#
+interface GigabitEthernet1/5/0/31
+ shutdown
+#
+interface GigabitEthernet1/5/0/32
+ shutdown
+#
+interface GigabitEthernet1/5/0/33
+ shutdown
+#
+interface GigabitEthernet1/5/0/34
+ shutdown
+#
+interface GigabitEthernet1/5/0/35
+ shutdown
+#
+interface GigabitEthernet1/5/0/36
+ shutdown
+#
+interface GigabitEthernet1/5/0/37
+ shutdown
+#
+interface GigabitEthernet1/5/0/38
+ shutdown
+#
+interface GigabitEthernet1/5/0/39
+ shutdown
+#
+interface GigabitEthernet1/5/0/40
+ shutdown
+#
+interface GigabitEthernet1/5/0/41
+ shutdown
+#
+interface GigabitEthernet1/5/0/42
+ shutdown
+#
+interface GigabitEthernet1/5/0/43
+ shutdown
+#
+interface GigabitEthernet1/5/0/44
+ shutdown
+#
+interface GigabitEthernet1/5/0/45
+ shutdown
+#
+interface GigabitEthernet1/5/0/46
+ shutdown
+#
+interface GigabitEthernet1/5/0/47
+ shutdown
+#
+interface GigabitEthernet2/4/0/0
+ description dT:HZ-XS-ZTYQ-2FJ12#-SW.3-5328C:():GE1/1/2
+ eth-trunk 20
+#
+interface GigabitEthernet2/4/0/1
+ description dT:HZ-XS-ZTYQ-3FJ-ZH4#-2-SW.1-5328C:(F1606100032)GE1/1/2
+ eth-trunk 21
+#
+interface GigabitEthernet2/4/0/2
+ description dT:HZ-XS-ZTYQ-3F-2#-SW.1-S5328C:(F1605110272)GE1/1/2
+ eth-trunk 22
+#
+interface GigabitEthernet2/4/0/3
+ description dT:HZ-XS-ZTYQ-CSKT1-5#-SW.1-S5328C:(F1605160155)GE1/1/2
+ eth-trunk 23
+#
+interface GigabitEthernet2/4/0/4
+ description dT:HZ-XS-ZTYQ-CSKT2-5#-2-SW.1-S5328C:(F1606100033)GE1/1/1
+ eth-trunk 24
+#
+interface GigabitEthernet2/4/0/5
+ description dT:HZ-XS-ZTYQ-CSKT2-4#-SW.1-5352C:(F1605110214)GE1/1/2
+ eth-trunk 25
+#
+interface GigabitEthernet2/4/0/6
+ description dT:HZ-XS-ZTYQ-3F-3#-SW.1-5352C:(F1605110195)GE1/1/2
+ eth-trunk 26
+#
+interface GigabitEthernet2/4/0/7
+ description dT:HZ-XS-ZTYQ-3F-NLL-SW.1-S5328C:(F1708180062)GE0/1/1
+ eth-trunk 27
+#
+interface GigabitEthernet2/4/0/8
+ description dT:HZ-XS-ZTYQ-1FLL2-Y-SW.1-S5328C:():GE1/1/2
+#
+interface GigabitEthernet2/4/0/9
+ shutdown
+#
+interface GigabitEthernet2/4/0/10
+ shutdown
+#
+interface GigabitEthernet2/4/0/11
+ shutdown
+#
+interface GigabitEthernet2/4/0/12
+ shutdown
+#
+interface GigabitEthernet2/4/0/13
+ shutdown
+#
+interface GigabitEthernet2/4/0/14
+ shutdown
+#
+interface GigabitEthernet2/4/0/15
+ shutdown
+#
+interface GigabitEthernet2/4/0/16
+ shutdown
+#
+interface GigabitEthernet2/4/0/17
+ shutdown
+#
+interface GigabitEthernet2/4/0/18
+ shutdown
+#
+interface GigabitEthernet2/4/0/19
+ shutdown
+#
+interface GigabitEthernet2/4/0/20
+ shutdown
+#
+interface GigabitEthernet2/4/0/21
+ shutdown
+#
+interface GigabitEthernet2/4/0/22
+ shutdown
+#
+interface GigabitEthernet2/4/0/23
+ shutdown
+#
+interface GigabitEthernet2/4/0/24
+ shutdown
+#
+interface GigabitEthernet2/4/0/25
+ shutdown
+#
+interface GigabitEthernet2/4/0/26
+ shutdown
+#
+interface GigabitEthernet2/4/0/27
+ shutdown
+#
+interface GigabitEthernet2/4/0/28
+ shutdown
+#
+interface GigabitEthernet2/4/0/29
+ shutdown
+#
+interface GigabitEthernet2/4/0/30
+ shutdown
+#
+interface GigabitEthernet2/4/0/31
+ shutdown
+#
+interface GigabitEthernet2/4/0/32
+ shutdown
+#
+interface GigabitEthernet2/4/0/33
+ shutdown
+#
+interface GigabitEthernet2/4/0/34
+ shutdown
+#
+interface GigabitEthernet2/4/0/35
+ shutdown
+#
+interface GigabitEthernet2/4/0/36
+ shutdown
+#
+interface GigabitEthernet2/4/0/37
+ shutdown
+#
+interface GigabitEthernet2/4/0/38
+ shutdown
+#
+interface GigabitEthernet2/4/0/39
+ shutdown
+#
+interface GigabitEthernet2/4/0/40
+ shutdown
+#
+interface GigabitEthernet2/4/0/41
+ shutdown
+#
+interface GigabitEthernet2/4/0/42
+ shutdown
+#
+interface GigabitEthernet2/4/0/43
+ shutdown
+#
+interface GigabitEthernet2/4/0/44
+ shutdown
+#
+interface GigabitEthernet2/4/0/45
+ shutdown
+#
+interface GigabitEthernet2/4/0/46
+ shutdown
+#
+interface GigabitEthernet2/4/0/47
+ shutdown
+#
+interface GigabitEthernet2/5/0/0
+ shutdown
+#
+interface GigabitEthernet2/5/0/1
+ shutdown
+#
+interface GigabitEthernet2/5/0/2
+ shutdown
+#
+interface GigabitEthernet2/5/0/3
+ shutdown
+#
+interface GigabitEthernet2/5/0/4
+ shutdown
+#
+interface GigabitEthernet2/5/0/5
+ shutdown
+#
+interface GigabitEthernet2/5/0/6
+ shutdown
+#
+interface GigabitEthernet2/5/0/7
+ shutdown
+#
+interface GigabitEthernet2/5/0/8
+ shutdown
+#
+interface GigabitEthernet2/5/0/9
+ shutdown
+#
+interface GigabitEthernet2/5/0/10
+ shutdown
+#
+interface GigabitEthernet2/5/0/11
+ shutdown
+#
+interface GigabitEthernet2/5/0/12
+ shutdown
+#
+interface GigabitEthernet2/5/0/13
+ shutdown
+#
+interface GigabitEthernet2/5/0/14
+ shutdown
+#
+interface GigabitEthernet2/5/0/15
+ shutdown
+#
+interface GigabitEthernet2/5/0/16
+ shutdown
+#
+interface GigabitEthernet2/5/0/17
+ shutdown
+#
+interface GigabitEthernet2/5/0/18
+ shutdown
+#
+interface GigabitEthernet2/5/0/19
+ shutdown
+#
+interface GigabitEthernet2/5/0/20
+ shutdown
+#
+interface GigabitEthernet2/5/0/21
+ shutdown
+#
+interface GigabitEthernet2/5/0/22
+ shutdown
+#
+interface GigabitEthernet2/5/0/23
+ shutdown
+#
+interface GigabitEthernet2/5/0/24
+ shutdown
+#
+interface GigabitEthernet2/5/0/25
+ shutdown
+#
+interface GigabitEthernet2/5/0/26
+ shutdown
+#
+interface GigabitEthernet2/5/0/27
+ shutdown
+#
+interface GigabitEthernet2/5/0/28
+ shutdown
+#
+interface GigabitEthernet2/5/0/29
+ shutdown
+#
+interface GigabitEthernet2/5/0/30
+ shutdown
+#
+interface GigabitEthernet2/5/0/31
+ shutdown
+#
+interface GigabitEthernet2/5/0/32
+ shutdown
+#
+interface GigabitEthernet2/5/0/33
+ shutdown
+#
+interface GigabitEthernet2/5/0/34
+ shutdown
+#
+interface GigabitEthernet2/5/0/35
+ shutdown
+#
+interface GigabitEthernet2/5/0/36
+ shutdown
+#
+interface GigabitEthernet2/5/0/37
+ shutdown
+#
+interface GigabitEthernet2/5/0/38
+ shutdown
+#
+interface GigabitEthernet2/5/0/39
+ shutdown
+#
+interface GigabitEthernet2/5/0/40
+ shutdown
+#
+interface GigabitEthernet2/5/0/41
+ shutdown
+#
+interface GigabitEthernet2/5/0/42
+ shutdown
+#
+interface GigabitEthernet2/5/0/43
+ shutdown
+#
+interface GigabitEthernet2/5/0/44
+ shutdown
+#
+interface GigabitEthernet2/5/0/45
+ shutdown
+#
+interface GigabitEthernet2/5/0/46
+ shutdown
+#
+interface GigabitEthernet2/5/0/47
+ shutdown
+#
+interface XGigabitEthernet1/1/0/0
+ description uT:HZ-XS-AT-DSW-1&2.MAN.H3C12510F:(F1604184377)10GE1/0/0/4
+ eth-trunk 0
+#
+interface XGigabitEthernet1/1/0/1
+ description dT:HZ-XS-ZTYQ-2FJ-6&7#-SW.1-5352C:(F1605110165)10GE1/1/1
+ eth-trunk 1
+#
+interface XGigabitEthernet1/1/0/2
+ description dT:HZ-XS-ZTYQ-2FJ-8#-SW.1-5352C:(F1605110169)10GE1/1/1
+ eth-trunk 2
+#
+interface XGigabitEthernet1/1/0/3
+ description dT:HZ-XS-ZTYQ-2FJ-1&2#-SW.1-S5328C:(F1605110220)10GE1/1/1
+ eth-trunk 3
+#
+interface XGigabitEthernet1/1/0/4
+ description dT:HZ-XS-ZTYQ-2FJ-5#-SW.1-S5328C:(F1605110222)10GE1/1/1
+ eth-trunk 4
+#
+interface XGigabitEthernet1/1/0/5
+ description dT:HZ-XS-ZTYQ-2FJ-9#-SW.1-5352C:(F160516013)10GE1/1/1
+ eth-trunk 5
+#
+interface XGigabitEthernet1/1/0/6
+ description dT:HZ-XS-ZTYQ-3F-1#-SW.1-5352C:(F1605110179)10GE1/1/1
+ eth-trunk 6
+#
+interface XGigabitEthernet1/1/0/7
+ shutdown
+#
+interface XGigabitEthernet1/1/0/8
+ description dT:HZ-XS-ZTYQ-2FJ-11#-SW.1-5352C:(F1605160149)10GE1/1/1
+ eth-trunk 8
+#
+interface XGigabitEthernet1/1/0/9
+ description dT:HZ-XS-ZTYQ-3FJ-4#-2-SW.1-5352C:(F1605110203)10GE1/1/1
+ eth-trunk 9
+#
+interface XGigabitEthernet1/1/0/10
+ description dT:HZ-XS-ZTYQ-CSKT2-5#-SW.1-5352C:(F1605110218)10GE1/1/1
+ eth-trunk 10
+#
+interface XGigabitEthernet1/1/0/11
+ description dT:HZ-XS-ZTYQ-CSKT1-6#-SW.1-S5328C:(F1605160160)10GE1/1/1
+ eth-trunk 11
+#
+interface XGigabitEthernet1/1/0/12
+ description dT:HZ-XS-ZTYQ-2FJ12#-SW.1-5352C:():GE1/1/1
+ eth-trunk 12
+#
+interface XGigabitEthernet1/1/0/13
+ description dT:HZ-XS-ZTYQ-2FJ12#-SW.2-5352C:():10GE1/1/1
+ eth-trunk 13
+#
+interface XGigabitEthernet1/1/0/14
+ description dT:HZ-XS-ZT1Q-3F-NLL-Y-SW.1-5352C:(F1708180059)10GE0/1/1
+ eth-trunk 28
+#
+interface XGigabitEthernet1/1/0/15
+ shutdown
+#
+interface XGigabitEthernet1/2/0/0
+ description uT:HZ-XS-AT-DSW-1&2.MAN.H3C12510F:(F1604184390)10GE2/0/0/4
+ eth-trunk 0
+#
+interface XGigabitEthernet1/2/0/1
+ shutdown
+#
+interface XGigabitEthernet1/2/0/2
+ shutdown
+#
+interface XGigabitEthernet1/2/0/3
+ shutdown
+#
+interface XGigabitEthernet1/2/0/4
+ shutdown
+#
+interface XGigabitEthernet1/2/0/5
+ shutdown
+#
+interface XGigabitEthernet1/2/0/6
+ shutdown
+#
+interface XGigabitEthernet1/2/0/7
+ shutdown
+#
+interface XGigabitEthernet1/2/0/8
+ shutdown
+#
+interface XGigabitEthernet1/2/0/9
+ shutdown
+#
+interface XGigabitEthernet1/2/0/10
+ shutdown
+#
+interface XGigabitEthernet1/2/0/11
+ shutdown
+#
+interface XGigabitEthernet1/2/0/12
+ shutdown
+#
+interface XGigabitEthernet1/2/0/13
+ shutdown
+#
+interface XGigabitEthernet1/2/0/14
+ shutdown
+#
+interface XGigabitEthernet1/2/0/15
+ shutdown
+#
+interface XGigabitEthernet2/1/0/0
+ description uT:HZ-XS-AT-DSW-1&2.MAN.H3C12510F:(F1604184378)10GE1/9/0/4
+ eth-trunk 0
+#
+interface XGigabitEthernet2/1/0/1
+ description dT:HZ-XS-ZTYQ-2FJ-6&7#-SW.1-5352C:(F1605110233)10GE1/1/2
+ eth-trunk 1
+#
+interface XGigabitEthernet2/1/0/2
+ description dT:HZ-XS-ZTYQ-2FJ-8#-SW.1-5352C:(F1605110236)10GE1/1/2
+ eth-trunk 2
+#
+interface XGigabitEthernet2/1/0/3
+ description dT:HZ-XS-ZTYQ-2FJ-1&2#-SW.1-S5328C:(F1605110267)10GE1/1/2
+ eth-trunk 3
+#
+interface XGigabitEthernet2/1/0/4
+ description dT:HZ-XS-ZTYQ-2FJ-5#-SW.1-S5328C:(F1605110270)10GE1/1/2
+ eth-trunk 4
+#
+interface XGigabitEthernet2/1/0/5
+ description dT:HZ-XS-ZTYQ-2FJ-9#-SW.1-5352C:(F1605160134)10GE1/1/2
+ eth-trunk 5
+#
+interface XGigabitEthernet2/1/0/6
+ description dT:HZ-XS-ZTYQ-3F-1#-SW.1-5352C:(F1605110230)10GE1/1/2
+ eth-trunk 6
+#
+interface XGigabitEthernet2/1/0/7
+ shutdown
+#
+interface XGigabitEthernet2/1/0/8
+ description dT:HZ-XS-ZTYQ-2FJ-11#-SW.1-5352C:(F1605160150)10GE1/1/2
+ eth-trunk 8
+#
+interface XGigabitEthernet2/1/0/9
+ description dT:HZ-XS-ZTYQ-3FJ-4#-2-SW.1-5352C:(F1605110247)10GE1/1/2
+ eth-trunk 9
+#
+interface XGigabitEthernet2/1/0/10
+ description dT:HZ-XS-ZTYQ-CSKT2-5#-SW.1-5352C:(F1605110264)10GE1/1/2
+ eth-trunk 10
+#
+interface XGigabitEthernet2/1/0/11
+ description dT:HZ-XS-ZTYQ-CSKT1-6#-SW.1-S5328C:(F1605160161)10GE1/1/2
+ eth-trunk 11
+#
+interface XGigabitEthernet2/1/0/12
+ description dT:HZ-XS-ZTYQ-2FJ12#-SW.1-5352C:():GE1/1/2
+ eth-trunk 12
+#
+interface XGigabitEthernet2/1/0/13
+ description dT:HZ-XS-ZTYQ-2FJ12#-SW.2-5352C:():10GE1/1/2
+ eth-trunk 13
+#
+interface XGigabitEthernet2/1/0/14
+ description dT:HZ-XS-ZT1Q-3F-NLL-Y-SW.1-5352C:(F1708180060)10GE0/1/2
+ eth-trunk 28
+#
+interface XGigabitEthernet2/1/0/15
+ shutdown
+#
+interface XGigabitEthernet2/2/0/0
+ description uT:HZ-XS-AT-DSW-1&2.MAN.H3C12510F:(F1604184397)10GE2/9/0/4
+ eth-trunk 0
+#
+interface XGigabitEthernet2/2/0/1
+ shutdown
+#
+interface XGigabitEthernet2/2/0/2
+ shutdown
+#
+interface XGigabitEthernet2/2/0/3
+ shutdown
+#
+interface XGigabitEthernet2/2/0/4
+ shutdown
+#
+interface XGigabitEthernet2/2/0/5
+ shutdown
+#
+interface XGigabitEthernet2/2/0/6
+ shutdown
+#
+interface XGigabitEthernet2/2/0/7
+ shutdown
+#
+interface XGigabitEthernet2/2/0/8
+ shutdown
+#
+interface XGigabitEthernet2/2/0/9
+ shutdown
+#
+interface XGigabitEthernet2/2/0/10
+ shutdown
+#
+interface XGigabitEthernet2/2/0/11
+ shutdown
+#
+interface XGigabitEthernet2/2/0/12
+ shutdown
+#
+interface XGigabitEthernet2/2/0/13
+ shutdown
+#
+interface XGigabitEthernet2/2/0/14
+ shutdown
+#
+interface XGigabitEthernet2/2/0/15
+ shutdown
+#
+interface NULL0
+#
+ip route-static 0.0.0.0 0.0.0.0 172.29.179.1 preference 50
+ip route-static 0.0.0.0 0.0.0.0 172.29.179.17
+#
+snmp-agent
+snmp-agent local-engineid 800007DB03D0D04B516C70
+snmp-agent community read cipher %^%#H[k9P{<;/+&*/uJkMTdN~qHN.nYI=D[&Qc-FBU)*8<E9@:{Po(k,#m;`T:,OY9=G0D/E!9fWG3@Ngo(C%^%# acl 2000
+snmp-agent sys-info contact HZ-XS-ZTYQ-DSW-1.MAN.9306
+snmp-agent sys-info location B1F
+snmp-agent sys-info version all
+snmp-agent target-host trap address udp-domain 172.16.254.252 params securityname cipher %^%#{zRzYF^~P>%$-T=!TshTy#LN%Q_"F/`QRm<C6S7~%^%#
+snmp-agent trap source Vlanif50
+snmp-agent trap enable feature-name IFNET trap-name linkDown
+snmp-agent trap enable feature-name IFNET trap-name linkUp
+snmp-agent trap enable feature-name CONFIGURATION
+snmp-agent trap enable feature-name SNMP trap-name authenticationFailure
+undo snmp-agent trap enable feature-name DLDP
+undo snmp-agent trap enable feature-name LDTTRAP
+undo snmp-agent trap enable feature-name LLDPTRAP
+snmp-agent trap enable feature-name VFS
+snmp-agent trap enable feature-name BASETRAP
+#
+header login information " WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!"
+#
+user-interface maximum-vty 15
+user-interface con 0
+ authentication-mode password
+ set authentication password cipher $1a$#:-*J(}H2.$<=#yS0x'`N^5Kq.xgRZ2zm&N*7qvN+Z2:l'=f),F$
+ idle-timeout 20 0
+ screen-length 40
+user-interface vty 0 4
+ acl 2016 inbound
+ authentication-mode aaa
+ user privilege level 15
+ idle-timeout 20 0
+ screen-length 0
+ protocol inbound telnet
+user-interface vty 5 14
+ acl 2016 inbound
+ authentication-mode aaa
+ user privilege level 15
+ idle-timeout 20 0
+ screen-length 40
+ protocol inbound telnet
+user-interface vty 16 20
+ acl 2016 inbound
+ authentication-mode aaa
+ user privilege level 15
+ idle-timeout 20 0
+ screen-length 40
+ protocol inbound telnet
+#
+return
+[HZ-XS-ZTYQ-DSW-1&2.MAN.9306-ui-vty0-4]

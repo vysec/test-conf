@@ -1,0 +1,415 @@
+
+Building configuration...
+
+Current configuration : 9485 bytes
+!
+version 12.2
+no service pad
+service tcp-keepalives-in
+service tcp-keepalives-out
+service timestamps debug datetime
+service timestamps log datetime
+service password-encryption
+!
+hostname LS-LS-LCBG-SW2-1.MAN.C3550
+!
+logging buffered 16384 debugging
+no logging console
+enable secret 5 $1$J6rb$u0GzchKKgVb5HLbwE6NoD1
+!
+username admin privilege 15 password 7 095B5D581E071F180F0E
+aaa new-model
+aaa authentication login default group tacacs+ local
+aaa authentication login telnet group tacacs+ local
+aaa authentication enable default group tacacs+ enable
+aaa authorization config-commands
+aaa authorization exec default group tacacs+ local 
+aaa authorization exec telnet group tacacs+ local 
+aaa authorization commands 0 telnet group tacacs+ local 
+aaa authorization commands 1 telnet group tacacs+ local 
+aaa authorization commands 15 default group tacacs+ local 
+aaa authorization commands 15 telnet group tacacs+ local 
+aaa authorization network default group tacacs+ local 
+aaa accounting exec default start-stop group tacacs+
+aaa accounting commands 15 default start-stop group tacacs+
+!
+aaa session-id common
+clock timezone Beijing 8
+errdisable recovery cause link-flap
+mls qos
+ip subnet-zero
+no ip source-route
+ip routing
+no ip gratuitous-arps
+no ip domain-lookup
+!
+vtp mode transparent
+!
+!
+!
+no file verify auto
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+no spanning-tree vlan 275,278,703,2092,3126
+!
+vlan internal allocation policy ascending
+!
+vlan 29
+ name Cisco-Manager
+!
+vlan 278
+ name Vpn_ZhongXinYiYuan-ShuiGe
+!
+vlan 291
+ name VPN-ZhongXinYiYuan-ShuiGe
+!
+vlan 1187
+ name wlan-ZhongXinYiYuanGuShangKe-ap
+!
+vlan 1303
+ name To-Ls-Lan-ZhongXinYiYuanXinSuShe
+!
+vlan 3118
+ name VPN-YiBao-ShiZhongXinYiYuan
+!
+vlan 3121
+ name Vpn-ShuiGe-ZhongXinYiYuan
+!
+vlan 3123
+ name YiBao
+!
+vlan 3124
+ name shuigeweishengyuan
+!
+vlan 3125
+ name QiYuanSheBao
+!
+vlan 3126
+ name QingTianyibao-vpn-heshi
+!
+vlan 3151
+ name VPN-SongYan-YiBao
+!
+vlan 3152
+ name VPN-YunHe-YiBao
+!
+vlan 3157
+ name VPN-ShuiGe-ZhongXinYiYuan
+!
+vlan 3212
+ name VPN-DHJK-LianChengBinGuan
+!
+vlan 3223
+ name VPN-JingNingYiBao
+!
+vlan 3325
+ name EDU-ChengBei-XiaoXue
+!
+vlan 3391
+ name VPN-TO-JinYunYiBao
+!
+vlan 3436
+ name Gov-ShiZhongXinYiYuan
+!
+vlan 3584
+ name NetBar-XinShiDai
+!
+vlan 3600
+ name DianShiTai-Ip
+!
+vlan 3620
+ name ZhongHengWuXian-NetBar
+!
+vlan 3753
+ name DianDa-IP
+!
+vlan 3767
+ name LiMingZhongZhuanShangWang-IP
+!
+vlan 3776
+ name ShiZhuanGaoZhong-IP
+!
+vlan 3854
+ name LongquanYibao-vpn
+!
+vlan 3855
+ name vpn-YunHeYiBao
+!
+vlan 3882
+ name GOV-QU-LiWuGuoFangGongLuZhiHuiBu
+!
+vlan 3973
+ name zhongxinyiyuan
+!
+vlan 3992
+ name JinTaiYang-NetBar
+!
+vlan 3994
+ name JianNanWangBa
+!
+vlan 3995
+ name NetBar-YongHen
+!
+class-map match-all IPclass
+  match ip dscp default 
+!
+!
+policy-map rate-2M
+  class IPclass
+    police 2048000 200000 exceed-action drop
+policy-map rate-4M
+  class IPclass
+    police 4192000 200000 exceed-action drop
+policy-map rate-500M
+  class IPclass
+    police 512000000 500000 exceed-action drop
+policy-map rate-20M
+  class IPclass
+    police 20480000 200000 exceed-action drop
+policy-map rate-50M
+  class IPclass
+    police 51200000 500000 exceed-action drop
+!
+!
+interface Loopback0
+ ip address 10.10.254.195 255.255.255.255
+!
+interface FastEthernet0/1
+ switchport mode dynamic desirable
+ shutdown
+!
+interface FastEthernet0/2
+ description VPN-EDU-ChengBei-XiaoXue
+ switchport access vlan 3325
+ switchport mode access
+ storm-control broadcast level 10.00
+!
+interface FastEthernet0/3
+ description Edu-DianDa-IP
+ switchport access vlan 3753
+ switchport mode access
+ storm-control broadcast level 10.00
+!
+interface FastEthernet0/4
+ description PPPOE-DianShiTai
+ switchport access vlan 3600
+ switchport mode access
+ switchport protected
+ storm-control broadcast level 10.00
+!
+interface FastEthernet0/5
+ description IP-NetBar-XinShiDai
+ switchport access vlan 3584
+ switchport mode access
+ shutdown
+ storm-control broadcast level 10.00
+!
+interface FastEthernet0/6
+ switchport mode dynamic desirable
+ shutdown
+!
+interface FastEthernet0/7
+ description IP-NetBar-ZhongHengWuXian-2
+ switchport access vlan 3620
+ switchport mode access
+ shutdown
+ storm-control broadcast level 10.00
+!
+interface FastEthernet0/8
+ description IP-NetBar-JiangNan
+ switchport access vlan 3994
+ switchport mode access
+ shutdown
+ storm-control broadcast level 10.00
+!
+interface FastEthernet0/9
+ description PPPOE-Edu-ShiZhuanGaoZhong
+ switchport access vlan 3776
+ switchport mode access
+ switchport protected
+!
+interface FastEthernet0/10
+ description LiMingZhongZhuanShangWang-IP
+ switchport access vlan 3767
+ switchport mode access
+!
+interface FastEthernet0/11
+ description IP-NetBar-YongHen-2
+ switchport access vlan 3995
+ switchport mode access
+ storm-control broadcast level 10.00
+!
+interface FastEthernet0/12
+ description IP-JinTaiYang-NetBar-2
+ switchport access vlan 3992
+ switchport mode access
+ shutdown
+ storm-control broadcast level 10.00
+!
+interface FastEthernet0/13
+ description VPN-Gov-ZhongXinYiYuan
+ switchport access vlan 3436
+ switchport mode access
+ storm-control broadcast level 10.00
+!
+interface FastEthernet0/14
+ description VPN-ZhongXinYiYuan-ShuiGe
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 1,278,291,3119,3121,3124,3126,3151,3854,3855
+ switchport trunk allowed vlan add 3973
+ switchport mode trunk
+ storm-control broadcast level 10.00
+ no cdp enable
+!
+interface FastEthernet0/15
+ description GOV-QU-LiWuGuoFangGongLuZhiHuiBu
+ switchport access vlan 3882
+ switchport mode access
+ shutdown
+!
+interface FastEthernet0/16
+ switchport mode dynamic desirable
+ shutdown
+!
+interface FastEthernet0/17
+ description To-Ls-Lan-ZhongXinYiYuanXinSuShe-D3226
+ switchport access vlan 1303
+ switchport mode dot1q-tunnel
+ speed 100
+ duplex full
+ no cdp enable
+!
+interface FastEthernet0/18
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/19
+ description VPN-DHJK-LianChengBinGuan
+ switchport access vlan 3212
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/20
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/21
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/22
+ switchport access vlan 1187
+ switchport mode dot1q-tunnel
+ speed 100
+ duplex full
+!
+interface FastEthernet0/23
+ no switchport
+ no ip address
+!
+interface FastEthernet0/24
+ description TO-3550-temp
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 3584,3620,3994
+ switchport mode trunk
+!
+interface GigabitEthernet0/1
+ description uT:LS-LS-CZ-S9306-2.MAN(F0605230005)G1/0/5
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 29,278,291,1187,1303,3118,3119,3121,3124,3126
+ switchport trunk allowed vlan add 3151,3212,3325,3436,3477,3564,3584,3586,3600
+ switchport trunk allowed vlan add 3620,3753,3767,3776,3854,3855,3882,3973,3992
+ switchport trunk allowed vlan add 3994,3995
+ switchport mode trunk
+!
+interface GigabitEthernet0/2
+ switchport mode dynamic desirable
+!
+interface Vlan1
+ ip address 10.90.90.91 255.255.255.0
+!
+interface Vlan29
+ description Cisco-Manager
+ ip address 10.10.63.195 255.255.255.192
+ no ip redirects
+ no ip unreachables
+ no ip proxy-arp
+ no ip route-cache cef
+ no ip route-cache
+!
+interface Vlan3124
+ ip address 172.16.1.201 255.255.255.0
+!
+interface Vlan3477
+ no ip address
+!
+interface Vlan3973
+ no ip address
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 10.10.63.193
+no ip http server
+!
+ip access-list extended worm
+ deny   tcp any any eq 445
+ deny   tcp any eq 135 any
+ deny   udp any any eq 135
+ deny   tcp any eq 139 any
+ deny   tcp any any eq 139
+ deny   udp any any eq 1434
+ deny   tcp any any eq 4444
+ deny   udp any any eq netbios-ns
+ deny   udp any any eq netbios-dgm
+ deny   tcp any eq 137 any
+ deny   tcp any any eq 135
+ deny   tcp any any eq 593
+ deny   tcp any eq 4444 any
+ deny   tcp any eq 593 any
+ deny   udp any eq 135 any
+ deny   udp any eq netbios-ns any
+ deny   udp any eq netbios-dgm any
+ permit ip any any
+!
+logging trap debugging
+logging source-interface Loopback0
+logging 10.10.1.130
+access-list 98 permit 218.74.120.198
+access-list 100 permit tcp 10.10.255.0 0.0.0.255 any eq telnet
+access-list 100 permit tcp 218.74.120.0 0.0.0.255 any eq telnet
+access-list 100 permit tcp 218.74.121.0 0.0.0.255 any eq telnet
+access-list 100 permit tcp 218.74.123.0 0.0.0.255 any eq telnet
+access-list 100 permit tcp 218.74.126.0 0.0.0.255 any eq telnet
+access-list 100 permit tcp 61.174.94.0 0.0.0.255 any eq telnet
+access-list 100 permit tcp 202.96.114.0 0.0.0.255 any eq telnet
+access-list 100 permit tcp 61.174.95.0 0.0.0.255 any eq telnet
+access-list 100 permit tcp 218.74.127.128 0.0.0.127 any eq telnet
+access-list 100 deny   tcp any any eq telnet
+access-list 100 permit ip any any
+snmp-server community ls-cw2000-ro RO 98
+snmp-server community ls578@zjnoc RO
+tacacs-server host 10.10.1.235
+tacacs-server directed-request
+tacacs-server key 7 08365F1F0E1B090D1E0914
+radius-server source-ports 1645-1646
+!
+control-plane
+!
+banner login ^CC WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!  ^C
+!
+line con 0
+line vty 0 4
+ exec-timeout 3 0
+ password 7 00101C081D0F595E2F721A18
+ authorization commands 0 telnet
+ authorization commands 1 telnet
+ authorization commands 15 telnet
+ authorization exec telnet
+ login authentication telnet
+line vty 5 15
+ authorization commands 0 telnet
+ authorization commands 1 telnet
+ authorization commands 15 telnet
+ authorization exec telnet
+ login authentication telnet
+!
+ntp server 10.10.1.138
+end
+
+LS-LS-LCBG-SW2-1.MAN.C3550#

@@ -1,0 +1,1766 @@
+
+!Software Version V200R008C00SPC500
+#
+sysname HU-WX-FH-DSW-1.MAN.9306
+#
+vlan batch 2 13 20 30 45 to 47 49 51 to 52 56 453 673
+vlan batch 712 1023 1198 1301 1359 1371 to 1378 1387 to 1402 1427 1441 1445 to 1446
+vlan batch 1452 1467 to 1482 1490 1499 to 1514 1517 1520 to 1522 1524 1526 to 1527 1529 to 1535 1542
+vlan batch 1547 to 1562 1564 1567 1576 1583 1591 to 1620 1653 to 1684 1702 1705 to 1714 1717 to 1724
+vlan batch 1730 to 1744 1781 to 1800 1824 1833 2077 to 2103 2121 to 2129 2140 to 2165 2176 to 2194 2371 to 2378 2387 to 2402
+vlan batch 2467 to 2482 2499 to 2514 2547 to 2562 2591 to 2620 2653 to 2684 2915 to 2924 2965 to 2972 2983 to 3000 3097 to 3099 3975 to 3977
+vlan batch 3979 to 4000 4089 4092 to 4093
+#
+undo authentication unified-mode
+#
+domain default admin
+#
+igmp-snooping enable
+#
+telnet server enable
+telnet ipv6 server enable
+#
+undo http server enable
+undo http secure-server enable
+#
+undo management-port isolate enable
+undo management-plane isolate enable
+#
+clock timezone UTC add 00:00:00
+#
+observe-port 1 interface XGigabitEthernet3/0/5
+observe-port 2 interface GigabitEthernet5/0/43
+#
+diffserv domain default
+#
+hwtacacs-server template huawei
+ hwtacacs-server authentication 10.118.10.86
+ hwtacacs-server authorization 10.118.10.86
+ hwtacacs-server accounting 10.118.10.86
+ hwtacacs-server source-ip 10.118.20.4
+ hwtacacs-server shared-key cipher %^%#nKEF6b6;t%~8-$'[apyM#(3=!g*!4>khmr/6]~h>%^%#
+ undo hwtacacs-server user-name domain-included
+#
+acl number 3000  
+ rule 5 permit ip 
+acl number 3005  
+ rule 5 permit ip source 10.229.69.2 0 
+ rule 10 permit ip destination 10.229.69.2 0 
+#
+traffic classifier 200M operator or precedence 5
+ if-match acl 3000
+traffic classifier 400M operator or precedence 15
+ if-match acl 3000
+traffic classifier c1 operator or precedence 10
+ if-match acl 3005
+#
+traffic behavior 100M
+ car cir 100000 pir 100000 cbs 12500000 pbs 12500000 mode color-blind green pass yellow pass red discard
+traffic behavior 200M
+ car cir 200000 pir 200000 cbs 25000000 pbs 25000000 mode color-blind green pass yellow pass red discard
+traffic behavior 400M
+ car cir 400000 pir 400000 cbs 75200000 pbs 125200000 mode color-blind green pass yellow pass red discard
+traffic behavior b1
+ mirroring to observe-port 1 
+#
+traffic policy 100M match-order auto
+traffic policy 200M match-order auto
+ classifier 200M behavior 200M
+traffic policy 400M match-order auto
+ classifier 400M behavior 400M
+traffic policy p1 match-order auto
+ classifier c1 behavior b1
+#
+drop-profile default
+#
+vlan 20
+ description SW-ADMIN
+vlan 30
+ description wangguan
+vlan 45
+ description Admin-HUAWEI-GPON
+vlan 46
+ description admin-ZTE-GPON
+vlan 453
+ description SHICHANGBU-XINSHITONG
+vlan 673
+ description HUANBAO-SHIJIQIYE
+vlan 712
+ description GongAn-EYE
+vlan 1198
+ description WLAN-XiLaiDengDaJiuDian
+vlan 1359
+ description ADSL-AL-FengHuang-N9-7302FD
+vlan 1371
+ description HU-WX-FH-HuaWei-10GPON-OLT-19_P1
+vlan 1372
+ description HU-WX-FH-HuaWei-10GPON-OLT-19_P1&ADSL-AL-YangGuangCheng2-7302
+vlan 1373
+ description HU-WX-FH-HuaWei-10GPON-OLT-19_P1
+vlan 1374
+ description HU-WX-FH-HuaWei-10GPON-OLT-19_P1
+vlan 1375
+ description HU-WX-FH-HuaWei-10GPON-OLT-19_P1
+vlan 1376
+ description HU-WX-FH-HuaWei-10GPON-OLT-19_P1
+vlan 1377
+ description HU-WX-FH-HuaWei-10GPON-OLT-19_P1
+vlan 1378
+ description HU-WX-FH-HuaWei-10GPON-OLT-19_P1
+vlan 1387
+ description FH-HuaWei-10G-GPON-OLT-18_P1
+vlan 1388
+ description FH-HuaWei-10G-GPON-OLT-18_P1
+vlan 1389
+ description FH-HuaWei-10G-GPON-OLT-18_P1
+vlan 1390
+ description FH-HuaWei-10G-GPON-OLT-18_P1
+vlan 1391
+ description FH-HuaWei-10G-GPON-OLT-18_P1
+vlan 1392
+ description FH-HuaWei-10G-GPON-OLT-18_P1
+vlan 1393
+ description FH-HuaWei-10G-GPON-OLT-18_P1&FengHuangYiCun-2-7302FD
+vlan 1394
+ description FH-HuaWei-10G-GPON-OLT-18_P1&FengHuangYiCun-1-7302FD
+vlan 1395
+ description FH-HuaWei-10G-GPON-OLT-18_P1
+vlan 1396
+ description FH-HuaWei-10G-GPON-OLT-18_P1
+vlan 1397
+ description FH-HuaWei-10G-GPON-OLT-18_P1
+vlan 1398
+ description FH-HuaWei-10G-GPON-OLT-18_P1
+vlan 1399
+ description FH-HuaWei-10G-GPON-OLT-18_P1
+vlan 1400
+ description FH-HuaWei-10G-GPON-OLT-18_P1
+vlan 1401
+ description FH-HuaWei-10G-GPON-OLT-18_P1
+vlan 1402
+ description FH-HuaWei-10G-GPON-OLT-18_P1
+vlan 1427
+ description ADSL-AL-LongWan-7302
+vlan 1441
+ description ADSL-AL-FENGHUANG-N8-7302
+vlan 1445
+ description ADSL-AL-TaiShiWan-7302
+vlan 1446
+ description ADSL-AL-LongShan-7302FD
+vlan 1452
+ description ADSL-AL-RENHUANXINQU2-7302FD
+vlan 1467
+ description ADSL-AL-AiDuHuaYuan-7302FD&FH-HuaWei-10G-GPON-OLT-16
+vlan 1468
+ description TO-HU-FH-HuaWei-10G-GPON-OLT-16
+vlan 1469
+ description TO-HU-FH-HuaWei-10G-GPON-OLT-16
+vlan 1470
+ description ADSL-AL-RenHuangShan-7302&FH-HuaWei-10G-GPON-OLT-16
+vlan 1471
+ description TO-HU-FH-HuaWei-10G-GPON-OLT-16
+vlan 1472
+ description ADSL-AL-GANGHU-7302
+vlan 1473
+ description TO-HU-FH-HuaWei-10G-GPON-OLT-16
+vlan 1474
+ description TO-HU-FH-HuaWei-10G-GPON-OLT-16
+vlan 1475
+ description TO-HU-FH-HuaWei-10G-GPON-OLT-16
+vlan 1476
+ description TO-HU-FH-HuaWei-10G-GPON-OLT-16
+vlan 1477
+ description TO-HU-FH-HuaWei-10G-GPON-OLT-16
+vlan 1478
+ description TO-HU-FH-HuaWei-10G-GPON-OLT-16
+vlan 1479
+ description TO-HU-FH-HuaWei-10G-GPON-OLT-16
+vlan 1480
+ description TO-HU-FH-HuaWei-10G-GPON-OLT-16
+vlan 1481
+ description TO-HU-FH-HuaWei-10G-GPON-OLT-16
+vlan 1482
+ description TO-HU-FH-HuaWei-10G-GPON-OLT-16
+vlan 1490
+ description ADSL-AL-FENGHUANG-N7-7302
+vlan 1499
+ description FH-HuaWei10G-GPON-OLT-14_1
+vlan 1500
+ description FH-HuaWei10G-GPON-OLT-14_2
+vlan 1501
+ description FH-HuaWei10G-GPON-OLT-14_3
+vlan 1502
+ description FH-HuaWei10G-GPON-OLT-14_4
+vlan 1503
+ description FH-HuaWei10G-GPON-OLT-14_5
+vlan 1504
+ description FH-HuaWei10G-GPON-OLT-14_6
+vlan 1505
+ description FH-HuaWei10G-GPON-OLT-14_7
+vlan 1506
+ description FH-HuaWei10G-GPON-OLT-14_8
+vlan 1507
+ description FH-HuaWei10G-GPON-OLT-14_9
+vlan 1508
+ description FH-HuaWei10G-GPON-OLT-14_10
+vlan 1509
+ description FH-HuaWei10G-GPON-OLT-14_11
+vlan 1510
+ description FH-HuaWei10G-GPON-OLT-14_12
+vlan 1511
+ description FH-HuaWei10G-GPON-OLT-14_13
+vlan 1512
+ description FH-HuaWei10G-GPON-OLT-14_14
+vlan 1513
+ description FH-HuaWei10G-GPON-OLT-14_15
+vlan 1514
+ description FH-HuaWei10G-GPON-OLT-14_16
+vlan 1517
+ description LAN-ChengShiZhiXin
+vlan 1520
+ description ADSL-UT-LongWan
+vlan 1521
+ description ADSL-AL-YaoJiaBa1&2-7325
+vlan 1522
+ description ADSL-AL-HouBeiTangCun-7325
+vlan 1524
+ description ADSL-AL-FENGHUANG-N6-7302
+vlan 1526
+ description cription LAN-YANGGUANGJIARI
+vlan 1529
+ description LAN-YangGuangCheng
+vlan 1530
+ description ADSL-AL-FENGHUANG-N5-7300XD
+vlan 1531
+ description ADSL-AL-FENGHUANG-N4-7300XD
+vlan 1532
+ description ADSL-AL-FENGHUANG-N3-7300XD
+vlan 1533
+ description ADSL-UT-fenghuang-3
+vlan 1534
+ description ADSL-UT-Fenghuang-1
+vlan 1535
+ description ADSL-UT-Fenghuang-2
+vlan 1542
+ description ADSL-AL-QiMao-7300UD:fe2
+vlan 1547
+ description FH-HuaWei10G-GPON-OLT-14
+vlan 1548
+ description FH-HuaWei10G-GPON-OLT-14
+vlan 1549
+ description ADSL-AL-HongQiCun-7300UD&FH-HuaWei10G-GPON-OLT-14
+vlan 1550
+ description ADSL-UT-TaiHuLiaoYangYuan&FH-HuaWei10G-GPON-OLT-14
+vlan 1551
+ description FH-HuaWei10G-GPON-OLT-14
+vlan 1552
+ description FH-HuaWei10G-GPON-OLT-14
+vlan 1553
+ description ADSL-AL-TaiShiWan1&2&3-7325&FH-HuaWei10G-GPON-OLT-14
+vlan 1554
+ description FH-HuaWei10G-GPON-OLT-14
+vlan 1555
+ description FH-HuaWei10G-GPON-OLT-14
+vlan 1556
+ description FH-HuaWei10G-GPON-OLT-14
+vlan 1557
+ description FH-HuaWei10G-GPON-OLT-14
+vlan 1558
+ description ADSL-UT-AiDuHuaYuan-B800&FH-HuaWei10G-GPON-OLT-14
+vlan 1559
+ description FH-HuaWei10G-GPON-OLT-14
+vlan 1560
+ description FH-HuaWei10G-GPON-OLT-14
+vlan 1561
+ description FH-HuaWei10G-GPON-OLT-14
+vlan 1562
+ description FH-HuaWei10G-GPON-OLT-14
+vlan 1564
+ description ADSL-AL-YanYuWanCun-7325
+vlan 1567
+ description ADSL-AL-RenHuangXinQu-7300UD
+vlan 1576
+ description ADSL-AL-TaiLun-7300UD:eth2
+vlan 1583
+ description ADSL-AL-YangGuangCheng1-7302
+vlan 1591
+ description FH-ZTE-GPON-OLT-12
+vlan 1592
+ description FH-ZTE-GPON-OLT-12
+vlan 1593
+ description FH-ZTE-GPON-OLT-12
+vlan 1594
+ description FH-ZTE-GPON-OLT-12
+vlan 1595
+ description FH-ZTE-GPON-OLT-12
+vlan 1596
+ description FH-ZTE-GPON-OLT-12
+vlan 1597
+ description FH-ZTE-GPON-OLT-12
+vlan 1598
+ description FH-ZTE-GPON-OLT-12
+vlan 1599
+ description FH-ZTE-GPON-OLT-12
+vlan 1600
+ description FH-ZTE-GPON-OLT-12
+vlan 1601
+ description FH-ZTE-GPON-OLT-12
+vlan 1602
+ description FH-ZTE-GPON-OLT-12
+vlan 1603
+ description FH-ZTE-GPON-OLT-12
+vlan 1604
+ description FH-ZTE-GPON-OLT-12
+vlan 1605
+ description TH-HuaWei-GPON-OLT-1
+vlan 1606
+ description TH-HuaWei-GPON-OLT-1
+vlan 1607
+ description TH-HuaWei-GPON-OLT-1
+vlan 1608
+ description TH-HuaWei-GPON-OLT-1
+vlan 1609
+ description TH-HuaWei-GPON-OLT-1
+vlan 1610
+ description TH-HuaWei-GPON-OLT-1
+vlan 1611
+ description TH-HuaWei-GPON-OLT-1
+vlan 1612
+ description TH-HuaWei-GPON-OLT-1
+vlan 1613
+ description TH-HuaWei-GPON-OLT-1
+vlan 1614
+ description TH-HuaWei-GPON-OLT-1
+vlan 1615
+ description TH-HuaWei-GPON-OLT-1
+vlan 1616
+ description TH-HuaWei-GPON-OLT-1
+vlan 1617
+ description TH-HuaWei-GPON-OLT-1
+vlan 1618
+ description TH-HuaWei-GPON-OLT-1
+vlan 1619
+ description TH-HuaWei-GPON-OLT-1
+vlan 1620
+ description TH-HuaWei-GPON-OLT-1
+vlan 1653
+ description FH-BianNan-HW-GPON-OLT-3
+vlan 1654
+ description FH-BianNan-HW-GPON-OLT-3
+vlan 1655
+ description FH-BianNan-HW-GPON-OLT-3
+vlan 1656
+ description FH-BianNan-HW-GPON-OLT-3
+vlan 1657
+ description FH-BianNan-HW-GPON-OLT-3
+vlan 1658
+ description FH-BianNan-HW-GPON-OLT-3
+vlan 1659
+ description FH-BianNan-HW-GPON-OLT-3
+vlan 1660
+ description FH-BianNan-HW-GPON-OLT-3
+vlan 1661
+ description FH-BianNan-HW-GPON-OLT-3
+vlan 1662
+ description FH-BianNan-HW-GPON-OLT-3
+vlan 1663
+ description FH-BianNan-HW-GPON-OLT-3
+vlan 1664
+ description FH-BianNan-HW-GPON-OLT-3
+vlan 1665
+ description FH-BianNan-HW-GPON-OLT-3
+vlan 1666
+ description FH-BianNan-HW-GPON-OLT-3
+vlan 1667
+ description FH-BianNan-HW-GPON-OLT-3
+vlan 1668
+ description FH-BianNan-HW-GPON-OLT-3
+vlan 1669
+ description FH-MiaoXi-HW-GPON-OLT-2
+vlan 1670
+ description FH-MiaoXi-HW-GPON-OLT-2
+vlan 1671
+ description FH-MiaoXi-HW-GPON-OLT-2
+vlan 1672
+ description FH-MiaoXi-HW-GPON-OLT-2
+vlan 1673
+ description FH-MiaoXi-HW-GPON-OLT-2
+vlan 1674
+ description FH-MiaoXi-HW-GPON-OLT-2
+vlan 1675
+ description FH-MiaoXi-HW-GPON-OLT-2
+vlan 1676
+ description FH-MiaoXi-HW-GPON-OLT-2
+vlan 1677
+ description FH-MiaoXi-HW-GPON-OLT-2
+vlan 1678
+ description FH-MiaoXi-HW-GPON-OLT-2
+vlan 1679
+ description FH-MiaoXi-HW-GPON-OLT-2
+vlan 1680
+ description FH-MiaoXi-HW-GPON-OLT-2
+vlan 1681
+ description FH-MiaoXi-HW-GPON-OLT-2
+vlan 1682
+ description FH-MiaoXi-HW-GPON-OLT-2
+vlan 1683
+ description FH-MiaoXi-HW-GPON-OLT-2
+vlan 1684
+ description FH-MiaoXi-HW-GPON-OLT-2
+vlan 1717
+ description HU-WX-FH-ZTE-EPON-OLT-13_14
+vlan 1718
+ description HU-WX-FH-ZTE-EPON-OLT-13_13
+vlan 1719
+ description HU-WX-FH-ZTE-EPON-OLT-13_12
+vlan 1720
+ description HU-WX-FH-ZTE-EPON-OLT-13_11
+vlan 1721
+ description HU-WX-FH-ZTE-EPON-OLT-13_10
+vlan 1722
+ description HU-WX-FH-ZTE-EPON-OLT-13_9
+vlan 1723
+ description HU-WX-FH-ZTE-EPON-OLT-13_8
+vlan 1724
+ description HU-WX-FH-ZTE-EPON-OLT-13_7
+vlan 1730
+ description HU-WX-FH-ZTE-EPON-OLT-13_6
+vlan 1731
+ description HU-WX-FH-ZTE-EPON-OLT-13_5
+vlan 1732
+ description HU-WX-FH-ZTE-EPON-OLT-13_4
+vlan 1733
+ description HU-WX-FH-ZTE-EPON-OLT-13_3
+vlan 1734
+ description HU-WX-FH-ZTE-EPON-OLT-13_2
+vlan 1735
+ description HU-WX-FH-ZTE-EPON-OLT-13_1
+vlan 1736
+ description WX-MiaoXi-FengHuo-EPON-OLT-3
+vlan 1737
+ description WX-MiaoXi-FengHuo-EPON-OLT-3
+vlan 1738
+ description WX-MiaoXi-FengHuo-EPON-OLT-3
+vlan 1739
+ description WX-MiaoXi-FengHuo-EPON-OLT-3
+vlan 1740
+ description WX-MiaoXi-FengHuo-EPON-OLT-3
+vlan 1741
+ description WX-MiaoXi-FengHuo-EPON-OLT-3
+vlan 1742
+ description WX-MiaoXi-FengHuo-EPON-OLT-3
+vlan 1743
+ description WX-MiaoXi-FengHuo-EPON-OLT-3
+vlan 1744
+ description WX-MiaoXi-FengHuo-EPON-OLT-3
+vlan 1781
+ description EPON-FH-ZTE-OLT3-PON-14/3-4
+vlan 1800
+ description EPON-FH-ZTE-OLT3-PON-1/1-2
+vlan 1824
+ description QQGC-4M-ZHUZHONGPING
+vlan 1833
+ description fh3952-2
+vlan 2091
+ description HU-FH-ZTE-10G-EPON-OLT-17
+vlan 2092
+ description HU-FH-ZTE-10G-EPON-OLT-17
+vlan 2093
+ description HU-FH-ZTE-10G-EPON-OLT-17
+vlan 2094
+ description HU-FH-ZTE-EPON-OLT-17
+vlan 2097
+ description TO-HU-FH-ZTE-10G-EPON-OLT-17
+vlan 2098
+ description TO-HU-FH-ZTE-10G-EPON-OLT-17
+vlan 2099
+ description TO-HU-FH-ZTE-10G-EPON-OLT-17
+vlan 2100
+ description TO-HU-FH-ZTE-10G-EPON-OLT-17
+vlan 2101
+ description TO-HU-FH-ZTE-10G-EPON-OLT-17
+vlan 2102
+ description TO-HU-FH-ZTE-10G-EPON-OLT-17
+vlan 2103
+ description TO-HU-FH-ZTE-10G-EPON-OLT-17
+vlan 2121
+ description WX-BN-FengHuo-OLT2_9
+vlan 2122
+ description WX-BN-FengHuo-OLT2_8
+vlan 2123
+ description WX-BN-FengHuo-OLT2_7
+vlan 2124
+ description WX-BN-FengHuo-OLT2_6
+vlan 2125
+ description WX-BN-FengHuo-OLT2_5
+vlan 2126
+ description WX-BN-FengHuo-OLT2_4
+vlan 2127
+ description WX-BN-FengHuo-OLT2_3
+vlan 2128
+ description WX-BN-FengHuo-OLT2_2
+vlan 2129
+ description WX-BN-FengHuo-OLT2_1
+vlan 2140
+ description FH-FengHuo-OTL-10_16
+vlan 2141
+ description FH-FengHuo-OTL-10_15
+vlan 2142
+ description FH-FengHuo-OTL-10_14
+vlan 2143
+ description FH-FengHuo-OTL-10_13
+vlan 2144
+ description FH-FengHuo-OTL-10_12
+vlan 2145
+ description FH-FengHuo-OTL-10_11
+vlan 2146
+ description FH-FengHuo-OTL-10_10
+vlan 2147
+ description FH-FengHuo-OTL-10_9
+vlan 2148
+ description FH-FengHuo-OTL-10_8
+vlan 2149
+ description FH-FengHuo-OTL-10_7
+vlan 2150
+ description FH-FengHuo-OTL-10_6
+vlan 2151
+ description FH-FengHuo-OTL-10_5
+vlan 2152
+ description FH-FengHuo-OTL-10_4
+vlan 2153
+ description FH-FengHuo-OTL-10_3
+vlan 2154
+ description FH-FengHuo-OTL-10_2
+vlan 2155
+ description FH-FengHuo-OTL-10_1
+vlan 2156
+ description HU-WX-FH-ZTE-OLT-9_10
+vlan 2157
+ description HU-WX-FH-ZTE-OLT-9_9
+vlan 2158
+ description HU-WX-FH-ZTE-OLT-9_8
+vlan 2159
+ description HU-WX-FH-ZTE-OLT-9_7
+vlan 2160
+ description HU-WX-FH-ZTE-OLT-9_6
+vlan 2161
+ description HU-WX-FH-ZTE-OLT-9_5
+vlan 2162
+ description HU-WX-FH-ZTE-OLT-9_4
+vlan 2163
+ description HU-WX-FH-ZTE-OLT-9_3
+vlan 2164
+ description HU-WX-FH-ZTE-OLT-9_2
+vlan 2165
+ description HU-WX-FH-ZTE-OLT-9_1
+vlan 2176
+ description WX-FH-ZTE-OLT-8_10
+vlan 2177
+ description WX-FH-ZTE-OLT-8_9
+vlan 2178
+ description WX-FH-ZTE-OLT-8_8
+vlan 2179
+ description WX-FH-ZTE-OLT-8_7
+vlan 2180
+ description WX-FH-ZTE-OLT-8_6
+vlan 2181
+ description WX-FH-ZTE-OLT-8_5
+vlan 2182
+ description WX-FH-ZTE-OLT-8_4
+vlan 2183
+ description WX-FH-ZTE-OLT-8_3
+vlan 2184
+ description WX-FH-ZTE-OLT-8_2
+vlan 2185
+ description WX-FH-ZTE-OLT-8_1
+vlan 2186
+ description WX-BN-FengHuo-OLT1_9
+vlan 2187
+ description WX-BN-FengHuo-OLT1_8
+vlan 2188
+ description WX-BN-FengHuo-OLT1_7
+vlan 2189
+ description WX-BN-FengHuo-OLT1_6
+vlan 2190
+ description WX-BN-FengHuo-OLT1_5
+vlan 2191
+ description WX-BN-FengHuo-OLT1_4
+vlan 2192
+ description WX-BN-FengHuo-OLT1_3
+vlan 2193
+ description WX-BN-FengHuo-OLT1_2
+vlan 2194
+ description WX-BN-FengHuo-OLT1_1
+vlan 2371
+ description HU-WX-FH-HuaWei-10GPON-OLT-19_P2
+vlan 2372
+ description HU-WX-FH-HuaWei-10GPON-OLT-19_P2
+vlan 2373
+ description HU-WX-FH-HuaWei-10GPON-OLT-19_P2
+vlan 2374
+ description HU-WX-FH-HuaWei-10GPON-OLT-19_P2
+vlan 2375
+ description HU-WX-FH-HuaWei-10GPON-OLT-19_P2
+vlan 2376
+ description HU-WX-FH-HuaWei-10GPON-OLT-19_P2
+vlan 2377
+ description HU-WX-FH-HuaWei-10GPON-OLT-19_P2
+vlan 2378
+ description HU-WX-FH-HuaWei-10GPON-OLT-19_P2
+vlan 2387
+ description FH-HuaWei-10G-GPON-OLT-18_P2
+vlan 2388
+ description FH-HuaWei-10G-GPON-OLT-17_P2
+vlan 2389
+ description FH-HuaWei-10G-GPON-OLT-18_P2
+vlan 2390
+ description FH-HuaWei-10G-GPON-OLT-18_P2
+vlan 2391
+ description FH-HuaWei-10G-GPON-OLT-18_P2
+vlan 2392
+ description FH-HuaWei-10G-GPON-OLT-18_P2
+vlan 2393
+ description FH-HuaWei-10G-GPON-OLT-18_P2
+vlan 2394
+ description FH-HuaWei-10G-GPON-OLT-18_P2
+vlan 2395
+ description FH-HuaWei-10G-GPON-OLT-18_P2
+vlan 2396
+ description FH-HuaWei-10G-GPON-OLT-18_P2
+vlan 2397
+ description FH-HuaWei-10G-GPON-OLT-18_P2
+vlan 2398
+ description FH-HuaWei-10G-GPON-OLT-18_P2
+vlan 2399
+ description FH-HuaWei-10G-GPON-OLT-18_P2
+vlan 2400
+ description FH-HuaWei-10G-GPON-OLT-18_P2
+vlan 2401
+ description FH-HuaWei-10G-GPON-OLT-18_P2
+vlan 2402
+ description FH-HuaWei-10G-GPON-OLT-18_P2
+vlan 2467
+ description TO-HU-FH-HuaWei-10G-GPON-OLT-16
+vlan 2468
+ description TO-HU-FH-HuaWei-10G-GPON-OLT-16
+vlan 2469
+ description TO-HU-FH-HuaWei-10G-GPON-OLT-16
+vlan 2470
+ description TO-HU-FH-HuaWei-10G-GPON-OLT-16
+vlan 2471
+ description TO-HU-FH-HuaWei-10G-GPON-OLT-16
+vlan 2472
+ description TO-HU-FH-HuaWei-10G-GPON-OLT-16
+vlan 2473
+ description TO-HU-FH-HuaWei-10G-GPON-OLT-16
+vlan 2474
+ description TO-HU-FH-HuaWei-10G-GPON-OLT-16
+vlan 2475
+ description TO-HU-FH-HuaWei-10G-GPON-OLT-16
+vlan 2476
+ description TO-HU-FH-HuaWei-10G-GPON-OLT-16
+vlan 2477
+ description TO-HU-FH-HuaWei-10G-GPON-OLT-16
+vlan 2478
+ description TO-HU-FH-HuaWei-10G-GPON-OLT-16
+vlan 2479
+ description TO-HU-FH-HuaWei-10G-GPON-OLT-16
+vlan 2480
+ description TO-HU-FH-HuaWei-10G-GPON-OLT-16
+vlan 2481
+ description TO-HU-FH-HuaWei-10G-GPON-OLT-16
+vlan 2482
+ description TO-HU-FH-HuaWei-10G-GPON-OLT-16
+vlan 2499
+ description FH-HuaWei10G-GPON-OLT-14_Er_1
+vlan 2500
+ description FH-HuaWei10G-GPON-OLT-14_Er_2
+vlan 2501
+ description FH-HuaWei10G-GPON-OLT-14_Er_3
+vlan 2502
+ description FH-HuaWei10G-GPON-OLT-14_Er_4
+vlan 2503
+ description FH-HuaWei10G-GPON-OLT-14_Er_5
+vlan 2504
+ description FH-HuaWei10G-GPON-OLT-14_Er_6
+vlan 2505
+ description FH-HuaWei10G-GPON-OLT-14_Er_7
+vlan 2506
+ description FH-HuaWei10G-GPON-OLT-14_Er_8
+vlan 2507
+ description FH-HuaWei10G-GPON-OLT-14_Er_9
+vlan 2508
+ description FH-HuaWei10G-GPON-OLT-14_Er_10
+vlan 2509
+ description FH-HuaWei10G-GPON-OLT-14_Er_11
+vlan 2510
+ description FH-HuaWei10G-GPON-OLT-14_Er_12
+vlan 2511
+ description FH-HuaWei10G-GPON-OLT-14_Er_13
+vlan 2512
+ description FH-HuaWei10G-GPON-OLT-14_Er_14
+vlan 2513
+ description FH-HuaWei10G-GPON-OLT-14_Er_15
+vlan 2514
+ description FH-HuaWei10G-GPON-OLT-14_Er_16
+vlan 2547
+ description FH-HuaWei10G-GPON-OLT-14_Er
+vlan 2548
+ description FH-HuaWei10G-GPON-OLT-14_Er
+vlan 2549
+ description FH-HuaWei10G-GPON-OLT-14_Er
+vlan 2550
+ description FH-HuaWei10G-GPON-OLT-14_Er
+vlan 2551
+ description FH-HuaWei10G-GPON-OLT-14_Er
+vlan 2552
+ description FH-HuaWei10G-GPON-OLT-14_Er
+vlan 2553
+ description FH-HuaWei10G-GPON-OLT-14_Er
+vlan 2554
+ description FH-HuaWei10G-GPON-OLT-14_Er
+vlan 2555
+ description FH-HuaWei10G-GPON-OLT-14_Er
+vlan 2556
+ description FH-HuaWei10G-GPON-OLT-14_Er
+vlan 2557
+ description FH-HuaWei10G-GPON-OLT-14_Er
+vlan 2558
+ description FH-HuaWei10G-GPON-OLT-14_Er
+vlan 2559
+ description FH-HuaWei10G-GPON-OLT-14_Er
+vlan 2560
+ description FH-HuaWei10G-GPON-OLT-14_Er
+vlan 2561
+ description FH-HuaWei10G-GPON-OLT-14_Er
+vlan 2562
+ description FH-HuaWei10G-GPON-OLT-14_Er
+vlan 2591
+ description FH-ZTE-GPON-OLT-12_ErPingMian
+vlan 2592
+ description FH-ZTE-GPON-OLT-12_ErPingMian
+vlan 2593
+ description FH-ZTE-GPON-OLT-12_ErPingMian
+vlan 2594
+ description FH-ZTE-GPON-OLT-12_ErPingMian
+vlan 2595
+ description FH-ZTE-GPON-OLT-12_ErPingMian
+vlan 2596
+ description FH-ZTE-GPON-OLT-12_ErPingMian
+vlan 2597
+ description FH-ZTE-GPON-OLT-12_ErPingMian
+vlan 2598
+ description FH-ZTE-GPON-OLT-12_ErPingMian
+vlan 2599
+ description FH-ZTE-GPON-OLT-12_ErPingMian
+vlan 2600
+ description FH-ZTE-GPON-OLT-12_ErPingMian
+vlan 2601
+ description FH-ZTE-GPON-OLT-12_ErPingMian
+vlan 2602
+ description FH-ZTE-GPON-OLT-12_ErPingMian
+vlan 2603
+ description FH-ZTE-GPON-OLT-12_ErPingMian
+vlan 2604
+ description FH-ZTE-GPON-OLT-12_ErPingMian
+vlan 2605
+ description TH-HuaWei-GPON-OLT-1_ErPingMian
+vlan 2606
+ description TH-HuaWei-GPON-OLT-1_ErPingMian
+vlan 2607
+ description TH-HuaWei-GPON-OLT-1_ErPingMian
+vlan 2608
+ description TH-HuaWei-GPON-OLT-1_ErPingMian
+vlan 2609
+ description TH-HuaWei-GPON-OLT-1_ErPingMian
+vlan 2610
+ description TH-HuaWei-GPON-OLT-1_ErPingMian
+vlan 2611
+ description TH-HuaWei-GPON-OLT-1_ErPingMian
+vlan 2612
+ description TH-HuaWei-GPON-OLT-1_ErPingMian
+vlan 2613
+ description TH-HuaWei-GPON-OLT-1_ErPingMian
+vlan 2614
+ description TH-HuaWei-GPON-OLT-1_ErPingMian
+vlan 2615
+ description TH-HuaWei-GPON-OLT-1_ErPingMian
+vlan 2616
+ description TH-HuaWei-GPON-OLT-1_ErPingMian
+vlan 2617
+ description TH-HuaWei-GPON-OLT-1_ErPingMian
+vlan 2618
+ description TH-HuaWei-GPON-OLT-1_ErPingMian
+vlan 2619
+ description TH-HuaWei-GPON-OLT-1_ErPingMian
+vlan 2620
+ description TH-HuaWei-GPON-OLT-1_ErPingMian
+vlan 2653
+ description FH-BianNan-HW-GPON-OLT-3_ErPingMian
+vlan 2654
+ description FH-BianNan-HW-GPON-OLT-3_ErPingMian
+vlan 2655
+ description FH-BianNan-HW-GPON-OLT-3_ErPingMian
+vlan 2656
+ description FH-BianNan-HW-GPON-OLT-3_ErPingMian
+vlan 2657
+ description FH-BianNan-HW-GPON-OLT-3_ErPingMian
+vlan 2658
+ description FH-BianNan-HW-GPON-OLT-3_ErPingMian
+vlan 2659
+ description FH-BianNan-HW-GPON-OLT-3_ErPingMian
+vlan 2660
+ description FH-BianNan-HW-GPON-OLT-3_ErPingMian
+vlan 2661
+ description FH-BianNan-HW-GPON-OLT-3_ErPingMian
+vlan 2662
+ description FH-BianNan-HW-GPON-OLT-3_ErPingMian
+vlan 2663
+ description FH-BianNan-HW-GPON-OLT-3_ErPingMian
+vlan 2664
+ description FH-BianNan-HW-GPON-OLT-3_ErPingMian
+vlan 2665
+ description FH-BianNan-HW-GPON-OLT-3_ErPingMian
+vlan 2666
+ description FH-BianNan-HW-GPON-OLT-3_ErPingMian
+vlan 2667
+ description FH-BianNan-HW-GPON-OLT-3_ErPingMian
+vlan 2668
+ description FH-BianNan-HW-GPON-OLT-3_ErPingMian
+vlan 2669
+ description FH-MiaoXi-HW-GPON-OLT-2_ErPingMian
+vlan 2670
+ description FH-MiaoXi-HW-GPON-OLT-2_ErPingMian
+vlan 2671
+ description FH-MiaoXi-HW-GPON-OLT-2_ErPingMian
+vlan 2672
+ description FH-MiaoXi-HW-GPON-OLT-2_ErPingMian
+vlan 2673
+ description FH-MiaoXi-HW-GPON-OLT-2_ErPingMian
+vlan 2674
+ description FH-MiaoXi-HW-GPON-OLT-2_ErPingMian
+vlan 2675
+ description FH-MiaoXi-HW-GPON-OLT-2_ErPingMian
+vlan 2676
+ description FH-MiaoXi-HW-GPON-OLT-2_ErPingMian
+vlan 2677
+ description FH-MiaoXi-HW-GPON-OLT-2_ErPingMian
+vlan 2678
+ description FH-MiaoXi-HW-GPON-OLT-2_ErPingMian
+vlan 2679
+ description FH-MiaoXi-HW-GPON-OLT-2_ErPingMian
+vlan 2680
+ description FH-MiaoXi-HW-GPON-OLT-2_ErPingMian
+vlan 2681
+ description FH-MiaoXi-HW-GPON-OLT-2_ErPingMian
+vlan 2682
+ description FH-MiaoXi-HW-GPON-OLT-2_ErPingMian
+vlan 2683
+ description FH-MiaoXi-HW-GPON-OLT-2_ErPingMian
+vlan 2684
+ description FH-MiaoXi-HW-GPON-OLT-2_ErPingMian
+vlan 2915
+ description TO-HU-WX-FH-ZTE-OLT-7_1
+vlan 2916
+ description TO-HU-WX-FH-ZTE-OLT-7_2
+vlan 2917
+ description TO-HU-WX-FH-ZTE-OLT-7_3
+vlan 2918
+ description TO-HU-WX-FH-ZTE-OLT-7_4
+vlan 2919
+ description TO-HU-WX-FH-ZTE-OLT-7_5
+vlan 2920
+ description TO-HU-WX-FH-ZTE-OLT-7_6
+vlan 2921
+ description TO-HU-WX-FH-ZTE-OLT-7_7
+vlan 2922
+ description TO-HU-WX-FH-ZTE-OLT-7_8
+vlan 2923
+ description TO-HU-WX-FH-ZTE-OLT-7_9
+vlan 2924
+ description TO-HU-WX-FH-ZTE-OLT-7_10
+vlan 2965
+ description FH-HW-OLT-6-8
+vlan 2966
+ description FH-HW-OLT-6-7
+vlan 2967
+ description FH-HW-OLT-6-6
+vlan 2968
+ description FH-HW-OLT-6-5
+vlan 2969
+ description FH-HW-OLT-6-4
+vlan 2970
+ description FH-HW-OLT-6-3
+vlan 2971
+ description FH-HW-OLT-6-2
+vlan 2972
+ description FH-HW-OLT-6-1
+vlan 2983
+ description FH-FengHuo-OLT-5-9
+vlan 2984
+ description FH-FengHuo-OLT-5-8
+vlan 2985
+ description FH-FengHuo-OLT-5-7
+vlan 2986
+ description FH-FengHuo-OLT-5-6
+vlan 2987
+ description FH-FengHuo-OLT-5-5
+vlan 2988
+ description FH-FengHuo-OLT-5-4
+vlan 2989
+ description FH-FengHuo-OLT-5-3
+vlan 2990
+ description FH-FengHuo-OLT-5-2
+vlan 2991
+ description FH-FengHuo-OLT-5-1
+vlan 2992
+ description TO-WX-MX-FengHuo-OLT-9
+vlan 2993
+ description TO-WX-MX-FengHuo-OLT-8
+vlan 2994
+ description TO-WX-MX-FengHuo-OLT-7
+vlan 2995
+ description TO-WX-MX-FengHuo-OLT-6
+vlan 2996
+ description TO-WX-MX-FengHuo-OLT-5
+vlan 2997
+ description TO-WX-MX-FengHuo-OLT-4
+vlan 2998
+ description TO-WX-MX-FengHuo-OLT-3
+vlan 2999
+ description TO-WX-MX-FengHuo-OLT-2
+vlan 3000
+ description TO-WX-MX-FengHuo-OLT-1
+vlan 3097
+ description JiaoTongJianShe-VPN
+vlan 3098
+ description VPN-DongXiTiaoXiGuanLiSuo
+vlan 3099
+ description HuanBao-KeHuZhiCheng
+vlan 3975
+ description GuoAn
+vlan 3977
+ description KeHuZhiCheng
+vlan 3979
+ description NETBAR-XinYou
+vlan 3980
+ description LiangTingTing
+vlan 3981
+ description JiaoTongJu
+vlan 3982
+ description NETBAR-AoXiang
+vlan 3983
+ description LiFeng
+vlan 3984
+ description BoMeiQiChe
+vlan 3985
+ description NETBAR-JiaYe
+vlan 3986
+ description NETBAR-QiaoKe(ZhengWei)
+vlan 3987
+ description ZheJiangXinZiJingGong
+vlan 3990
+ description NETBAR-ZiYouZhiCheng
+vlan 3991
+ description NETBAR-XinShiGuangSuiDao
+vlan 3992
+ description NETBAR-zhengtian
+vlan 3993
+ description NETBAR-XingHe
+vlan 3994
+ description HuZhouShiSiFaJu
+vlan 3995
+ description DaDongWuKaiYuanJiuDian-1
+vlan 3996
+ description NETBAR-ZHANLUEMENGYOU
+vlan 3997
+ description XiLaiDeng-70M
+vlan 3998
+ description XiLaiDeng-30M
+vlan 3999
+ description HuZhouShiJianChaYuan-200M
+vlan 4000
+ description ITV-ZhuBo
+ igmp-snooping enable
+ igmp-snooping query-interval 125
+ igmp-snooping report-suppress
+vlan 4092
+ description TEST
+#
+aaa
+ authentication-scheme default
+ authentication-scheme huawei
+  authentication-mode hwtacacs local
+  authentication-super none
+ authorization-scheme default
+ authorization-scheme huawei
+  authorization-mode  none
+ accounting-scheme default
+ accounting-scheme huawei
+  accounting-mode hwtacacs
+ domain default
+  authentication-scheme huawei
+  accounting-scheme huawei
+  authorization-scheme huawei
+  hwtacacs-server huawei
+ domain default_admin
+ local-user admin password irreversible-cipher %^%#""_N/2{yt~F^[a>QVg>>zzo1ML1OD~!A\W'9a|'UXW,_.nKV63TIC-3a[CY"%^%#
+ local-user admin service-type http
+#
+interface Vlanif30
+ ip address 10.118.20.4 255.255.255.0
+#
+interface Vlanif1023
+ ip address 172.18.0.1 255.255.255.252
+#
+interface Eth-Trunk0
+ description pT:HU-WX-FH-9306-2:Eth-Trunk0
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 1706 to 1714 1735 2077 to 2078 2970 to 2972 4000 4093
+#
+interface Eth-Trunk1
+ description dT:HU-WX-FH-OLT-19.MAN.MA5680T:Eth-Trunk1(10GE0/19/0,10GE0/20/0)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 45 1371 to 1378 2371 to 2378 4000
+#
+interface Eth-Trunk2
+ description dT:HU-WX-FH-OLT-7.MAN.C220:smartgroup1(GE0/2/1,GE0/3/1)
+ port link-type trunk
+ port trunk allow-pass vlan 49 2915 to 2924
+#
+interface Eth-Trunk3
+ description dT:HU-WX-FH-OLT-8.MAN.C220:smartgroup1(GE0/2/1,GE0/3/1)
+ port link-type trunk
+ port trunk allow-pass vlan 49 2176 to 2185
+#
+interface Eth-Trunk4
+ description uT:HU-HU-FH-SR-2.MAN.7750:lag-7(GE1/1/7,GE2/1/7)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 30 45 to 47 49 453 1198 1719 to 1720 1722 1731 2078 2081 to 2082
+ port trunk allow-pass vlan 2086 2088 to 2089 2096 2100 2177 2181 2184 to 2185 3979 to 3981 3987 to 3988 3990 to 3993
+ port trunk allow-pass vlan 3995 to 3999
+#
+interface Eth-Trunk6
+ description dT:HU-WX-FH-OLT-11.MAN.C300:smartgroup1(GE1/19/1,GE1/19/2,GE1/19/3,GE1/19/4,GE1/20/1,GE1/20/2.GE1/20/3,GE1/20/4)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 49 2077 to 2090
+#
+interface Eth-Trunk9
+ description dT:HU-WX-MX-OLT-2.MAN.MA5680T:Eth-Trunk1(GE0/19/0,GE0/19/1,GE0/20/1,GE0/20/1)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 45 1669 to 1684 2669 to 2684 4000
+#
+interface Eth-Trunk10
+ description dT:HU-WX-BN-OLT-3.MAN.MA5680T:Eth-Trunk1(GE0/19/0,GE0/20/0)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 45 1653 to 1668 2653 to 2668 4000
+#
+interface Eth-Trunk11
+ description dT:HU-WX-YGJR-OLT-1.MAN.MA5680T:Eth-Trunk1(GE0/19/0,GE0/20/0)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 45 1605 to 1620 2605 to 2620 4000
+#
+interface Eth-Trunk12
+ description dT:HU-WX-MX-OLT-3.MAN.AN5516:groupno1(GE19/2,GE20/2)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 56 1736 to 1744
+#
+interface Eth-Trunk13
+ description dT:HU-WX-FH-OLT-13.MAN.C300:smartgroup1(GE1/19/1,GE1/20/1)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 2 49 1717 to 1724 1730 to 1735
+#
+interface Eth-Trunk14
+ description TO-HU-XiLaiDeng-2326_Eth-tr1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 30 1198 3997 to 3998
+#
+interface Eth-Trunk16
+ description dT:HU-WX-FH-OLT-14.MAN.MA5680T:Eth-Trunk1(10GE0/19/0,10GE0/20/0)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 45 1547 to 1562 2547 to 2562 4000
+#
+interface Eth-Trunk17
+ description dT:HU-WX-FH-OLT-15.MAN.MA5680T:Eth-Trunk1(10GE0/19/0,10GE0/20/0)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 45 1499 to 1514 2499 to 2514 4000
+ mode lacp
+#
+interface Eth-Trunk18
+ description uT:HU-HU-FH-SR-1.MAN.7750:lag-9
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 1371 1475 1479 1506 1550 1595 1609 to 1613 1660 1672 1707
+ port trunk allow-pass vlan 1709 1711 to 1713 1718 to 1719 1722 1724 1730 to 1734 1782 to 1785 1788 to 1790 1792 1795
+ port trunk allow-pass vlan 1799 to 1800 2078 2080 to 2081 2084 to 2087 2089 2159 to 2162 2164 to 2165 2176 2178 to 2180 2183 to 2185
+ port trunk allow-pass vlan 2371 2595 2610 to 2613 2660 2672 2915 to 2916 2968 to 2969 2972 2986 2990
+ port trunk allow-pass vlan 3000 3975 4089
+ mode lacp
+#
+interface Eth-Trunk19
+ description dT:HU-WX-FH-OLT-16.MAN.MA5680T:Eth-Trunk1(10GE0/19/0,10GE0/20/0)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 45 1467 to 1482 2467 to 2482 4000
+ mode lacp
+#
+interface Eth-Trunk20
+ description dT:HU-WX-FH-OLT-17.MAN.C300:smartgroup1(GE1/19/1,GE1/20/1)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 49 2091 to 2103
+ mode lacp
+#
+interface Eth-Trunk21
+ description uT:HU-HU-FH-BAS-9.MAN.7750:lag-1(GE7/1/1,GE7/1/2,GE8/1/1,GE8/1/2)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 13 1301 1359 1371 to 1378 1387 to 1402 1441 1446 1467 to 1482 1490 1499 to 1514
+ port trunk allow-pass vlan 1517 1524 1547 to 1562 1591 to 1620 1653 to 1684 1717 to 1724 1730 to 1734 1736 to 1744 2079 to 2103 2176 to 2185
+ port trunk allow-pass vlan 2371 to 2378 2387 to 2402 2467 to 2482 2499 to 2514 2547 to 2562 2591 to 2620 2653 to 2684 2915 to 2924 3976
+#
+interface Eth-Trunk22
+ description dT:HU-WX-FH-OLT-18.MAN.MA5680T:Eth-Trunk1(10GE0/19/0,10GE0/20/0)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 45 1387 to 1402 2387 to 2402 4000
+ mode lacp
+#
+interface Eth-Trunk24
+ description To-GongAn-FenGuang::kehu
+ port link-type trunk
+ port trunk allow-pass vlan 13 30 3976
+#
+interface Eth-Trunk25
+ description uT:HU-HU-FH-BAS-9.MAN.7750:lag-7(GE3/1/6,GE6/2/6)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 453 3982 to 3986 3995 4089 4092 to 4093
+#
+interface Eth-Trunk26
+ description uT:HU-HU-FH-BAS-9.MAN.7750:lag-8(GE3/1/7,GE6/2/7)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 4000
+ mode lacp
+#
+interface Eth-Trunk27
+ description dT:HU-WX-FH-OLT-12.MAN.C300:smartgroup1(10GE1/19/1,10GE1/20/1)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 46 1591 to 1604 2591 to 2604 4000
+#
+interface Ethernet0/0/0
+ ip address 129.255.255.150 255.255.255.0
+#
+interface GigabitEthernet1/0/0
+ description pT:HU-WX-FH-9306-2:(local)GE3/0/13
+ port link-type trunk
+ port trunk allow-pass vlan 20 47 49 56 673 1372 1427 1445 1452 1470
+ port trunk allow-pass vlan 1472 1520 to 1522 1526 to 1527 1529 to 1531 1533 1542 1564 1583 1702 1705
+ port trunk allow-pass vlan 1781 to 1800 1833 2121 to 2129 2140 to 2165 2176 2180 2186 to 2194 2922 to 2923 2965 to 2969 2983 to 3000
+#
+interface GigabitEthernet1/0/1
+ description dT:HU-WX-FH-OLT-11.MAN.C300:(local)GE1/19/3
+ eth-trunk 6
+#
+interface GigabitEthernet1/0/2
+ description dT:HU-WX-FH-OLT-7.MAN.C220:(local)GE0/2/1
+ eth-trunk 2
+#
+interface GigabitEthernet1/0/3
+ description dT:HU-WX-FH-OLT-8.MAN.C220:(local)GE0/2/1
+ eth-trunk 3
+#
+interface GigabitEthernet1/0/4
+ undo negotiation auto
+ description uT:HU-HU-FH-SR-2.MAN.7750:(local)GE1/1/7
+ eth-trunk 4
+#
+interface GigabitEthernet1/0/5
+ description dT:HU-WX-FH-OLT-11.MAN.C300:(local)GE1/19/4
+ eth-trunk 6
+#
+interface GigabitEthernet1/0/6
+ description dT:HU-WX-FH-OLT-11.MAN.C300:(local)GE1/20/1
+ shutdown
+ eth-trunk 6
+#
+interface GigabitEthernet1/0/7
+ description dT:HU-WX-MX-OLT-2.MAN.MA5680T:(F1205240016)GE0/19/0
+ eth-trunk 9
+#
+interface GigabitEthernet1/0/8
+#
+interface GigabitEthernet1/0/9
+ description dT:HU-WX-BN-OLT-3.MAN.MA5680T:(F1205290003)GE0/19/0
+ eth-trunk 10
+#
+interface GigabitEthernet1/0/10
+ description dT:HU-WX-MX-OLT-3.MAN.AN5516:(F1207060002)GE19/2
+ eth-trunk 12
+#
+interface GigabitEthernet1/0/11
+ description dT:HU-WX-YGJR-OLT-1.MAN.MA5680T:(F1205290011)GE0/19/0
+ eth-trunk 11
+#
+interface GigabitEthernet1/0/12
+ description dT:HU-WX-MX-OLT-2.MAN.MA5680T:(F1701181945)GE0/19/1
+ eth-trunk 9
+#
+interface GigabitEthernet1/0/13
+ description dT:HU-WX-MX-OLT-2.MAN.MA5680T:(F1701181946)GE0/20/0
+ eth-trunk 9
+#
+interface GigabitEthernet1/0/14
+ description dT:HU-WX-FH-OLT-13.MAN.C300:(local)GE1/19/1
+ eth-trunk 13
+#
+interface GigabitEthernet1/0/15
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet1/0/16
+ description TO-Hu-XiLaiDeng-S2326_G0/0/1(F1209240002)::kehu
+ eth-trunk 14
+#
+interface GigabitEthernet1/0/17
+ undo negotiation auto
+ description ADSL-AL-LongShan-7302FD(F0803040003)::kehu
+ port link-type dot1q-tunnel
+ port default vlan 1446
+#
+interface GigabitEthernet1/0/18
+ description ADSL-AL-AiDuHuaYuan-7302FD(F0711150019)::kehu
+ port link-type dot1q-tunnel
+ port default vlan 1467
+#
+interface GigabitEthernet1/0/19
+ description dT:HU-WX-FH-OLT-17.MAN.C300:(local)GE1/19/1
+ eth-trunk 20
+#
+interface GigabitEthernet1/0/20
+#
+interface GigabitEthernet1/0/21
+ description dT:HU-WX-FH-OLT-17.MAN.C300:(local)GE1/19/2
+ eth-trunk 20
+#
+interface GigabitEthernet1/0/22
+ shutdown
+#
+interface GigabitEthernet1/0/23
+ undo negotiation auto
+ description LAN-ChengShiZhiXin(F0702140009)::kehu
+ port link-type dot1q-tunnel
+ port default vlan 1517
+#
+interface GigabitEthernet2/0/0
+ description uT:HU-HU-FH-SR-1.MAN.7750:(local)GE6/1/5
+ port link-type trunk
+ port trunk allow-pass vlan 2 20 47 49 56 712 1198 1359 1372 1393
+ port trunk allow-pass vlan 1427 1441 1445 to 1446 1452 1467 1470 1472 1490 1507 1517
+ port trunk allow-pass vlan 1520 to 1522 1524 1526 to 1527 1529 to 1531 1533 1542 1549 to 1550 1553 1558 1564
+ port trunk allow-pass vlan 1583 1593 1602 1702 1705 to 1714 1717 to 1724 1730 to 1744 1781 to 1800 1833 1934
+ port trunk allow-pass vlan 2077 to 2103 2121 to 2129 2140 to 2165 2176 to 2194 2915 to 2924 2965 to 2972 2976 2983 to 3000 3097 to 3099 3977
+ port trunk allow-pass vlan 3988 3994
+#
+interface GigabitEthernet2/0/1
+ description dT:HU-WX-FH-OLT-11.MAN.C300:(local)GE1/20/2
+ eth-trunk 6
+#
+interface GigabitEthernet2/0/2
+ description dT:HU-WX-FH-OLT-7.MAN.C220:(local)GE0/3/1
+ eth-trunk 2
+#
+interface GigabitEthernet2/0/3
+ description dT:HU-WX-FH-OLT-8.MAN.C220:(local)GE0/3/1
+ eth-trunk 3
+#
+interface GigabitEthernet2/0/4
+ undo negotiation auto
+ description uT:HU-HU-FH-SR-2.MAN.7750:(local)GE2/1/7
+ eth-trunk 4
+#
+interface GigabitEthernet2/0/5
+ description dT:HU-WX-FH-OLT-11.MAN.C300:(local)GE1/20/3
+ eth-trunk 6
+#
+interface GigabitEthernet2/0/6
+ description dT:HU-WX-FH-OLT-11.MAN.C300:(local)GE1/20/4
+ shutdown
+ eth-trunk 6
+#
+interface GigabitEthernet2/0/7
+ description dT:HU-WX-MX-OLT-2.MAN.MA5680T:(F1701181944)GE0/20/1
+ eth-trunk 9
+#
+interface GigabitEthernet2/0/8
+#
+interface GigabitEthernet2/0/9
+ description dT:HU-WX-BN-OLT-3.MAN.MA5680T:(F1205290004)GE0/20/0
+ eth-trunk 10
+#
+interface GigabitEthernet2/0/10
+ description dT:HU-WX-MX-OLT-3.MAN.AN5516:(F1207060003)GE20/2
+ eth-trunk 12
+#
+interface GigabitEthernet2/0/11
+ description dT:HU-WX-YGJR-OLT-1.MAN.MA5680T:(F1205290012)GE0/20/0
+ eth-trunk 11
+#
+interface GigabitEthernet2/0/12
+ undo negotiation auto
+ speed 100
+ description HuZhouShiJianChaYuan-200M(F0804240022)::kehu
+ port link-type access
+ port default vlan 3999
+#
+interface GigabitEthernet2/0/13
+ undo negotiation auto
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet2/0/14
+ description dT:HU-WX-FH-OLT-13.MAN.C300:(local)GE1/20/1
+ eth-trunk 13
+#
+interface GigabitEthernet2/0/15
+ undo negotiation auto
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet2/0/16
+ description TO-Hu-XiLaiDeng-S2326_G0/0/2(F1209240005)::kehu
+ eth-trunk 14
+#
+interface GigabitEthernet2/0/17
+ undo negotiation auto
+ description uT:HU-HU-FH-BAS-9.MAN.7750:(local)GE3/1/7
+ eth-trunk 26
+#
+interface GigabitEthernet2/0/18
+ undo negotiation auto
+ description uT:HU-HU-FH-SR-1.MAN.7750:(local)GE1/2/2
+ eth-trunk 18
+#
+interface GigabitEthernet2/0/19
+ description dT:HU-WX-FH-OLT-17.MAN.C300:(local)GE1/20/1
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet2/0/20
+#
+interface GigabitEthernet2/0/21
+ description dT:HU-WX-FH-OLT-17.MAN.C300:(local)GE1/20/2
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet2/0/22
+#
+interface GigabitEthernet2/0/23
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet4/0/0
+ description dT:HU-WX-FH-OLT-11.MAN.C300:(local)GE1/19/1
+ eth-trunk 6
+#
+interface GigabitEthernet4/0/1
+ description dT:HU-WX-FH-OLT-11.MAN.C300:(local)GE1/19/2
+ eth-trunk 6
+#
+interface GigabitEthernet4/0/2
+ description DaDongWuKaiYuanJiuDian-1(F1311190016)::kehu
+ port link-type access
+ port default vlan 3995
+#
+interface GigabitEthernet4/0/3
+ undo negotiation auto
+ description HuZhouShiSiFaJu(F1212210003)::kehu
+ port link-type access
+ port default vlan 3994
+#
+interface GigabitEthernet4/0/4
+ undo negotiation auto
+ speed 100
+ description NETBAR-XinYou(F1609090010)::kehu
+ port link-type access
+ port default vlan 3979
+#
+interface GigabitEthernet4/0/5
+ description NETBAR-QiaoKe(ZhengWei)(F1502030008)::kehu
+ port link-type access
+ port default vlan 3987
+#
+interface GigabitEthernet4/0/6
+ description NETBAR-QiaoKe(ZhengWei)(F1502030008)::kehu
+ port link-type access
+ port default vlan 3986
+#
+interface GigabitEthernet4/0/7
+ description NETBAR-JiaYe::kehu
+ port link-type access
+ port default vlan 3985
+#
+interface GigabitEthernet4/0/8
+ description TO-KeHuZhiChengZhongXin(F0611220001)::kehu
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 453 673 712 3097 to 3099 3977
+#
+interface GigabitEthernet4/0/9
+ description JiaoTongJu(F0806170011)::kehu
+ port link-type access
+ port default vlan 3981
+#
+interface GigabitEthernet4/0/10
+ undo negotiation auto
+ speed 100
+ description BoMeiQiChe(F1505040030)::kehu
+ port link-type access
+ port default vlan 3984
+#
+interface GigabitEthernet4/0/11
+ description LiFeng(F1505080037)::kehu
+ port link-type access
+ port default vlan 3983
+#
+interface GigabitEthernet4/0/12
+ undo negotiation auto
+ speed 100
+ port link-type access
+ port default vlan 3980
+#
+interface GigabitEthernet4/0/13
+ undo negotiation auto
+ speed 100
+ description LiangTingTing(F1510260011)::kehu
+ port link-type access
+ port default vlan 3980
+#
+interface GigabitEthernet4/0/14
+ port link-type trunk
+#
+interface GigabitEthernet4/0/15
+ undo negotiation auto
+ description uT:HU-HU-FH-BAS-9.MAN.7750:(local)GE6/2/7
+ eth-trunk 26
+#
+interface GigabitEthernet4/0/16
+ undo negotiation auto
+ description uT:HU-HU-FH-BAS-9.MAN.7750:(local)GE3/1/6
+ eth-trunk 25
+#
+interface GigabitEthernet4/0/17
+ undo negotiation auto
+ description uT:HU-HU-FH-BAS-9.MAN.7750:(local)GE6/2/6
+ eth-trunk 25
+#
+interface GigabitEthernet4/0/18
+ undo negotiation auto
+ description uT:HU-HU-FH-SR-1.MAN.7750:(local)GE1/2/3
+ eth-trunk 18
+#
+interface GigabitEthernet4/0/19
+ description NETBAR-ZHANLUEMENGYOU(F0510270009)::kehu
+ port link-type access
+ port default vlan 3996
+ traffic-policy 200M inbound
+ traffic-policy 200M outbound
+#
+interface GigabitEthernet4/0/20
+ description NETBAR-XingHe::kehu
+ port link-type access
+ port default vlan 3993
+#
+interface GigabitEthernet4/0/21
+ description NETBAR-ZiYouZhiCheng::kehu
+ port link-type access
+ port default vlan 3990
+#
+interface GigabitEthernet4/0/22
+ description NETBAR-XinShiGuangSuiDao::kehu
+ port link-type access
+ port default vlan 3991
+#
+interface GigabitEthernet4/0/23
+ description NETBAR-ZhengTian::kehu
+ port link-type access
+ port default vlan 3992
+#
+interface GigabitEthernet5/0/0
+ shutdown
+#
+interface GigabitEthernet5/0/1
+ shutdown
+#
+interface GigabitEthernet5/0/2
+ shutdown
+#
+interface GigabitEthernet5/0/3
+ shutdown
+#
+interface GigabitEthernet5/0/4
+ port link-type access
+ port default vlan 3995
+#
+interface GigabitEthernet5/0/5
+ port link-type access
+ port default vlan 3995
+#
+interface GigabitEthernet5/0/6
+ port link-type access
+#
+interface GigabitEthernet5/0/7
+#
+interface GigabitEthernet5/0/8
+#
+interface GigabitEthernet5/0/9
+#
+interface GigabitEthernet5/0/10
+#
+interface GigabitEthernet5/0/11
+#
+interface GigabitEthernet5/0/12
+ port link-type access
+ port default vlan 4092
+#
+interface GigabitEthernet5/0/13
+ port link-type access
+ port default vlan 4093
+#
+interface GigabitEthernet5/0/14
+#
+interface GigabitEthernet5/0/15
+#
+interface GigabitEthernet5/0/16
+ port link-type access
+#
+interface GigabitEthernet5/0/17
+#
+interface GigabitEthernet5/0/18
+#
+interface GigabitEthernet5/0/19
+ port link-type access
+#
+interface GigabitEthernet5/0/20
+#
+interface GigabitEthernet5/0/21
+#
+interface GigabitEthernet5/0/22
+#
+interface GigabitEthernet5/0/23
+#
+interface GigabitEthernet5/0/24
+#
+interface GigabitEthernet5/0/25
+#
+interface GigabitEthernet5/0/26
+#
+interface GigabitEthernet5/0/27
+#
+interface GigabitEthernet5/0/28
+#
+interface GigabitEthernet5/0/29
+#
+interface GigabitEthernet5/0/30
+#
+interface GigabitEthernet5/0/31
+#
+interface GigabitEthernet5/0/32
+#
+interface GigabitEthernet5/0/33
+#
+interface GigabitEthernet5/0/34
+#
+interface GigabitEthernet5/0/35
+#
+interface GigabitEthernet5/0/36
+#
+interface GigabitEthernet5/0/37
+#
+interface GigabitEthernet5/0/38
+#
+interface GigabitEthernet5/0/39
+#
+interface GigabitEthernet5/0/40
+#
+interface GigabitEthernet5/0/41
+ description GuoAn::kehu
+ port link-type access
+ port default vlan 3975
+#
+interface GigabitEthernet5/0/42
+ port link-type access
+ port default vlan 4093
+#
+interface GigabitEthernet5/0/43
+ port link-type access
+ port default vlan 4093
+ port-mirroring to observe-port 1 outbound
+#
+interface GigabitEthernet5/0/44
+ description ADSL-AL-FengHuang-N9-7302FD::kehu
+ port link-type dot1q-tunnel
+ port default vlan 1359
+#
+interface GigabitEthernet5/0/45
+ description ADSL-AL-FengHuang-N6-7302::kehu
+ port link-type dot1q-tunnel
+ port default vlan 1524
+#
+interface GigabitEthernet5/0/46
+ description ADSL-AL-FengHuang-N7-7302::kehu
+ port link-type dot1q-tunnel
+ port default vlan 1490
+#
+interface GigabitEthernet5/0/47
+ description TO-HU-WX-FH-AL-7302_N8
+ port link-type dot1q-tunnel
+ port default vlan 1441
+#
+interface XGigabitEthernet3/0/0
+ description dT:HU-WX-FH-OLT-18.MAN.MA5680T:(local)10GE0/19/0
+ eth-trunk 22
+#
+interface XGigabitEthernet3/0/1
+ description dT:HU-WX-FH-OLT-14.MAN.MA5680T:(local)10GE0/19/0
+ eth-trunk 16
+#
+interface XGigabitEthernet3/0/2
+ description dT:HU-WX-FH-OLT-14.MAN.MA5680T:(local)10GE0/20/0
+ eth-trunk 16
+#
+interface XGigabitEthernet3/0/3
+ description dT:HU-WX-FH-OLT-15.MAN.MA5680T:(local)10GE0/19/0
+ eth-trunk 17
+#
+interface XGigabitEthernet3/0/4
+ description dT:HU-WX-FH-OLT-15.MAN.MA5680T:(local)10GE0/20/0
+ eth-trunk 17
+#
+interface XGigabitEthernet3/0/5
+ description pT:HU-HU-FH-DSW-2.MAN.9306:(local)10GE4/0/5
+ eth-trunk 0
+#
+interface XGigabitEthernet3/0/6
+ description dT:HU-WX-FH-OLT-12.MAN.C300:(local)10GE1/19/1
+ eth-trunk 27
+#
+interface XGigabitEthernet3/0/7
+ description dT:HU-WX-FH-OLT-16.MAN.MA5680T:(local)10GE0/19/0
+ eth-trunk 19
+#
+interface XGigabitEthernet3/0/8
+ description dT:HU-WX-FH-OLT-16.MAN.MA5680T:(local)10GE0/20/0
+ eth-trunk 19
+#
+interface XGigabitEthernet3/0/9
+ description To-GongAn-FenGuang::kehu
+ eth-trunk 24
+#
+interface XGigabitEthernet3/0/10
+#
+interface XGigabitEthernet3/0/11
+ description dT:HU-WX-FH-OLT-19.MAN.MA5680T:(local)10GE0/19/0
+ eth-trunk 1
+#
+interface XGigabitEthernet3/0/12
+#
+interface XGigabitEthernet3/0/13
+#
+interface XGigabitEthernet3/0/14
+ description uT:HU-HU-FH-BAS-9.MAN.7750:(local)10GE7/1/2
+ eth-trunk 21
+#
+interface XGigabitEthernet3/0/15
+ description uT:HU-HU-FH-BAS-9.MAN.7750:(local)10GE7/1/1
+ eth-trunk 21
+#
+interface XGigabitEthernet6/0/0
+ description dT:HU-WX-FH-OLT-18.MAN.MA5680T:(local)10GE0/20/0
+ eth-trunk 22
+#
+interface XGigabitEthernet6/0/1
+#
+interface XGigabitEthernet6/0/2
+#
+interface XGigabitEthernet6/0/3
+#
+interface XGigabitEthernet6/0/4
+#
+interface XGigabitEthernet6/0/5
+ description pT:HU-WX-FH-DSW-2.MAN.9306:(local)10GE6/0/5
+ eth-trunk 0
+#
+interface XGigabitEthernet6/0/6
+ description dT:HU-WX-FH-OLT-12.MAN.C300:(local)10GE1/20/1
+ eth-trunk 27
+#
+interface XGigabitEthernet6/0/7
+#
+interface XGigabitEthernet6/0/8
+#
+interface XGigabitEthernet6/0/9
+ eth-trunk 24
+#
+interface XGigabitEthernet6/0/10
+#
+interface XGigabitEthernet6/0/11
+ description dT:HU-WX-FH-OLT-19.MAN.MA5680T:(local)10GE0/20/0
+ eth-trunk 1
+#
+interface XGigabitEthernet6/0/12
+ description uT:HU-HU-FH-BAS-9.MAN.7750:(local)10GE8/1/1
+ eth-trunk 21
+#
+interface XGigabitEthernet6/0/13
+ description uT:HU-HU-FH-BAS-9.MAN.7750:(local)10GE8/1/2
+ eth-trunk 21
+#
+interface XGigabitEthernet6/0/14
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface XGigabitEthernet6/0/15
+#
+interface NULL0
+#
+ip route-static 0.0.0.0 0.0.0.0 10.118.20.1
+#
+snmp-agent
+snmp-agent local-engineid 800007DB000FE24BECD16877
+snmp-agent community read cipher %^%#LC/b$W-%7!o;%8!:'C-XCn_UWXdg"R|;2dUDU2D+(TZD8DNd:Kl]KV-jT_e)#.LC6)q$mO`Y5]P}'!LT%^%#
+snmp-agent sys-info contact R&D Nanjing, Huawei Technologies co.,Ltd.
+snmp-agent sys-info location Nanjing China
+snmp-agent sys-info version all
+snmp-agent target-host trap address udp-domain 61.130.254.113 udp-port 161 params securityname cipher %^%#()~`~[QHnO0KGD@=c)3Ii]%}Y\j_21RShj"IP1a<%^%#
+#
+ssh server compatible-ssh1x enable
+#
+user-interface con 0
+ authentication-mode password
+ set authentication password cipher %^%#vcCq,&*FQVQhuh.P6%D2x@:bMRV5UQh4]}M7i1{AQWa4D#t`LCa6uJ-8{E!<%^%#
+ idle-timeout 0 0
+ screen-length 0
+user-interface vty 0 4
+ authentication-mode aaa
+ user privilege level 15
+ protocol inbound telnet
+user-interface vty 16 20
+ protocol inbound telnet
+#
+port-group ernet1/0/22
+#
+port-group link-type
+#
+return
+<HU-WX-FH-DSW-1.MAN.9306>

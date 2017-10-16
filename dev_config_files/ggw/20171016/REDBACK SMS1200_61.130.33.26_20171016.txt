@@ -1,0 +1,1663 @@
+
+Building configuration...
+
+Current configuration:
+!
+!  Configuration last changed by user '<NO USER>' at Sun Oct 15 21:43:27 2017
+!
+!
+!
+ppp pppoe-large-mru
+!
+!
+aaa global authentication subscriber radius context local
+aaa global accounting subscriber radius context local
+aaa global reject empty-username
+aaa ip-pool allocation first-available
+aaa last-resort context local 
+!
+service-policy name iptv
+ allow domain name itv
+ allow context name vrIPTV
+!
+!
+service multiple-contexts
+!
+service inter-context routing
+!
+! 
+! 
+ software license
+  l2tp all encrypted 1 $1$Xy8DConm$UamWNkTlXjGu2zoEHT5zq1
+  mpls encrypted 1 $1$ERYTcl6.$V5ejnJjIxa29.CJj2RVEh/
+  subscriber high-availability encrypted 1 $1$xTRW0E8s$Am0tnVWG2YzmA4Pp6ZtlZ1
+  subscriber active 16000 encrypted 1 $1$6NCBikZy$a1wBfXvr4o5gvzTVeAZtl.
+  subscriber active 32000 encrypted 1 $1$kR2esTCD$Co2OKFZavLVdwrobbQAKX/
+  subscriber bandwidth 250 encrypted 1 $1$cvTEko72$I1OOhmTfJs6P1oWfQwMqt1
+  ccod encrypted 1 $1$Zi8Bv3KN$MDt4VX0lMuToYML3Uxtew.
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+context local
+! 
+ no ip domain-lookup
+!
+ router-id 61.130.33.26
+!
+ interface ge-10/1:51
+  description uT:SX-SX-DJ-CR-1.MAN.CRS:()Te1/5/0/9.51
+  ip address 220.187.244.42/30
+!
+ interface ge-12/1:51
+  description uT:SX-SX-QFC-CR-2.MAN.CRS:()Te1/5/0/9.51
+  ip address 220.187.244.50/30
+!
+ interface loopback0 loopback
+  description for local
+  ip address 61.130.33.26/32
+   ip source-address snmp radius tacacs+ syslog 
+ logging filter syslog informational
+ no logging console
+ logging syslog 61.174.89.69 facility local0
+ logging syslog 61.174.89.83 facility local7
+!
+ router isis shaoxing
+  net 86.4755.0575.0611.3003.3026.00
+  is type level-2-only 
+  distance 155
+  no graceful-restart
+  address-family ipv4 unicast
+   redistribute static route-map rpStaticToISIS
+ !
+  interface ge-10/1:51
+   ! bind to ethernet 10/1 dot1q pvc 51
+   circuit type level-2-only
+   hello padding never
+   metric 3000 level-2
+   address-family ipv4 unicast
+ !
+  interface ge-12/1:51
+   ! bind to ethernet 12/1 dot1q pvc 51
+   circuit type level-2-only
+   hello padding never
+   metric 3000 level-2
+   address-family ipv4 unicast
+ !
+  interface loopback0
+   passive-interface
+   metric 100000 level-2
+   address-family ipv4 unicast
+!
+ ip access-list admin
+  seq 10 permit tcp host 202.96.102.240 any eq telnet
+  seq 20 permit tcp host 202.96.102.47 any eq telnet
+  seq 30 permit tcp host 202.96.102.84 any eq telnet
+  seq 40 permit tcp host 202.96.103.188 any eq telnet
+  seq 50 permit tcp host 202.96.102.244 any eq telnet
+  seq 60 permit tcp host 202.96.102.139 any eq telnet
+  seq 70 permit tcp host 202.96.102.221 any eq telnet
+  seq 80 permit tcp host 61.174.89.82 any eq telnet
+  seq 90 permit tcp host 61.174.89.83 any eq telnet
+  seq 100 permit tcp host 61.174.89.84 any eq telnet
+  seq 110 permit tcp host 61.174.89.86 any eq telnet
+  seq 120 permit tcp host 61.174.89.89 any eq telnet
+  seq 130 permit tcp host 61.174.89.85 any eq telnet
+  seq 140 permit tcp host 61.174.89.90 any eq telnet
+  seq 150 permit tcp host 61.174.89.91 any eq telnet
+  seq 200 deny tcp any any eq telnet
+  seq 300 deny tcp any any eq ssh
+  seq 400 deny tcp any any eq ftp
+  seq 510 permit udp host 202.96.102.139 any eq snmp
+  seq 520 permit udp host 202.96.102.221 any eq snmp
+  seq 530 permit udp host 61.174.89.82 any eq snmp
+  seq 540 permit udp host 61.174.89.83 any eq snmp
+  seq 550 permit udp host 61.174.89.84 any eq snmp
+  seq 560 permit udp host 61.174.89.86 any eq snmp
+  seq 570 permit udp host 61.174.89.89 any eq snmp
+  seq 580 permit udp host 61.174.89.85 any eq snmp
+  seq 590 permit udp host 61.174.89.90 any eq snmp
+  seq 600 permit udp host 61.174.89.91 any eq snmp
+  seq 700 deny udp any any eq snmp
+  seq 1000 permit ip any any
+!
+ policy access-list downlink-out-class-acl
+  seq 10 permit ip any any precedence critical class iptv
+  seq 20 permit ip any any precedence flash-override class iad
+!
+ ip prefix-list loopback-only
+  seq 10 permit 61.130.32.0/24 eq 32
+  seq 20 permit 61.130.33.0/24 eq 32
+  seq 30 permit 220.187.255.0/24 eq 32
+  seq 40 permit 61.130.34.0/24 eq 32
+  seq 50 permit 61.130.35.0/24 eq 32
+!
+ ip prefix-list loopback-only-out
+  seq 10 permit 61.130.33.26/32 eq 32
+!
+ ip prefix-list plDefaultRoute
+  seq 10 permit 0.0.0.0/0
+!
+ ip prefix-list plPrivateRoute
+  seq 10 permit 10.0.0.0/8 le 32
+  seq 20 permit 172.16.0.0/12 le 32
+  seq 30 permit 192.168.0.0/16 le 32
+!
+ route-map rpFROMCR_IN permit 10
+  match ip address prefix-list plDefaultRoute
+!
+ route-map rpSET_COMM_OUT deny 10
+  match ip address prefix-list plDefaultRoute
+ route-map rpSET_COMM_OUT deny 20
+  match ip address prefix-list plPrivateRoute
+ route-map rpSET_COMM_OUT permit 30
+  set community 64755:1403 64755:11014 
+ route-map rpSET_COMM_OUT permit 40
+!
+ route-map rpStaticToBGP permit 10
+  match tag 100
+!
+ route-map rpStaticToISIS permit 10
+  match tag 10
+!
+ router mpls
+  propagate qos from mpls
+  interface ge-10/1:51
+  interface ge-12/1:51
+!
+ router ldp
+  label-binding prefix-list loopback-only in
+  label-binding prefix-list loopback-only-out out
+  interface ge-10/1:51
+  interface ge-12/1:51
+!
+ router bgp 64755
+  router-id 61.130.33.26
+  multi-paths external 8 internal 8
+  address-family ipv4 unicast
+   distance 20 200 200
+   redistribute static route-map rpStaticToBGP
+!
+  peer-group mpls-vpn internal
+    update-source loopback0
+    next-hop-self
+   no address-family ipv4 unicast
+   address-family ipv4 vpn
+!
+  peer-group pgCR internal
+    update-source loopback0
+   address-family ipv4 unicast
+      route-map rpFROMCR_IN in
+      route-map rpSET_COMM_OUT out
+   address-family ipv4 vpn
+!
+  neighbor 61.130.32.123 internal
+    peer-group pgCR
+    description uT:SX-SX-DJ-CR-1.MAN.CRS
+!
+  neighbor 61.130.32.124 internal
+    peer-group pgCR
+    description uT:SX-SX-QFC-CR-1.MAN.CRS
+!
+ enable encrypted 1 $1$........$dazrBmenspS9AwSb2U8eY.
+ enable authentication tacacs+ local 
+!
+ aaa authentication administrator console local  
+ aaa authentication administrator vty tacacs+ local 
+ aaa accounting subscriber radius
+ aaa accounting administrator tacacs+
+ aaa accounting commands 10 tacacs+
+ radius accounting server 115.239.134.44 encrypted-key F3DD6D5DCEED0C49
+ tacacs+ deadtime 0
+ tacacs+ max-retries 5
+ tacacs+ strip-domain
+ tacacs+ timeout 30
+ tacacs+ server 202.96.102.141 encrypted-key E5B88CC9D059C051
+ tacacs+ server 61.153.176.183 encrypted-key E5B88CC9D059C051
+!
+ administrator redback encrypted 1 $1$........$4qhlVuh2HDOCu/EbYfbM6.
+   privilege start 15
+ administrator sxnoc encrypted 1 $1$........$4xR7u2pIrjSJM2.OsbUNW0
+   privilege start 15
+ administrator zjnoc encrypted 1 $1$........$XHMIZXP8SBjobGnhhpk1Y/
+   privilege start 15
+!
+ radius attribute nas-ip-address interface loopback0
+ radius algorithm round-robin
+ radius accounting max-retries 2
+ radius accounting timeout 15
+ radius accounting algorithm round-robin
+ service ftp client
+ no service tftp 
+ no service sftp server
+ no service scp server
+ no service ssh client
+ service ssh server
+ no service rcp client
+ service telnet 
+!
+ admin-access-group admin in log
+!
+!
+!
+context vrManager vpn-rd 64755:10000
+! 
+ no ip domain-lookup
+!
+ interface mgmt
+  ip address 10.249.48.83/21
+   ip source-address telnet snmp radius tacacs+ syslog tftp ftp netop 
+ no logging console
+!
+ aaa authentication administrator local  
+ aaa authentication administrator maximum sessions 1
+!
+!
+ ip route 0.0.0.0/0 10.249.48.1
+ no service ftp client
+ service tftp client
+ no service tftp server
+ no service sftp 
+ service ssh 
+ service telnet 
+!
+!
+!
+context vrPPPoE-ShanXun
+ domain ABBX.QY  
+ domain AKXL.QY  
+ domain ALDY.QY  
+ domain ALS.QY  
+ domain ALSY.QY  
+ domain AMY.QY  
+ domain ASHJ.QY  
+ domain ATCL.QY  
+ domain ATKS.QY  
+ domain BCQC.QY  
+ domain BDKG.QY  
+ domain BDYY.QY  
+ domain BDZZ.QY  
+ domain BHHY.QY  
+ domain BHJS.QY  
+ domain BHSX.QY  
+ domain BHXQ.QY  
+ domain BHYJ.QY  
+ domain BHYR.QY  
+ domain BLBY.QY  
+ domain BLCY.QY  
+ domain BLFZ.QY  
+ domain BLNI.QY  
+ domain BLS.QY  
+ domain BNGY.QY  
+ domain BRCL.QY  
+ domain BRYR.QY  
+ domain BSD.QY  
+ domain BSM.QY  
+ domain BSTE.QY  
+ domain BTE.QY  
+ domain BTH.QY  
+ domain BYFS.QY  
+ domain BYSY.QY  
+ domain BZJX.QY  
+ domain CAJX.QY  
+ domain CBYQ.QY  
+ domain CCFZ.QY  
+ domain CGJX.QY  
+ domain CHYB.QY  
+ domain CLBZ.QY  
+ domain CLFZ.QY  
+ domain CLHQ.QY  
+ domain CSJX.QY  
+ domain CSTY.QY  
+ domain CTZX.QY  
+ domain CTZZ.QY  
+ domain DDBL.QY  
+ domain DDN.QY  
+ domain DDSY.QY  
+ domain DFHQ.QY  
+ domain DFSC.QY  
+ domain DGLG.QY  
+ domain DGYY.QY  
+ domain DHJS.QY  
+ domain DHJY.QY  
+ domain DHSY.QY  
+ domain DHZC.QY  
+ domain DINGBL.QY  
+ domain DJFZ.QY  
+ domain DJMA.QY  
+ domain DKSY.QY  
+ domain DLBZ.QY  
+ domain DLTH.QY  
+ domain DOHG.QY  
+ domain DPXQ.QY  
+ domain DSGM.QY  
+ domain DSGY.QY  
+ domain DSYY.QY  
+ domain DTGD.QY  
+ domain DTJH.QY  
+ domain DTJJ.QY  
+ domain DXKJ.QY  
+ domain DXYJ.QY  
+ domain DYJD.QY  
+ domain DYMF.QY  
+ domain DYZL.QY  
+ domain ELFZ.QY  
+ domain FCJD.QY  
+ domain FCJG.QY  
+ domain FCPH.QY  
+ domain FCTH.QY  
+ domain FDDQ.QY  
+ domain FDFZ.QY  
+ domain FEDY.QY  
+ domain FGCD.QY  
+ domain FGFZ.QY  
+ domain FHZ.QY  
+ domain FKT.QY  
+ domain FQGF.QY  
+ domain FQQY.QY  
+ domain FSQX.QY  
+ domain FTGD.QY  
+ domain FYFZ.QY  
+ domain FYJD.QY  
+ domain FYQ.QY  
+ domain FYSL.QY  
+ domain GBXQ.QY  
+ domain GFBL.QY  
+ domain GJJD.QY  
+ domain GLJX.QY  
+ domain GLS.QY  
+ domain GLZ.QY  
+ domain GNHQ.QY  
+ domain GNZF.QY  
+ domain GSBK.QY  
+ domain GSDQ.QY  
+ domain GSYD.QY  
+ domain GTJX.QY  
+ domain GYBL.QY  
+ domain GYGM.QY  
+ domain HAFZ.QY  
+ domain HBJS.QY  
+ domain HBJX.QY  
+ domain HBRH.QY  
+ domain HBYM.QY  
+ domain HCDJ.QY  
+ domain HCJG.QY  
+ domain HCKJ.QY  
+ domain HDFZ.QY  
+ domain HDGZ.QY  
+ domain HEJX.QY  
+ domain HGRZ.QY  
+ domain HHGY.QY  
+ domain HHKT.QY  
+ domain HHWJ.QY  
+ domain HHXY.QY  
+ domain HJFZ.QY  
+ domain HJGG.QY  
+ domain HJJX.QY  
+ domain HLCX.QY  
+ domain HLHG.QY  
+ domain HLJX.QY  
+ domain HLQC.QY  
+ domain HLTY.QY  
+ domain HLYR.QY  
+ domain HLZZ.QY  
+ domain HMS.QY  
+ domain HMYQ.QY  
+ domain HNYY.QY  
+ domain HPKG.QY  
+ domain HQFC.QY  
+ domain HQJX.QY  
+ domain HQLH.QY  
+ domain HQZW.QY  
+ domain HRHB.QY  
+ domain HRMY.QY  
+ domain HSHG.QY  
+ domain HSJD.QY  
+ domain HSJX.QY  
+ domain HSQC.QY  
+ domain HSXX.QY  
+ domain HSYR.QY  
+ domain HSZY.QY  
+ domain HTDQ.QY  
+ domain HTFZ.QY  
+ domain HTJX.QY  
+ domain HTTY.QY  
+ domain HUIP.QY  
+ domain HWG.QY  
+ domain HXGM.QY  
+ domain HXJF.QY  
+ domain HXKG.QY  
+ domain HXQC.QY  
+ domain HXSY.QY  
+ domain HXTY.QY  
+ domain HXYR.QY  
+ domain HXZZ.QY  
+ domain HYBL.QY  
+ domain HYCS.QY  
+ domain HYD.QY  
+ domain HYDL.QY  
+ domain HYFJ.QY  
+ domain HYFZ.QY  
+ domain HYHJ.QY  
+ domain HYJX.QY  
+ domain HYSJ.QY  
+ domain HYWJ.QY  
+ domain HYWY.QY  
+ domain HYYR.QY  
+ domain HZHQ.QY  
+ domain HZSP.QY  
+ domain JBJC.QY  
+ domain JCFZ.QY  
+ domain JCHG.QY  
+ domain JCJF.QY  
+ domain JCJJ.QY  
+ domain JCTH.QY  
+ domain JDFZ.QY  
+ domain JDL.QY  
+ domain JDQC.QY  
+ domain JDSY.QY  
+ domain JFDX.QY  
+ domain JFYR.QY  
+ domain JGGD.QY  
+ domain JGSS.QY  
+ domain JHFZ.QY  
+ domain JHM.QY  
+ domain JJFZ.QY  
+ domain JJTM.QY  
+ domain JLB.QY  
+ domain JLD.QY  
+ domain JLJQ.QY  
+ domain JLJX.QY  
+ domain JLK.QY  
+ domain JLY.QY  
+ domain JNFS.QY  
+ domain JRF.QY  
+ domain JRWY.QY  
+ domain JSD.QY  
+ domain JSFZ.QY  
+ domain JSSD.QY  
+ domain JSSN.QY  
+ domain JTLD.QY  
+ domain JWAL.QY  
+ domain JWF.QY  
+ domain JXGS.QY  
+ domain JXHF.QY  
+ domain JXJX.QY  
+ domain JYFZ.QY  
+ domain JYJD.QY  
+ domain JYJX.QY  
+ domain JZFZ.QY  
+ domain JZXX.QY  
+ domain KDD.QY  
+ domain KDL.QY  
+ domain KDXF.QY  
+ domain KEZZ.QY  
+ domain KHHG.QY  
+ domain KLBZ.QY  
+ domain KLDKJ.QY  
+ domain KLN.QY  
+ domain KNZQ.QY  
+ domain KQSX.QY  
+ domain KQZQ.QY  
+ domain KSTD.QY  
+ domain KTFS.QY  
+ domain KTL.QY  
+ domain KYJX.QY  
+ domain LBYY.QY  
+ domain LDDQ.QY  
+ domain LDGG.QY  
+ domain LDR.QY  
+ domain LDSF.QY  
+ domain LDTL.QY  
+ domain LFSY.QY  
+ domain LMJX.QY  
+ domain LMYJ.QY  
+ domain LPJY.QY  
+ domain LRFZ.QY  
+ domain LSBX.QY  
+ domain LSDZ.QY  
+ domain LSZZ.QY  
+ domain LTHB.QY  
+ domain LTHD.QY  
+ domain LTJC.QY  
+ domain LTJD.QY  
+ domain LTQY.QY  
+ domain LVZJ.QY  
+ domain LXGD.QY  
+ domain LXKJ.QY  
+ domain LXYR.QY  
+ domain LYGS.QY  
+ domain LYJX.QY  
+ domain LYZZ.QY  
+ domain LZQY.QY  
+ domain MAOY.QY  
+ domain MASX.QY  
+ domain MLT.QY  
+ domain MSZF.QY  
+ domain MXJZ.QY  
+ domain MYYJ.QY  
+ domain MYZZ.QY  
+ domain NDBG.QY  
+ domain NFJS.QY  
+ domain NFSN.QY  
+ domain NYMF.QY  
+ domain NZFZ.QY  
+ domain OUSE.QY  
+ domain PJJL.QY  
+ domain PJQY.QY  
+ domain PRWY.QY  
+ domain PSY.QY  
+ domain PTNS.QY  
+ domain PWMY.QY  
+ domain PYFS.QY  
+ domain PZJS.QY  
+ domain QCJX.QY  
+ domain QHZX.QY  
+ domain QJYSS.QY  
+ domain QLJ.QY  
+ domain QQXQ.QY  
+ domain QSCH.QY  
+ domain QXJG.QY  
+ domain QXXQ.QY  
+ domain QYZF.QY  
+ domain RCSY.QY  
+ domain RFYH.QY  
+ domain RHXX.QY  
+ domain RLFZ.QY  
+ domain RMYY.QY  
+ domain ROFZ.QY  
+ domain RSSY.QY  
+ domain RSXX.QY  
+ domain RTGF.QY  
+ domain RTSJ.QY  
+ domain RYJC.QY  
+ domain RZWY.QY  
+ domain SASP.QY  
+ domain SCKJ.QY  
+ domain SCYY.QY  
+ domain SCZF.QY  
+ domain SCZY.QY  
+ domain SDZY.QY  
+ domain SFFM.QY  
+ domain SFJX.QY  
+ domain SFSY.QY  
+ domain SHCL.QY  
+ domain SHDL.QY  
+ domain SHDP.QY  
+ domain SHFZ.QY  
+ domain SHJD.QY  
+ domain SHJX.QY  
+ domain SHXQ.QY  
+ domain SJFZ.QY  
+ domain SJZF.QY  
+ domain SJZX.QY  
+ domain SJZZ.QY  
+ domain SLFZ.QY  
+ domain SLGY.QY  
+ domain SLZY.QY  
+ domain SMFZ.QY  
+ domain SMGY.QY  
+ domain SMSY.QY  
+ domain SMZZ.QY  
+ domain SNSP.QY  
+ domain SQZZ.QY  
+ domain SRFM.QY  
+ domain SSJT.QY  
+ domain STGM.QY  
+ domain SWJC.QY  
+ domain SXHX.QY  
+ domain SXRZ.QY  
+ domain SXSX.QY  
+ domain SXSY.QY  
+ domain SXWS.QY  
+ domain SXYB.QY  
+ domain SXYR.QY  
+ domain SXYT.QY  
+ domain SXYZ.QY  
+ domain SXZY.QY  
+ domain SYAL.QY  
+ domain SYBG.QY  
+ domain SYFJ.QY  
+ domain SYHG.QY  
+ domain SYJX.QY  
+ domain SYKJ.QY  
+ domain SYMR.QY  
+ domain SYSX.QY  
+ domain SYZZ.QY  
+ domain SZBB.QY  
+ domain SZSJ.QY  
+ domain SZSX.QY  
+ domain SZXQ.QY  
+ domain SZYY.QY  
+ domain SZZH.QY  
+ domain SZZW.QY  
+ domain TEST.QY  
+ domain TFHS.QY  
+ domain TJJT.QY  
+ domain TJLD.QY  
+ domain TLJT.QY  
+ domain TMS.QY  
+ domain TMXX.QY  
+ domain TMZS.QY  
+ domain TRFZ.QY  
+ domain TRJF.QY  
+ domain TSJY.QY  
+ domain TSL.QY  
+ domain TSYR.QY  
+ domain TWGF.QY  
+ domain TWSY.QY  
+ domain TYJD.QY  
+ domain TYJM.QY  
+ domain TYKG.QY  
+ domain TYYR.QY  
+ domain TYYS.QY  
+ domain WAJT.QY  
+ domain WFZZ.QY  
+ domain WGYR.QY  
+ domain WJJD.QY  
+ domain WQJY.QY  
+ domain WSTDQ.QY  
+ domain WXYW.QY  
+ domain WYLL.QY  
+ domain WYSY.QY  
+ domain XANT.QY  
+ domain XARZ.QY  
+ domain XBLS.QY  
+ domain XCCD.QY  
+ domain XCSX.QY  
+ domain XCZY.QY  
+ domain XDS.QY  
+ domain XDYR.QY  
+ domain XFGY.QY  
+ domain XFJT.QY  
+ domain XFSJ.QY  
+ domain XFYL.QY  
+ domain XGM.QY  
+ domain XGMD.QY  
+ domain XHC.QY  
+ domain XHCY.QY  
+ domain XHJD.QY  
+ domain XHSZ.QY  
+ domain XJNJ.QY  
+ domain XJQ.QY  
+ domain XKL.QY  
+ domain XLM.QY  
+ domain XLQC.QY  
+ domain XLSJ.QY  
+ domain XMDA.QY  
+ domain XMJL.QY  
+ domain XPDN.QY  
+ domain XQDS.QY  
+ domain XRFS.QY  
+ domain XRFZ.QY  
+ domain XRT.QY  
+ domain XSD.QY  
+ domain XSL.QY  
+ domain XTJL.QY  
+ domain XXC.QY  
+ domain XXFZ.QY  
+ domain XYFZ.QY  
+ domain XYG.QY  
+ domain XYNK.QY  
+ domain XYSJ.QY  
+ domain YBJD.QY  
+ domain YBJX.QY  
+ domain YCFD.QY  
+ domain YCJT.QY  
+ domain YCJX.QY  
+ domain YDDT.QY  
+ domain YDHG.QY  
+ domain YFBZ.QY  
+ domain YFJD.QY  
+ domain YFYR.QY  
+ domain YFZW.QY  
+ domain YGEL.QY  
+ domain YGGY.QY  
+ domain YGMY.QY  
+ domain YGZM.QY  
+ domain YHJH.QY  
+ domain YHKJ.QY  
+ domain YHQH.QY  
+ domain YHSY.QY  
+ domain YISL.QY  
+ domain YISY.QY  
+ domain YJKJ.QY  
+ domain YLJL.QY  
+ domain YLJS.QY  
+ domain YLZZ.QY  
+ domain YMNH.QY  
+ domain YMTY.QY  
+ domain YNZF.QY  
+ domain YSFS.QY  
+ domain YSFZ.QY  
+ domain YSSY.QY  
+ domain YSYL.QY  
+ domain YSYR.QY  
+ domain YTFZ.QY  
+ domain YTHG.QY  
+ domain YTSY.QY  
+ domain YX.XY  
+ domain YXHC.QY  
+ domain YXJT.QY  
+ domain YXSY.QY  
+ domain YYDY.QY  
+ domain YYJX.QY  
+ domain YYTG.QY  
+ domain YZJC.QY  
+ domain YZJT.QY  
+ domain ZAGY.QY  
+ domain ZBHY.QY  
+ domain ZBNW.QY  
+ domain ZBQC.QY  
+ domain ZBSY.QY  
+ domain ZBWN.QY  
+ domain ZBWY.QY  
+ domain ZBXY.QY  
+ domain ZDFZ.QY  
+ domain ZDGY.QY  
+ domain ZDWX.QY  
+ domain ZDYZ.QY  
+ domain ZFYJ.QY  
+ domain ZJCF.QY  
+ domain ZJDD.QY  
+ domain ZJDH.QY  
+ domain ZJFZ.QY  
+ domain ZJHD.QY  
+ domain ZJHH.QY  
+ domain ZJHJ.QY  
+ domain ZJHL.QY  
+ domain ZJHQ.QY  
+ domain ZJHY.QY  
+ domain ZJJF.QY  
+ domain ZJJK.QY  
+ domain ZJJY.QY  
+ domain ZJKT.QY  
+ domain ZJLQ.QY  
+ domain ZJMS.QY  
+ domain ZJOL.QY  
+ domain ZJRL.QY  
+ domain ZJRT.QY  
+ domain ZJSJ.QY  
+ domain ZJSS.QY  
+ domain ZJSX.QY  
+ domain ZJSY.QY  
+ domain ZJW.QY  
+ domain ZJWL.QY  
+ domain ZJXS.QY  
+ domain ZJYL.QY  
+ domain ZJYQ.QY  
+ domain ZJZA.QY  
+ domain ZJZS.QY  
+ domain ZLZJ.QY  
+ domain ZSDQ.QY  
+ domain ZSFS.QY  
+ domain ZSJT.QY  
+ domain ZSSY.QY  
+ domain ZTGY.QY  
+ domain ZTSK.QY  
+ domain ZTYR.QY  
+ domain ZWZC.QY  
+ domain ZXH.QY  
+ domain ZXHQ.QY  
+ domain ZXRF.QY  
+ domain ZYFZ.QY  
+ domain ZYJX.QY  
+ domain ZYZX.QY  
+ domain clfz.qy  
+ domain qy  
+ domain ynfz.qy  
+! 
+ no ip domain-lookup
+!
+ router-id 61.130.33.62
+!
+ interface Loopback0 loopback
+  description for vrPPPoE-ShanXun
+  ip address 61.130.33.62/32
+   ip source-address radius 
+!
+ interface ge-10/1:52
+  description uT:SX-SX-DJ-CR-1.MAN.CRS:()Te1/5/0/9.52
+  ip address 220.187.244.234/30
+!
+ interface ge-12/1:52
+  description uT:SX-SX-QFC-CR-2.MAN.CRS:()Te1/5/0/9.52
+  ip address 220.187.244.238/30
+!
+ interface pool1 multibind
+  ip address 115.225.0.1/21
+  ip verify unicast source reachable-via rx
+  ip pool 115.225.0.0/21
+!
+ interface pool2 multibind
+  ip address 183.145.176.1/21
+  ip pool 183.145.176.0/21
+!
+ interface pool3 multibind
+  ip address 115.237.160.1/21
+  ip pool 115.237.160.0/21
+!
+ interface pool4 multibind
+  ip address 183.145.64.1/22
+  ip pool 183.145.64.0/22
+!
+ interface pool5 multibind
+  ip address 183.145.24.1/21
+  ip pool 183.145.24.0/21
+ no logging console
+!
+ router isis shaoxing
+  net 86.4755.0575.0611.3003.3062.00
+  is type level-2-only 
+  distance 155
+  no graceful-restart
+  address-family ipv4 unicast
+ !
+  interface ge-10/1:52
+   ! bind to ethernet 10/1 dot1q pvc 52
+   circuit type level-2-only
+   hello padding never
+   metric 3000 level-2
+   address-family ipv4 unicast
+ !
+  interface ge-12/1:52
+   ! bind to ethernet 12/1 dot1q pvc 52
+   circuit type level-2-only
+   hello padding never
+   metric 3000 level-2
+   address-family ipv4 unicast
+ !
+  interface Loopback0
+   passive-interface
+   metric 100000 level-2
+   address-family ipv4 unicast
+!
+ ip access-list acl_user_control
+  seq 10 deny tcp any any eq www
+  seq 20 deny tcp any any eq 8080
+  seq 1000 permit ip any any
+!
+ ip access-list anti-virus
+  seq 20 deny 255 any any
+  seq 30 deny ip 127.0.0.0 0.255.255.255 any
+  seq 40 deny ip 10.0.0.0 0.255.255.255 any
+  seq 50 deny ip 172.16.0.0 0.15.255.255 any
+  seq 60 deny ip 192.168.0.0 0.0.255.255 any
+  seq 70 deny ip 169.254.0.0 0.0.255.255 any
+  seq 80 deny ip host 0.0.0.0 any
+  seq 90 deny ip host 255.255.255.255 any
+  seq 110 permit icmp any any icmp-type 8 icmp-code 0
+  seq 120 permit icmp any any icmp-type 0 icmp-code 0
+  seq 130 permit icmp any any icmp-type ttl-exceeded
+  seq 140 permit icmp any any icmp-type packet-too-big
+  seq 150 deny icmp any any
+  seq 210 deny tcp any any range 135 139
+  seq 220 deny udp any any range 135 netbios-ss
+  seq 230 deny tcp any any eq 445
+  seq 240 deny udp any any eq 445
+  seq 250 deny tcp any any eq 593
+  seq 260 deny tcp any any eq 707
+  seq 270 deny tcp any any eq 1434
+  seq 280 deny tcp any any eq 4444
+  seq 290 deny tcp any any eq 5800
+  seq 300 deny tcp any any eq 5900
+  seq 1000 permit ip any any
+!
+ ip access-list permit-shanxun
+  seq 10 permit ip any 202.96.107.16 0.0.0.15
+  seq 20 permit ip any 220.191.135.240 0.0.0.15
+  seq 50 permit ip any host 122.224.205.3
+  seq 60 permit ip any host 122.224.205.11
+  seq 70 permit ip any 115.238.101.192 0.0.0.15
+  seq 80 permit ip any 61.155.178.0 0.0.0.15
+  seq 90 permit ip any host 61.174.63.213
+  seq 100 permit ip any 115.238.31.32 0.0.0.15
+  seq 110 permit ip any host 118.85.207.1
+  seq 120 permit ip any host 219.232.243.70
+  seq 130 permit ip any host 219.232.243.71
+  seq 140 permit ip any host 60.191.124.236
+  seq 200 permit ip any host 124.74.244.6
+  seq 201 permit ip any host 124.74.240.140
+  seq 210 permit ip any host 61.129.61.164
+  seq 211 permit ip any host 219.142.91.50
+  seq 212 permit ip any host 219.142.91.12
+  seq 213 permit ip any host 60.247.99.36
+  seq 214 permit ip any host 60.247.99.2
+  seq 215 permit ip any host 202.108.88.50
+  seq 216 permit ip any host 60.191.124.236
+  seq 220 permit ip any host 219.142.79.192
+  seq 221 permit ip any host 211.94.154.192
+  seq 222 permit ip any host 61.129.122.140
+  seq 223 permit ip any host 202.108.144.92
+  seq 230 permit ip any host 218.2.247.77
+  seq 231 permit ip any host 218.17.246.185
+  seq 232 permit ip any host 218.2.247.81
+  seq 240 permit ip any host 219.142.89.66
+  seq 250 permit ip any host 222.66.26.201
+  seq 260 permit ip any host 219.137.112.235
+  seq 270 permit ip any host 219.142.89.142
+  seq 280 permit ip any host 218.66.47.194
+  seq 290 permit ip any host 219.142.124.221
+  seq 291 permit ip any host 202.99.22.52
+  seq 292 permit ip any host 219.142.124.184
+  seq 300 permit ip any host 219.143.234.234
+  seq 310 permit ip any host 61.129.122.135
+  seq 330 permit ip any host 61.144.34.107
+  seq 340 permit ip any host 219.141.226.132
+  seq 341 permit ip any host 219.141.191.132
+  seq 350 permit ip any host 61.144.34.107
+  seq 360 permit ip any host 123.127.232.192
+  seq 361 permit ip any host 219.143.222.24
+  seq 362 permit ip any host 123.127.232.194
+  seq 370 permit ip any host 218.17.246.185
+  seq 371 permit ip any host 218.2.247.77
+  seq 400 permit tcp any host 60.190.202.209
+  seq 401 permit ip any host 218.83.175.231
+  seq 402 permit ip any host 211.100.35.132
+  seq 403 permit ip any host 116.228.55.38
+  seq 404 permit ip any 122.224.205.0 0.0.0.31
+  seq 405 permit ip any host 212.67.79.45
+  seq 406 permit ip any 122.224.110.96 0.0.0.31
+  seq 407 permit ip any host 60.190.202.207
+  seq 410 permit ip any host 219.232.243.40
+  seq 420 permit ip any host 61.155.178.2
+  seq 430 permit ip any host 122.224.246.4
+  seq 440 permit ip any 61.164.4.160 0.0.0.15
+  seq 450 permit ip any host 60.190.202.209
+  seq 460 permit ip any host 202.96.107.3
+  seq 470 permit ip any host 115.239.134.21
+  seq 510 permit ip any host 115.236.77.16
+  seq 520 permit ip any host 115.236.77.17
+  seq 530 permit ip any host 122.224.205.3
+  seq 540 permit ip any host 101.226.250.207
+  seq 550 permit ip any host 101.226.247.234
+  seq 560 permit ip any host 101.226.250.205
+  seq 570 permit ip any host 61.164.60.229
+  seq 580 permit ip any host 61.164.60.208
+  seq 590 permit ip any host 122.228.86.143
+  seq 600 permit ip any host 101.226.247.238
+  seq 610 permit ip any host 183.136.239.4
+  seq 620 permit ip any host 183.136.239.5
+  seq 1000 deny ip any any
+!
+ ip prefix-list plDefaultRoute
+  seq 10 permit 0.0.0.0/0
+!
+ ip prefix-list plPrivateRoute
+  seq 10 permit 10.0.0.0/8 le 32
+  seq 20 permit 172.16.0.0/12 le 32
+  seq 30 permit 192.168.0.0/16 le 32
+!
+ route-map rpFROMCR_IN permit 10
+  match ip address prefix-list plDefaultRoute
+!
+ route-map rpSET_COMM_OUT deny 10
+  match ip address prefix-list plDefaultRoute
+ route-map rpSET_COMM_OUT deny 20
+  match ip address prefix-list plPrivateRoute
+ route-map rpSET_COMM_OUT permit 30
+  set community 64755:1401 64755:11014 
+ route-map rpSET_COMM_OUT permit 40
+!
+ route-map rpStaticToBGP permit 10
+  match tag 100
+!
+ router bgp 64755
+  router-id 61.130.33.62
+  multi-paths external 8 internal 8
+  address-family ipv4 unicast
+   distance 20 200 200
+   redistribute static route-map rpStaticToBGP
+!
+  peer-group pgCR internal
+    update-source Loopback0
+   address-family ipv4 unicast
+      route-map rpFROMCR_IN in
+      route-map rpSET_COMM_OUT out
+!
+  neighbor 61.130.32.123 internal
+    peer-group pgCR
+    description uT:SX-SX-DJ-CR-1.MAN.CRS
+!
+  neighbor 61.130.32.124 internal
+    peer-group pgCR
+    description uT:SX-SX-QFC-CR-1.MAN.CRS
+!
+ ppp keepalive check-interval seconds 30 data-check
+!
+ aaa authentication administrator local  
+ aaa authentication administrator maximum sessions 1
+ aaa authentication subscriber local radius 
+ aaa accounting subscriber radius
+ aaa accounting suppress-acct-on-fail
+ aaa reauthorization bulk radius
+ radius accounting server 122.229.1.40 encrypted-key E2FA473592640E4E
+ radius coa server 122.229.1.40 encrypted-key E2FA473592640E4E port 1812
+!
+ radius server 122.229.1.40 encrypted-key E2FA473592640E4E
+ radius attribute nas-ip-address interface Loopback0
+ radius algorithm first
+ radius accounting max-retries 3
+ radius accounting timeout 20
+ radius attribute nas-port format slot-port
+ radius attribute nas-port-id format physical
+!
+ subscriber default
+   ip address pool
+   ip access-group anti-virus in
+   ip access-group acl_user_control out
+   qos policy policing up-512k
+   qos policy metering 2m
+   dns primary 202.96.107.29
+   dns secondary 202.96.107.28
+ subscriber profile p2m
+   qos policy metering 2m
+ subscriber profile p4m
+   qos policy metering 4m
+ subscriber profile p1m
+   qos policy metering 1m
+ subscriber profile p10m
+   qos policy policing up-1m
+   qos policy metering 10m
+ subscriber profile p6m
+   qos policy metering 6m
+ subscriber profile p8m
+   qos policy metering 8m
+ subscriber profile p3m
+   qos policy metering 3m
+ subscriber profile p12m
+   qos policy policing up-1m
+   qos policy metering 12m
+ subscriber profile p20m
+   qos policy policing up-1m
+   qos policy metering 20m
+!
+ subscriber name chinanet
+   password 123456
+   ip address pool
+   ip access-group permit-shanxun in
+   qos policy metering 10m
+ subscriber name 12
+   password sx1212
+   ip address pool
+   ip access-group permit-shanxun in
+   ip access-group anti-virus out
+   qos policy metering 12m
+ subscriber name 06
+   password sx6666
+   ip address pool
+   qos policy policing up-1m
+   qos policy metering 4m
+ subscriber name 50
+   password sx5050
+   ip access-group anti-virus in
+   ip access-group acl_user_control out
+   qos policy policing up-4m
+   qos policy metering 50m
+!
+ ip route 115.225.0.0/21 null0 tag 100
+ ip route 115.237.160.0/21 null0 tag 100
+ ip route 183.145.24.0/21 null0 tag 100
+ ip route 183.145.64.0/22 null0 tag 100
+ ip route 183.145.176.0/21 null0 tag 100
+!
+ l2tp-peer unnamed local 61.130.33.62
+  session-auth chap pap
+  function lns-only
+  tunnel-auth key sx0575sx
+!
+!
+!
+! ** End Context **
+ logging tdm console
+ logging active
+ logging standby short
+!
+!
+ dot1q profile lan-nas-port-type
+  propagate qos to ethernet
+  propagate qos from ethernet
+  radius attribute nas-port-type 15
+ dot1q profile wlan-profile
+  radius attribute nas-port-type 19
+ dot1q profile CoS-DSCP
+  propagate qos to ethernet
+  propagate qos from ethernet
+!
+qos queue-map default
+ num-queues 2
+  queue 0 priority 0 
+  queue 1 priority 1 2 3 4 5 6 7 
+ num-queues 4
+  queue 0 priority 0 
+  queue 1 priority 1 2 
+  queue 2 priority 3 4 5 6 
+  queue 3 priority 7 
+ num-queues 8
+  queue 0 priority 0 
+  queue 1 priority 1 
+  queue 2 priority 2 
+  queue 3 priority 3 
+  queue 4 priority 4 
+  queue 5 priority 5 
+  queue 6 priority 6 
+  queue 7 priority 7 
+!
+qos queue-map qosmap
+ num-queues 8
+  queue 0 priority 3 
+  queue 1 priority 1 
+  queue 2 priority 0 2 
+  queue 3 priority 4 5 6 
+  queue 4 priority 7 
+!
+qos congestion-avoidance-map qos-cong-map pwfq
+ queue 0 depth 64
+ queue 1 depth 64
+ queue 2 depth 64
+ queue 3 depth 64
+ queue 4 depth 64
+ queue 5 depth 64
+ queue 6 depth 64
+ queue 7 depth 64
+!
+qos congestion-avoidance-map test pwfq
+ queue 0 depth 1024
+ queue 1 depth 1024
+ queue 2 depth 1024
+ queue 3 depth 1024
+ queue 4 depth 1024
+ queue 5 depth 1024
+ queue 6 depth 1024
+ queue 7 depth 1024
+!
+qos policy 100m metering 
+ rate 112640 burst 11264000
+!
+qos policy 10m metering 
+ rate 11264 burst 1126400
+!
+qos policy 12m metering 
+ rate 13568 burst 1356800
+!
+qos policy 16m metering 
+ rate 16384 burst 1638400
+!
+qos policy 1m metering 
+ rate 1152 burst 115200
+!
+qos policy 20m metering 
+ rate 22528 burst 2252800
+!
+qos policy 256k metering 
+ rate 256 burst 25600
+!
+qos policy 2m metering 
+ rate 2304 burst 230400
+!
+qos policy 3m metering 
+ rate 3392 burst 339200
+!
+qos policy 4m metering 
+ rate 4544 burst 454400
+!
+qos policy 50m metering 
+ rate 56320 burst 5632000
+!
+qos policy 512k metering 
+ rate 512 burst 51200
+!
+qos policy 5m metering 
+ rate 5120 burst 512000
+!
+qos policy 6m metering 
+ rate 6784 burst 678400
+!
+qos policy 8m metering 
+ rate 9024 burst 902400
+!
+qos policy IAD-in-mark policing 
+ mark dscp cs4
+!
+qos policy Share100M pwfq 
+ rate maximum 112640
+ queue-map qosmap
+ queue 0 priority 0 weight 100
+ queue 1 priority 1 weight 100
+ queue 2 priority 2 weight 90
+ queue 3 priority 2 weight 10
+ queue 4 priority 3 weight 25
+ queue 5 priority 3 weight 25
+ queue 6 priority 3 weight 25
+ queue 7 priority 3 weight 25
+!
+qos policy Share100M-Assure3M-Out pwfq 
+ rate maximum 100000
+ queue-map qosmap
+ queue 0 priority 0 weight 100
+ queue 1 priority 1 weight 100
+ queue 2 priority 2 weight 100
+ queue 3 priority 2 weight 100
+ queue 4 priority 3 weight 100
+ queue 5 priority 3 weight 100
+ queue 6 priority 3 weight 100
+ queue 7 priority 3 weight 100
+ queue priority-group 2 rate 3000
+!
+qos policy Share10M pwfq 
+ rate maximum 11264
+ queue-map qosmap
+ queue 0 priority 0 weight 100
+ queue 1 priority 1 weight 100
+ queue 2 priority 2 weight 90
+ queue 3 priority 2 weight 10
+ queue 4 priority 3 weight 25
+ queue 5 priority 3 weight 25
+ queue 6 priority 3 weight 25
+ queue 7 priority 3 weight 25
+!
+qos policy Share10M-Assure3M-Out pwfq 
+ rate maximum 10000
+ queue-map qosmap
+ queue 0 priority 0 weight 100
+ queue 1 priority 1 weight 100
+ queue 2 priority 2 weight 100
+ queue 3 priority 2 weight 100
+ queue 4 priority 3 weight 100
+ queue 5 priority 3 weight 100
+ queue 6 priority 3 weight 100
+ queue 7 priority 3 weight 100
+ queue priority-group 2 rate 3000
+!
+qos policy Share10M-Assure8M-Out pwfq 
+ rate maximum 10000
+ queue-map qosmap
+ queue 0 priority 0 weight 100
+ queue 1 priority 1 weight 100
+ queue 2 priority 2 weight 100
+ queue 3 priority 2 weight 100
+ queue 4 priority 3 weight 100
+ queue 5 priority 3 weight 100
+ queue 6 priority 3 weight 100
+ queue 7 priority 3 weight 100
+ queue priority-group 2 rate 8000
+!
+qos policy Share12M pwfq 
+ rate maximum 13568
+ queue-map qosmap
+ queue 0 priority 0 weight 100
+ queue 1 priority 1 weight 100
+ queue 2 priority 2 weight 90
+ queue 3 priority 2 weight 10
+ queue 4 priority 3 weight 25
+ queue 5 priority 3 weight 25
+ queue 6 priority 3 weight 25
+ queue 7 priority 3 weight 25
+!
+qos policy Share12M-Assure10M-Out pwfq 
+ rate maximum 12288
+ queue-map qosmap
+ queue 0 priority 0 weight 100
+ queue 1 priority 1 weight 100
+ queue 2 priority 2 weight 100
+ queue 3 priority 2 weight 100
+ queue 4 priority 3 weight 100
+ queue 5 priority 3 weight 100
+ queue 6 priority 3 weight 100
+ queue 7 priority 3 weight 100
+ queue priority-group 2 rate 10240
+!
+qos policy Share12M-Assure3M-Out pwfq 
+ rate maximum 12000
+ queue-map qosmap
+ queue 0 priority 0 weight 100
+ queue 1 priority 1 weight 100
+ queue 2 priority 2 weight 100
+ queue 3 priority 2 weight 100
+ queue 4 priority 3 weight 100
+ queue 5 priority 3 weight 100
+ queue 6 priority 3 weight 100
+ queue 7 priority 3 weight 100
+ queue priority-group 2 rate 3000
+!
+qos policy Share16M-Assure3M-Out pwfq 
+ rate maximum 16000
+ queue-map qosmap
+ queue 0 priority 0 weight 100
+ queue 1 priority 1 weight 100
+ queue 2 priority 2 weight 100
+ queue 3 priority 2 weight 100
+ queue 4 priority 3 weight 100
+ queue 5 priority 3 weight 100
+ queue 6 priority 3 weight 100
+ queue 7 priority 3 weight 100
+ queue priority-group 2 rate 3000
+!
+qos policy Share20M pwfq 
+ rate maximum 22528
+ queue-map qosmap
+ queue 0 priority 0 weight 100
+ queue 1 priority 1 weight 100
+ queue 2 priority 2 weight 90
+ queue 3 priority 2 weight 10
+ queue 4 priority 3 weight 25
+ queue 5 priority 3 weight 25
+ queue 6 priority 3 weight 25
+ queue 7 priority 3 weight 25
+!
+qos policy Share20M-Assure16M-Out pwfq 
+ rate maximum 20000
+ queue-map qosmap
+ queue 0 priority 0 weight 100
+ queue 1 priority 1 weight 100
+ queue 2 priority 2 weight 100
+ queue 3 priority 2 weight 100
+ queue 4 priority 3 weight 100
+ queue 5 priority 3 weight 100
+ queue 6 priority 3 weight 100
+ queue 7 priority 3 weight 100
+ queue priority-group 2 rate 16000
+!
+qos policy Share20M-Assure18M-Out pwfq 
+ rate maximum 20000
+ queue-map qosmap
+ queue 0 priority 0 weight 100
+ queue 1 priority 1 weight 100
+ queue 2 priority 2 weight 100
+ queue 3 priority 2 weight 100
+ queue 4 priority 3 weight 100
+ queue 5 priority 3 weight 100
+ queue 6 priority 3 weight 100
+ queue 7 priority 3 weight 100
+ queue priority-group 2 rate 18000
+!
+qos policy Share3.8M-Assure3M pwfq 
+ rate maximum 4544
+ queue-map qosmap
+ congestion-map qos-cong-map
+ queue 0 priority 0 weight 100
+ queue 1 priority 1 weight 100
+ queue 2 priority 2 weight 100
+ queue 3 priority 2 weight 100
+ queue 4 priority 3 weight 100
+ queue 5 priority 3 weight 100
+ queue 6 priority 3 weight 100
+ queue 7 priority 3 weight 100
+ queue priority-group 2 rate 3000
+!
+qos policy Share4M pwfq 
+ rate maximum 4544
+ queue-map qosmap
+ queue 0 priority 0 weight 100
+ queue 1 priority 1 weight 100
+ queue 2 priority 2 weight 90
+ queue 3 priority 2 weight 10
+ queue 4 priority 3 weight 25
+ queue 5 priority 3 weight 25
+ queue 6 priority 3 weight 25
+ queue 7 priority 3 weight 25
+!
+qos policy Share4M-Assure3M-Out pwfq 
+ rate maximum 4000
+ queue-map qosmap
+ queue 0 priority 0 weight 100
+ queue 1 priority 1 weight 100
+ queue 2 priority 2 weight 90
+ queue 3 priority 2 weight 10
+ queue 4 priority 3 weight 25
+ queue 5 priority 3 weight 25
+ queue 6 priority 3 weight 25
+ queue 7 priority 3 weight 25
+ queue priority-group 2 rate 3000
+!
+qos policy Share6M pwfq 
+ rate maximum 6784
+ queue-map qosmap
+ queue 0 priority 0 weight 100
+ queue 1 priority 1 weight 100
+ queue 2 priority 2 weight 90
+ queue 3 priority 2 weight 10
+ queue 4 priority 3 weight 25
+ queue 5 priority 3 weight 25
+ queue 6 priority 3 weight 25
+ queue 7 priority 3 weight 25
+!
+qos policy Share6M-Assure3M-Out pwfq 
+ rate maximum 6000
+ queue-map qosmap
+ queue 0 priority 0 weight 100
+ queue 1 priority 1 weight 100
+ queue 2 priority 2 weight 100
+ queue 3 priority 2 weight 100
+ queue 4 priority 3 weight 100
+ queue 5 priority 3 weight 100
+ queue 6 priority 3 weight 100
+ queue 7 priority 3 weight 100
+ queue priority-group 2 rate 3000
+!
+qos policy Share8M pwfq 
+ rate maximum 9024
+ queue-map qosmap
+ queue 0 priority 0 weight 100
+ queue 1 priority 1 weight 100
+ queue 2 priority 2 weight 90
+ queue 3 priority 2 weight 10
+ queue 4 priority 3 weight 25
+ queue 5 priority 3 weight 25
+ queue 6 priority 3 weight 25
+ queue 7 priority 3 weight 25
+!
+qos policy Share8M-Assure3M-Out pwfq 
+ rate maximum 8000
+ queue-map qosmap
+ queue 0 priority 0 weight 100
+ queue 1 priority 1 weight 100
+ queue 2 priority 2 weight 100
+ queue 3 priority 2 weight 100
+ queue 4 priority 3 weight 100
+ queue 5 priority 3 weight 100
+ queue 6 priority 3 weight 100
+ queue 7 priority 3 weight 100
+ queue priority-group 2 rate 3000
+!
+qos policy bronze_qos_metering_policy metering 
+ rate 1000 burst 100000
+!
+qos policy bronze_qos_policing_policy policing 
+ rate 1000 burst 100000
+!
+forward policy captiveportal 
+!
+forward policy debtportal 
+!
+qos policy downlink-out-metering metering 
+ rate informational 1000000 burst 100000000
+!
+qos policy iptv-sub-in-mark policing 
+!
+qos policy iptv-uplink-in-mark policing 
+!
+forward policy mirror-all 
+ mirror destination mirror_dest all ip-datagrams
+!
+qos policy non-rate metering 
+ rate 5 burst 1
+!
+qos policy up-100m policing 
+ rate 102400 burst 10240000
+!
+qos policy up-10m policing 
+ rate 10240 burst 1024000
+!
+qos policy up-12m policing 
+ rate 13568 burst 1356800
+!
+qos policy up-16m policing 
+ rate 16384 burst 1638400
+!
+qos policy up-192k policing 
+ rate 192 burst 48000
+!
+qos policy up-1m policing 
+ rate 1152 burst 115200
+!
+qos policy up-20m policing 
+ rate 22528 burst 2252800
+!
+qos policy up-2m policing 
+ rate 2304 burst 230400
+!
+qos policy up-320k policing 
+ rate 320 burst 48000
+!
+qos policy up-384k policing 
+ rate 448 burst 44800
+!
+qos policy up-448k policing 
+ rate 448 burst 48000
+!
+qos policy up-4m policing 
+ rate 45440 burst 454400
+!
+qos policy up-50m policing 
+ rate 51200 burst 5120000
+!
+qos policy up-512k policing 
+ rate 576 burst 57600
+!
+qos policy up-6m policing 
+ rate 6144 burst 614400
+!
+qos policy up-768k policing 
+ rate 896 burst 89600
+!
+qos policy up-8m policing 
+ rate 9024 burst 902400
+!
+qos policy up-i1m policing 
+ rate 1152 burst 1152000 time-excess-burst 1000
+  conform mark dscp cs5
+!
+qos policy up-i512k policing 
+ rate 576 burst 576000 time-excess-burst 1000
+  conform mark dscp cs5
+!
+qos policy up-non-rate policing 
+ rate 5 burst 1
+!
+qos policy uplink-out-pwfq pwfq 
+ rate maximum 1000000
+ queue-map qosmap
+ queue 0 priority 0 weight 100
+ queue 1 priority 1 weight 10
+ queue 2 priority 1 weight 30
+ queue 3 priority 1 weight 10
+ queue 4 priority 1 weight 50
+ queue 5 priority 2 weight 100
+ queue 6 priority 2 weight 100
+ queue 7 priority 2 weight 100
+ queue priority-group 0 rate percentage 10
+!
+forward policy yemiantuisong 
+!
+snmp server
+ traps ifmib ip
+ traps l2tpmib
+ traps nemib non-exclusive
+snmp view allthing internet included
+snmp view npm_view internet included
+snmp community 3edc$RFV5tg all-contexts view allthing read-write
+snmp community 3edc$RFV5tgb all-contexts view allthing
+snmp community npm_community all-contexts view npm_view read-write
+!
+ system clock timezone PRC 8 0 local
+!
+http-redirect server
+ port 80
+!
+!
+port ethernet 7/1
+! XCRP management ports on slot 7 and 8 are configured through 7/1
+ description dT:daiwaiwangguan:(local)GE0/0/0
+ no shutdown
+!
+card 10ge-4-port 10
+!
+port ethernet 10/1
+ description uT:SX-SX-DJ-BR-1.MAN.NE5000E:(local)10GE13/0/1
+ no shutdown
+ encapsulation dot1q
+ dot1q pvc 51 
+  bind interface ge-10/1:51 local
+ dot1q pvc 52 
+  bind interface ge-10/1:52 vrPPPoE-ShanXun
+ dot1q pvc 53 
+!
+port ethernet 10/2
+ description dT:SX-SX-CX-DSW-1.MAN.S9306:(F1206070041)10GE1/0/0
+ shutdown
+!
+port ethernet 10/3
+ description dT:SX-SX-ZHL-DSW-2.MAN.S9306:(F1212310024)10GE1/0/0
+ shutdown
+!
+port ethernet 10/4
+ description dT:SX-SX-CX-DSW-2.MAN.S9306:(F1205110037)10GE1/0/0
+ shutdown
+!
+card 10ge-4-port 12
+!
+port ethernet 12/1
+ description uT:SX-SX-DJ-BR-2.MAN.NE5000E:(local)10GE13/0/1
+ no shutdown
+ encapsulation dot1q
+ dot1q pvc 51 
+  bind interface ge-12/1:51 local
+ dot1q pvc 52 
+  bind interface ge-12/1:52 vrPPPoE-ShanXun
+ dot1q pvc 53 
+!
+port ethernet 12/2
+ description dT:SX-SX-CX-DSW-1.MAN.S9306:(F1205110039)10GE1/0/1
+ shutdown
+!
+port ethernet 12/3
+ shutdown
+!
+port ethernet 12/4
+ description dT:SX-SX-CX-DSW-2.MAN.S9306:(F1206070035)10GE1/0/1
+ shutdown
+! 
+ system hostname SX-SX-DJ-BAS-4.MAN.SE1200
+! 
+ boot configuration /flash/redback.cfg
+ timeout session idle 600
+!
+no service console-break
+!
+service crash-dump-dram
+!
+no service auto-system-recovery
+system confirmations context 
+!
+privilege exec  level 2 clear subscriber username 
+privilege exec  level 2 context 
+privilege exec inherit level 1 show 
+privilege exec  level 1 terminal length 
+!
+netop
+!
+!
+ pppoe service-name accept-all
+ pppoe tag ac-name SX.ZJ.CTNET
+ pppoe always-send-padt
+ pppoe circuit padr per-mac count 5 allow-time 60 drop-time 120
+!
+end
+[local]SX-SX-DJ-BAS-4.MAN.SE1200#

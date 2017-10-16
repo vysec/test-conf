@@ -1,0 +1,403 @@
+
+!Software Version V200R003C00SPC500
+#
+sysname HZ-LA-LAOXIAOQU-DSW-1.MAN.S9306
+#
+info-center source SHELL channel 4 log level informational
+info-center loghost source Vlanif50
+info-center loghost 10.254.0.1 facility local4
+info-center loghost 122.224.79.2 facility local4
+#
+vlan batch 50 1023 1604 3400 to 3402
+#
+undo http server enable
+undo http secure-server enable
+#
+undo nap slave enable
+#
+ dba-profile default0 type3 assure 40000 max 80000
+#
+diffserv domain default
+#
+radius-server template newhzdx
+ radius-server shared-key cipher %@%@ZYnJ){[E#)^gZ+I5&z1Mz=``%@%@
+ radius-server authentication 61.164.19.211 1812 weight 80
+ radius-server authentication 61.164.19.213 1812 weight 80
+ radius-server accounting 61.164.19.211 1813 weight 80
+ radius-server accounting 61.164.19.213 1813 weight 80
+ undo radius-server user-name domain-included
+ radius-server attribute translate
+ radius-attribute disable HW-Exec-Privilege receive
+#
+ line-profile default0
+#
+ service-profile default0
+#
+acl number 2000
+ rule 0 permit source 172.16.254.252 0
+ rule 5 permit source 202.96.102.253 0
+ rule 10 permit source 202.96.102.254 0
+ rule 15 permit source 10.254.0.0 0.0.0.255
+ rule 20 permit source 192.168.11.0 0.0.0.255
+ rule 25 permit source 192.168.1.0 0.0.0.255
+ rule 31 permit source 10.10.10.34 0
+ rule 32 permit source 10.10.10.35 0
+ rule 33 permit source 10.31.255.0 0.0.0.31
+ rule 50 permit source 172.21.3.0 0.0.0.255
+ rule 100 deny
+#
+acl number 2001
+ rule 5 permit source 172.16.254.252 0
+ rule 10 permit source 202.96.102.253 0
+ rule 15 permit source 202.96.102.254 0
+ rule 25 permit source 192.168.208.0 0.0.0.255
+ rule 30 permit source 192.168.209.0 0.0.0.255
+ rule 32 permit source 10.10.10.35 0
+ rule 35 permit source 192.168.210.0 0.0.0.255
+ rule 40 permit source 192.168.0.0 0.0.127.255
+ rule 45 permit source 10.254.0.0 0.0.0.31
+ rule 50 permit source 172.28.0.253 0
+ rule 55 permit source 10.31.255.0 0.0.0.31
+ rule 60 permit source 172.21.3.0 0.0.0.255
+ rule 100 deny
+#
+acl number 2002
+ rule 0 permit source 172.16.254.248 0.0.0.7
+ rule 5 permit source 10.254.0.0 0.0.0.31
+ rule 10 permit source 192.168.0.0 0.0.255.255
+ rule 15 permit source 172.28.0.0 0.0.255.255
+ rule 100 deny
+#
+acl number 2016
+ rule 1 permit source 172.16.247.0 0.0.0.31
+ rule 2 permit source 172.16.254.0 0.0.0.15
+ rule 3 permit source 10.254.0.0 0.0.0.31
+ rule 4 permit source 10.31.255.0 0.0.0.255
+ rule 5 permit source 10.254.3.0 0.0.0.255
+ rule 6 permit source 10.10.10.0 0.0.0.63
+ rule 7 permit source 192.168.100.0 0.0.0.3
+ rule 8 permit source 172.16.0.0 0.0.0.7
+ rule 9 permit source 10.20.200.14 0
+ rule 10 permit source 10.20.200.18 0
+ rule 11 permit source 192.168.1.0 0.0.0.255
+ rule 12 permit source 192.168.4.0 0.0.0.255
+ rule 13 permit source 192.168.8.0 0.0.0.255
+ rule 14 permit source 192.168.11.0 0.0.0.255
+ rule 15 permit source 192.168.119.0 0.0.0.255
+ rule 16 permit source 192.168.105.0 0.0.0.255
+ rule 17 permit source 192.168.67.0 0.0.0.255
+ rule 18 permit source 172.28.11.251 0
+ rule 19 permit source 192.168.101.0 0.0.0.255
+ rule 20 permit source 192.168.48.0 0.0.0.255
+ rule 21 permit source 172.21.3.254 0
+ rule 1000 deny
+#
+aaa
+ authentication-scheme default
+ authentication-scheme newhzdx
+  authentication-mode radius local
+ authorization-scheme default
+ accounting-scheme default
+ accounting-scheme newhzdx
+  accounting-mode radius
+  accounting start-fail online
+ domain default
+  authentication-scheme newhzdx
+  accounting-scheme newhzdx
+  radius-server newhzdx
+ domain default_admin
+  authentication-scheme newhzdx
+  accounting-scheme newhzdx
+  radius-server newhzdx
+ local-user admin password cipher %@%@5d~9:M^ipCfL\iB)EQd>3Uwe%@%@
+ local-user admin service-type http
+ local-user huawei password cipher %@%@x/&79>6;Z%H/.30zn+e<z>cb%@%@
+ local-user huawei service-type telnet
+ local-user aaa@huawei password cipher %@%@ZFij$*QpnM@.aTXl]Xt(LF_|%@%@
+#
+ntp-service source-interface Vlanif50
+ntp-service unicast-server 6.6.6.6 preference
+ntp-service unicast-server 7.7.7.7
+ntp-service unicast-server 61.164.1.7 source-interface Vlanif50 preference
+ntp-service unicast-server 61.130.120.35 source-interface Vlanif50
+#
+interface Vlanif50
+ ip address 172.28.15.2 255.255.255.0
+#
+interface Vlanif1023
+ ip address 172.18.0.1 255.255.255.252
+#
+interface Eth-Trunk1
+ description uT:HZ-LA-JD-DSW-1.MAN.S9312:()ETH-TR7(GE2/0/10,3/0/10)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 50 1604 3400 to 3402
+ mode lacp
+#
+interface Ethernet0/0/0
+#
+interface GigabitEthernet1/0/0
+ undo negotiation auto
+ description uT:HZ-LA-JD-DSW-1.MAN.S9312:(F1105250005)GE2/0/10
+ eth-trunk 1
+#
+interface GigabitEthernet1/0/1
+#
+interface GigabitEthernet1/0/2
+#
+interface GigabitEthernet1/0/3
+#
+interface GigabitEthernet1/0/4
+#
+interface GigabitEthernet1/0/5
+#
+interface GigabitEthernet1/0/6
+#
+interface GigabitEthernet1/0/7
+#
+interface GigabitEthernet1/0/8
+#
+interface GigabitEthernet1/0/9
+#
+interface GigabitEthernet1/0/10
+#
+interface GigabitEthernet1/0/11
+#
+interface GigabitEthernet1/0/12
+#
+interface GigabitEthernet1/0/13
+#
+interface GigabitEthernet1/0/14
+#
+interface GigabitEthernet1/0/15
+#
+interface GigabitEthernet1/0/16
+#
+interface GigabitEthernet1/0/17
+#
+interface GigabitEthernet1/0/18
+#
+interface GigabitEthernet1/0/19
+#
+interface GigabitEthernet1/0/20
+#
+interface GigabitEthernet1/0/21
+#
+interface GigabitEthernet1/0/22
+#
+interface GigabitEthernet1/0/23
+#
+interface GigabitEthernet1/0/24
+#
+interface GigabitEthernet1/0/25
+#
+interface GigabitEthernet1/0/26
+#
+interface GigabitEthernet1/0/27
+#
+interface GigabitEthernet1/0/28
+#
+interface GigabitEthernet1/0/29
+#
+interface GigabitEthernet1/0/30
+#
+interface GigabitEthernet1/0/31
+#
+interface GigabitEthernet1/0/32
+#
+interface GigabitEthernet1/0/33
+#
+interface GigabitEthernet1/0/34
+#
+interface GigabitEthernet1/0/35
+#
+interface GigabitEthernet1/0/36
+#
+interface GigabitEthernet1/0/37
+#
+interface GigabitEthernet1/0/38
+#
+interface GigabitEthernet1/0/39
+#
+interface GigabitEthernet1/0/40
+#
+interface GigabitEthernet1/0/41
+#
+interface GigabitEthernet1/0/42
+#
+interface GigabitEthernet1/0/43
+#
+interface GigabitEthernet1/0/44
+#
+interface GigabitEthernet1/0/45
+#
+interface GigabitEthernet1/0/46
+#
+interface GigabitEthernet1/0/47
+#
+interface GigabitEthernet2/0/0
+ undo negotiation auto
+ description uT:HZ-LA-JD-DSW-1.MAN.S9312:(F0803280060)GE3/0/10
+ eth-trunk 1
+#
+interface GigabitEthernet2/0/1
+#
+interface GigabitEthernet2/0/2
+#
+interface GigabitEthernet2/0/3
+#
+interface GigabitEthernet2/0/4
+#
+interface GigabitEthernet2/0/5
+#
+interface GigabitEthernet2/0/6
+#
+interface GigabitEthernet2/0/7
+#
+interface GigabitEthernet2/0/8
+#
+interface GigabitEthernet2/0/9
+#
+interface GigabitEthernet2/0/10
+ undo negotiation auto
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 1604
+ port vlan-stacking vlan 20 stack-vlan 1604
+ port vlan-stacking vlan 500 to 883 stack-vlan 1604
+#
+interface GigabitEthernet2/0/11
+#
+interface GigabitEthernet2/0/12
+ undo negotiation auto
+ speed 100
+ description L3170599
+ port link-type access
+ port default vlan 3400
+#
+interface GigabitEthernet2/0/13
+ undo negotiation auto
+ speed 100
+ description L3105745
+ port link-type access
+ port default vlan 3401
+#
+interface GigabitEthernet2/0/14
+ undo negotiation auto
+ speed 100
+ description 5711LAN00222715
+ port link-type access
+ port default vlan 3402
+ stp disable
+#
+interface GigabitEthernet2/0/15
+#
+interface GigabitEthernet2/0/16
+#
+interface GigabitEthernet2/0/17
+#
+interface GigabitEthernet2/0/18
+#
+interface GigabitEthernet2/0/19
+#
+interface GigabitEthernet2/0/20
+#
+interface GigabitEthernet2/0/21
+#
+interface GigabitEthernet2/0/22
+#
+interface GigabitEthernet2/0/23
+#
+interface GigabitEthernet2/0/24
+#
+interface GigabitEthernet2/0/25
+#
+interface GigabitEthernet2/0/26
+#
+interface GigabitEthernet2/0/27
+#
+interface GigabitEthernet2/0/28
+#
+interface GigabitEthernet2/0/29
+#
+interface GigabitEthernet2/0/30
+#
+interface GigabitEthernet2/0/31
+#
+interface GigabitEthernet2/0/32
+#
+interface GigabitEthernet2/0/33
+#
+interface GigabitEthernet2/0/34
+#
+interface GigabitEthernet2/0/35
+#
+interface GigabitEthernet2/0/36
+#
+interface GigabitEthernet2/0/37
+#
+interface GigabitEthernet2/0/38
+#
+interface GigabitEthernet2/0/39
+#
+interface GigabitEthernet2/0/40
+#
+interface GigabitEthernet2/0/41
+#
+interface GigabitEthernet2/0/42
+#
+interface GigabitEthernet2/0/43
+#
+interface GigabitEthernet2/0/44
+#
+interface GigabitEthernet2/0/45
+#
+interface GigabitEthernet2/0/46
+#
+interface GigabitEthernet2/0/47
+#
+interface NULL0
+#
+ip route-static 0.0.0.0 0.0.0.0 172.28.15.254
+#
+snmp-agent
+snmp-agent local-engineid 800007DB0304F938EEF9E0
+snmp-agent community read cipher %$%$nw/%G]}-6)Y\J=T*%BBLz>AHDJ)e+fQ;i'<wgQFx,|&=>AKzjDO.KS,bV-ze.M~R8Q0KATz>%$%$ acl 2000
+snmp-agent sys-info contact HZ-HZ-SMZX-E.MAN.9306
+snmp-agent sys-info location 2F
+snmp-agent sys-info version all
+snmp-agent target-host trap address udp-domain 172.16.254.252 params securityname cipher %@%@UxL{IO.G<YubkJ9iwidWz>AM%@%@
+snmp-agent trap source Vlanif50
+snmp-agent trap enable feature-name IFNET trap-name linkDown
+snmp-agent trap enable feature-name IFNET trap-name linkUp
+snmp-agent trap enable feature-name CONFIGURATION
+snmp-agent trap enable feature-name SNMP trap-name authenticationFailure
+undo snmp-agent trap enable feature-name DLDP
+undo snmp-agent trap enable feature-name LDTTRAP
+undo snmp-agent trap enable feature-name LLDPTRAP
+snmp-agent trap enable feature-name VFS
+snmp-agent trap enable feature-name BASETRAP
+#
+header login information " WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!"
+#
+user-interface maximum-vty 15
+user-interface con 0
+ authentication-mode password
+ set authentication password cipher %@%@/YXy%o}E#0V2@J/eoJ6>\ZCH+LIK20~|Z8Et^*<z13=/ZCK\%@%@
+ idle-timeout 0 0
+ screen-length 0
+user-interface vty 0 4
+ acl 2016 inbound
+ authentication-mode aaa
+ user privilege level 3
+ idle-timeout 0 0
+ screen-length 0
+user-interface vty 5 14
+ authentication-mode aaa
+ user privilege level 3
+ idle-timeout 0 0
+ screen-length 0
+user-interface vty 16 20
+#
+return
+[HZ-LA-LAOXIAOQU-DSW-1.MAN.S9306-ui-vty0-4]

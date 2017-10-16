@@ -1,0 +1,663 @@
+
+!Software Version V200R008C00SPC500
+#
+sysname QZ-QZ-XZ-PE-1.ZW.S9306
+#
+super password level 3 cipher %$%$u7%l:#eA@PtwB%&kaG{:,jaX;Iw9%$;3f'A7*bLI{y**.pgb%$%$
+#
+info-center source default channel 2 log level warning trap level warning
+info-center source SHELL channel 4 log level informational
+info-center loghost source LoopBack2
+info-center loghost 10.192.0.11 facility local4
+info-center loghost 10.192.0.12 facility local4
+#
+router id 10.2.0.5
+#
+vlan batch 20 to 25 50 to 54 1023 2001 to 2004 2009 3292 3810
+#
+undo authentication unified-mode
+#
+set save-configuration interval 43200 delay 30
+#
+assign resource-mode slot 1 mode enhanced-ipv4
+assign resource-mode slot 3 mode enhanced-ipv4
+assign resource-mode slot 6 mode enhanced-ipv4
+#
+telnet server enable
+telnet ipv6 server enable
+#
+lldp enable
+#
+undo http server enable
+#
+undo management-port isolate enable
+undo management-plane isolate enable
+#
+clock timezone GMT add 08:00:00
+#
+diffserv domain default
+#
+ip vpn-instance TWGC
+ ipv4-family
+  route-distinguisher 570:101
+  apply-label per-route
+  vpn-target 570:101 export-extcommunity
+  vpn-target 570:101 import-extcommunity
+#
+hwtacacs-server template acs
+ hwtacacs-server authentication 70.0.0.32
+ hwtacacs-server authorization 70.0.0.32
+ hwtacacs-server accounting 70.0.0.32
+ hwtacacs-server source-ip 10.2.1.5
+ hwtacacs-server shared-key cipher %^%#Tc[cOc-<E$wZ+xBi'_D#{PHT)4E2CUxQ"KPN]xkW%^%#
+ hwtacacs-server timer response-timeout 30
+ undo hwtacacs-server user-name domain-included
+#
+mpls lsr-id 10.2.0.5
+mpls
+#
+mpls ldp
+#
+#
+acl number 2000  
+ description SNMP
+ step 10
+ rule 10 permit source 10.192.0.0 0.0.0.255 
+ rule 20 permit source 10.31.255.0 0.0.0.255 
+ rule 30 permit source 70.0.1.0 0.0.0.127 
+ rule 100 deny 
+acl number 2001  
+ description Telnet
+ rule 10 permit source 10.10.0.0 0.0.1.255 
+ rule 20 permit source 10.192.0.0 0.0.0.31 
+ rule 30 permit source 10.21.2.0 0.0.0.255 
+ rule 40 permit source 10.31.255.0 0.0.0.255 
+ rule 50 permit source 70.0.0.0 0.0.3.255 
+ rule 100 deny 
+acl number 2002  
+ description NTP
+ rule 10 permit source 70.0.0.32 0 
+ rule 100 deny 
+#
+drop-profile default
+#
+vlan 20
+ description Management_Switch_OLT
+vlan 21
+ description Management_Customer_Device
+vlan 22
+ description Management_Pon-1
+vlan 25
+ description Management_Pon-GaoJia
+vlan 50
+ description Connect_QZ-QZ-XDL-PE-1.ZW.S9306
+vlan 51
+ description Connect_QZ-QZ-NQ-PE-1.ZW.S9306
+vlan 52
+ description Connect_QZ-QZ-XZ-BAS-1.MAN.7750
+vlan 53
+ description Connect_QZ-QZ-XZ-BAS-2.MAN.7750
+vlan 54
+ description dT:QJGA-SPJK-ZTE8905
+vlan 2004
+ description QZ-QZ-GaoJia-OLT-1.ZW.HW5680T::TWGC
+vlan 3292
+ description kaifaqu-qianduan
+vlan 3810
+ description kaifaqu-zhongxincunchu(old)
+#
+aaa
+ authentication-scheme default
+ authentication-scheme acs
+  authentication-mode local hwtacacs
+  authentication-super super hwtacacs
+ authorization-scheme default
+ authorization-scheme acs
+  authorization-mode  local hwtacacs
+ accounting-scheme default
+ accounting-scheme acs
+  accounting-mode hwtacacs
+  accounting start-fail online
+ recording-scheme acs
+  recording-mode hwtacacs acs
+ cmd recording-scheme acs
+ outbound recording-scheme acs
+ system recording-scheme acs
+ domain default
+ domain default_admin
+  authentication-scheme acs
+  accounting-scheme acs
+  authorization-scheme acs
+  hwtacacs-server acs
+ undo local-user admin
+ local-user local password irreversible-cipher %^%#V[ii!.#;1T3^oI/8|~R#3[I_3o^LmI;vEt(ynoR6+irw/*+F}P&IIGItT4#$%^%#
+ local-user local privilege level 3
+ local-user local service-type telnet
+ local-user zjnoc password irreversible-cipher %^%#gXqgKK|&6M*ag""N+x)0~x-%V"|xIBgz3V+Rb;5,s!K9N4<-oJO"|Y9SYe$C%^%#
+ local-user zjnoc privilege level 3
+ local-user zjnoc service-type telnet terminal
+#
+ntp-service access peer 2002
+#
+interface Vlanif20
+ description Management_Switch_OLT
+ ip address 10.2.80.1 255.255.254.0
+#
+interface Vlanif21
+ description Management_Customer_Device
+ ip address 10.2.82.1 255.255.254.0
+#
+interface Vlanif22
+ description Management_Pon-XiaZhang
+ ip address 10.2.84.1 255.255.255.0
+#
+interface Vlanif23
+ description Management_Pon-ShenJia
+ ip address 10.2.85.1 255.255.255.0
+#
+interface Vlanif24
+ description Management_Pon-DongGang3Lu
+ ip address 10.2.86.1 255.255.255.0
+#
+interface Vlanif25
+ description Management_Pon-GaoJia
+ ip address 10.2.87.1 255.255.255.0
+#
+interface Vlanif50
+ description Connect_QZ-QZ-XDL-PE-1.ZW.S9306
+ ip address 172.28.145.22 255.255.255.252
+ mpls
+ mpls ldp
+#
+interface Vlanif51
+ description Connect_QZ-QZ-NQ-PE-1.ZW.S9306
+ ip address 172.28.145.46 255.255.255.252
+ mpls
+ mpls ldp
+#
+interface Vlanif52
+ description Connect_QZ-QZ-XZ-BAS-1.MAN.7750
+ ip binding vpn-instance TWGC
+ ip address 172.28.145.49 255.255.255.252
+#
+interface Vlanif53
+ description Connect_QZ-QZ-XZ-BAS-2.MAN.7750
+ ip binding vpn-instance TWGC
+ ip address 172.28.145.53 255.255.255.252
+#
+interface Vlanif54
+ description dT:QJGA-SPJK-ZTE8905:()gei_2/0/7
+ ip binding vpn-instance TWGC
+ ip address 172.28.145.89 255.255.255.252
+#
+interface Vlanif2001
+ description QZ-QZ-XZ-OLT-1.ZW.HW5680T::TWGC
+ ip binding vpn-instance TWGC
+ ip address 172.28.64.1 255.255.255.0
+ ip address 172.24.0.1 255.255.255.0 sub
+ ip address 33.193.68.1 255.255.255.0 sub
+ ip address 33.193.133.1 255.255.255.0 sub
+ ip address 33.193.83.1 255.255.255.0 sub
+#
+interface Vlanif2002
+ description QZ-QZ-SJ-OLT-1.ZW.HW5680T::TWGC
+ ip binding vpn-instance TWGC
+ ip address 172.28.65.1 255.255.255.0
+ ip address 33.193.29.1 255.255.255.0 sub
+ ip address 33.193.94.1 255.255.255.0 sub
+#
+interface Vlanif2003
+ description QZ-QZ-DongGang3Lu-OLT-1.ZW.HW5680T::TWGC
+ ip binding vpn-instance TWGC
+ ip address 172.28.66.1 255.255.255.0
+ ip address 33.193.200.1 255.255.255.0 sub
+#
+interface Vlanif2004
+ description QZ-QZ-GaoJia-OLT-1.ZW.HW5680T::TWGC
+ ip binding vpn-instance TWGC
+ ip address 172.28.67.1 255.255.255.0
+ ip address 33.193.207.1 255.255.255.0 sub
+#
+interface Vlanif2009
+ ip address 33.193.71.193 255.255.255.192
+#
+interface Vlanif3292
+ description kaifaqu-qianduan
+ ip binding vpn-instance TWGC
+ ip address 172.23.40.1 255.255.255.0
+ ip address 172.23.32.1 255.255.255.0 sub
+ ip address 33.193.129.1 255.255.255.0 sub
+ ip address 33.193.130.1 255.255.255.0 sub
+#
+interface Vlanif3810
+ description kaifaqu-zhongxincunchu(old)
+ ip binding vpn-instance TWGC
+ ip address 172.23.33.1 255.255.255.0
+ ip address 172.23.34.1 255.255.255.0 sub
+#
+interface Eth-Trunk1
+ description pT:QZ-QZ-XDL-PE-1.ZW.S9306:LAG3(10GE6/0/3)
+ port link-type access
+ port default vlan 50
+ mode lacp
+#
+interface Eth-Trunk2
+ description pT:QZ-QZ-NQ-PE-1.ZW.S9306:LAG1(10GE6/0/0)
+ port link-type access
+ port default vlan 51
+ mode lacp
+#
+interface Eth-Trunk4
+ description uT:QZ-QZ-XZ-BAS-1.MAN.7750:Lag-20(GE5/1/5)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 52
+ mode lacp
+#
+interface Eth-Trunk5
+ description uT:QZ-QZ-XZ-BAS-2.MAN.7750:Lag-20(GE5/1/3)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 53
+ mode lacp
+#
+interface Eth-Trunk12
+ description dT:QZ-QZ-XZ-OLT-4.M2N.E5680T:LAG1(GE0/19/0,GE0/20/0)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 20 22 2001
+ mode lacp
+#
+interface Eth-Trunk14
+ description dT:QZ-QZ-SJ-OLT-4.M2N.E5680T:LAG1(GE0/19/0)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 20 23 2002 2009
+ mode lacp
+#
+interface Eth-Trunk17
+ description dT:QZ-QZ-GJ-OLT-4.M2.E5680T:()Lag1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 20 25 2004
+ mode lacp
+#
+interface Eth-Trunk18
+ description dT:QZ-QZ-DG3L-OLT-3.M2N.E5680T:LAG1(GE0/19/0)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 20 24 2003
+ mode lacp
+#
+interface Ethernet0/0/0
+ shutdown
+#
+interface GigabitEthernet1/0/0
+ shutdown
+#
+interface GigabitEthernet1/0/1
+ shutdown
+#
+interface GigabitEthernet1/0/2
+ shutdown
+#
+interface GigabitEthernet1/0/3
+ shutdown
+#
+interface GigabitEthernet1/0/4
+ shutdown
+#
+interface GigabitEthernet1/0/5
+ shutdown
+#
+interface GigabitEthernet1/0/6
+ shutdown
+#
+interface GigabitEthernet1/0/7
+ shutdown
+#
+interface GigabitEthernet1/0/8
+ shutdown
+#
+interface GigabitEthernet1/0/9
+ shutdown
+#
+interface GigabitEthernet1/0/10
+ shutdown
+#
+interface GigabitEthernet1/0/11
+ shutdown
+#
+interface GigabitEthernet1/0/12
+ shutdown
+#
+interface GigabitEthernet1/0/13
+ shutdown
+#
+interface GigabitEthernet1/0/14
+ shutdown
+#
+interface GigabitEthernet1/0/15
+ shutdown
+#
+interface GigabitEthernet1/0/16
+ shutdown
+#
+interface GigabitEthernet1/0/17
+ shutdown
+#
+interface GigabitEthernet1/0/18
+ shutdown
+#
+interface GigabitEthernet1/0/19
+ shutdown
+#
+interface GigabitEthernet1/0/20
+ shutdown
+#
+interface GigabitEthernet1/0/21
+ shutdown
+#
+interface GigabitEthernet1/0/22
+ shutdown
+#
+interface GigabitEthernet1/0/23
+ shutdown
+#
+interface GigabitEthernet1/0/24
+ shutdown
+#
+interface GigabitEthernet1/0/25
+ shutdown
+#
+interface GigabitEthernet1/0/26
+ shutdown
+#
+interface GigabitEthernet1/0/27
+ shutdown
+#
+interface GigabitEthernet1/0/28
+ shutdown
+#
+interface GigabitEthernet1/0/29
+ shutdown
+#
+interface GigabitEthernet1/0/30
+ shutdown
+#
+interface GigabitEthernet1/0/31
+ shutdown
+#
+interface GigabitEthernet1/0/32
+ shutdown
+#
+interface GigabitEthernet1/0/33
+ shutdown
+#
+interface GigabitEthernet1/0/34
+ shutdown
+#
+interface GigabitEthernet1/0/35
+ shutdown
+#
+interface GigabitEthernet1/0/36
+ shutdown
+#
+interface GigabitEthernet1/0/37
+ shutdown
+#
+interface GigabitEthernet1/0/38
+ shutdown
+#
+interface GigabitEthernet1/0/39
+ shutdown
+#
+interface GigabitEthernet1/0/40
+ shutdown
+#
+interface GigabitEthernet1/0/41
+ shutdown
+#
+interface GigabitEthernet1/0/42
+ shutdown
+#
+interface GigabitEthernet1/0/43
+ shutdown
+#
+interface GigabitEthernet1/0/44
+ shutdown
+#
+interface GigabitEthernet1/0/45
+ shutdown
+#
+interface GigabitEthernet1/0/46
+ shutdown
+#
+interface GigabitEthernet1/0/47
+ shutdown
+#
+interface GigabitEthernet3/0/0
+ undo negotiation auto
+ description dT:QZ-QZ-XZ-SR-1.MAN.M6000:(local)GE0/0/17
+ shutdown
+ eth-trunk 5
+#
+interface GigabitEthernet3/0/1
+ undo negotiation auto
+ description dT:QZ-QZ-XZ-SR-2.MAN.M6000:(local)GE0/0/17
+ shutdown
+ eth-trunk 4
+#
+interface GigabitEthernet3/0/2
+ description QJGA-SPJK-ZTE8905:(F1307260001)gei_2/0/7::kehu
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 21 54
+#
+interface GigabitEthernet3/0/3
+ shutdown
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet3/0/4
+ description dT:QZ-QZ-XZ-BAS-2.MAN.7750:(local)GE5/1/3
+ eth-trunk 5
+#
+interface GigabitEthernet3/0/5
+ description dT:QZ-QZ-XZ-BAS-1.MAN.7750:(local)GE5/1/5
+ eth-trunk 4
+#
+interface GigabitEthernet3/0/6
+ description uT:QZ-QZ-XZ-DSW-1.MAN.S9306:(Local)GE6/0/10
+ port link-type trunk
+ port trunk allow-pass vlan 3292 3810
+#
+interface GigabitEthernet3/0/7
+ shutdown
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet3/0/8
+ shutdown
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet3/0/9
+ shutdown
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet3/0/10
+ shutdown
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet3/0/11
+ shutdown
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet3/0/12
+ description dT:QZ-QZ-XZ-OLT-4.M2N.E5680T:(local)GE0/19/0
+ eth-trunk 12
+#
+interface GigabitEthernet3/0/13
+ description dT:QZ-QZ-XZ-OLT-4.M2N.E5680T:(local)GE0/20/0
+ eth-trunk 12
+#
+interface GigabitEthernet3/0/14
+ description dT:QZ-QZ-SJ-OLT-4.M2N.E5680T:(F1303120001)GE0/19/0
+ eth-trunk 14
+#
+interface GigabitEthernet3/0/15
+ description dT:QZ-QZ-SJ-OLT-4.M2N.E5680T:(F1705082266)GE0/19/1
+ eth-trunk 14
+#
+interface GigabitEthernet3/0/16
+ description dT:QZ-QZ-DG3L-OLT-3.M2N.E5680T:(F1303120004)GE0/19/1
+ eth-trunk 18
+#
+interface GigabitEthernet3/0/17
+ description dT:QZ-QZ-GJ-OLT-4.M2.E5680T:(F1505060017)G0/19/0
+ eth-trunk 17
+#
+interface GigabitEthernet3/0/18
+ description dT:QZ-QZ-DG3L-OLT-3.M2N.E5680T:(F1308280002)GE0/19/0
+ eth-trunk 18
+#
+interface GigabitEthernet3/0/19
+#
+interface GigabitEthernet3/0/20
+ shutdown
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet3/0/21
+ shutdown
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet3/0/22
+ shutdown
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet3/0/23
+ shutdown
+ port hybrid tagged vlan 1023
+#
+interface XGigabitEthernet6/0/0
+ description pT:QZ-QZ-NQ-PE-1.ZW.S9306:(F1303260002)10GE6/0/0
+ eth-trunk 2
+#
+interface XGigabitEthernet6/0/1
+ description pT:QZ-QZ-XDL-PE-1.ZW.S9306:(F1303280001)10GE6/0/3
+ eth-trunk 1
+#
+interface XGigabitEthernet6/0/2
+ shutdown
+#
+interface XGigabitEthernet6/0/3
+ shutdown
+#
+interface NULL0
+#
+interface LoopBack0
+ description For-BGP
+ ip address 10.2.0.5 255.255.255.255
+#
+interface LoopBack1
+ description For-TWGC
+ ip binding vpn-instance TWGC
+ ip address 172.28.144.25 255.255.255.255
+#
+interface LoopBack2
+ description For-Management
+ ip address 10.2.1.5 255.255.255.255
+#
+bgp 62570
+ group zw internal
+ peer zw connect-interface LoopBack0
+ peer 10.2.0.1 as-number 62570
+ peer 10.2.0.1 group zw
+ peer 10.2.0.2 as-number 62570
+ peer 10.2.0.2 group zw
+ #
+ ipv4-family unicast
+  undo synchronization
+  peer zw enable
+  peer zw next-hop-local
+  peer 10.2.0.1 enable
+  peer 10.2.0.1 group zw
+  peer 10.2.0.2 enable
+  peer 10.2.0.2 group zw
+ #
+ ipv4-family vpnv4
+  policy vpn-target
+  peer zw enable
+  peer zw next-hop-local
+  peer 10.2.0.1 enable
+  peer 10.2.0.1 group zw
+  peer 10.2.0.2 enable
+  peer 10.2.0.2 group zw
+ #
+ ipv4-family vpn-instance TWGC
+  import-route direct
+  import-route static
+  import-route ospf 2
+#
+ospf 1
+ import-route direct
+ import-route static
+ bandwidth-reference 100000
+ area 0.0.0.0
+  network 10.2.0.5 0.0.0.0
+  network 172.28.145.20 0.0.0.3
+  network 172.28.145.44 0.0.0.3
+#
+ospf 2 vpn-instance TWGC
+ bandwidth-reference 100000
+ area 0.0.0.0
+  network 172.28.144.25 0.0.0.0
+ area 0.0.0.1
+  network 172.28.145.48 0.0.0.3
+  network 172.28.145.52 0.0.0.3
+  nssa default-route-advertise backbone-peer-ignore set-n-bit
+#
+ip route-static vpn-instance TWGC 172.23.32.0 255.255.255.0 172.23.33.2
+ip route-static vpn-instance TWGC 172.23.33.0 255.255.255.0 172.23.33.2
+ip route-static vpn-instance TWGC 172.23.34.0 255.255.255.0 172.23.33.2
+ip route-static vpn-instance TWGC 172.23.40.0 255.255.255.0 172.23.33.2
+#
+snmp-agent
+snmp-agent local-engineid 800007DB037054F586C0E0
+snmp-agent community read cipher %^%#]q+=J%X(rK{wYF(CWcoMo\qiPbb,PXJy`(&L"M|=9<txOSKj-#Jd@L%5WQd-G~dK'n!<(H*ZePAV'm|;%^%# acl 2000
+snmp-agent sys-info contact QZ-QZ-XZ
+snmp-agent sys-info location QZ-QZ-XZ
+snmp-agent sys-info version all
+snmp-agent target-host trap address udp-domain 10.192.0.11 params securityname cipher %^%#uR(A/<xA2HpE(r3(:[P3f|=q7'%aFI#1,M!lywx6%^%#
+snmp-agent target-host trap address udp-domain 10.192.0.12 params securityname cipher %^%#L0`^TRyfh0i;2,!e1|jAFXm_2NYjPYc8M}1s(@\O%^%#
+snmp-agent trap source LoopBack2
+snmp-agent trap enable
+#
+ssh server compatible-ssh1x enable
+#
+header login information " WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!"
+#
+user-interface maximum-vty 15
+user-interface con 0
+ authentication-mode password
+ set authentication password cipher %^%#[l|^Jjy(;/K`I_=-vgV-M&g&TqY\9Fp.7C.@v%g1B2s{HMh)v.4s*v(oFDP=%^%#
+ idle-timeout 0 0
+user-interface vty 0 4
+ acl 2001 inbound
+ authentication-mode aaa
+ idle-timeout 5 0
+ screen-length 40
+ protocol inbound telnet
+user-interface vty 5 14
+ authentication-mode aaa
+ user privilege level 3
+ idle-timeout 0 0
+ screen-length 40
+ protocol inbound telnet
+user-interface vty 16 20
+ protocol inbound telnet
+#
+assistant task savelogfile
+ if-match timer cron * 0 0/1 * * * *
+ perform 1 batch-file savelogfile.bat
+#
+return
+<QZ-QZ-XZ-PE-1.ZW.S9306>

@@ -1,0 +1,450 @@
+
+Building configuration...
+
+Current configuration : 9112 bytes
+!
+! Last configuration change at 10:03:26 Beijing Fri Jul 14 2017
+! NVRAM config last updated at 10:03:29 Beijing Fri Jul 14 2017
+!
+version 12.1
+no service pad
+service tcp-keepalives-in
+service tcp-keepalives-out
+service timestamps debug datetime
+service timestamps log datetime
+service password-encryption
+!
+hostname QZ-CS-DongY-ASW-1.MAN.C3550
+!
+enable secret 5 $1$EHiz$b8ALAI2zJRf4cq2UhR3np.
+!
+clock timezone Beijing 0
+no errdisable detect cause pagp-flap
+no errdisable detect cause dtp-flap
+no errdisable detect cause link-flap
+no errdisable detect cause l2ptguard
+no errdisable detect cause gbic-invalid
+no errdisable detect cause loopback
+ip subnet-zero
+no ip source-route
+ip routing
+no ip gratuitous-arps
+!
+no ip domain-lookup
+ip name-server 202.96.113.34
+ip name-server 202.96.113.35
+vtp mode transparent
+mls qos
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+!
+!
+!
+vlan access-map WORM1 10
+ action drop
+ match ip address udp_1434
+vlan access-map WORM1 20
+ action drop
+ match ip address cjb
+vlan access-map WORM1 30
+ action forward
+ match ip address ip_match
+vlan access-map WORM2 10
+ action drop
+ match ip address udp_1434
+vlan access-map WORM2 20
+ action drop
+ match ip address cjb
+vlan access-map WORM2 30
+ action drop
+ match ip address ping_attach
+vlan access-map WORM2 40
+ action forward
+ match ip address ip_match
+vlan filter WORM1 vlan-list 1-99
+!
+vlan 20
+ name Cisco-Manage
+!
+vlan 22
+ name ZTE-Manage
+!
+vlan 26
+ name LouDao_Manger
+!
+vlan 120
+ name NingNong_Netbar
+!
+vlan 700
+ name manager
+!
+vlan 901
+ name WLAN
+!
+vlan 1203
+ name DongYuan-Wlan
+!
+vlan 1416
+ name DongYuan-ZTE-8220
+!
+vlan 1417
+ name DongYuan_10#
+!
+vlan 1418
+ name DongYuan_12#
+!
+vlan 1419
+ name DongYuan_26#
+!
+vlan 1420
+ name DongYuan_68#
+!
+vlan 1421
+ name DongYuan_70#
+!
+vlan 1422
+ name DongYuan_14#
+!
+vlan 1423
+ name DongYuan_62#
+!
+vlan 1424
+ name DongYuan_60#
+!
+vlan 1425
+ name DongYuan_64#
+!
+vlan 1426
+ name DongYuan_36#
+!
+vlan 1427
+ name DongYuan_660#
+!
+vlan 1428
+ name DongYuan_16#
+!
+vlan 1429
+ name DongYuan_58#
+!
+vlan 1430
+ name DongYuan_32#
+!
+vlan 1431
+ name DongYuan_38#
+!
+vlan 1432
+ name DongYuan_24#
+!
+vlan 1433
+ name DongYuan_HW3026#
+!
+vlan 1649,3102 
+!
+vlan 3202
+ name CS_JiFang_Manger
+!
+vlan 3406 
+!
+vlan 3498
+ name XiangHua_GongAnWang
+!
+vlan 3537
+ name CS40_2NiNong_Netba120
+!
+vlan 3555 
+!
+vlan 3558
+ name YiRenWangBa
+!
+vlan 3613
+ name XiangHuaBinGuan
+!
+vlan 3651
+ name YiRen_Netbar
+!
+vlan 3773
+ name RenMinFaYuan_IP
+!
+vlan 3781
+ name ZhengFaWei_IP
+!
+class-map match-all XianSu
+  match ip dscp 0
+!
+!
+policy-map 80M
+  class XianSu
+    police 82000000 1000000 exceed-action drop
+policy-map 50M
+  class XianSu
+    police 53000000 1000000 exceed-action drop
+policy-map 40M
+  class XianSu
+    police 42000000 1000000 exceed-action drop
+policy-map 10M
+  class XianSu
+    police 11000000 1000000 exceed-action drop
+policy-map 30M
+  class XianSu
+    police 32000000 1000000 exceed-action drop
+policy-map 20M
+  class XianSu
+    police 21000000 1000000 exceed-action drop
+policy-map 8M
+  class XianSu
+    police 8400000 800000 exceed-action drop
+policy-map 4M
+  class XianSu
+    police 4200000 300000 exceed-action drop
+policy-map 6M
+  class XianSu
+    police 6296000 600000 exceed-action drop
+policy-map 450M
+  class XianSu
+    police 450000000 1000000 exceed-action drop
+policy-map 650M
+  class XianSu
+    police 650000000 1000000 exceed-action drop
+policy-map 300M
+  class XianSu
+    police 300000000 1000000 exceed-action drop
+policy-map 2M
+  class XianSu
+    police 2100000 300000 exceed-action drop
+policy-map policy2M
+  class XianSu
+    police 2096000 200000 exceed-action drop
+!
+!
+!
+interface FastEthernet0/1
+ description DongYuan_ZTE8220_Manger
+ switchport access vlan 22
+ switchport mode access
+ shutdown
+!
+interface FastEthernet0/2
+ description DongYuan50::kehu   
+ switchport access vlan 1433
+ switchport mode dot1q-tunnel
+ spanning-tree bpdufilter enable
+!
+interface FastEthernet0/3
+ description YiRenWangBa 
+ switchport access vlan 3651
+ switchport mode access
+ service-policy output 50M
+!
+interface FastEthernet0/4
+ description ZhengFaWei_IP
+ switchport access vlan 3781
+ switchport mode access
+ service-policy output 4M
+!
+interface FastEthernet0/5
+ description XiangHuaBinGuan
+ switchport access vlan 3406
+ switchport mode access
+ service-policy output 2M
+!
+interface FastEthernet0/6
+ description To_DongYuan_10#
+ switchport access vlan 1417
+ switchport mode dot1q-tunnel
+!
+interface FastEthernet0/7
+ description wenfengdonglu171-1xi::kehu   
+ switchport access vlan 1433
+ switchport mode dot1q-tunnel
+ no cdp enable
+ spanning-tree bpdufilter enable
+!
+interface FastEthernet0/8
+ description dongyuan48::kehu   
+ switchport access vlan 1433
+ switchport mode dot1q-tunnel
+ no cdp enable
+ spanning-tree bpdufilter enable
+!
+interface FastEthernet0/9
+ switchport mode dot1q-tunnel
+ no cdp enable
+ spanning-tree bpdufilter enable
+!
+interface FastEthernet0/10
+ description To_DongYuan_68#
+ switchport access vlan 1420
+ switchport mode dot1q-tunnel
+!
+interface FastEthernet0/11
+ description To_DongYuan_70#
+ switchport access vlan 1421
+ switchport mode dot1q-tunnel
+!
+interface FastEthernet0/12
+ description To_DongYuan_14#
+ switchport access vlan 1422
+ switchport mode dot1q-tunnel
+!
+interface FastEthernet0/13
+ description To_DongYuan_62#
+ switchport access vlan 1423
+ switchport mode dot1q-tunnel
+ shutdown
+!
+interface FastEthernet0/14
+ description To_DongYuan_60#
+ switchport access vlan 1424
+ switchport mode dot1q-tunnel
+!
+interface FastEthernet0/15
+ description To_DongYuan_64#::kehu   
+ switchport access vlan 1425
+ switchport mode dot1q-tunnel
+ no cdp enable
+ spanning-tree bpdufilter enable
+!
+interface FastEthernet0/16
+ description DongYuan_36
+ switchport access vlan 1426
+ switchport mode dot1q-tunnel
+!
+interface FastEthernet0/17
+ description To_DongYuan_66#
+ switchport access vlan 1427
+ switchport mode dot1q-tunnel
+!
+interface FastEthernet0/18
+ description dongyuan-46
+ switchport access vlan 1428
+ switchport mode dot1q-tunnel
+!
+interface FastEthernet0/19
+ description To_NingNong_Netbar
+ switchport access vlan 3537
+ switchport mode access
+ service-policy output 20M
+!
+interface FastEthernet0/20
+ description dongyuan246-2
+ switchport access vlan 1433
+ switchport mode dot1q-tunnel
+ spanning-tree bpdufilter enable
+!
+interface FastEthernet0/21
+ description DongYuan_WLAN
+ switchport access vlan 1203
+ switchport mode access
+!
+interface FastEthernet0/22
+ description DongYung_38
+ switchport access vlan 1431
+ switchport mode dot1q-tunnel
+!
+interface FastEthernet0/23
+ description chengcun9806-10.20.41.122
+ switchport access vlan 1433
+ switchport mode dot1q-tunnel
+ shutdown
+ spanning-tree bpdufilter enable
+!
+interface FastEthernet0/24
+ switchport access vlan 1433
+ switchport mode dot1q-tunnel
+!
+interface GigabitEthernet0/1
+ description uT:QZ-CS-XDL-DSW-3.MAN.S9306:(F0709070009)GE6/0/12
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 20,22,26,120,700,901,1203,1416-1433,1649,3102
+ switchport trunk allowed vlan add 3202,3406,3498,3537,3555,3558,3613,3651,3773
+ switchport trunk allowed vlan add 3781
+ switchport mode trunk
+ speed nonegotiate
+ spanning-tree bpdufilter enable
+!
+interface GigabitEthernet0/2
+ switchport mode dynamic desirable
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan2
+ no ip address
+!
+interface Vlan20
+ ip address 10.21.6.135 255.255.255.0
+!
+interface Vlan201
+ no ip address
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 10.21.6.1
+no ip http server
+!
+ip access-list extended cjb
+ permit tcp any any eq 4444
+ permit tcp any eq 135 any
+ permit tcp any eq 137 any
+ permit tcp any any eq 135
+ permit tcp any any eq 139
+ permit tcp any any eq 445
+ permit tcp any any eq 593
+ permit udp any any eq tftp
+ permit udp any any eq 135
+ permit udp any any eq netbios-ns
+ permit udp any any eq netbios-dgm
+ permit udp any any eq netbios-ss
+ permit tcp any eq 139 any
+ permit tcp any eq 4444 any
+ permit tcp any eq 445 any
+ permit tcp any eq 593 any
+ permit udp any eq tftp any
+ permit udp any eq 135 any
+ permit udp any eq netbios-ns any
+ permit udp any eq netbios-dgm any
+ permit udp any eq netbios-ss any
+ permit tcp any host 194.109.11.65 eq 6556
+ permit tcp any host 194.109.11.65 eq 1023
+ permit tcp any host 64.202.167.129 eq 1023
+ permit tcp any host 64.202.167.129 eq 6556
+ permit udp any any eq 1026
+ permit udp any any eq 1027
+ip access-list extended ip_match
+ permit ip any any
+ip access-list extended ping_attach
+ permit icmp any any
+ip access-list extended test
+ deny   tcp host 218.72.254.154 any established
+ permit ip any any
+ip access-list extended udp_1434
+ permit udp any any eq 1434
+!
+logging trap debugging
+logging source-interface Vlan700
+access-list 99 permit 10.10.1.0 0.0.0.31
+access-list 99 permit 10.10.1.128 0.0.0.31
+access-list 99 permit 10.10.1.160 0.0.0.15
+access-list 99 permit 10.13.45.0 0.0.0.255
+snmp-server community qzptt2001 RO
+snmp-server community qzdxkd2001 RW
+snmp-server host 10.192.0.11 qzptt2001 
+!
+line con 0
+line vty 0 4
+ exec-timeout 5 0
+ password 7 13061E010803
+ login
+ transport preferred telnet
+ transport input telnet
+line vty 5 15
+ login
+!
+ntp clock-period 17180278
+ntp server 10.10.10.2
+!
+end
+
+QZ-CS-DongY-ASW-1.MAN.C3550#

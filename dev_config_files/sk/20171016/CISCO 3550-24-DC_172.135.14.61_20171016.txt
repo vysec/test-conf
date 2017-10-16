@@ -1,0 +1,340 @@
+
+Building configuration...
+
+Current configuration : 6693 bytes
+!
+! Last configuration change at 01:09:47 UTC Mon Jun 26 2017 by cfj.yz
+! NVRAM config last updated at 01:09:47 UTC Mon Jun 26 2017 by cfj.yz
+!
+version 12.2
+no service pad
+service timestamps debug uptime
+service timestamps log datetime msec localtime
+service password-encryption
+!
+hostname NBYZ-A-SSGYQ-3550
+!
+enable secret 5 $1$IhC1$Xe7c3RuxY3PpUs62IB2im1
+!
+username admin password 7 045802150C2E
+aaa new-model
+aaa authentication login default group tacacs+ local
+aaa authorization config-commands
+aaa authorization exec default group tacacs+ none 
+aaa authorization commands 1 default group tacacs+ none 
+aaa authorization commands 15 default group tacacs+ none 
+aaa accounting suppress null-username
+aaa accounting exec default start-stop group tacacs+
+aaa accounting commands 1 default start-stop group tacacs+
+aaa accounting commands 15 default start-stop group tacacs+
+!
+aaa session-id common
+ip subnet-zero
+no ip domain-lookup
+!
+vtp domain sq
+vtp mode transparent
+!
+!
+!
+no file verify auto
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+vlan 7
+ name raisecom
+!
+vlan 8
+ name manage
+!
+vlan 75 
+!
+vlan 212
+ name huawei_manage
+!
+vlan 246
+ name adsl_ericsson_manage
+!
+vlan 325 
+!
+vlan 366
+ name sw_jiaojing_vpn
+!
+vlan 369 
+!
+vlan 490
+ name raisecom_manage
+!
+vlan 696
+ name guding-ip
+!
+vlan 701
+ name PPPOE_ericsson_zhongji
+!
+vlan 1133,1137,1226 
+!
+vlan 1250
+ name sw_deji_2m
+!
+vlan 1251
+ name sw_zhongjiguojizhaobiao_2m
+!
+vlan 1252
+ name sw_zhonghongji_4m
+!
+vlan 1253
+ name sw_zj_dongben_10m(2)
+!
+vlan 1254
+ name sw_zj_zhongjidongben_jiankong
+!
+vlan 1255
+ name yilifang_2m
+!
+vlan 1392-1393,1396-1398,1501,1512,1514-1520,1522-1523 
+!
+vlan 2023
+ name sw_zhongji_dongben_qiche
+!
+vlan 2027
+ name sw_zjwm_saike
+!
+vlan 2028
+ name sw_zhongji_fangzhiping
+!
+vlan 2029
+ name sw_zjwm_chengyuan
+!
+vlan 2030
+ name sw_zjwm_zhongjiwaimao
+!
+vlan 2038
+ name sw_zjwm_yisidan
+!
+vlan 2040
+ name sw_zjwm_zhengxinyuan
+!
+vlan 2047
+ name sw_yageer_yunshu
+!
+vlan 2050
+ name sw_riyixin
+!
+vlan 2054
+ name sw_dazhong_shangping
+!
+vlan 2055
+ name sw_zhongji_wei'er
+!
+vlan 3018 
+!
+class-map match-all test
+class-map match-all test_2m
+  match access-group name test_2m
+class-map match-all zj_dongben_down
+  match access-group name zj_dongben_down
+  match vlan  2023
+class-map match-all zj_dongben_up
+  match vlan  2023
+  match access-group name zj_dongben_up
+!
+!
+policy-map test_2m
+  class test_2m
+    police 2048000 102400 exceed-action drop
+policy-map user_down
+  class zj_dongben_down
+    police 2048000 1024000 exceed-action drop
+    trust dscp
+policy-map zj_dongben_up_2m
+  class zj_dongben_up
+    police 2048000 1024000 exceed-action drop
+    trust dscp
+!
+!
+interface FastEthernet0/1
+ description zhongji_dongben_2m
+ switchport access vlan 7
+ switchport mode access
+ duplex full
+ speed 10
+!
+interface FastEthernet0/2
+ description raisecom
+ switchport access vlan 1137
+ switchport mode access
+!
+interface FastEthernet0/3
+ description yageer_yunshu
+ switchport access vlan 1392
+ switchport mode access
+!
+interface FastEthernet0/4
+ description saike_10m
+ switchport access vlan 1393
+ switchport mode access
+ no cdp enable
+!
+interface FastEthernet0/5
+ description zhongjiwaimao_40m
+ switchport access vlan 325
+ switchport mode access
+ no cdp enable
+!
+interface FastEthernet0/6
+ description zhongwaiyun_2m
+ switchport access vlan 325
+ switchport mode access
+ speed 10
+ no cdp enable
+!
+interface FastEthernet0/7
+ description zhongji_fangzhiping
+ switchport access vlan 369
+ switchport mode access
+ speed 10
+!
+interface FastEthernet0/8
+ description wei'er
+ switchport access vlan 1396
+ switchport mode access
+ no cdp enable
+!
+interface FastEthernet0/9
+ description yisidan_10m
+ switchport access vlan 1397
+ switchport mode access
+ no cdp enable
+!
+interface FastEthernet0/10
+ description zhengxinyuan_10m
+ switchport access vlan 1398
+ switchport mode access
+ no cdp enable
+!
+interface FastEthernet0/11
+ description deji_2m
+ switchport access vlan 1501
+ switchport mode access
+!
+interface FastEthernet0/12
+ description zhongjiguojizhaobiao_2m
+ switchport access vlan 1512
+ switchport mode access
+ speed 10
+!
+interface FastEthernet0/13
+ description dazhong_shangping
+ switchport access vlan 3018
+ switchport mode access
+ speed 10
+!
+interface FastEthernet0/14
+ description zhonghongji_4m
+ switchport access vlan 1514
+ switchport mode access
+ speed 10
+!
+interface FastEthernet0/15
+ description zhongji_dongben_10m(2)
+ switchport access vlan 1515
+ switchport mode access
+!
+interface FastEthernet0/16
+ description zhongjidongben_jiankong_10m
+ switchport access vlan 1516
+ switchport mode access
+ no cdp enable
+!
+interface FastEthernet0/17
+ description liyifang_2m
+ switchport access vlan 1517
+ switchport mode access
+!
+interface FastEthernet0/18
+ description zhongji_dongben
+ switchport access vlan 1518
+ switchport mode access
+!
+interface FastEthernet0/19
+ switchport access vlan 1133
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/20
+ switchport access vlan 1226
+ switchport mode access
+!
+interface FastEthernet0/21
+ switchport access vlan 1519
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/22
+ switchport access vlan 1520
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/23
+ description huanggulin_dianzishangwu_50m
+ switchport access vlan 1522
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/24
+ description zhiyuanzaixian
+ switchport access vlan 1523
+ switchport mode access
+!
+interface GigabitEthernet0/1
+ description uT:NBYZ-D-JSG-9306:(F0810270035)GE2/0/9
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 2-4000
+ switchport mode trunk
+ switchport nonegotiate
+!
+interface GigabitEthernet0/2
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 7,8,212,246,366,490,696,701,1250-1260,2023
+ switchport trunk allowed vlan add 2027-2030,2038,2040,2047,2050,2054,2055
+ switchport mode trunk
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan8
+ ip address 172.135.14.61 255.255.255.0
+!
+ip default-gateway 172.135.14.1
+ip classless
+ip http server
+ip tacacs source-interface Vlan8
+!
+ip access-list extended test_2m
+ permit ip 60.190.32.168 0.0.0.7 any
+ permit ip any 60.190.32.168 0.0.0.7
+ip access-list extended zj_dongben_down
+ permit ip any 60.190.32.168 0.0.0.7
+ip access-list extended zj_dongben_up
+ permit ip 60.190.32.168 0.0.0.7 any
+!
+snmp-server community nbroot RO
+tacacs-server host 172.200.100.249
+tacacs-server directed-request
+tacacs-server key 7 050504012E4F
+radius-server source-ports 1645-1646
+!
+control-plane
+!
+!
+line con 0
+ password 7 070C285F4D06
+line vty 0 4
+ password 7 070C285F4D06
+line vty 5 15
+!
+ntp clock-period 17180204
+ntp server 172.135.18.254
+!
+end
+
+NBYZ-A-SSGYQ-3550#

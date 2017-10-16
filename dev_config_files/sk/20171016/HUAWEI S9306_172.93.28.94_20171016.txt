@@ -1,0 +1,1027 @@
+
+!Software Version V200R008C00SPC500
+#
+sysname NB-YY-SM-SW1-S9306-1.MAN
+#
+super password level 3 cipher %$%$z!SrPT#NiF,WB@7xgAv!=}ewMU1ENmEy3&cRa"Y*"C[H}ez=%$%$
+#
+info-center source default channel 2 log level warning
+info-center loghost source Vlanif93
+info-center loghost 172.200.100.6 facility local6
+#
+vlan batch 8 40 42 to 43 50 75 to 80 93 212 to 213 225 367 394
+vlan batch 1195 to 1196 1316 to 1319 1321 to 1329 1334 to 1337 1358 to 1365 1370 to 1373 1382 to 1386 1398 1586 1588
+vlan batch 1590 1593 1596 to 1597 1617 1622 1630 to 1634 1636 to 1637 1642 to 1644 1646 1648
+vlan batch 1660 1667 to 1678 1680 to 1704 1713 to 1732 1772 1778 1783 to 1784 1787 1790 1793
+vlan batch 1796 1799 2689 to 2690 2697 to 2702 3000 3002 3009 3019 3021 3025 to 3026
+vlan batch 3050 to 3052 3057 3069 3073 3077 3081 3090 3096 3099 3104
+vlan batch 3106 3109 to 3110 3134 3136 3158 3161 to 3186 3192 3194 3199 3500 to 3599
+vlan batch 3605 3622 3666 3668 to 3669 3673 3679 3685 3688 3694 3698
+vlan batch 3710 to 3711 3715 3725 3729 to 3730 3784 3790 3848 3870 3890 3894
+vlan batch 3928 3958 3963 3975 3980 3992 3998
+#
+undo authentication unified-mode
+#
+telnet server enable
+telnet ipv6 server enable
+#
+undo http server enable
+undo http secure-server enable
+#
+undo management-port isolate enable
+undo management-plane isolate enable
+#
+clock timezone UTC add 00:00:00
+#
+diffserv domain default
+#
+hwtacacs-server template nbdx
+ hwtacacs-server authentication 172.200.100.249
+ hwtacacs-server authorization 172.200.100.249
+ hwtacacs-server accounting 172.200.100.249
+ hwtacacs-server source-ip 172.93.28.94
+ hwtacacs-server shared-key cipher %^%#"p~O;s(@=Kq{m1>IF+BVHlDz=:N>_IB$7u~2qGU(%^%#
+ undo hwtacacs-server user-name domain-included
+#
+acl number 2000  
+ description For_Telnet
+ rule 5 permit source 61.153.82.90 0 
+ rule 10 permit source 202.96.102.247 0 
+ rule 15 permit source 202.96.102.0 0.0.1.255 
+ rule 20 permit source 202.101.167.192 0.0.0.63 
+ rule 25 permit source 61.153.112.128 0.0.0.31 
+ rule 30 permit source 61.174.25.112 0.0.0.15 
+ rule 35 permit source 202.96.112.96 0.0.0.31 
+ rule 40 permit source 172.93.0.0 0.0.255.255 
+ rule 45 permit source 172.200.100.0 0.0.0.255 
+acl number 2015  
+ description For-SNMP
+ rule 10 permit source 172.200.100.12 0 
+ rule 20 permit source 172.200.100.6 0 
+ rule 30 permit source 172.200.100.13 0 
+ rule 40 permit source 172.200.100.7 0 
+ rule 50 permit source 172.200.100.8 0 
+ rule 60 permit source 172.200.100.9 0 
+ rule 70 permit source 172.200.100.10 0 
+ rule 80 permit source 172.200.100.11 0 
+ rule 90 permit source 172.200.100.14 0 
+ rule 100 permit source 172.200.100.15 0 
+ rule 110 permit source 172.200.100.5 0 
+ rule 120 permit source 172.200.100.4 0 
+ rule 130 permit source 172.200.100.3 0 
+ rule 1500 deny 
+#
+acl number 3000  
+ rule 5 permit icmp source 61.175.22.17 0 destination 61.175.22.29 0 
+ rule 10 permit icmp source 61.175.22.29 0 destination 61.175.22.17 0 
+acl number 3003  
+ rule 5 permit icmp source 61.175.22.17 0 destination 61.175.22.29 0 
+#
+traffic classifier 3000 operator or precedence 10
+ if-match acl 3000
+traffic classifier tongji operator or precedence 5
+ if-match acl 3003
+#
+traffic behavior 3000
+ permit
+ statistic enable
+traffic behavior tongji
+ permit
+ statistic enable
+#
+traffic policy 3000 match-order auto
+ classifier 3000 behavior 3000
+traffic policy tongji match-order auto
+ classifier tongji behavior tongji
+#
+drop-profile default
+#
+vlan 8
+ description admin
+vlan 40
+ description ZX_OLT_Manager
+vlan 42
+ description HW_OLT_Manager
+vlan 43
+ description ALC_OLT_Manager
+vlan 50
+ description For8505-Netmanagement
+ traffic-policy 3000 inbound
+ traffic-policy 3000 outbound
+vlan 75
+ description For-Dlink-Management-1
+vlan 76
+ description For-Dlink-Management-2
+vlan 77
+ description For-Dlink-Management-3
+vlan 78
+ description Wlan_Admin_Old
+vlan 79
+ description Wlan_Admin
+vlan 80
+ description iwifi
+vlan 93
+ description For_S9306_NetManagement
+vlan 212
+ description For-HuaWei-Dslam-Management-1
+vlan 213
+ description For-HuaWei-Dslam-Management-2
+vlan 225
+ description For-Alcatel-Dslam-Management-1
+vlan 367
+ description HuanBao_VPN
+vlan 394
+ description jingwuwang-vpn
+vlan 1195
+ description Huangjiabuyinyeting_WLAN
+vlan 1196
+ description Linshanyinyeting_WLAN
+vlan 1316
+ description FTTH_GPON_LinShan_AL_OLT1
+vlan 1317
+ description FTTH_GPON_LinShan_AL_OLT1
+vlan 1318
+ description FTTH_GPON_LinShan_AL_OLT1
+vlan 1319
+ description FTTH_GPON_LinShan_AL_OLT1
+vlan 1321
+ description FTTH_GPON_HuBei_AL_OLT1
+vlan 1322
+ description FTTH_GPON_HuBei_AL_OLT1
+vlan 1323
+ description FTTH_GPON_HuBei_AL_OLT1
+vlan 1324
+ description FTTH_GPON_HuBei_AL_OLT1
+vlan 1325
+ description FTTH_GPON_HuBei_AL_OLT1
+vlan 1326
+ description FTTH_GPON_HuangJiaBu_HW_OLT1
+vlan 1327
+ description FTTH_GPON_HuangJiaBu_HW_OLT1
+vlan 1328
+ description FTTH_GPON_HuangJiaBu_HW_OLT1
+vlan 1329
+ description FTTH_GPON_HuangJiaBu_HW_OLT1
+vlan 1334
+ description FTTH_GPON_LinHai_AL_OLT1
+vlan 1335
+ description FTTH_GPON_LinHai_AL_OLT1
+vlan 1336
+ description FTTH_GPON_LinHai_AL_OLT1
+vlan 1337
+ description FTTH_GPON_LinHai_AL_OLT1
+vlan 1358
+ description FTTH_GPON_LinShan_ZX_OLT1
+vlan 1359
+ description FTTH_GPON_LinShan_ZX_OLT1
+vlan 1360
+ description FTTH_GPON_LinShan_ZX_OLT1
+vlan 1361
+ description FTTH_GPON_LinShan_ZX_OLT1
+vlan 1362
+ description FTTH_GPON_XinHuiLong_ZX_OLT1
+vlan 1363
+ description FTTH_GPON_XinHuiLong_ZX_OLT1
+vlan 1364
+ description FTTH_GPON_XinHuiLong_ZX_OLT1
+vlan 1365
+ description FTTH_GPON_XinHuiLong_ZX_OLT1
+vlan 1370
+ description FTTH_LinShan_ZX_OLT3
+vlan 1371
+ description FTTH_LinShan_ZX_OLT3
+vlan 1372
+ description FTTH_LinShan_ZX_OLT3
+vlan 1373
+ description FTTH_LinShan_ZX_OLT3
+vlan 1382
+ description FTTH_LinShan_OLT2
+vlan 1383
+ description FTTH_HuangJiaBu_HW_OLT1
+vlan 1384
+ description FTTH_HuangJiaBu_HW_OLT1
+vlan 1385
+ description FTTH_HuangJiaBu_HW_OLT1
+vlan 1386
+ description FTTH_HuangJiaBu_HW_OLT1
+vlan 1398
+ description FTTH_LinShan_ZX_OLT1
+vlan 1586
+ description FTTB_GPON_XinHuiLong_ZX_OLT1
+vlan 1588
+ description FTTN&FTTB_GPON_HuangJiaBu_ZX_OLT1
+vlan 1590
+ description FTTN&FTTB_LinShan_ZX_OLT3
+vlan 1593
+ description FTTB_GPON_LinHai_ZX_OLT1
+vlan 1596
+ description FTTN_GPON_WanSheng_ZX_OLT1
+vlan 1597
+ description FTTB_LinShan_ZX_OLT3
+vlan 1617
+ description ShiJiaoQiu_MA5600_DSLAM
+vlan 1622
+ description HuDi_MA5600_DSLAM
+vlan 1630
+ description LinShanIP3_7300_DSLAM
+vlan 1631
+ description LinShanIP2_7302_DSLAM
+vlan 1632
+ description ChengHuangTu_MA5600_DSLAM
+vlan 1633
+ description GaoYang_MA5600_DSLAM
+vlan 1634
+ description LinShanKFQ_MA5600_DSLAM
+vlan 1636
+ description SiDongZha_MA5600_DSLAM
+vlan 1637
+ description HuBeiIP2_7302_DSLAM
+vlan 1642
+ description XinHuiLong_MA5600_DSLAM
+vlan 1643
+ description HengTang__MA5600_DSLAM
+vlan 1644
+ description LanTang_MA5600_DSLAM
+vlan 1646
+ description ShaoJia_MA5600_DSLAM
+vlan 1648
+ description MiaoShanZhongLu2_MA5100_DSLAM
+vlan 1660
+ description LinHaiIP1_7302_DSLAM
+vlan 1667
+ description HuangJiaBuIP2_7302_DSLAM
+vlan 1668
+ description MiaoShanZhongLu3_MA5600_DSLAM
+vlan 1669
+ description HuBeiIP3_7302_DSLAM
+vlan 1670
+ description LinShanIP5_7302_DSLAM
+vlan 1671
+ description LinShanIP4_7302_DSLAM
+vlan 1672
+ description ShangTang2_MA5600_DSLAM
+vlan 1673
+ description WuCheYan2_MA5600_DSLAM
+vlan 1674
+ description ShaoJiaQiu2_MA5600_DSLAM
+vlan 1675
+ description WanXingQiu2_MA5600_DSLAM
+vlan 1676
+ description HuangJiaBu_MA5600_DSLAM
+vlan 1677
+ description WangXingQiu(M0)2(MA5100)-LAM
+vlan 1678
+ description LinHaiIP1(7300)-DSLAM
+vlan 1680
+ description LinNanIP1(7300)-DSLAM
+vlan 1681
+ description ShaoJiaQiu(MA5100)-DSLAM
+vlan 1682
+ description WangXingQiu(MA5100)-DSLAM
+vlan 1683
+ description HuDi2(MA5100)-DSLAM
+vlan 1684
+ description HuDi(MA5100)-DSLAM
+vlan 1685
+ description LinShanKaiFaQu(MA5100)-DSLAM
+vlan 1686
+ description FengXuQiu_MA5100_DSLAM
+vlan 1687
+ description HuangJiaBuIP1_7300_DSLAM
+vlan 1688
+ description WanSheng2_MA5100_DSLAM
+vlan 1689
+ description XinHuiLong_MA5100_DSLAM
+vlan 1690
+ description WuCheYan_MA5100_DSLAM
+vlan 1691
+ description LanTang_MA5100_DSLAM
+vlan 1692
+ description GaoYang_MA5100_DSLAM
+vlan 1693
+ description hengtang
+vlan 1694
+ description WanShen_Mn JiaTang_ription HuBeiIP1_7300_DSLAM
+vlan 1695
+ description JiaTan30iIP1_7300_
+vlan 1696
+ description LinNan_MA5600_DSLAM
+vlan 1697
+ description ShiJiaoQiuIP1_7300_DSLAM
+vlan 1698
+ description SiDongZha_MA5100_DSLAM
+vlan 1699
+ description MiaoShanZhongLu_MA5100_DSAM
+vlan 1700
+ description MiaoShanZhongLu_MA5100_DSLAM
+vlan 1701
+ description FTTH_GPON_LinShan_ZX_OLT2
+vlan 1702
+ description FTTH_GPON_LinShan_ZX_OLT2
+vlan 1703
+ description FTTH_GPON_LinShan_ZX_OLT2
+vlan 1704
+ description FTTH_GPON_LinShan_ZX_OLT2
+vlan 1713
+ description FTTH_GPON_LinHai_ZX_OLT1
+vlan 1714
+ description FTTH_GPON_LinHai_ZX_OLT1
+vlan 1715
+ description FTTH_GPON_LinHai_ZX_OLT1
+vlan 1716
+ description FTTH_GPON_LinHai_ZX_OLT1
+vlan 1717
+ description FTTH_GPON_HuBei_ZX_OLT1
+vlan 1718
+ description FTTH_GPON_HuBei_ZX_OLT1
+vlan 1719
+ description FTTH_GPON_HuBei_ZX_OLT1
+vlan 1720
+ description FTTH_GPON_HuBei_ZX_OLT1
+vlan 1721
+ description FTTH_GPON_HuangJiaBu_HW_OLT2
+vlan 1722
+ description FTTH_GPON_HuangJiaBu_HW_OLT2
+vlan 1723
+ description FTTH_GPON_HuangJiaBu_HW_OLT2
+vlan 1724
+ description FTTH_GPON_HuangJiaBu_HW_OLT2
+vlan 1725
+ description FTTH_GPON_HuangJiaBu_ZX_OLT1
+vlan 1726
+ description FTTH_GPON_HuangJiaBu_ZX_OLT1
+vlan 1727
+ description FTTH_GPON_HuangJiaBu_ZX_OLT1
+vlan 1728
+ description FTTH_GPON_HuangJiaBu_ZX_OLT1
+vlan 1729
+ description FTTH_GPON_WanSheng_ZX_OLT1
+vlan 1730
+ description FTTH_GPON_WanSheng_ZX_OLT1
+vlan 1731
+ description FTTH_GPON_WanSheng_ZX_OLT1
+vlan 1732
+ description FTTH_GPON_WanSheng_ZX_OLT1
+vlan 1772
+ description FTTN&FTTB_GPON_HuangJiaBu_ZX_OLT1
+vlan 1778
+ description FTTN&FTTB_LinShan_ZX_OLT3
+vlan 1783
+ description FTTN_FTTB_LinShan_ZX_OLT3
+vlan 1784
+ description FTTB_SiMen_ZX_OLT5_10G
+vlan 1787
+ description FTTB_LinShan_ZX_OLT2
+vlan 1790
+ description FTTB_LinShan_ZX_OLT2
+vlan 1796
+ description FTTB_LinShan_ZX_OLT4_10G
+vlan 1799
+ description FTTN&FTTB_LinShan_ZX_OLT1
+vlan 2689
+ description FTTO_GPON_HuBei_AL_OLT1
+vlan 2690
+ description FTTO_GPON_HuBei_ZX_OLT1
+vlan 2697
+ description FTTO_LinShan_ZX_OLT3
+vlan 2698
+ description FTTO_LinShan_ZX_OLT2
+vlan 2699
+ description FTTO_LinShan_ZX_OLT1
+vlan 2700
+ description FTTO_HuangJiaBu_HW_OLT1
+vlan 2701
+ description FTTO_yibaowang
+vlan 2702
+ description GongYong-VPN
+vlan 3000
+ description GongAnXiuTan-VPN
+vlan 3002
+ description SM-NongYeJianKong-3002
+vlan 3009
+ description FengShanJieDaoCunJiJianKong-VPN
+vlan 3019
+ description sibeicunjiankong
+vlan 3021
+ description linshan-cunjijiankong
+vlan 3025
+ description shuzigonglu-3025
+vlan 3026
+ description xiandainongye-3026
+vlan 3050
+ description V-YiBaoWang-ADSL-VPN
+vlan 3051
+ description V-TongTaiTangShenRong-ADSL
+vlan 3052
+ description V-ZhiYePeiXunJiNeng-ADSL
+vlan 3057
+ description V-WangBa-ADSL-JieRu
+vlan 3069
+ description Picc-ADSL-VPN
+vlan 3073
+ description shuiliju-vpn
+vlan 3077
+ description YouZhengJu-VPN
+vlan 3081
+ description V-SiMenZhenZhengFu-GeChun
+vlan 3090
+ description chengshipaishui-vpn
+vlan 3096
+ description DiSiYiYuan-VPN
+vlan 3099
+ description hjb-weishengyuan-vpn
+vlan 3104
+ description gonganjugaowei
+vlan 3106
+ description V-JiaBei-ADSL-MPLS-VPN
+vlan 3109
+ description ls_nongcunhezuoyinhang
+vlan 3110
+ description hjb_nongcunhezuoyinhang
+vlan 3134
+ description smchengqujiankong-vpn
+vlan 3136
+ description yingxianghuizheng-vpn
+vlan 3158
+ description luhaidan-vpn
+vlan 3161
+ description RiSheng-vpn
+vlan 3162
+ description weishengju-3162
+vlan 3163
+ description weishengju-3163
+vlan 3164
+ description weishengju-3164
+vlan 3165
+ description weishengju-3165
+vlan 3166
+ description weishengju-3166
+vlan 3167
+ description weishengju-3167
+vlan 3168
+ description weishengju-3168
+vlan 3169
+ description weishengju-3169
+vlan 3170
+ description weishengju-3170
+vlan 3171
+ description weishengju-3171
+vlan 3172
+ description weishengju-3172
+vlan 3173
+ description weishengju-3173
+vlan 3174
+ description weishengju-3174
+vlan 3175
+ description weishengju-3175
+vlan 3176
+ description weishengju-3176
+vlan 3177
+ description weishengju-3177
+vlan 3178
+ description weishengju-3178
+vlan 3179
+ description weishengju-3179
+vlan 3180
+ description weishengju-3180
+vlan 3181
+ description weishengju-3181
+vlan 3182
+ description weishengju-3182
+vlan 3183
+ description weishengju-3183
+vlan 3184
+ description weishengju-3184
+vlan 3185
+ description weishengju-3185
+vlan 3186
+ description weishengju-3186
+vlan 3192
+ description TongTaiTang-VPN
+vlan 3194
+ description TongJiTang_VPN
+vlan 3199
+ description sijidayaofang-vpn
+vlan 3605
+ description zhongshihua-BP-MPLS
+vlan 3622
+ description huaqinengyuan-mpls
+vlan 3666
+ description smfangxiang-yinye
+vlan 3668
+ description shunjie-hjb6502
+vlan 3669
+ description zhengxingshiliao-hjb6502
+vlan 3673
+ description FTTO_ZhongShiHua-VPN
+vlan 3679
+ description ZhongGuoRenBao2-mpls
+vlan 3685
+ description V-ZhongShiHua-VPN
+vlan 3688
+ description gaoqiaocun-hjb6502
+vlan 3694
+ description jiehuadianzi-hjb6502
+vlan 3698
+ description hejiaguangdian-hjb6502
+vlan 3710
+ description xinshancun-hjb6502
+vlan 3711
+ description shunyujixie-hjb6502
+vlan 3715
+ description zhichengruanjian-vpn
+vlan 3725
+ description cuiqishao-hjb6502
+vlan 3729
+ description tongdizhonggong-hjb6502
+vlan 3730
+ description maoyiju-mpls
+vlan 3784
+ description huilongxiaoxue-hjb6502
+vlan 3790
+ description zijiarendayaofang-vpn
+vlan 3848
+ description zhongshihuaBP-mpls
+vlan 3870
+ description huanbaoju-367
+vlan 3890
+ description taibaocaixian-vpn
+vlan 3894
+ description WaiLaiRenKouGuanLi-VPN
+vlan 3928
+ description V-ZhengYuanDaYaoFang
+vlan 3958
+ description V-ShiYouHuaGong-ADSL
+vlan 3963
+ description V-GongAnJu-BaoBeiXiTong-ADSL
+vlan 3975
+ description V-HuangBaoJu-ADSL-VPN
+vlan 3980
+ description V-GongAnJu-YinZhang-ADSL
+vlan 3992
+ description DianXinDaiXiao-VPN
+vlan 3998
+ description V-HuaLianShanSha-ADSL
+#
+aaa
+ authentication-scheme default
+ authentication-scheme nbdx
+  authentication-mode hwtacacs local
+ authorization-scheme default
+ authorization-scheme nbdx
+  authorization-mode  hwtacacs local
+ accounting-scheme default
+ accounting-scheme nbdx
+  accounting-mode hwtacacs
+  accounting realtime 3
+  accounting start-fail online
+ recording-scheme scheme0
+  recording-mode hwtacacs nbdx
+ cmd recording-scheme scheme0
+ outbound recording-scheme scheme0
+ domain default
+ domain default_admin
+  authentication-scheme nbdx
+  accounting-scheme nbdx
+  authorization-scheme nbdx
+  hwtacacs-server nbdx
+ local-user admin password irreversible-cipher %#%#X~c10/F6/;Y~uq%Aq]"DF{f5(mB.:Ze*L!AF#x*RoM$&JXkCtUvoq%Y@6f)@%#%#
+ local-user admin privilege level 1
+ local-user admin service-type telnet
+ local-user zjnoc password irreversible-cipher %#%#G@a`IAJW|T:1]4$F6z{M#d,E)<[/xD]`.t=kiD+0"#K0/hnLX'mKj..4-NzY%#%#
+ local-user zjnoc privilege level 3
+ local-user zjnoc service-type telnet terminal
+#
+ntp-service source-interface Vlanif93
+ntp-service unicast-server 172.93.1.125 preference
+ntp-service unicast-server 172.93.1.126
+#
+interface Vlanif93
+ description For_S9306_NetManagement
+ ip address 172.93.28.94 255.255.255.252
+#
+interface Eth-Trunk0
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ mode lacp
+#
+interface Eth-Trunk1
+ description dT:NB-YY-LS-SW1-S9306-1.MAN:()2*10GE:Eth-trunk0
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 40 43 50 78 to 80 93 212 to 213 225 1196 1316 to 1319 1334 to 1337
+ port trunk allow-pass vlan 1358 to 1361 1370 to 1373 1382 1398 1590 1593 1597 1622 1630 to 1632 1634
+ port trunk allow-pass vlan 1670 to 1671 1674 to 1675 1677 to 1678 1680 to 1685 1696 1701 to 1704 1713 to 1716 1778 1783 1787
+ port trunk allow-pass vlan 1790 1793 1796 1799 2697 to 2699 2701 to 2702 3000 3009 3021 3025 to 3026
+ port trunk allow-pass vlan 3050 to 3052 3069 3073 3077 3090 3099 3104 3106 3109 to 3110 3158
+ port trunk allow-pass vlan 3161 to 3186 3194 3199 3500 to 3599 3605 3622 3673 3679 3685 3730
+ port trunk allow-pass vlan 3790 3848 3870 3890 3894 3928 3958 3963 3980 3992
+ port trunk allow-pass vlan 3998
+ mode lacp
+#
+interface Eth-Trunk2
+ description uT:NB-YY-SM-BAS--1.MAN.ME60:Eth-Trunk2
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 40 42 to 43 50 79 1586 1588 1590 1593 1596 to 1597 1680 to 1700
+ port trunk allow-pass vlan 1717 to 1728 1772 1778 1783 to 1784 1787 1790 1793 1796 1799
+#
+interface Eth-Trunk3
+ description uT:NB-YY-SB-SR-7750-2:()GE:LAG4
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 2689 to 2690 2697 to 2700 3673
+ mode lacp
+#
+interface Eth-Trunk4
+ description TO_NB-YY-HB-SW1-S8905-1.MAN
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 40 43 50 79 to 80 93 212 to 213 225 1321 to 1325 1617 1636 to 1637
+ port trunk allow-pass vlan 1648 1668 to 1669 1694 to 1695 1697 to 1700 1717 to 1720 2689 to 2690 3002 3009 3019 3050
+ port trunk allow-pass vlan 3052 3081 3096 3104 3182 3500 to 3599 3963 3992 3998
+ mode lacp
+#
+interface Eth-Trunk5
+ description uT:NB-YY-SM-BAS--1.MAN.ME60:Eth-Trunk3
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 1316 to 1319 1321 to 1328 1617 1622 1630 to 1634 1636 to 1637 1642 to 1644 1646 1648 1660
+ port trunk allow-pass vlan 1667 to 1678
+ mode lacp
+#
+interface Eth-Trunk6
+ description dT:NB-YY-HJB-SW1-S9303-1.MAN:()2*10GE:Eth-trunk0
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 40 42 78 to 80 93 212 to 213 225 1195 1326 to 1329 1362 to 1365 1383 to 1386
+ port trunk allow-pass vlan 1586 1588 1633 1642 to 1644 1646 1667 1672 to 1673 1676 1686 to 1693 1721 to 1728
+ port trunk allow-pass vlan 1772 2700 to 2701 3000 3009 3025 to 3026 3050 3052 3057 3069 3099
+ port trunk allow-pass vlan 3110 3158 3162 to 3186 3192 3199 3500 to 3599 3605 3622 3715 3848
+ port trunk allow-pass vlan 3870 3894 3958 3963 3975 3980 3992 3998
+ mode lacp
+#
+interface Eth-Trunk7
+ description dT:EPON_SiMen_ZX_OLT5_10G
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 40 1784
+ mode lacp
+#
+interface Eth-Trunk8
+ description dT:GPON_WanSheng_ZX_OLT1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 40 79 to 80 1596 1729 to 1732 3000 3002 3050 3134 3531
+ mode lacp
+#
+interface Eth-Trunk100
+ description 9908
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 93
+ mode lacp
+#
+interface Eth-Trunk126
+ description HJB-SW1-S9303(old)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ mode lacp
+#
+interface Eth-Trunk127
+ description LS-SW1-S9306(old)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ mode lacp
+#
+interface Ethernet0/0/0
+ shutdown
+#
+interface GigabitEthernet1/0/0
+ undo negotiation auto
+ description uT:NB-YY-SM-BAS-ME60-1.MAN:(local)GE1/0/2
+ eth-trunk 2
+#
+interface GigabitEthernet1/0/1
+ undo negotiation auto
+ description uT:NB-YY-SM-BAS-ME60-1.MAN:(local)GE1/0/3
+ eth-trunk 2
+#
+interface GigabitEthernet1/0/2
+ undo negotiation auto
+ description uT:NB-YY-SM-BAS-ME60-1.MAN:(local)GE1/0/4
+ eth-trunk 2
+#
+interface GigabitEthernet1/0/3
+ undo negotiation auto
+ description uT:NB-YY-SM-BAS-ME60-1.MAN:(local)GE1/0/5
+ eth-trunk 2
+#
+interface GigabitEthernet1/0/4
+ undo negotiation auto
+ description LinHaiIP1_7302_DSLAM
+ port hybrid tagged vlan 225 3050 3104
+ port hybrid untagged vlan 1660
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1660
+ port vlan-stacking vlan 3600 stack-vlan 1660
+#
+interface GigabitEthernet1/0/5
+ undo negotiation auto
+ description uT:NB-YY-SM-BAS-ME60-1.MAN:(local)GE1/0/6
+ eth-trunk 2
+#
+interface GigabitEthernet1/0/6
+ undo negotiation auto
+ description uT:NB-YY-SM-BAS-ME60-1-G1/07.MAN:(local)GE1/0/7
+ eth-trunk 2
+#
+interface GigabitEthernet1/0/7
+ undo negotiation auto
+ description uT:NB-YY-SM-BAS-ME60-1.MAN:(local)GE1/0/8
+ eth-trunk 2
+#
+interface GigabitEthernet1/0/8
+ undo negotiation auto
+ description uT:NB-YY-SM-BAS-ME60-1.MAN:(local)GE1/0/9
+ eth-trunk 2
+#
+interface GigabitEthernet1/0/9
+ undo negotiation auto
+ description dT:NB-YY-HJB-SW1-S9303-1.MAN:(F1106030026)GE1/0/1
+ eth-trunk 126
+#
+interface GigabitEthernet1/0/10
+ undo negotiation auto
+ description dT:NB-YY-LS-SW1-S9306-1.MAN:(F1107190062)GE1/0/18
+ eth-trunk 127
+#
+interface GigabitEthernet1/0/11
+ undo negotiation auto
+ description dT:NB-YY-LS-SW1-S9306-1.MAN:(F1107190063)GE1/0/19
+ eth-trunk 127
+#
+interface GigabitEthernet1/0/12
+ undo negotiation auto
+ description uT:NB-YY-SB-SR-7750-2.MAN:(F1111170001)GE6/1/7
+ eth-trunk 3
+#
+interface GigabitEthernet1/0/13
+ undo negotiation auto
+ description dT:NB-YY-LS-SW1-S9306-1.MAN:(F1206260039)GE1/0/20
+ eth-trunk 127
+#
+interface GigabitEthernet1/0/14
+ undo negotiation auto
+ description uT:NB-YY-SM-BAS-ME60-1.MAN:(local)GE5/0/4
+ eth-trunk 5
+#
+interface GigabitEthernet1/0/15
+ undo negotiation auto
+ description uT:NB-YY-SM-BAS-ME60-1.MAN:(local)GE5/0/5
+ eth-trunk 5
+#
+interface GigabitEthernet1/0/16
+ undo negotiation auto
+ description uT:NB-YY-SM-BAS-ME60-1.MAN:(local)GE5/0/6
+ eth-trunk 5
+#
+interface GigabitEthernet1/0/17
+ undo negotiation auto
+ description uT:NB-YY-SM-BAS-ME60-1.MAN:(local)GE5/0/7
+ eth-trunk 5
+#
+interface GigabitEthernet1/0/18
+ undo negotiation auto
+ description dT:NB-YY-HJB-SW1-S9303-1.MAN:(F1301070032)GE3/0/0
+ eth-trunk 126
+#
+interface GigabitEthernet1/0/19
+ undo negotiation auto
+ description dT:NB-YY-HJB-SW1-S9303-1.MAN:(F1301070035)GE1/0/21
+ eth-trunk 126
+#
+interface GigabitEthernet1/0/20
+ undo negotiation auto
+ description dT:GPON_WanSheng_ZX_OLT1:(F1311270051)GE19/1
+ eth-trunk 8
+#
+interface GigabitEthernet1/0/21
+ undo negotiation auto
+ description dT:GPON_WanSheng_ZX_OLT1:(F1311270052)GE20/1
+ eth-trunk 8
+#
+interface GigabitEthernet1/0/22
+#
+interface GigabitEthernet1/0/23
+#
+interface GigabitEthernet2/0/0
+ undo negotiation auto
+ description dT:NB-YY-SM-SW2-S9306-2.MAN:(Local)GE2/0/8
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 8 78 212 to 213 225 367 394 1195 to 1196 2701 to 2702 3000 3002
+ port trunk allow-pass vlan 3009 3019 3021 3025 to 3026 3050 to 3052 3057 3069 3073 3077 3081
+ port trunk allow-pass vlan 3090 3096 3099 3104 3106 3109 to 3110 3134 3136 3158 3161 to 3186
+ port trunk allow-pass vlan 3192 3194 3199 3500 to 3599 3605 3622 3666 3668 to 3669 3679 3685
+ port trunk allow-pass vlan 3688 3694 3698 3710 to 3711 3715 3725 3729 to 3730 3784 3790 3848
+ port trunk allow-pass vlan 3870 3890 3894 3928 3958 3963 3975 3980 3992 3998
+#
+interface GigabitEthernet2/0/1
+ undo negotiation auto
+ description dT:NB-YY-HJB-SW1-S9303-1.MAN:(F0702280001)GE1/0/0
+#
+interface GigabitEthernet2/0/2
+ undo negotiation auto
+ description dT:NB-YY-HB-SW1-S8905-1.MAN:(F0704160078)GE2/1
+ eth-trunk 4
+#
+interface GigabitEthernet2/0/3
+ undo negotiation auto
+ description TO_NB-YY-LS-SW1-S8505-1-G2/1/1.MAN
+#
+interface GigabitEthernet2/0/4
+ undo negotiation auto
+ description TO_NB-YY-LS-SW1-S8505-1-G2/1/7.MAN
+#
+interface GigabitEthernet2/0/5
+ undo negotiation auto
+#
+interface GigabitEthernet2/0/6
+ undo negotiation auto
+ description dT:NB-YY-HB-SW1-S8905-1.MAN:(F1105050119)GE3/1
+ eth-trunk 4
+#
+interface GigabitEthernet2/0/7
+ undo negotiation auto
+ description uT:NB-YY-SB-SR-7750-2.MAN:(F1111160098)GE6/1/6
+ eth-trunk 3
+#
+interface GigabitEthernet2/0/8
+ undo negotiation auto
+ description dT:NB-YY-HJB-SW1-S9303-1.MAN:(F1203190035)GE1/0/17
+ eth-trunk 126
+#
+interface GigabitEthernet2/0/9
+ undo negotiation auto
+ description dT:NB-YY-HJB-SW1-S9303-1.MAN:(F1203190036)GE1/0/18
+ eth-trunk 126
+#
+interface GigabitEthernet2/0/10
+ undo negotiation auto
+ description dT:NB-YY-LS-SW1-S9306-1.MAN:(F1206260041)GE1/0/21
+ eth-trunk 127
+#
+interface GigabitEthernet2/0/11
+ undo negotiation auto
+ description uT:NB-YY-SM-BAS-ME60-1.MAN:(local)GE5/0/0
+ eth-trunk 5
+#
+interface GigabitEthernet2/0/12
+ undo negotiation auto
+ description uT:NB-YY-SM-BAS-ME60-1.MAN:(local)GE5/0/1
+ eth-trunk 5
+#
+interface GigabitEthernet2/0/13
+ undo negotiation auto
+ description uT:NB-YY-SM-BAS-ME60-1.MAN:(local)GE5/0/2
+ eth-trunk 5
+#
+interface GigabitEthernet2/0/14
+ undo negotiation auto
+ description uT:NB-YY-SM-BAS-ME60-1.MAN:(local)GE5/0/3
+ eth-trunk 5
+#
+interface GigabitEthernet2/0/15
+ undo negotiation auto
+ description dT:NB-YY-LS-SW1-S9306-1.MAN:(F1210240056)GE3/0/0
+ eth-trunk 127
+#
+interface GigabitEthernet2/0/16
+ undo negotiation auto
+ description dT:NB-YY-LS-SW1-S9306-1.MAN:(F1210240057)GE3/0/1
+ eth-trunk 127
+#
+interface GigabitEthernet2/0/17
+#
+interface GigabitEthernet2/0/18
+ undo negotiation auto
+ description dT:NB-YY-HJB-SW1-S9303-1.MAN:(F1301070038)GE1/0/22
+ eth-trunk 126
+#
+interface GigabitEthernet2/0/19
+ undo negotiation auto
+ description dT:NB-YY-HJB-SW1-S9303-1.MAN:(F1301070041)GE1/0/23
+#
+interface GigabitEthernet2/0/20
+#
+interface GigabitEthernet2/0/21
+#
+interface GigabitEthernet2/0/22
+#
+interface GigabitEthernet2/0/23
+#
+interface XGigabitEthernet4/0/0
+ description uT:NB-YY-SM-BAS-1.MAN.ME60:(local)10GE7/0/0
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 80 93 1329 1334 to 1337 1358 to 1365 1370 to 1373 1382 to 1386 1398 1701 to 1704 1713 to 1716
+ port trunk allow-pass vlan 1729 to 1732
+#
+interface XGigabitEthernet4/0/1
+ description uT:NB-YY-SM-BAS-1.MAN.ME60:(local)10GE4/0/1
+#
+interface XGigabitEthernet4/0/2
+ description dT:NB-YY-LS-SW1-S9306-1.MAN:(F0805220025)10GE6/0/0
+ eth-trunk 1
+#
+interface XGigabitEthernet4/0/3
+ description dT:NB-YY-LS-SW1-S9306-1.MAN:(F1005240044)10GE6/0/1
+ eth-trunk 1
+#
+interface XGigabitEthernet4/0/4
+ description dT:NB-YY-HJB-SW1-S9303-1.MAN:(F0702280001)10GE2/0/0
+ eth-trunk 6
+#
+interface XGigabitEthernet4/0/5
+ description dT:NB-YY-HJB-SW1-S9303-1.MAN:(F1106030026)10GE2/0/1
+ eth-trunk 6
+#
+interface XGigabitEthernet4/0/6
+ description dT:EPON_SiMen_ZX_OLT5:(local)10GE19/1
+ eth-trunk 7
+#
+interface XGigabitEthernet4/0/7
+ description dT:EPON_SiMen_ZX_OLT5:(local)10GE20/1
+ eth-trunk 7
+#
+interface XGigabitEthernet4/0/8
+#
+interface XGigabitEthernet4/0/9
+#
+interface XGigabitEthernet4/0/10
+#
+interface XGigabitEthernet4/0/11
+#
+interface XGigabitEthernet4/0/12
+#
+interface XGigabitEthernet4/0/13
+#
+interface XGigabitEthernet4/0/14
+#
+interface XGigabitEthernet4/0/15
+ description 9908:kehu
+ eth-trunk 100
+#
+interface XGigabitEthernet6/0/0
+ description uT:NB-YY-SM-BAS-1.MAN.ME60:(local)10GE7/0/0
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 80 93 1334 to 1337 1358 to 1365 1370 to 1373 1382 to 1386 1398 1701 to 1704 1713 to 1716 1729 to 1732
+#
+interface XGigabitEthernet6/0/1
+ description dT:NB-YY-LS-SW1-S9306-1.MAN:(F0805220025)10GE6/0/0
+#
+interface XGigabitEthernet6/0/2
+ description dT:EPON_SiMen_ZX_OLT5_10G:(local)10GE19/2
+#
+interface XGigabitEthernet6/0/3
+ description uT:NB-YY-SM-BAS-1.MAN.ME60:(local)10GE4/0/1
+#
+interface NULL0
+#
+cpu-defend policy 1
+ auto-port-defend protocol arp-request arp-reply dhcp icmp ip-fragment
+#
+ip route-static 0.0.0.0 0.0.0.0 61.175.22.30
+ip route-static 172.0.0.0 255.0.0.0 172.93.28.93
+#
+snmp-agent
+snmp-agent local-engineid 000007DB7FFFFFFF00002823
+snmp-agent community read cipher %^%#Ih,(U@]"jBkL,+2m7E&5tD$~USP8(R@L@`&`uzi={p}0>$<(H2Zp:G1:VI8!NW)z)=(Z$GEmWiT5X:WG%^%# acl 2015
+snmp-agent sys-info contact R&D Nanjing, Huawei Technologies co.,Ltd.
+snmp-agent sys-info location Nanjing China
+snmp-agent sys-info version all
+snmp-agent target-host trap address udp-domain 172.200.100.5 udp-port 161 params securityname cipher %^%#"[2s9N`5RTzYq)AOtZP.;0p12U$:ZFkC>q>5)<}>%^%#
+undo snmp-agent trap enable feature-name L2IFPPI trap-name hwMacFlappingAlarm
+undo snmp-agent trap enable feature-name DLDP
+undo snmp-agent trap enable feature-name LDTTRAP
+undo snmp-agent trap enable feature-name LLDPTRAP
+snmp-agent trap enable feature-name BASETRAP
+#
+ssh server compatible-ssh1x enable
+#
+header login information " WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!"
+#
+cpu-defend-policy 1 global
+cpu-defend-policy 1
+#
+user-interface con 0
+user-interface vty 0 4
+ acl 2000 inbound
+ authentication-mode aaa
+ protocol inbound telnet
+user-interface vty 16 20
+ protocol inbound telnet
+#
+return
+<NB-YY-SM-SW1-S9306-1.MAN>

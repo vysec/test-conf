@@ -1,0 +1,303 @@
+
+Building configuration...
+
+Current configuration : 7276 bytes
+!
+version 12.1
+no service pad
+service tcp-keepalives-in
+service tcp-keepalives-out
+service timestamps debug datetime
+service timestamps log datetime
+service password-encryption
+!
+hostname LS-QY-SW3-CaoLing-C3550
+!
+logging buffered 16384 debugging
+no logging console
+aaa new-model
+aaa authentication login default group tacacs+ local
+aaa authentication login telnet group tacacs+ local
+aaa authentication enable default group tacacs+ enable
+aaa authorization config-commands
+aaa authorization exec default group tacacs+ local
+aaa authorization exec telnet group tacacs+ local
+aaa authorization commands 0 telnet group tacacs+ local
+aaa authorization commands 1 telnet group tacacs+ local
+aaa authorization commands 15 default group tacacs+ local
+aaa authorization commands 15 telnet group tacacs+ local
+aaa authorization network default group tacacs+ local
+aaa accounting exec default start-stop group tacacs+
+aaa accounting commands 15 default start-stop group tacacs+
+enable secret 5 $1$1bRC$yY0wVvugOn2Kr636Dm9kE1
+!
+username admin privilege 15 password 7 1505185D0328232E2C31
+clock timezone Beijing 8
+errdisable recovery cause udld
+errdisable recovery cause bpduguard
+errdisable recovery cause security-violation
+errdisable recovery cause channel-misconfig
+errdisable recovery cause pagp-flap
+errdisable recovery cause dtp-flap
+errdisable recovery cause link-flap
+errdisable recovery cause l2ptguard
+errdisable recovery cause psecure-violation
+errdisable recovery cause gbic-invalid
+errdisable recovery cause dhcp-rate-limit
+errdisable recovery cause unicast-flood
+errdisable recovery cause vmps
+errdisable recovery cause loopback
+ip subnet-zero
+no ip source-route
+ip routing
+no ip gratuitous-arps
+!
+ip dhcp pool dianxin
+   host 192.168.1.1 255.255.255.0
+   dns-server 218.74.122.74 
+!
+no ip domain-lookup
+ip domain-name zj.cn.net
+ip name-server 202.96.104.16
+ip name-server 202.96.96.68
+vtp domain lsptt
+vtp mode transparent
+mls qos
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+spanning-tree vlan 650-653 priority 24576
+!
+mac access-list extended MAC10
+!
+!
+!
+!
+vlan 39,805 
+!
+vlan 1533
+ name DSLAM-CaoLing-MA5605
+!
+vlan 2357
+ name PPPOE-CaoLing-1
+!
+vlan 2358
+ name PPPOE-CaoLing-2
+!
+vlan 3219
+ name VPRN-DongLiHuanJing-JK
+!
+vlan 3802
+ name VPN-XYS-CaoLing
+!
+class-map match-all rate-50M
+class-map match-all IPclass
+  match ip dscp 0
+!
+!
+policy-map rate-20M
+  class IPclass
+    police 20192000 2000000 exceed-action drop
+policy-map rate-30M
+  class IPclass
+    police 30288000 2000000 exceed-action drop
+policy-map rate-10M
+  class IPclass
+    police 10096000 1000000 exceed-action drop
+policy-map rate-60M
+  class IPclass
+    police 61152000 2000000 exceed-action drop
+policy-map rate-40M
+  class IPclass
+    police 40384000 2000000 exceed-action drop
+policy-map rate-50M
+  class IPclass
+    police 50576000 2000000 exceed-action drop
+!
+!
+!
+interface Loopback0
+ ip address 10.10.252.21 255.255.255.255
+!
+interface FastEthernet0/1
+ description uT:QY-SW2-HuangTian-Z8905.G5/2
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 39,805,1533,2357,2358,3219,3802
+ switchport mode trunk
+ speed 100
+ duplex full
+!
+interface FastEthernet0/2
+ description TO-DSLAM-QY-CaoLing-MA5605-1/0
+ switchport access vlan 1533
+ switchport mode dot1q-tunnel
+ speed 100
+ duplex full
+ no cdp enable
+ spanning-tree bpdufilter enable
+!
+interface FastEthernet0/3
+ description TO-DSLAM-QY-WuLongYang-MA5105-1/0
+ switchport access vlan 1533
+ switchport mode dot1q-tunnel
+ speed 100
+ duplex full
+ no cdp enable
+ spanning-tree bpdufilter enable
+!
+interface FastEthernet0/4
+ description VPN-JU-XYS-CaoLing
+ switchport access vlan 3802
+ switchport mode access
+ speed 10
+ duplex full
+!
+interface FastEthernet0/5
+ description VPN-XYS2-CaoLing
+ switchport access vlan 805
+ switchport mode access
+!
+interface FastEthernet0/6
+ description PPPOE-GR-JiangXiaoBo
+ switchport access vlan 2357
+ switchport mode access
+ speed 10
+ duplex full
+!
+interface FastEthernet0/7
+ description VPRN-DongLiHuanJing-JK 
+ switchport access vlan 3219
+ switchport mode access
+!
+interface FastEthernet0/8
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/9
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/10
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/11
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/12
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/13
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/14
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/15
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/16
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/17
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/18
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/19
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/20
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/21
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/22
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/23
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/24
+ switchport access vlan 39
+ switchport mode access
+!
+interface GigabitEthernet0/1
+ switchport mode dynamic desirable
+!
+interface GigabitEthernet0/2
+ switchport mode dynamic desirable
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan39
+ description IP-WG
+ ip address 10.10.78.114 255.255.255.0
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 10.10.78.1
+no ip http server
+!
+ip access-list extended worm
+ deny   tcp any any eq 445
+ deny   tcp any eq 135 any
+ deny   udp any any eq 135
+ deny   tcp any eq 139 any
+ deny   tcp any any eq 139
+ deny   udp any any eq 1434
+ deny   tcp any any eq 4444
+ deny   udp any any eq netbios-ns
+ deny   udp any any eq netbios-dgm
+ deny   tcp any eq 137 any
+ deny   tcp any any eq 135
+ deny   tcp any any eq 593
+ deny   tcp any eq 4444 any
+ deny   tcp any eq 593 any
+ deny   udp any eq 135 any
+ deny   udp any eq netbios-ns any
+ deny   udp any eq netbios-dgm any
+ permit ip any any
+!
+logging trap debugging
+logging source-interface Loopback0
+logging 218.74.120.198
+logging 10.10.1.130
+access-list 100 permit tcp 10.10.55.0 0.0.0.255 any eq telnet
+access-list 100 permit tcp 10.10.78.0 0.0.0.255 any eq telnet
+access-list 100 permit tcp 218.74.125.240 0.0.0.15 any eq telnet
+access-list 100 permit tcp 202.96.114.0 0.0.0.255 any eq telnet
+access-list 100 deny   tcp any any eq telnet
+access-list 100 permit ip any any
+snmp-server community ls-cw2000-ro RO 98
+snmp-server community ls578@zjnoc RO
+tacacs-server host 10.10.1.238
+tacacs-server key ws1gblzlbx
+banner login ^CC WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!  ^C
+!
+line con 0
+ exec-timeout 3 0
+line vty 0 4
+ exec-timeout 3 0
+ password 7 021C0E5401265F72195D0A
+ authorization commands 0 telnet
+ authorization commands 1 telnet
+ authorization commands 15 telnet
+ authorization exec telnet
+ login authentication telnet
+line vty 5 15
+ password 7 021C0E5401265F72195D0A
+ authorization commands 0 telnet
+ authorization commands 1 telnet
+ authorization commands 15 telnet
+ authorization exec telnet
+ login authentication telnet
+!
+ntp clock-period 17180209
+ntp server 218.74.120.83
+ntp server 10.10.1.138
+!
+end
+
+LS-QY-SW3-CaoLing-C3550#

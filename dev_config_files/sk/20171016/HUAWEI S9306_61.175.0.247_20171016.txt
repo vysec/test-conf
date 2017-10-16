@@ -1,0 +1,509 @@
+
+!Software Version V200R003C00SPC500
+#
+sysname NB-NB-YJXQ-SR-1.MAN.S9306
+#
+super password level 3 cipher %$%$}E>>PO4#@<;A`^P]'P#K*{@.8;23G`Qe:F.@#7I$2bm4{@1*%$%$
+#
+info-center source default channel 2 log level warning
+info-center loghost source Vlanif93
+info-center loghost 172.200.100.6 facility local6
+#
+vlan batch 10 20 to 22 26 93 1023
+#
+undo http server enable
+undo http secure-server enable
+#
+undo nap slave enable
+#
+ dba-profile default0 type3 assure 40000 max 80000
+#
+diffserv domain default
+#
+hwtacacs-server template nbdx
+ hwtacacs-server authentication 172.200.100.249
+ hwtacacs-server authorization 172.200.100.249
+ hwtacacs-server accounting 172.200.100.249
+ hwtacacs-server source-ip 172.93.1.150
+ hwtacacs-server shared-key cipher %@%@9v,rVS%DE6p6UnPPx~.%*{A\%@%@
+ undo hwtacacs-server user-name domain-included
+#
+ line-profile default0
+#
+ service-profile default0
+#
+acl number 2000
+ description For_Telnet
+ rule 5 permit source 61.153.82.90 0
+ rule 10 permit source 202.96.102.247 0
+ rule 15 permit source 202.96.102.0 0.0.1.255
+ rule 20 permit source 202.101.167.192 0.0.0.63
+ rule 25 permit source 61.153.112.128 0.0.0.31
+ rule 30 permit source 172.93.0.0 0.0.255.255
+ rule 35 permit source 172.200.100.0 0.0.0.255
+ rule 40 permit source 172.199.0.0 0.0.255.255
+#
+acl number 2015
+ description For-SNMP
+ rule 10 permit source 172.200.100.12 0
+ rule 20 permit source 172.200.100.6 0
+ rule 30 permit source 172.200.100.13 0
+ rule 40 permit source 172.200.100.7 0
+ rule 50 permit source 172.200.100.8 0
+ rule 60 permit source 172.200.100.9 0
+ rule 70 permit source 172.200.100.10 0
+ rule 80 permit source 172.200.100.11 0
+ rule 90 permit source 172.200.100.14 0
+ rule 100 permit source 172.200.100.15 0
+ rule 150 deny
+#
+drop-profile default
+#
+vlan 93
+ description For_S9306_NetManagement
+#
+aaa
+ authentication-scheme default
+ authentication-scheme nbdx
+  authentication-mode hwtacacs local
+ authorization-scheme default
+ authorization-scheme nbdx
+  authorization-mode hwtacacs local
+ accounting-scheme default
+ accounting-scheme nbdx
+  accounting-mode hwtacacs
+  accounting realtime 3
+  accounting start-fail online
+ recording-scheme scheme0
+  recording-mode hwtacacs nbdx
+ cmd recording-scheme scheme0
+ outbound recording-scheme scheme0
+ domain default
+ domain default_admin
+  authentication-scheme nbdx
+  accounting-scheme nbdx
+  authorization-scheme nbdx
+  hwtacacs-server nbdx
+ local-user admin password cipher %@%@9vvvRpQBY:|`@O$OZ4r8*{B<%@%@
+ undo local-user admin service-type
+ local-user zjnoc password cipher %@%@xJ[5NKP)>LJe-5;5b0&~*{BM%@%@
+ local-user zjnoc privilege level 3
+ local-user zjnoc service-type telnet terminal
+#
+isis 100
+ is-level level-2
+ cost-style wide
+ circuit-cost 100000 level-2
+ network-entity 86.4741.0574.0611.7500.0247.00
+ is-name NB-NB-YJXQ-SR-1.MAN.S9306
+ preference 155
+ log-peer-change
+#
+ntp-service source-interface Vlanif93
+ntp-service unicast-server 172.93.1.125 preference
+ntp-service unicast-server 172.93.1.126
+#
+interface Vlanif20
+ ip address 192.168.0.5 255.255.255.252
+#
+interface Vlanif21
+ description uT:NB-NB-ML-SR-1.MAN.NE40E:()GE3/0/3
+ ip address 115.233.68.58 255.255.255.252
+ isis enable 100
+ isis circuit-type p2p
+ isis circuit-level level-2
+ isis cost 3000 level-2
+ isis small-hello
+#
+interface Vlanif22
+ description uT:NB-NB-SG-SR-1.MAN.7750:()ge-7/1/10:22
+ ip address 115.233.68.126 255.255.255.252
+ isis enable 100
+ isis circuit-type p2p
+ isis circuit-level level-2
+ isis cost 3000 level-2
+ isis small-hello
+#
+interface Vlanif93
+ description For_S9306_NetManagement
+ ip address 172.93.1.150 255.255.255.252
+#
+interface Eth-Trunk0
+ description uT:NB-NB-YJXQ-SR-1.MAN.7750:()2*10GE:LAG1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 93
+ mode lacp
+#
+interface Eth-Trunk1
+ description pT:NB-NB-YJXQ-SW2-S9306-2.MAN-Eth-Trunk4
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 26
+ mode lacp
+#
+interface Ethernet0/0/0
+#
+interface GigabitEthernet1/0/0
+ undo negotiation auto
+ description uT:NB-NB-SG-SR-1.MAN.7750:()ge-7/1/10
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 22
+#
+interface GigabitEthernet1/0/1
+ description pT:NB-NB-YJXQ-SW2-S9306-:G1/0/22
+ eth-trunk 1
+#
+interface GigabitEthernet1/0/2
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/3
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/4
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/5
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/6
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/7
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/8
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/9
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/10
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/11
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/12
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/13
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/14
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/15
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/16
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/17
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/18
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/19
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/20
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/21
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/22
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet1/0/23
+ description dT:YJXQ3552-4
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 20 26
+#
+interface GigabitEthernet2/0/0
+ description uT:NB-NB-ML-SR-1.MAN.NE40E:()GE3/0/3
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 21 93
+#
+interface GigabitEthernet2/0/1
+ description pT:NB-NB-YJXQ-SW2-S9306-2.MAN-GigabitEthernet2/0/22
+ eth-trunk 1
+#
+interface GigabitEthernet2/0/2
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet2/0/3
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet2/0/4
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet2/0/5
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet2/0/6
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet2/0/7
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet2/0/8
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet2/0/9
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet2/0/10
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet2/0/11
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet2/0/12
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet2/0/13
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet2/0/14
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet2/0/15
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet2/0/16
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet2/0/17
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet2/0/18
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet2/0/19
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet2/0/20
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet2/0/21
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet2/0/22
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet2/0/23
+ description dT:YJXQ3552-5
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 10 26
+#
+interface GigabitEthernet6/0/0
+#
+interface GigabitEthernet6/0/1
+#
+interface GigabitEthernet6/0/2
+#
+interface GigabitEthernet6/0/3
+#
+interface GigabitEthernet6/0/4
+#
+interface GigabitEthernet6/0/5
+#
+interface GigabitEthernet6/0/6
+#
+interface GigabitEthernet6/0/7
+#
+interface GigabitEthernet6/0/8
+#
+interface GigabitEthernet6/0/9
+#
+interface GigabitEthernet6/0/10
+#
+interface GigabitEthernet6/0/11
+#
+interface GigabitEthernet6/0/12
+#
+interface GigabitEthernet6/0/13
+#
+interface GigabitEthernet6/0/14
+#
+interface GigabitEthernet6/0/15
+#
+interface GigabitEthernet6/0/16
+#
+interface GigabitEthernet6/0/17
+#
+interface GigabitEthernet6/0/18
+#
+interface GigabitEthernet6/0/19
+#
+interface GigabitEthernet6/0/20
+#
+interface GigabitEthernet6/0/21
+#
+interface GigabitEthernet6/0/22
+#
+interface GigabitEthernet6/0/23
+#
+interface GigabitEthernet6/0/24
+#
+interface GigabitEthernet6/0/25
+#
+interface GigabitEthernet6/0/26
+#
+interface GigabitEthernet6/0/27
+#
+interface GigabitEthernet6/0/28
+#
+interface GigabitEthernet6/0/29
+#
+interface GigabitEthernet6/0/30
+#
+interface GigabitEthernet6/0/31
+#
+interface GigabitEthernet6/0/32
+#
+interface GigabitEthernet6/0/33
+#
+interface GigabitEthernet6/0/34
+#
+interface GigabitEthernet6/0/35
+#
+interface GigabitEthernet6/0/36
+#
+interface GigabitEthernet6/0/37
+#
+interface GigabitEthernet6/0/38
+#
+interface GigabitEthernet6/0/39
+#
+interface GigabitEthernet6/0/40
+#
+interface GigabitEthernet6/0/41
+#
+interface GigabitEthernet6/0/42
+#
+interface GigabitEthernet6/0/43
+#
+interface GigabitEthernet6/0/44
+#
+interface GigabitEthernet6/0/45
+#
+interface GigabitEthernet6/0/46
+#
+interface GigabitEthernet6/0/47
+#
+interface XGigabitEthernet3/0/0
+ description uT:NB-NB-YJXQ-SR-1.MAN.7750:()10GE1/2/2
+ eth-trunk 0
+#
+interface XGigabitEthernet3/0/1
+#
+interface XGigabitEthernet4/0/0
+ description uT:NB-NB-YJXQ-SR-1.MAN.7750:(local)10GE7/2/2
+ eth-trunk 0
+#
+interface XGigabitEthernet4/0/1
+#
+interface XGigabitEthernet4/0/2
+#
+interface XGigabitEthernet4/0/3
+#
+interface NULL0
+#
+interface LoopBack0
+ ip address 61.175.0.247 255.255.255.255
+ isis enable 100
+ isis circuit-level level-2
+#
+bgp 64741
+ router-id 61.175.0.247
+ group pgCR internal
+ peer pgCR connect-interface LoopBack0
+ peer 61.175.0.1 as-number 64741
+ peer 61.175.0.1 group pgCR
+ peer 61.175.0.1 description *** IBGP session uT:NB-NB-YSN-CR-1.MAN.CRS ***
+ peer 61.175.0.2 as-number 64741
+ peer 61.175.0.2 group pgCR
+ peer 61.175.0.2 description *** IBGP session uT:NB-NB-ESN-CR-1.MAN.CRS ***
+ #
+ ipv4-family unicast
+  undo synchronization
+  dampening
+  preference 20 200 200
+  import-route direct route-policy rpCONN
+  import-route static route-policy rpStaticToBGP
+  maximum load-balancing 8
+  peer pgCR enable
+  peer pgCR route-policy rpSET_COMM_OUT export
+  peer pgCR advertise-community
+  peer 61.175.0.1 enable
+  peer 61.175.0.1 group pgCR
+  peer 61.175.0.2 enable
+  peer 61.175.0.2 group pgCR
+#
+route-policy rpSET_COMM_OUT deny node 10
+ if-match ip-prefix plDefaultRoute
+#
+route-policy rpSET_COMM_OUT deny node 20
+ if-match ip-prefix plPrivateRoute
+#
+route-policy rpSET_COMM_OUT permit node 30
+ apply community 64741:11183 64741:1303
+#
+route-policy rpCONN deny node 10
+ if-match ip-prefix plPrivateRoute
+#
+route-policy rpCONN permit node 20
+#
+route-policy rpStaticToBGP permit node 10
+ if-match tag 100
+#
+cpu-defend policy 1
+ auto-port-defend protocol arp-request arp-reply dhcp icmp ip-fragment
+#
+ip ip-prefix plDefaultRoute index 10 permit 0.0.0.0 0
+ip ip-prefix plPrivateRoute index 10 permit 10.0.0.0 8 greater-equal 24 less-equal 32
+ip ip-prefix plPrivateRoute index 20 permit 172.16.0.0 12 greater-equal 12 less-equal 32
+ip ip-prefix plPrivateRoute index 30 permit 192.168.0.0 16 greater-equal 16 less-equal 32
+ip ip-prefix plPrivateRoute index 40 permit 172.93.0.0 16 greater-equal 16 less-equal 32
+#
+ip route-static 172.0.0.0 255.0.0.0 172.93.1.149
+#
+snmp-agent
+snmp-agent local-engineid 000007DB7FFFFFFF00001A18
+snmp-agent community read cipher %$%$nnDz&"-2`T66*k2d84,'*{L]\%*N5{eH;U9^5W(QA'Z6{L`*seLEGs8Uk.zL81CSXh:CLi*{%$%$ acl 2015
+snmp-agent community read cipher %$%$`Bi/'f9ORE='sk~fbVIHvTHJl\!yJ[TwQ-.JCwO;My[PTHMv^(mu3CZQ4@-7z'9+]4w%HVvT%$%$
+snmp-agent sys-info contact R&D Nanjing, Huawei Technologies co.,Ltd.
+snmp-agent sys-info location Nanjing China
+snmp-agent sys-info version all
+snmp-agent target-host trap address udp-domain 172.200.100.5 udp-port 161 params securityname cipher %@%@A6uBTrI]IL{+Xy*bGSd3*{L/%@%@
+undo snmp-agent trap enable feature-name L2IFPPI trap-name hwMacFlappingAlarm
+undo snmp-agent trap enable feature-name DLDP
+undo snmp-agent trap enable feature-name LDTTRAP
+undo snmp-agent trap enable feature-name LLDPTRAP
+snmp-agent trap enable feature-name BASETRAP
+#
+header login information " WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!"
+#
+cpu-defend-policy 1 global
+cpu-defend-policy 1
+#
+user-interface con 0
+ authentication-mode password
+ set authentication password cipher %@%@IYjxAp3!r<\)e|QJy//>GX\qE@B4A`:t2&Gb~tQ#L%,CX\tG%@%@
+ idle-timeout 0 0
+user-interface vty 0 4
+ acl 2000 inbound
+ authentication-mode aaa
+ user privilege level 1
+user-interface vty 16 20
+#
+return
+<NB-NB-YJXQ-SR-1.MAN.S9306>

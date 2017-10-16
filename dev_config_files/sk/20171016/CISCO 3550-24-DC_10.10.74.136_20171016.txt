@@ -1,0 +1,413 @@
+
+Building configuration...
+
+Current configuration : 10026 bytes
+!
+version 12.2
+no service pad
+service tcp-keepalives-in
+service tcp-keepalives-out
+service timestamps debug datetime
+service timestamps log datetime
+service password-encryption
+!
+hostname LS-LQ-DaSai-SW3-1.MAN.C3550
+!
+logging buffered 16384 debugging
+no logging console
+enable secret 5 $1$qXbO$AfA6uDUoBLeR/7f1526tu0
+!
+username admin privilege 15 password 7 08365F1F0E1B0D1D1609
+aaa new-model
+aaa authentication login default group tacacs+ local
+aaa authentication login telnet group tacacs+ local
+aaa authentication enable default group tacacs+ enable
+aaa authorization config-commands
+aaa authorization exec default group tacacs+ local 
+aaa authorization exec telnet group tacacs+ local 
+aaa authorization commands 0 telnet group tacacs+ local 
+aaa authorization commands 1 telnet group tacacs+ local 
+aaa authorization commands 15 default group tacacs+ local 
+aaa authorization commands 15 telnet group tacacs+ local 
+aaa authorization network default group tacacs+ local 
+aaa accounting exec default start-stop group tacacs+
+aaa accounting commands 15 default start-stop group tacacs+
+!
+aaa session-id common
+clock timezone Beijing 8
+no errdisable detect cause pagp-flap
+no errdisable detect cause dtp-flap
+no errdisable detect cause link-flap
+no errdisable detect cause l2ptguard
+no errdisable detect cause gbic-invalid
+ip subnet-zero
+no ip source-route
+ip routing
+no ip gratuitous-arps
+no ip domain-lookup
+ip name-server 202.96.104.18
+ip name-server 202.96.103.36
+ip name-server 202.99.160.68
+ip name-server 202.101.172.37
+!
+vtp domain lsptt
+vtp mode transparent
+!
+!
+!
+no file verify auto
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+vlan 18
+ name WG-EPON
+!
+vlan 27
+ name WG-EPON-ZTE-OLT
+!
+vlan 29
+ name Cisco-Manager
+!
+vlan 40
+ name WLAN-ManageVlan
+!
+vlan 1135
+ name WLAN-FengYangShanBinGuan
+!
+vlan 1350
+ name PPPOE-LanJu-8220
+!
+vlan 1351
+ name PPPOE-DaSai-adsl
+!
+vlan 1768
+ name PPPOE-TongShanCunWeiHui
+!
+vlan 1774
+ name PPPOE-LvGuGuoCai-HeZuoShe
+!
+vlan 1798
+ name To-EPON-LanJu-ZXPON-c200
+!
+vlan 2339
+ name PPPOE-LvGuJiaoYuJiTuanLanJuXiaoQ
+!
+vlan 2347
+ name PPPOE-ZhangFengLan(Chen.J.R-2009
+!
+vlan 2358
+ name LongQingGaoSuYiBiao-(Chen.J.R-20
+!
+vlan 2404
+ name PPPOE-FangYuanHunNingTu
+!
+vlan 2406
+ name PPPOE-JunXiDianZhan
+!
+vlan 2415
+ name PPPOE-DaSaiErJiDianZhan
+!
+vlan 2425
+ name PPPOE-GuanPuYangXiaBianDianZhan
+!
+vlan 2482
+ name pppoe-DaShaiErJiDianZhan
+!
+vlan 3037
+ name fanxunjiankong
+!
+vlan 3121
+ name VPN-YuZhangGongLuDuan
+!
+vlan 3337
+ name VPN-JJY-LanJuXiaoXue
+!
+vlan 3403
+ name Gov-Vpn-LanJuXiangZhengFu
+!
+vlan 3473
+ name Gov-Vpn-switch-manager
+!
+vlan 3479
+ name Gov-Vpn-ShiPinHuiYiXiTong
+!
+vlan 3490
+ name GOV-GE-LanJuXiangZhenFu
+!
+vlan 3710 
+!
+vlan 3802
+ name Vpn-XinYongShe-LanJuFenShe(Lan.J
+!
+class-map match-all limitspeed
+  match ip dscp default 
+!
+!
+policy-map 10M
+  class limitspeed
+    police 10000000 200000 exceed-action drop
+policy-map 30M
+  class limitspeed
+    police 30384000 2000000 exceed-action drop
+policy-map 20M
+  class limitspeed
+    police 20000000 2000000 exceed-action drop
+policy-map 8M
+  class limitspeed
+    police 8192000 200000 exceed-action drop
+policy-map 4M
+  class limitspeed
+    police 4096000 200000 exceed-action drop
+!
+!
+interface Loopback0
+ ip address 10.10.250.136 255.255.255.255
+!
+interface FastEthernet0/1
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/2
+ description To HL-A-LQ-FengYangShan-D_Link3226-E0/1
+ switchport access vlan 1350
+ switchport mode dot1q-tunnel
+ no cdp enable
+ spanning-tree bpdufilter enable
+!
+interface FastEthernet0/3
+ description description To HL-A-LQ-LuAo-WLAN-D_Link3010G-E0/1
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 40
+ switchport mode trunk
+ spanning-tree bpdufilter enable
+!
+interface FastEthernet0/4
+ description Dslam-DaSai-MA5605-1/0
+ switchport access vlan 1351
+ switchport mode dot1q-tunnel
+ duplex full
+ speed 100
+ spanning-tree bpdufilter enable
+!
+interface FastEthernet0/5
+ description PPPOE-DaSaiErJiDianZhan
+ switchport access vlan 2415
+ switchport mode access
+ service-policy input 4M
+ service-policy output 4M
+!
+interface FastEthernet0/6
+ description PPPOE-GuanPuYangXiaBianDianZhan
+ switchport access vlan 2425
+ switchport mode access
+ service-policy input 4M
+ service-policy output 4M
+!
+interface FastEthernet0/7
+ description pppoe-DaShaiErJiDianZhan
+ switchport access vlan 2482
+ switchport mode access
+!
+interface FastEthernet0/8
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/9
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/9.24
+!
+interface FastEthernet0/10
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 18,27,1798
+ switchport mode trunk
+!
+interface FastEthernet0/11
+ switchport access vlan 1351
+ switchport mode dot1q-tunnel
+ no cdp enable
+ spanning-tree bpdufilter enable
+!
+interface FastEthernet0/12
+ switchport access vlan 2339
+ switchport mode access
+ service-policy input 4M
+ service-policy output 4M
+!
+interface FastEthernet0/13
+ switchport access vlan 3479
+ switchport mode access
+!
+interface FastEthernet0/14
+ switchport access vlan 2347
+ switchport mode access
+!
+interface FastEthernet0/15
+ switchport access vlan 2404
+ switchport mode access
+ service-policy input 4M
+ service-policy output 4M
+!
+interface FastEthernet0/16
+ switchport access vlan 2406
+ switchport mode access
+ service-policy input 4M
+ service-policy output 4M
+!
+interface FastEthernet0/17
+ switchport access vlan 2415
+ switchport mode access
+ service-policy input 4M
+ service-policy output 4M
+!
+interface FastEthernet0/18
+ switchport access vlan 3121
+ switchport mode access
+ service-policy input 10M
+ service-policy output 10M
+!
+interface FastEthernet0/19
+ description vpn-DaSaiYiJiShuiKuFanXunJianKong
+ switchport access vlan 3037
+ switchport mode access
+ shutdown
+!
+interface FastEthernet0/20
+ description vpn-DaSaiYiJiShuiKuFanXunJianKong
+ switchport access vlan 3037
+ switchport mode access
+!
+interface FastEthernet0/21
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/22
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/23
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/24
+ switchport access vlan 2425
+ switchport mode access
+ duplex full
+ speed 100
+!
+interface GigabitEthernet0/1
+ description uT:LS-LQ-LanJu-SW2-Z8905-1.MAN GE2/4
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 18,27,29,40,1350,1351,2415,2425,2482,3037
+ switchport mode trunk
+ speed nonegotiate
+!
+interface GigabitEthernet0/2
+ description To-FengYangShan-3550-1Gi0/1
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 18,27,29,40,1350,1351,2415,2425
+ switchport mode trunk
+ speed nonegotiate
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan29
+ description Cisco-Manager                         
+ ip address 10.10.74.136 255.255.255.192
+ no ip redirects
+ no ip unreachables
+ no ip proxy-arp
+ no ip route-cache cef
+ no ip route-cache
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 10.10.74.129
+no ip http server
+!
+ip access-list extended worm
+ deny   tcp any any eq 445
+ deny   tcp any eq 135 any
+ deny   udp any any eq 135
+ deny   tcp any eq 139 any
+ deny   tcp any any eq 139
+ deny   udp any any eq 1434
+ deny   tcp any any eq 4444
+ deny   udp any any eq netbios-ns
+ deny   udp any any eq netbios-dgm
+ deny   tcp any eq 137 any
+ deny   tcp any any eq 135
+ deny   tcp any any eq 593
+ deny   tcp any eq 4444 any
+ deny   tcp any eq 593 any
+ deny   udp any eq 135 any
+ deny   udp any eq netbios-ns any
+ deny   udp any eq netbios-dgm any
+ permit ip any any
+!
+logging trap debugging
+logging source-interface Loopback0
+logging 218.74.120.198
+logging 10.10.1.130
+access-list 98 permit 218.74.120.198
+access-list 99 permit 202.96.114.0 0.0.0.255
+access-list 99 permit 218.74.120.0 0.0.0.255
+access-list 99 permit 218.74.121.0 0.0.0.255
+access-list 99 permit 218.74.126.0 0.0.0.255
+access-list 99 permit 61.174.94.0 0.0.0.255
+access-list 100 permit tcp 218.74.120.0 0.0.0.255 any eq telnet
+access-list 100 permit tcp 218.74.121.0 0.0.0.255 any eq telnet
+access-list 100 permit tcp 218.74.123.0 0.0.0.255 any eq telnet
+access-list 100 permit tcp 218.74.126.0 0.0.0.255 any eq telnet
+access-list 100 permit tcp 61.174.94.0 0.0.0.255 any eq telnet
+access-list 100 permit tcp 202.96.114.0 0.0.0.255 any eq telnet
+access-list 100 permit tcp 61.174.95.0 0.0.0.255 any eq telnet
+access-list 100 permit tcp 218.74.127.128 0.0.0.127 any eq telnet
+access-list 100 deny   tcp any any eq telnet
+access-list 100 permit ip any any
+snmp-server view NO_BAD_SNMP iso included
+snmp-server view NO_BAD_SNMP internet included
+snmp-server view NO_BAD_SNMP transmission.94 excluded
+snmp-server view NO_BAD_SNMP mib-2.34.9 excluded
+snmp-server view NO_BAD_SNMP ciscoMgmt.35 excluded
+snmp-server view NO_BAD_SNMP ciscoMgmt.95 excluded
+snmp-server view NO_BAD_SNMP ciscoMgmt.130 excluded
+snmp-server view NO_BAD_SNMP ciscoMgmt.219 excluded
+snmp-server view NO_BAD_SNMP ciscoMgmt.252 excluded
+snmp-server view NO_BAD_SNMP ciscoMgmt.254 excluded
+snmp-server view NO_BAD_SNMP ciscoExperiment.997 excluded
+snmp-server community ls-cw2000-ro RO 98
+snmp-server community ls578@zjnoc RO
+snmp-server community mycomm view NO_BAD_SNMP RO
+tacacs-server host 10.10.1.238
+tacacs-server directed-request
+tacacs-server key 7 010415555C090A152D4E56
+radius-server source-ports 1645-1646
+!
+control-plane
+!
+banner login ^C WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!  ^C
+!
+line con 0
+ exec-timeout 3 0
+line vty 0 4
+ exec-timeout 15 0
+ password 7 082D5D52100014474B
+ authorization commands 0 telnet
+ authorization commands 1 telnet
+ authorization commands 15 telnet
+ authorization exec telnet
+ login authentication telnet
+line vty 5 15
+ access-class 99 in
+ password 7 021C0E5401265F72194218
+ authorization commands 0 telnet
+ authorization commands 1 telnet
+ authorization commands 15 telnet
+ authorization exec telnet
+ login authentication telnet
+!
+ntp clock-period 17180193
+ntp server 10.10.1.138
+!
+end
+
+LS-LQ-DaSai-SW3-1.MAN.C3550#

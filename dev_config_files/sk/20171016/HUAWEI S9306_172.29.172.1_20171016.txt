@@ -1,0 +1,367 @@
+
+!Software Version V200R003C00SPC500
+#
+sysname HZ-HZ-SMZX-C.M2N.9306
+#
+info-center source SHELL channel 4 log level informational
+info-center loghost 10.254.0.1 facility local4
+#
+vlan batch 51 to 52 4000
+#
+igmp-snooping enable
+#
+undo http server enable
+undo http secure-server enable
+#
+undo nap slave enable
+#
+clock timezone BEIJINIG add 08:00:00
+#
+ dba-profile default0 type3 assure 40000 max 80000
+#
+diffserv domain default
+#
+radius-server template newhzdx
+ radius-server shared-key cipher %@%@p7c$B9;:B0pA!Z=WlM)*#l!G%@%@
+ radius-server authentication 61.164.19.211 1812 weight 80
+ radius-server authentication 61.164.19.213 1812 weight 80
+ radius-server accounting 61.164.19.211 1813 weight 80
+ radius-server accounting 61.164.19.213 1813 weight 80
+ undo radius-server user-name domain-included
+ radius-server attribute translate
+ radius-attribute disable HW-Exec-Privilege receive
+#
+ line-profile default0
+#
+ service-profile default0
+#
+acl number 2000
+ rule 5 permit source 10.10.10.34 0
+ rule 10 permit source 10.10.10.35 0
+#
+acl number 2001
+ description this acl is used telnet
+ rule 5 permit source 172.28.0.0 0.0.255.255
+ rule 10 permit source 172.29.0.0 0.0.255.255
+ rule 15 permit source 10.254.0.0 0.0.0.31
+ rule 20 permit source 192.168.0.0 0.0.255.255
+ rule 30 permit source 192.168.205.0 0.0.0.255
+ rule 35 permit source 172.28.0.253 0
+ rule 40 permit source 192.168.0.0 0.0.127.255
+ rule 50 permit source 192.168.208.0 0.0.0.255
+ rule 51 permit source 10.10.10.34 0
+ rule 52 permit source 10.10.10.35 0
+ rule 55 permit source 192.168.209.0 0.0.0.255
+ rule 60 permit source 192.168.210.0 0.0.0.255
+ rule 65 permit source 172.28.21.254 0
+ rule 100 deny
+#
+acl number 2002
+ description acl is used SNMP
+ rule 5 permit source 172.16.254.252 0
+ rule 10 permit source 202.96.102.253 0
+ rule 15 permit source 202.96.102.254 0
+ rule 20 permit source 10.254.0.0 0.0.0.255
+ rule 25 permit source 192.168.11.0 0.0.0.255
+ rule 30 permit source 192.168.1.0 0.0.0.255
+ rule 35 permit source 10.10.10.34 0
+ rule 36 permit source 10.10.10.35 0
+ rule 100 deny
+#
+acl number 2006
+ rule 51 permit source 10.10.10.34 0
+ rule 52 permit source 10.10.10.35 0
+#
+drop-profile default
+#
+vlan 4000
+ description For-Multicast
+ igmp-snooping enable
+ igmp-snooping query-interval 30
+ igmp-snooping prompt-leave
+#
+aaa
+ authentication-scheme default
+ authentication-scheme newhzdx
+  authentication-mode radius local
+ authorization-scheme default
+ accounting-scheme default
+ accounting-scheme newhzdx
+  accounting-mode radius
+  accounting start-fail online
+ domain default
+  authentication-scheme newhzdx
+  accounting-scheme newhzdx
+  radius-server newhzdx
+ domain default_admin
+  authentication-scheme newhzdx
+  accounting-scheme newhzdx
+  radius-server newhzdx
+ local-user huawei password cipher %@%@GtPM@/jf,G!x/*)_0;Z4#l#B%@%@
+ local-user huawei privilege level 15
+ local-user huawei service-type telnet
+ undo local-user admin
+#
+ntp-service source-interface Vlanif51
+ntp-service unicast-server 6.6.6.6 preference
+ntp-service unicast-server 7.7.7.7
+ntp-service unicast-server 61.164.1.7 source-interface Vlanif51 preference
+ntp-service unicast-server 61.130.120.35 source-interface Vlanif51
+#
+interface Vlanif51
+ description For-Management
+ ip address 172.29.172.1 255.255.255.0
+#
+interface Eth-Trunk1
+ description uT:HZ-HZ-JF-SR-1.M2N.NE40E ETH (Gi1/0/18,8/0/10)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 51 to 52 4000
+ mode lacp
+#
+interface Eth-Trunk2
+ description uT:HZ-HZ-JF-SR-2.M2N.NE40E ETH (Gi1/0/17,1/0/18)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 51 to 52 4000
+ mode lacp
+#
+interface Eth-Trunk3
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 51 to 52 4000
+ mode lacp
+#
+interface Eth-Trunk4
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 51 to 52 4000
+ mode lacp
+#
+interface Eth-Trunk5
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 51 to 52 4000
+ mode lacp
+#
+interface Eth-Trunk6
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 51 to 52 4000
+ mode lacp
+#
+interface Ethernet0/0/0
+#
+interface GigabitEthernet5/0/0
+ undo negotiation auto
+ description uT:HZ-HZ-JF-SR-1.M2N.NE40E:(F1412160115)G1/0/18
+ eth-trunk 1
+#
+interface GigabitEthernet5/0/1
+ undo negotiation auto
+ description uT:HZ-HZ-JF-SR-1.M2N.NE40E:(F1412160117)G8/0/10
+ eth-trunk 1
+#
+interface GigabitEthernet5/0/2
+ undo negotiation auto
+ description uT:HZ-HZ-JF-SR-2.M2N.NE40E:(F1412160118)G1/0/17
+ eth-trunk 2
+#
+interface GigabitEthernet5/0/3
+ undo negotiation auto
+ description uT:HZ-HZ-JF-SR-2.M2N.NE40E:(F1412160120)G1/0/18
+ eth-trunk 2
+#
+interface GigabitEthernet5/0/4
+ eth-trunk 3
+#
+interface GigabitEthernet5/0/5
+ eth-trunk 3
+#
+interface GigabitEthernet5/0/6
+ eth-trunk 4
+#
+interface GigabitEthernet5/0/7
+ eth-trunk 4
+#
+interface GigabitEthernet5/0/8
+ eth-trunk 5
+#
+interface GigabitEthernet5/0/9
+ eth-trunk 5
+#
+interface GigabitEthernet5/0/10
+ eth-trunk 6
+#
+interface GigabitEthernet5/0/11
+ eth-trunk 6
+#
+interface GigabitEthernet5/0/12
+#
+interface GigabitEthernet5/0/13
+#
+interface GigabitEthernet5/0/14
+#
+interface GigabitEthernet5/0/15
+#
+interface GigabitEthernet5/0/16
+#
+interface GigabitEthernet5/0/17
+#
+interface GigabitEthernet5/0/18
+#
+interface GigabitEthernet5/0/19
+#
+interface GigabitEthernet5/0/20
+#
+interface GigabitEthernet5/0/21
+#
+interface GigabitEthernet5/0/22
+#
+interface GigabitEthernet5/0/23
+#
+interface GigabitEthernet6/0/0
+#
+interface GigabitEthernet6/0/1
+#
+interface GigabitEthernet6/0/2
+#
+interface GigabitEthernet6/0/3
+#
+interface GigabitEthernet6/0/4
+#
+interface GigabitEthernet6/0/5
+#
+interface GigabitEthernet6/0/6
+#
+interface GigabitEthernet6/0/7
+#
+interface GigabitEthernet6/0/8
+#
+interface GigabitEthernet6/0/9
+#
+interface GigabitEthernet6/0/10
+#
+interface GigabitEthernet6/0/11
+#
+interface GigabitEthernet6/0/12
+#
+interface GigabitEthernet6/0/13
+#
+interface GigabitEthernet6/0/14
+#
+interface GigabitEthernet6/0/15
+#
+interface GigabitEthernet6/0/16
+#
+interface GigabitEthernet6/0/17
+#
+interface GigabitEthernet6/0/18
+#
+interface GigabitEthernet6/0/19
+#
+interface GigabitEthernet6/0/20
+#
+interface GigabitEthernet6/0/21
+#
+interface GigabitEthernet6/0/22
+#
+interface GigabitEthernet6/0/23
+#
+interface GigabitEthernet6/0/24
+#
+interface GigabitEthernet6/0/25
+#
+interface GigabitEthernet6/0/26
+#
+interface GigabitEthernet6/0/27
+#
+interface GigabitEthernet6/0/28
+#
+interface GigabitEthernet6/0/29
+#
+interface GigabitEthernet6/0/30
+#
+interface GigabitEthernet6/0/31
+#
+interface GigabitEthernet6/0/32
+#
+interface GigabitEthernet6/0/33
+#
+interface GigabitEthernet6/0/34
+#
+interface GigabitEthernet6/0/35
+#
+interface GigabitEthernet6/0/36
+#
+interface GigabitEthernet6/0/37
+#
+interface GigabitEthernet6/0/38
+#
+interface GigabitEthernet6/0/39
+#
+interface GigabitEthernet6/0/40
+#
+interface GigabitEthernet6/0/41
+#
+interface GigabitEthernet6/0/42
+#
+interface GigabitEthernet6/0/43
+#
+interface GigabitEthernet6/0/44
+#
+interface GigabitEthernet6/0/45
+#
+interface GigabitEthernet6/0/46
+#
+interface GigabitEthernet6/0/47
+#
+interface NULL0
+#
+ip route-static 0.0.0.0 0.0.0.0 172.29.172.254
+#
+snmp-agent
+snmp-agent local-engineid 800007DB03F84ABF58DDF0
+snmp-agent community read cipher %$%$$8j4%G%f_YYG6H6+03_#.=72!F8w.s"N\UaS2f~[gp}L=75.Vp\LK/=(z1]lO,NaY5E@7>.=%$%$ acl 2008
+snmp-agent sys-info contact HZ-SC-SMZX-C.M2N.9306
+snmp-agent sys-info location clou2pinmian
+snmp-agent sys-info version all
+snmp-agent target-host trap address udp-domain 172.16.254.252 params securityname cipher %@%@'D;'4QnWdDuoV;LoH_$1.=7W%@%@
+snmp-agent trap source Vlanif51
+snmp-agent trap enable feature-name IFNET trap-name linkDown
+snmp-agent trap enable feature-name IFNET trap-name linkUp
+snmp-agent trap enable feature-name CONFIGURATION
+snmp-agent trap enable feature-name SNMP trap-name authenticationFailure
+undo snmp-agent trap enable feature-name DLDP
+undo snmp-agent trap enable feature-name LDTTRAP
+undo snmp-agent trap enable feature-name LLDPTRAP
+snmp-agent trap enable feature-name VFS
+snmp-agent trap enable feature-name BASETRAP
+#
+header login information " WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!"
+#
+user-interface maximum-vty 15
+user-interface con 0
+ authentication-mode password
+ set authentication password cipher %@%@dSz'L@7}6-uO1'~P3V39[,R}aH\KMz192T`wr.CT0nt",R#[%@%@
+ idle-timeout 0 0
+ screen-length 35
+user-interface vty 0 4
+ authentication-mode aaa
+ user privilege level 15
+ idle-timeout 5 0
+ screen-length 0
+user-interface vty 5 9
+ authentication-mode aaa
+ user privilege level 3
+ idle-timeout 5 0
+ screen-length 50
+user-interface vty 10 14
+ authentication-mode none
+ user privilege level 3
+ idle-timeout 0 0
+ screen-length 0
+user-interface vty 16 20
+#
+return
+[HZ-HZ-SMZX-C.M2N.9306-ui-vty0-4]

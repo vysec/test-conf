@@ -1,0 +1,787 @@
+
+!Software Version V200R003C00SPC500
+#
+sysname HZ-HZ-XX-DSW-1.MAN.9306
+#
+info-center source SHELL channel 4 log level informational
+info-center loghost source Vlanif50
+info-center loghost 10.254.0.1 facility local4
+info-center loghost 122.224.79.2 facility local4
+#
+vlan batch 20 22 50 711 717 720 723 1122 to 1137 1149 to 1164 1178 to 1183
+vlan batch 1196 to 1201 1701 to 1712 1731 to 1745 1791 to 1810 1901 to 1930 1933 to 1960 2048 to 2063 2138 to 2153 2184 to 2198 2227 to 2241
+vlan batch 2259 to 2273 2290 to 2299
+#
+set transceiver temperature threshold 60 65 slot 5
+#
+undo http server enable
+undo http secure-server enable
+#
+undo nap slave enable
+#
+clock timezone beijing add 08:00:00
+#
+ dba-profile default0 type3 assure 40000 max 80000
+#
+diffserv domain default
+#
+radius-server template newhzdx
+ radius-server shared-key cipher %@%@hWdV>McsEH_;Y|+vujh5./ye%@%@
+ radius-server authentication 61.164.19.211 1812 weight 80
+ radius-server authentication 61.164.19.213 1812 weight 80
+ radius-server accounting 61.164.19.211 1813 weight 80
+ radius-server accounting 61.164.19.213 1813 weight 80
+ undo radius-server user-name domain-included
+ radius-server attribute translate
+ radius-attribute disable HW-Exec-Privilege receive
+#
+ line-profile default0
+#
+ service-profile default0
+#
+acl number 2000
+ rule 0 permit source 172.16.254.252 0
+ rule 5 permit source 202.96.102.253 0
+ rule 10 permit source 202.96.102.254 0
+ rule 15 permit source 10.254.0.0 0.0.0.255
+ rule 20 permit source 192.168.11.0 0.0.0.255
+ rule 25 permit source 192.168.1.0 0.0.0.255
+ rule 31 permit source 10.10.10.34 0
+ rule 32 permit source 10.10.10.35 0
+ rule 33 permit source 10.31.255.0 0.0.0.31
+ rule 100 deny
+#
+acl number 2001
+ rule 5 permit source 172.16.254.252 0
+ rule 10 permit source 202.96.102.253 0
+ rule 15 permit source 202.96.102.254 0
+ rule 25 permit source 192.168.208.0 0.0.0.255
+ rule 30 permit source 192.168.209.0 0.0.0.255
+ rule 35 permit source 192.168.210.0 0.0.0.255
+ rule 40 permit source 192.168.0.0 0.0.127.255
+ rule 45 permit source 10.254.0.0 0.0.0.31
+ rule 50 permit source 172.28.0.253 0
+ rule 51 permit source 10.10.10.34 0
+ rule 52 permit source 10.10.10.35 0
+ rule 55 permit source 10.31.255.0 0.0.0.31
+ rule 100 deny
+#
+acl number 2002
+ rule 0 permit source 172.16.254.248 0.0.0.7
+ rule 5 permit source 10.254.0.0 0.0.0.31
+ rule 10 permit source 192.168.0.0 0.0.255.255
+ rule 15 permit source 172.28.0.0 0.0.255.255
+ rule 100 deny
+#
+acl number 2006
+ rule 51 permit source 10.10.10.34 0
+ rule 52 permit source 10.10.10.35 0
+#
+acl number 2016
+ rule 1 permit source 172.16.247.0 0.0.0.31
+ rule 2 permit source 172.16.254.0 0.0.0.15
+ rule 3 permit source 10.254.0.0 0.0.0.31
+ rule 4 permit source 10.31.255.0 0.0.0.255
+ rule 5 permit source 10.254.3.0 0.0.0.255
+ rule 6 permit source 10.10.10.0 0.0.0.63
+ rule 7 permit source 192.168.100.0 0.0.0.3
+ rule 8 permit source 172.16.0.0 0.0.0.7
+ rule 9 permit source 10.20.200.14 0
+ rule 10 permit source 10.20.200.18 0
+ rule 11 permit source 192.168.1.0 0.0.0.255
+ rule 12 permit source 192.168.4.0 0.0.0.255
+ rule 13 permit source 192.168.8.0 0.0.0.255
+ rule 14 permit source 192.168.11.0 0.0.0.255
+ rule 15 permit source 192.168.119.0 0.0.0.255
+ rule 16 permit source 192.168.105.0 0.0.0.255
+ rule 17 permit source 192.168.67.0 0.0.0.255
+ rule 18 permit source 172.28.11.251 0
+ rule 19 permit source 192.168.101.0 0.0.0.255
+ rule 20 permit source 192.168.48.0 0.0.0.255
+ rule 1000 deny
+#
+vlan 50
+ description Manager-vlan
+#
+aaa
+ authentication-scheme default
+ authentication-scheme newhzdx
+  authentication-mode radius local
+ authorization-scheme default
+ accounting-scheme default
+ accounting-scheme newhzdx
+  accounting-mode radius
+  accounting start-fail online
+ domain default
+  authentication-scheme newhzdx
+  accounting-scheme newhzdx
+  radius-server newhzdx
+ domain default_admin
+  authentication-scheme newhzdx
+  accounting-scheme newhzdx
+  radius-server newhzdx
+ domain hzdx
+  authentication-scheme newhzdx
+  accounting-scheme newhzdx
+  radius-server newhzdx
+ local-user admin password cipher %@%@5d~9:M^ipCfL\iB)EQd>3Uwe%@%@
+ local-user admin service-type http
+ local-user huawei password cipher %@%@wi=z+O@mLJ<Ed`NokQ@Kc7U!%@%@
+ local-user huawei privilege level 15
+ local-user huawei service-type telnet
+ local-user aaa@huawei password cipher %@%@XBG94<-X#97p:J7BRKE6zqP<%@%@
+#
+ntp-service source-interface Vlanif50
+ntp-service unicast-server 6.6.6.6 preference
+ntp-service unicast-server 7.7.7.7
+ntp-service unicast-server 61.164.1.7 source-interface Vlanif50 preference
+ntp-service unicast-server 61.130.120.35 source-interface Vlanif50
+#
+interface Vlanif50
+ description For-Management
+ ip address 172.28.8.7 255.255.255.0
+#
+interface Eth-Trunk1
+ description uT:HZ-HZ-JB-SW-1&2.MAN.H3C12510F:BA12(10GE1/0/0/12,10GE2/0/0/12)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 20 22 50 711 717 720 723 1122 to 1137 1149 to 1164 1178 to 1183
+ port trunk allow-pass vlan 1196 to 1201 1701 to 1712 1731 to 1745 1791 to 1810 1901 to 1930 1933 to 1960 2048 to 2063 2138 to 2153 2184 to 2198 2227 to 2241
+ port trunk allow-pass vlan 2259 to 2273 2290 to 2299
+ mode lacp
+#
+interface Eth-Trunk2
+ description dT:HZ-HZ-XiX-OLT-4.MAN.MA5680T:10GE0/19/0&10GE0/20/0
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 22 2184 to 2198
+ mode lacp
+#
+interface Eth-Trunk3
+ description dT:HZ-HZ-XX-OLT-1.MAN.MA5680T:10GE0/17/0&10GE0/18/0
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 20 711 1731 to 1745
+ mode lacp
+#
+interface Eth-Trunk4
+ description dT:HZ-HZ-XX-OLT-2.MAN.MA5680T:10GE0/17/0&10GE0/18/0
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 20 717 1901 to 1930
+ mode lacp
+#
+interface Eth-Trunk5
+ description dT:HZ-HZ-XX-OLT-3.MAN.MA5680T:10GE0/17/0&10GE0/18/0
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 20 723 1933 to 1960
+ mode lacp
+#
+interface Eth-Trunk7
+ description HZ-HZ-XiX-OLT-7.MAN.MA5680T(G):10GE0/19/0&10GE0/20/0
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 22 1127 to 1137
+ mode lacp
+#
+interface Eth-Trunk8
+ description dT:HZ-HZ-XiX-OLT-5.MAN.MA5680T(G):(local)10GE0/19/0&10GE0/20/0
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 22 2227 to 2241
+ mode lacp
+#
+interface Eth-Trunk9
+ description dT:HZ-HZ-XiX-OLT-6.MAN.MA5680T(G):(local)10GE0/17/0&10GE0/18/0
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 22 2259 to 2273
+ mode lacp
+#
+interface Eth-Trunk10
+ description HZ-HZ-XiX-OLT-8.MAN.MA5680T(G):10GE0/19/0&10GE0/20/0
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 22 1178 to 1183
+ mode lacp
+#
+interface Eth-Trunk11
+ description dT:HZ-HZ-XX-7360-1.G.a-1&b-1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 22 2048 to 2063
+ mode lacp
+#
+interface Eth-Trunk12
+ description dT:HZ-HZ-XX-OLT-2.MAN.7360(G).a-4&b-4
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 22 2138 to 2153
+ mode lacp
+#
+interface Eth-Trunk13
+ description dT:HZ-HZ-XiX-OLT-1.MAN.C300:10GE1/19/1&10GE1/20/1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 20 720 1701 to 1712 1791 to 1810
+ mode lacp
+#
+interface Eth-Trunk14
+ description dT:HZ-HZ-XiX-OLT-2.MAN.C300:10GE1/19/1&10GE1/20/1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 20 1149 to 1164 2290 to 2299
+ mode lacp
+#
+interface Eth-Trunk15
+ description dT:HZ-HZ-XiX-OLT-3.MAN.C300(G):10GE1/19/1&10GE1/20/1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 22 1122 to 1126
+ mode lacp
+#
+interface Eth-Trunk16
+ description dT:HZ-HZ-XiX-OLT-1.MAN.AN5516(G):XGE1/19/1&1/20/1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 22 1196 to 1201
+ mode lacp
+#
+interface Ethernet0/0/0
+#
+interface GigabitEthernet3/0/0
+ undo negotiation auto
+ shutdown
+#
+interface GigabitEthernet3/0/1
+ shutdown
+#
+interface GigabitEthernet3/0/2
+ shutdown
+#
+interface GigabitEthernet3/0/3
+ shutdown
+#
+interface GigabitEthernet3/0/4
+ shutdown
+#
+interface GigabitEthernet3/0/5
+ shutdown
+#
+interface GigabitEthernet3/0/6
+ shutdown
+#
+interface GigabitEthernet3/0/7
+ shutdown
+#
+interface GigabitEthernet3/0/8
+ shutdown
+#
+interface GigabitEthernet3/0/9
+ shutdown
+#
+interface GigabitEthernet3/0/10
+ shutdown
+#
+interface GigabitEthernet3/0/11
+ shutdown
+#
+interface GigabitEthernet3/0/12
+ shutdown
+#
+interface GigabitEthernet3/0/13
+ shutdown
+#
+interface GigabitEthernet3/0/14
+ shutdown
+#
+interface GigabitEthernet3/0/15
+ shutdown
+#
+interface GigabitEthernet3/0/16
+ shutdown
+#
+interface GigabitEthernet3/0/17
+ shutdown
+#
+interface GigabitEthernet3/0/18
+ shutdown
+#
+interface GigabitEthernet3/0/19
+ shutdown
+#
+interface GigabitEthernet3/0/20
+ shutdown
+#
+interface GigabitEthernet3/0/21
+ shutdown
+#
+interface GigabitEthernet3/0/22
+ shutdown
+#
+interface GigabitEthernet3/0/23
+ shutdown
+#
+interface GigabitEthernet3/0/24
+ shutdown
+#
+interface GigabitEthernet3/0/25
+ shutdown
+#
+interface GigabitEthernet3/0/26
+ shutdown
+#
+interface GigabitEthernet3/0/27
+ shutdown
+#
+interface GigabitEthernet3/0/28
+ shutdown
+#
+interface GigabitEthernet3/0/29
+ shutdown
+#
+interface GigabitEthernet3/0/30
+ shutdown
+#
+interface GigabitEthernet3/0/31
+ shutdown
+#
+interface GigabitEthernet3/0/32
+ shutdown
+#
+interface GigabitEthernet3/0/33
+ shutdown
+#
+interface GigabitEthernet3/0/34
+ shutdown
+#
+interface GigabitEthernet3/0/35
+ shutdown
+#
+interface GigabitEthernet3/0/36
+ shutdown
+#
+interface GigabitEthernet3/0/37
+ shutdown
+#
+interface GigabitEthernet3/0/38
+ shutdown
+#
+interface GigabitEthernet3/0/39
+ shutdown
+#
+interface GigabitEthernet3/0/40
+ shutdown
+#
+interface GigabitEthernet3/0/41
+ shutdown
+#
+interface GigabitEthernet3/0/42
+ shutdown
+#
+interface GigabitEthernet3/0/43
+ shutdown
+#
+interface GigabitEthernet3/0/44
+ shutdown
+#
+interface GigabitEthernet3/0/45
+ shutdown
+#
+interface GigabitEthernet3/0/46
+ shutdown
+#
+interface GigabitEthernet3/0/47
+ shutdown
+#
+interface GigabitEthernet4/0/0
+ undo negotiation auto
+ shutdown
+#
+interface GigabitEthernet4/0/1
+ shutdown
+#
+interface GigabitEthernet4/0/2
+ shutdown
+#
+interface GigabitEthernet4/0/3
+ shutdown
+#
+interface GigabitEthernet4/0/4
+ shutdown
+#
+interface GigabitEthernet4/0/5
+ shutdown
+#
+interface GigabitEthernet4/0/6
+ shutdown
+#
+interface GigabitEthernet4/0/7
+ shutdown
+#
+interface GigabitEthernet4/0/8
+ shutdown
+#
+interface GigabitEthernet4/0/9
+ shutdown
+#
+interface GigabitEthernet4/0/10
+ shutdown
+#
+interface GigabitEthernet4/0/11
+ shutdown
+#
+interface GigabitEthernet4/0/12
+ shutdown
+#
+interface GigabitEthernet4/0/13
+ shutdown
+#
+interface GigabitEthernet4/0/14
+ shutdown
+#
+interface GigabitEthernet4/0/15
+ shutdown
+#
+interface GigabitEthernet4/0/16
+ shutdown
+#
+interface GigabitEthernet4/0/17
+ shutdown
+#
+interface GigabitEthernet4/0/18
+ shutdown
+#
+interface GigabitEthernet4/0/19
+ shutdown
+#
+interface GigabitEthernet4/0/20
+ shutdown
+#
+interface GigabitEthernet4/0/21
+ shutdown
+#
+interface GigabitEthernet4/0/22
+ shutdown
+#
+interface GigabitEthernet4/0/23
+ shutdown
+#
+interface GigabitEthernet4/0/24
+ shutdown
+#
+interface GigabitEthernet4/0/25
+ shutdown
+#
+interface GigabitEthernet4/0/26
+ shutdown
+#
+interface GigabitEthernet4/0/27
+ shutdown
+#
+interface GigabitEthernet4/0/28
+ shutdown
+#
+interface GigabitEthernet4/0/29
+ shutdown
+#
+interface GigabitEthernet4/0/30
+ shutdown
+#
+interface GigabitEthernet4/0/31
+ shutdown
+#
+interface GigabitEthernet4/0/32
+ shutdown
+#
+interface GigabitEthernet4/0/33
+ shutdown
+#
+interface GigabitEthernet4/0/34
+ shutdown
+#
+interface GigabitEthernet4/0/35
+ shutdown
+#
+interface GigabitEthernet4/0/36
+ shutdown
+#
+interface GigabitEthernet4/0/37
+ shutdown
+#
+interface GigabitEthernet4/0/38
+ shutdown
+#
+interface GigabitEthernet4/0/39
+ shutdown
+#
+interface GigabitEthernet4/0/40
+ shutdown
+#
+interface GigabitEthernet4/0/41
+ shutdown
+#
+interface GigabitEthernet4/0/42
+ shutdown
+#
+interface GigabitEthernet4/0/43
+ shutdown
+#
+interface GigabitEthernet4/0/44
+ shutdown
+#
+interface GigabitEthernet4/0/45
+ shutdown
+#
+interface GigabitEthernet4/0/46
+ shutdown
+#
+interface GigabitEthernet4/0/47
+ shutdown
+#
+interface XGigabitEthernet1/0/0
+ description uT:HZ-HZ-JB-SW-1&2.MAN.H3C12510F:(F1504010043)10GE1/0/0/12
+ eth-trunk 1
+#
+interface XGigabitEthernet1/0/1
+ description dT:HZ-HZ-XiX-OLT-7.MAN.MA5680T(G):(local)10GE0/19/0
+ eth-trunk 7
+#
+interface XGigabitEthernet1/0/2
+ description dT:HZ-HZ-XiX-OLT-2.MAN.C300:(local)10GE1/19/1
+ eth-trunk 14
+#
+interface XGigabitEthernet1/0/3
+ description dT:HZ-HZ-XiX-OLT-3.MAN.C300(G):(local)10GE1/19/1
+ eth-trunk 15
+#
+interface XGigabitEthernet1/0/4
+ description dT:HZ-HZ-XiX-OLT-1.MAN.MA5680T:(local)10GE0/17/0
+ eth-trunk 3
+#
+interface XGigabitEthernet1/0/5
+ description dT:HZ-HZ-XiX-OLT-2.MAN.MA5680T:(local)10GE0/17/0
+ eth-trunk 4
+#
+interface XGigabitEthernet1/0/6
+ description dT:HZ-HZ-XiX-OLT-3.MAN.MA5680T:(local)10GE0/17/0
+ eth-trunk 5
+#
+interface XGigabitEthernet1/0/7
+ description dT:HZ-HZ-XiX-OLT-4.MAN.MA5680T(G):(local)10GE0/19/0
+ eth-trunk 2
+#
+interface XGigabitEthernet1/0/8
+ description dT:HZ-HZ-XiX-OLT-5.MAN.MA5680T(G):(local)10GE0/19/0
+ eth-trunk 8
+#
+interface XGigabitEthernet1/0/9
+ description dT:HZ-HZ-XiX-6.MAN.MA5680T(G):(local)10GE0/17/0
+ eth-trunk 9
+#
+interface XGigabitEthernet1/0/10
+ description HZ-HZ-XiX-OLT-8.MAN.MA5680T(G):(local)10GE0/19/0
+ eth-trunk 10
+#
+interface XGigabitEthernet1/0/11
+ description dT:HZ-HZ-XiX-OLT-1.MAN.7360:(local)GE1/19/1
+ eth-trunk 11
+#
+interface XGigabitEthernet1/0/12
+ description dT:HZ-HZ-XiX-OLT-2.MAN.7360:(local)GE1/19/1
+ eth-trunk 12
+#
+interface XGigabitEthernet1/0/13
+ description uT:HZ-HZ-JB-SW-1&2.MAN.H3C12510F:(F1102170036)10GE1/0/0/30
+ eth-trunk 1
+#
+interface XGigabitEthernet1/0/14
+ description dT:HZ-HZ-XiX-OLT-1.MAN.C300:(local)10GE1/19/1
+ eth-trunk 13
+#
+interface XGigabitEthernet1/0/15
+#
+interface XGigabitEthernet2/0/0
+ description uT:HZ-HZ-JB-SW-1&2.MAN.H3C12510F:(F1504010042)10GE2/0/0/12
+ eth-trunk 1
+#
+interface XGigabitEthernet2/0/1
+ description dT:HZ-HZ-XiX-OLT-7.MAN.MA5680T(G):(local)10GE0/20/0
+ eth-trunk 7
+#
+interface XGigabitEthernet2/0/2
+ description dT:HZ-HZ-XiX-OLT-2.MAN.C300:(local)10GE1/20/1
+ eth-trunk 14
+#
+interface XGigabitEthernet2/0/3
+ description dT:HZ-HZ-XiX-OLT-3.MAN.C300(G):(local)10GE1/20/1
+ eth-trunk 15
+#
+interface XGigabitEthernet2/0/4
+ description dT:HZ-HZ-XiX-OLT-1.MAN.MA5680T:(local)10GE0/18/0
+ eth-trunk 3
+#
+interface XGigabitEthernet2/0/5
+ description dT:HZ-HZ-XiX-OLT-2.MAN.MA5680T:(local)10GE0/18/0
+ eth-trunk 4
+#
+interface XGigabitEthernet2/0/6
+ description dT:HZ-HZ-XiX-OLT-3.MAN.MA5680T:(local)10GE0/18/0
+ eth-trunk 5
+#
+interface XGigabitEthernet2/0/7
+ description dT:HZ-HZ-XiX-OLT-4.MAN.MA5680T(G):(local)10GE0/20/0
+ eth-trunk 2
+#
+interface XGigabitEthernet2/0/8
+ description dT:HZ-HZ-XiX-OLT-5.MAN.MA5680T(G):(local)10GE0/20/0
+ eth-trunk 8
+#
+interface XGigabitEthernet2/0/9
+ description dT:HZ-HZ-XiX-6.MAN.MA5680T(G):(local)10GE0/18/0
+ eth-trunk 9
+#
+interface XGigabitEthernet2/0/10
+ description HZ-HZ-XiX-OLT-8.MAN.MA5680T(G):(local)10GE0/20/0
+ eth-trunk 10
+#
+interface XGigabitEthernet2/0/11
+ description dT:HZ-HZ-XiX-OLT-1.MAN.7360:(local)GE1/20/1
+ eth-trunk 11
+#
+interface XGigabitEthernet2/0/12
+ description dT:HZ-HZ-XiX-OLT-2.MAN.7360:(local)GE1/20/2
+ eth-trunk 12
+#
+interface XGigabitEthernet2/0/13
+ description uT:HZ-HZ-JB-SW-1&2.MAN.H3C12510F:(F1012100060)10GE2/0/0/11
+ eth-trunk 1
+#
+interface XGigabitEthernet2/0/14
+ description dT:HZ-HZ-XiX-OLT-1.MAN.C300:(local)10GE1/20/1
+ eth-trunk 13
+#
+interface XGigabitEthernet2/0/15
+#
+interface XGigabitEthernet5/0/0
+ description uT:HZ-HZ-JB-SW-1.MAN.H3C12510F:(F1612070071)10GE2/9/0/1
+ eth-trunk 1
+#
+interface XGigabitEthernet5/0/1
+ description uT:HZ-HZ-JB-SW-1.MAN.H3C12510F:(F1612070075)10GE2/9/0/2
+ eth-trunk 1
+#
+interface XGigabitEthernet5/0/2
+ description dT:HZ-HZ-XiX-OLT-1.MAN.AN5516(G):(Local)XGE1/19/1
+ eth-trunk 16
+#
+interface XGigabitEthernet5/0/3
+#
+interface XGigabitEthernet5/0/4
+#
+interface XGigabitEthernet5/0/5
+#
+interface XGigabitEthernet5/0/6
+#
+interface XGigabitEthernet5/0/7
+#
+interface XGigabitEthernet5/0/8
+#
+interface XGigabitEthernet5/0/9
+#
+interface XGigabitEthernet5/0/10
+#
+interface XGigabitEthernet5/0/11
+#
+interface XGigabitEthernet5/0/12
+#
+interface XGigabitEthernet5/0/13
+#
+interface XGigabitEthernet5/0/14
+#
+interface XGigabitEthernet5/0/15
+#
+interface XGigabitEthernet6/0/0
+ description uT:HZ-HZ-JB-SW-1.MAN.H3C12510F:(F1612070069)10GE1/9/0/1
+ eth-trunk 1
+#
+interface XGigabitEthernet6/0/1
+ description uT:HZ-HZ-JB-SW-1.MAN.H3C12510F:(F1612070073)10GE1/9/0/2
+ eth-trunk 1
+#
+interface XGigabitEthernet6/0/2
+ description dT:HZ-HZ-XiX-OLT-1.MAN.AN5516(G):(Local)XGE1/20/1
+ eth-trunk 16
+#
+interface XGigabitEthernet6/0/3
+#
+interface XGigabitEthernet6/0/4
+#
+interface XGigabitEthernet6/0/5
+#
+interface XGigabitEthernet6/0/6
+#
+interface XGigabitEthernet6/0/7
+#
+interface XGigabitEthernet6/0/8
+#
+interface XGigabitEthernet6/0/9
+#
+interface XGigabitEthernet6/0/10
+#
+interface XGigabitEthernet6/0/11
+#
+interface XGigabitEthernet6/0/12
+#
+interface XGigabitEthernet6/0/13
+#
+interface XGigabitEthernet6/0/14
+#
+interface XGigabitEthernet6/0/15
+#
+interface NULL0
+#
+ip route-static 0.0.0.0 0.0.0.0 172.28.8.253
+#
+snmp-agent
+snmp-agent local-engineid 800007DB033400A34CF300
+snmp-agent community read cipher %$%$$8j4%G%f_YYG6H6+03_#.=72!F8w.s"N\UaS2f~[gp}L=75.Vp\LK/=(z1]lO,NaY5E@7>.=%$%$ acl 2008
+snmp-agent sys-info contact HZ-XS
+snmp-agent sys-info location 2F
+snmp-agent sys-info version all
+snmp-agent target-host trap address udp-domain 172.16.254.252 params securityname cipher %@%@'D;'4QnWdDuoV;LoH_$1.=7W%@%@
+snmp-agent trap source Vlanif50
+snmp-agent trap enable feature-name IFNET trap-name linkDown
+snmp-agent trap enable feature-name IFNET trap-name linkUp
+snmp-agent trap enable feature-name CONFIGURATION
+snmp-agent trap enable feature-name SNMP trap-name authenticationFailure
+undo snmp-agent trap enable feature-name DLDP
+undo snmp-agent trap enable feature-name LDTTRAP
+undo snmp-agent trap enable feature-name LLDPTRAP
+snmp-agent trap enable feature-name VFS
+snmp-agent trap enable feature-name BASETRAP
+#
+header login information " WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!"
+#
+user-interface maximum-vty 15
+user-interface con 0
+ authentication-mode password
+ set authentication password cipher %@%@%QQF6Sb@bB9--x7.$fLF[^|O8SYc@_gnS1`V[YUOMG}+^|R[%@%@
+ idle-timeout 0 0
+ screen-length 0
+user-interface vty 0 4
+ acl 2016 inbound
+ authentication-mode aaa
+ user privilege level 15
+ idle-timeout 5 0
+ screen-length 0
+user-interface vty 5 14
+ authentication-mode aaa
+ user privilege level 3
+ idle-timeout 0 0
+ screen-length 0
+user-interface vty 16 20
+#
+return
+[HZ-HZ-XX-DSW-1.MAN.9306-ui-vty0-4]

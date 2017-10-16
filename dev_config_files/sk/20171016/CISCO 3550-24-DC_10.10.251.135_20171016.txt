@@ -1,0 +1,279 @@
+
+Building configuration...
+
+Current configuration : 6719 bytes
+!
+version 12.1
+no service pad
+service tcp-keepalives-in
+service tcp-keepalives-out
+service timestamps debug datetime
+service timestamps log datetime
+service password-encryption
+!
+hostname LS-SY-YuanKou-SW3-1.MAN.C3550
+!
+logging buffered 16384 debugging
+no logging console
+aaa new-model
+aaa authentication login default group tacacs+ local
+aaa authentication login telnet group tacacs+ local
+aaa authentication enable default group tacacs+ enable
+aaa authorization config-commands
+aaa authorization exec default group tacacs+ local
+aaa authorization exec telnet group tacacs+ local
+aaa authorization commands 0 telnet group tacacs+ local
+aaa authorization commands 1 telnet group tacacs+ local
+aaa authorization commands 15 default group tacacs+ local
+aaa authorization commands 15 telnet group tacacs+ local
+aaa authorization network default group tacacs+ local
+aaa accounting exec default start-stop group tacacs+
+aaa accounting commands 15 default start-stop group tacacs+
+enable secret 5 $1$zs.v$7Jh69mTzccuHvVxjXhxFm/
+!
+username admin privilege 15 password 7 044C1857082344440D1B
+clock timezone Beijing 8
+ip subnet-zero
+no ip source-route
+ip routing
+no ip domain-lookup
+ip domain-name zj.cn.net
+ip name-server 202.101.172.53
+ip name-server 202.101.172.37
+!
+vtp domain lsptt
+vtp mode transparent
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+!
+vlan 29
+ name Cisco-Manager
+!
+vlan 91
+ name LAN-WG
+!
+vlan 1354
+ name PPPOE-YuanKou-MA5105
+!
+vlan 1742
+ name SY-YuYan-OLT
+!
+vlan 1769
+ name SY-HuangNanErQi-LAN
+!
+vlan 2801
+ name LS-SY-RuanJiaoHuan
+!
+vlan 3198
+ name mpls-vpn-NGN
+!
+vlan 3720
+ name DHJK-SY-YuanKouJF
+!
+interface Loopback0
+ ip address 10.10.251.135 255.255.255.255
+!
+interface FastEthernet0/1
+ description TO-DaDongBa-c3550-Fa0/3
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 29,91,1354,1742,2801,3198
+ switchport mode trunk
+ no ip address
+ no snmp trap link-status
+!
+interface FastEthernet0/2
+ no ip address
+!
+interface FastEthernet0/3
+ no ip address
+!
+interface FastEthernet0/4
+ description YuanKou-MA5105
+ switchport access vlan 1354
+ switchport mode dot1q-tunnel
+ no ip address
+ duplex full
+ speed 100
+ no cdp enable
+ spanning-tree bpdufilter enable
+!
+interface FastEthernet0/5
+ description TO-YanTian-AG
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 2801
+ switchport mode trunk
+ no ip address
+!
+interface FastEthernet0/6
+ description TO-YuanKou-MA5615-2/0
+ switchport access vlan 1354
+ switchport mode dot1q-tunnel
+ no ip address
+ speed 100
+ no cdp enable
+ spanning-tree bpdufilter enable
+!
+interface FastEthernet0/7
+ description TO-SY-YanTian-MA5615-1/0
+ switchport access vlan 1354
+ switchport mode dot1q-tunnel
+ no ip address
+ no cdp enable
+ spanning-tree bpdufilter enable
+!
+interface FastEthernet0/8
+ description TO-IP-telecom-DaSu-AG
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 91,1742,2801,3198
+ switchport mode trunk
+ no ip address
+!
+interface FastEthernet0/9
+ description TO-HuangNanErQi-LAN
+ switchport access vlan 1769
+ switchport mode access
+ no ip address
+!
+interface FastEthernet0/10
+ description TO-DHJK-SY-YuanKouJF
+ switchport access vlan 3720
+ switchport mode access
+ no ip address
+!
+interface FastEthernet0/11
+ no ip address
+!
+interface FastEthernet0/12
+ no ip address
+!
+interface FastEthernet0/13
+ no ip address
+!
+interface FastEthernet0/14
+ no ip address
+!
+interface FastEthernet0/15
+ no ip address
+!
+interface FastEthernet0/16
+ no ip address
+!
+interface FastEthernet0/17
+ no ip address
+!
+interface FastEthernet0/18
+ no ip address
+!
+interface FastEthernet0/19
+ no ip address
+!
+interface FastEthernet0/20
+ no ip address
+!
+interface FastEthernet0/21
+ no ip address
+!
+interface FastEthernet0/22
+ no ip address
+!
+interface FastEthernet0/23
+ no ip address
+!
+interface FastEthernet0/24
+ switchport access vlan 1742
+ switchport mode access
+ no ip address
+!
+interface GigabitEthernet0/1
+ description uT:LS-SY-DaDongBa-SW2-Z8905-1.MAN GE2/21
+ no ip address
+!
+interface GigabitEthernet0/2
+ description uT:LS-SY-DaDongBa-SW2-1.MAN.Z8905 GE2/21
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 29,91,1354,1702,1742,1769,2801,3198,3720
+ switchport mode trunk
+ no ip address
+ speed nonegotiate
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan29
+ description Cisco-Manager                                
+ ip address 10.10.72.135 255.255.255.128
+ no ip redirects
+ no ip unreachables
+ no ip proxy-arp
+ no ip route-cache
+!
+interface Vlan91
+ no ip address
+!
+interface Vlan2801
+ no ip address
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 10.10.72.129
+ip route 10.10.1.130 255.255.255.255 10.10.72.129
+no ip http server
+!
+!
+logging trap debugging
+logging source-interface Loopback0
+logging 10.10.1.130
+access-list 100 permit tcp 10.10.68.0 0.0.0.255 any eq telnet
+access-list 100 permit tcp 10.10.255.0 0.0.0.255 any eq telnet
+access-list 100 permit tcp 218.74.120.0 0.0.0.255 any eq telnet
+access-list 100 permit tcp 218.74.121.0 0.0.0.255 any eq telnet
+access-list 100 permit tcp 218.74.123.0 0.0.0.255 any eq telnet
+access-list 100 permit tcp 218.74.126.0 0.0.0.255 any eq telnet
+access-list 100 permit tcp 61.174.94.0 0.0.0.255 any eq telnet
+access-list 100 permit tcp 202.96.114.0 0.0.0.255 any eq telnet
+access-list 100 permit tcp 61.174.95.0 0.0.0.255 any eq telnet
+access-list 100 permit tcp 218.74.127.128 0.0.0.127 any eq telnet
+access-list 100 permit tcp 218.74.112.64 0.0.0.63 any eq telnet
+access-list 100 deny   tcp any any eq telnet
+access-list 100 permit ip any any
+snmp-server view NO_BAD_SNMP iso included
+snmp-server view NO_BAD_SNMP internet included
+snmp-server view NO_BAD_SNMP transmission.94 excluded
+snmp-server view NO_BAD_SNMP mib-2.34.9 excluded
+snmp-server view NO_BAD_SNMP ciscoMgmt.35 excluded
+snmp-server view NO_BAD_SNMP ciscoMgmt.95 excluded
+snmp-server view NO_BAD_SNMP ciscoMgmt.130 excluded
+snmp-server view NO_BAD_SNMP ciscoMgmt.219 excluded
+snmp-server view NO_BAD_SNMP ciscoMgmt.252 excluded
+snmp-server view NO_BAD_SNMP ciscoMgmt.254 excluded
+snmp-server view NO_BAD_SNMP ciscoExperiment.997 excluded
+snmp-server community ls578@zjnoc RO
+snmp-server community mycomm view NO_BAD_SNMP RO
+tacacs-server host 10.10.1.235
+tacacs-server key ws1gblzlbx
+!
+line con 0
+ exec-timeout 3 0
+ password 7 111A00190E0B1A5C5D
+line vty 0 4
+ exec-timeout 3 0
+ password 7 071C3850571008554E
+ authorization commands 0 telnet
+ authorization commands 1 telnet
+ authorization commands 15 telnet
+ authorization exec telnet
+ login authentication telnet
+line vty 5 15
+ authorization commands 0 telnet
+ authorization commands 1 telnet
+ authorization commands 15 telnet
+ authorization exec telnet
+ login authentication telnet
+!
+ntp clock-period 17180378
+ntp server 10.10.1.138
+end
+
+LS-SY-YuanKou-SW3-1.MAN.C3550#

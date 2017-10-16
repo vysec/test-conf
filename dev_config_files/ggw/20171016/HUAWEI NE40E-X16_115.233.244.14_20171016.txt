@@ -1,0 +1,1160 @@
+
+#
+sysname CS-HZ-ESN-C-NE40E-X16-2.iTV.H2
+#
+info-center source default channel 2 log level debugging
+info-center loghost source LoopBack0
+info-center loghost 202.96.102.139
+info-center loghost 220.191.133.20
+info-center logbuffer size 1024
+#
+router id 115.233.244.14
+#
+vlan batch 1320 1340
+#
+multicast routing-enable
+#
+undo user-security-policy enable
+#
+ip netstream export version 9 origin-as
+ip netstream sampler fix-packets 5000 inbound
+ip netstream sampler fix-packets 5000 outbound
+ip netstream export source 115.233.244.14
+ip netstream export host 202.96.103.45 9001
+ip netstream export template timeout-rate 60
+#
+undo telnet ipv6 server enable
+telnet server acl 2999
+#
+undo dcn
+#
+clock timezone BEIJING add 08:00:00
+#
+set neid 28d93e
+#
+undo set power input-power
+#
+snmp-agent trap type base-trap
+#
+ load-balance avoid-degradation vll all
+ load-balance avoid-degradation ipv4 all
+ load-balance avoid-degradation ipv6 all
+ load-balance avoid-degradation mpls all
+#
+ ip netstream timeout active 1 
+#
+diffserv domain default
+diffserv domain qinq
+diffserv domain 5p3dbas
+diffserv domain 5p3d
+#
+service-template template-default0
+service-template template-default1
+service-template template-default2
+service-template template-default3
+service-template template-default4
+#
+hwtacacs-server template zjacs
+ hwtacacs-server authentication 115.239.131.9
+ hwtacacs-server authentication 122.229.8.65 secondary
+ hwtacacs-server authorization 115.239.131.9
+ hwtacacs-server authorization 122.229.8.65 secondary
+ hwtacacs-server accounting 115.239.131.9
+ hwtacacs-server accounting 122.229.8.65 secondary
+ hwtacacs-server source-ip 115.233.244.14
+ hwtacacs-server shared-key cipher @%@%kT,6N~_s-QY=z.,,w3n$aYK=@%@%
+ undo hwtacacs-server user-name domain-included
+#
+bfd
+#
+acl number 2000 
+ description ip_rule
+#
+acl number 2050 
+ rule 1 permit source 233.49.200.0 0.0.0.255 
+ rule 2 permit source 233.50.200.0 0.0.0.255 
+ rule 3 permit source 233.60.200.2 0 
+ rule 4 permit source 233.60.200.3 0 
+ rule 5 permit source 233.60.200.4 0 
+ rule 6 permit source 233.50.201.0 0.0.0.255 
+ rule 7 permit source 233.60.200.0 0.0.0.255 
+#
+acl number 2051 
+ description ShaoXinQiXiang
+ rule 10 permit source 233.58.201.0 0.0.0.255 
+#
+acl number 2052 
+ description QuZhouRiBao
+ rule 5 permit source 233.58.202.0 0.0.0.255 
+#
+acl number 2053 
+ description HuZhou_RiBao+ChengshiTV
+ rule 5 permit source 233.58.203.0 0.0.0.255 
+#
+acl number 2055 
+ rule 5 permit source 233.48.200.0 0.0.0.255 
+ rule 10 deny 
+#
+acl number 2910 
+ description zjsztrjk
+ rule 2 permit source 122.229.6.148 0 
+#
+acl number 2998 
+ description SNMP-ACL-Permit
+ rule 0 permit source 220.191.133.0 0.0.0.255 
+ rule 5 permit source 202.96.102.0 0.0.0.255 
+ rule 10 permit source 122.229.2.46 0 
+ rule 15 permit source 122.229.4.8 0 
+ rule 20 permit source 122.229.6.22 0 
+ rule 25 permit source 122.229.6.163 0 
+ rule 30 permit source 115.239.131.0 0.0.0.255 
+ rule 35 permit source 202.96.103.0 0.0.0.255 
+#
+acl number 2999 
+ description Telnet-ACL-Permit
+ rule 0 permit source 122.229.5.0 0.0.0.255 
+ rule 5 permit source 122.229.6.0 0.0.0.255 
+ rule 10 permit source 122.229.7.0 0.0.0.255 
+ rule 15 permit source 202.96.102.0 0.0.0.255 
+ rule 20 permit source 202.96.103.0 0.0.0.255 
+ rule 25 permit source 115.239.131.8 0.0.0.7 
+ rule 30 permit source 122.229.8.80 0.0.0.7 
+ rule 35 permit source 122.229.8.65 0 
+ rule 40 permit source 220.191.133.20 0 
+#
+acl number 3000 
+ rule 1 permit tcp destination-port eq 4444 
+ rule 2 permit udp destination-port eq tftp 
+ rule 5 permit tcp destination-port eq 139 
+ rule 6 permit udp destination-port eq netbios-ssn 
+ rule 7 permit tcp destination-port eq 445 
+ rule 8 permit udp destination-port eq 445 
+ rule 9 permit tcp destination-port eq 593 
+ rule 10 permit udp destination-port eq 593 
+ rule 11 permit udp destination-port eq 1434 
+ rule 12 permit tcp destination-port eq 5554 
+ rule 13 permit tcp destination-port eq 9995 
+ rule 14 permit tcp destination-port eq 9996 
+ rule 15 permit tcp destination-port eq 1068 
+ rule 16 permit tcp destination-port eq 5800 
+ rule 17 permit tcp destination-port eq 5900 
+ rule 18 permit tcp destination-port eq 10080 
+ rule 19 permit tcp destination-port eq 3208 
+ rule 20 permit tcp destination-port eq 1871 
+ rule 21 permit tcp destination-port eq 4510 
+ rule 22 permit udp destination-port eq 4334 
+ rule 23 permit tcp destination-port eq 4331 
+ rule 24 permit tcp destination-port eq 4557 
+ rule 25 permit udp destination-port eq netbios-ns 
+ rule 26 permit udp destination-port eq netbios-dgm 
+#
+acl number 3090 
+ rule 1 permit tcp destination-port eq 554 
+ rule 2 permit tcp source-port eq 554 
+#
+traffic classifier deny_kick operator or
+ if-match acl 3090
+traffic classifier deny operator or
+ if-match acl 3000
+#
+traffic behavior deny
+ deny
+#
+traffic policy iptv_kick
+ share-mode
+ classifier deny_kick behavior deny
+traffic policy iptv_deny
+ share-mode
+ classifier deny behavior deny
+#
+dot1x-template 1
+#
+aaa 
+ local-user hzjiptvw password irreversible-cipher $1a$a9E#L(-N6*$uU``##LL[;iRr'GlABuGb1&=3x-aNPX!&tPI6Cq3$
+ local-user hzjiptvw service-type telnet 
+ local-user hzjiptvw level 3 
+ local-user hzjiptvw state block fail-times 3 interval 5
+ local-user zjnoc password irreversible-cipher $1a$"l556%HJ4Q$`]=HM;222&xs^a2o9H>'=)$W;2JZtU8tn#>Jl*i=$
+ local-user zjnoc service-type ftp telnet ssh 
+ local-user zjnoc level 15 
+ local-user zjnoc state block fail-times 3 interval 5
+ authentication-scheme default0
+ authentication-scheme default1
+ authentication-scheme default
+  authentication-mode local radius
+ authentication-scheme zjacs
+  authentication-mode hwtacacs local
+ #
+ authorization-scheme default
+ authorization-scheme zjacs
+  authorization-mode hwtacacs local
+ #
+ accounting-scheme default0 
+ accounting-scheme default1 
+ accounting-scheme zjacs 
+  accounting-mode hwtacacs  
+ #
+ domain default0 
+ domain default1 
+ domain default_admin  
+  authentication-scheme zjacs 
+  authorization-scheme zjacs 
+  accounting-scheme zjacs 
+  hwtacacs-server zjacs 
+ #
+ recording-scheme zjacs
+  recording-mode hwtacacs zjacs 
+ #
+ cmd recording-scheme zjacs
+ #
+#
+multicastbandwidth
+#
+ntp-service server disable
+ntp-service ipv6 server disable
+ntp-service unicast-server 122.229.6.55 source-interface LoopBack0
+#
+interface Aux0/0/1
+ link-protocol ppp
+ undo shutdown
+#
+interface Vlanif1320
+ description dT:HUZ-HQ-S12518-1.iTV.H3:(F1307190015)10G:1-4-41/42
+ ip address 115.233.13.241 255.255.255.252
+ pim sm
+ ospf cost 100
+ ip netstream inbound
+ ip netstream outbound
+#
+interface Vlanif1340
+ description dT:NB-NB-JB-QB-S12518-1.iTV.Z3:(F1305070059)10G:TG1-4-17/18
+ ip address 115.233.13.249 255.255.255.252
+ pim sm
+ ospf cost 100
+ ip netstream inbound
+ ip netstream outbound
+#
+interface Eth-Trunk2
+ description uT:CS-HZ-ESN-C-12812-2.iTV.H2:(local)100GE
+ ip address 122.229.7.202 255.255.255.252
+ pim sm
+ ospf cost 10
+ ospf network-type p2p
+ ospf timer hello 1
+ ospf timer dead 3
+#
+interface Eth-Trunk3
+ description pT::CS-HZ-ESN-C-NE40E-X16-1.iTV.H2:(local)100GE
+ ip address 122.229.7.194 255.255.255.252
+ pim sm
+ ospf cost 100
+ ospf network-type p2p
+ ospf timer hello 1
+ ospf timer dead 3
+#
+interface Eth-Trunk4
+ description dT:CS-HZ-ESN-C-S9312-2.iTV.H3(local)
+ ip address 115.233.13.178 255.255.255.252
+ pim sm
+ ospf cost 1000
+ ospf network-type p2p
+ ospf timer hello 1
+ ospf timer dead 3
+#
+interface Eth-Trunk8
+ description dT:TZ-TZCHN-QB-S12510-2.iTV.Z3:()20G-RAGG102
+ ip address 115.233.13.201 255.255.255.252
+ pim sm
+ ospf cost 100
+ mode lacp-static
+#
+interface Eth-Trunk9
+ description dT:WZ-WZ-XLP-QB-12510-F-1.iTV.Z3()20G:RAGG101
+ ip address 115.233.13.217 255.255.255.252
+ pim sm
+ ospf cost 100
+ mode lacp-static
+#
+interface Eth-Trunk30
+ description dT:HZ-HZ-JF-DSW-1.iTV.12510:()BAGG30
+ ip address 115.233.13.185 255.255.255.252
+ pim sm
+ ospf cost 500
+ ospf network-type p2p
+ ospf timer hello 1
+ ospf timer dead 3
+ ip netstream inbound
+ ip netstream outbound
+#
+interface Eth-Trunk31
+ description dT:SX-SX-QFC-Q-S9312-1.iTV.H2(2*10GE)ETH30
+ ip address 122.229.4.149 255.255.255.252
+ pim sm
+ ospf cost 100
+ ospf network-type p2p
+ ospf timer hello 1
+ ospf timer dead 3
+ ip netstream inbound
+ ip netstream outbound
+#
+interface Eth-Trunk32
+ description dT:JH-JH-CN-Q-S9306-1.iTV(2*10GE)ETH30
+ ip address 122.229.4.141 255.255.255.252
+ pim sm
+ ospf cost 100
+ ospf network-type p2p
+ ospf timer hello 1
+ ospf timer dead 3
+ ip netstream inbound
+ ip netstream outbound
+#
+interface Virtual-Template0
+ ppp authentication-mode auto 
+#
+interface GigabitEthernet0/0/0
+ speed auto
+ duplex auto
+ undo shutdown
+#
+interface GigabitEthernet1/0/0
+ description null
+ undo shutdown
+ undo dcn 
+#
+interface GigabitEthernet1/0/1
+ description null
+ undo shutdown
+ undo dcn 
+#
+interface GigabitEthernet1/0/2
+ description null
+ shutdown
+ undo dcn 
+#
+interface GigabitEthernet1/0/3
+ shutdown
+ undo dcn 
+#
+interface GigabitEthernet1/0/4
+ description dT:HZ-HZ-JF-DSW-1.iTV.12510:()10GE0/0/9:F1606080209
+ undo shutdown
+ eth-trunk 30
+ undo dcn 
+#
+interface GigabitEthernet1/0/5
+ description dT:JH-JH-CN-Q-S9306-1.iTV.H2:(F1307190017)10GE2/0/10::ODF1-4-45/46::(S-64N0044IPTV)
+ undo shutdown
+ eth-trunk 32
+ undo dcn 
+#
+interface GigabitEthernet1/0/6
+ portswitch
+ description dT:NB-NB-JB-QB-S12518-1.iTV.Z3 XGE5/0/1 10G(F1305070059)::ODF1-4-17/18::(S-64N0061IPTV)
+ undo shutdown
+ port link-type access
+ port default vlan 1340
+ undo dcn 
+#
+interface GigabitEthernet1/0/7
+ portswitch
+ description dT:HU-HU-FH-QB-S12518-1.iTV.Z3 XGE1/0/17 10G(F1307190015)::ODF1-4-41/42::(S-64N0025IPTV)
+ undo shutdown
+ port link-type access
+ port default vlan 1320
+ undo dcn 
+#
+interface GigabitEthernet1/0/8
+ description dT:TZ-TZ-CN-QB-S12510-2.iTV.Z3:(F1305080051:ODF1-4-27/28)XGE1/0/17::(S-64N0041IPTV)
+ undo shutdown
+ eth-trunk 8
+#
+interface GigabitEthernet1/0/9
+ description dT:WZ-WZ-XLP-QB-S12510-1.iTV.Z3:(F1305080053:ODF1-4-31/32)XGE1/0/17::(S-64N0091IPTV)
+ undo shutdown
+ eth-trunk 9
+#
+interface GigabitEthernet1/0/10
+ description null
+ shutdown
+#
+interface GigabitEthernet1/0/11
+ description null
+ shutdown
+#
+interface GigabitEthernet1/1/0
+ description null
+ shutdown
+ undo dcn 
+#
+interface GigabitEthernet1/1/1
+ description null
+ shutdown
+ undo dcn 
+#
+interface GigabitEthernet1/1/2
+ description null
+ shutdown
+ undo dcn 
+#
+interface GigabitEthernet1/1/3
+ description null
+ shutdown
+ undo dcn 
+#
+interface GigabitEthernet1/1/4
+ description null
+ shutdown
+ undo dcn 
+#
+interface GigabitEthernet1/1/5
+ description null
+ shutdown
+ undo dcn 
+#
+interface GigabitEthernet1/1/6
+ description null
+ shutdown
+ undo dcn 
+#
+interface GigabitEthernet1/1/7
+ description null
+ shutdown
+ undo dcn 
+#
+interface GigabitEthernet1/1/8
+ description null
+ shutdown
+#
+interface GigabitEthernet1/1/9
+ description null
+ shutdown
+#
+interface GigabitEthernet1/1/10
+ description null
+ shutdown
+#
+interface GigabitEthernet1/1/11
+ description null
+ shutdown
+#
+interface GigabitEthernet2/0/0
+ description dT:CS-HZ-ESN-C-S9312-2.iTV.H3(local):xge1/0/2
+ undo shutdown
+ eth-trunk 4
+ undo dcn 
+#
+interface GigabitEthernet2/0/1
+ description dT:CS-HZ-ESN-C-S9312-2.iTV.H3(local):10GE1/0/3
+ undo shutdown
+ eth-trunk 4
+ undo dcn 
+#
+interface GigabitEthernet2/0/2
+ shutdown
+ undo dcn 
+#
+interface GigabitEthernet2/0/3
+ description dT:SX-SX-QF-Q-S9312-1.iTV.H2:(F1305080048)10GE1/0/3::ODF1-4-21/22::(S-64N0043IPTV)
+ undo shutdown
+ eth-trunk 31
+ undo dcn 
+#
+interface GigabitEthernet2/0/4
+ description dT:HZ-HZ-JF-DSW-1.iTV.12510:()10GE9/0/9:F1606080210
+ undo shutdown
+ eth-trunk 30
+ undo dcn 
+#
+interface GigabitEthernet2/0/5
+ description null
+ shutdown
+ undo dcn 
+#
+interface GigabitEthernet2/0/6
+ description null
+ shutdown
+ undo dcn 
+#
+interface GigabitEthernet2/0/7
+ description null
+ shutdown
+ undo dcn 
+#
+interface GigabitEthernet2/0/8
+ description null
+ shutdown
+#
+interface GigabitEthernet2/0/9
+ description null
+ shutdown
+#
+interface GigabitEthernet2/0/10
+ description null
+ shutdown
+#
+interface GigabitEthernet2/0/11
+ description null
+ shutdown
+#
+interface GigabitEthernet2/1/0
+ description dT:NB-NB-YZ-Q-S9312-1.iTV.H2:(F1204270153)10GE9/0/3::(S-64N0051IPTV)
+ undo shutdown
+ ip address 122.229.4.133 255.255.255.252
+ pim sm
+ ospf cost 100
+ ospf network-type p2p
+ ospf timer hello 1
+ ospf timer dead 3
+ ip netstream inbound
+ ip netstream outbound
+ undo dcn 
+#
+interface GigabitEthernet2/1/1
+ description dT:JH-JH-CN-Q-S9306-1.iTV.H2:(F1204270152)10GE1/0/2::(S-64N0031IPTV)
+ undo shutdown
+ eth-trunk 32
+ undo dcn 
+#
+interface GigabitEthernet2/1/2
+ description dT:SX-SX-QF-Q-S9312-1.iTV.H2:(F1204270162)10GE6/0/2::(S-64N0034IPTV)
+ undo shutdown
+ eth-trunk 31
+ undo dcn 
+#
+interface GigabitEthernet2/1/3
+ description dT:JX-JX-ZSL-Q-S9306-1.iTV.H2:(F1204270167)10GE4/0/2::(S-64N0031IPTV)
+ undo shutdown
+ ip address 122.229.4.157 255.255.255.252
+ pim sm
+ ospf cost 100
+ ospf network-type p2p
+ ospf timer hello 1
+ ospf timer dead 3
+ ip netstream inbound
+ ip netstream outbound
+ undo dcn 
+#
+interface GigabitEthernet2/1/4
+ description dT:HU-HU-HQ-Q-S9306-1.iTV.H2:(F1204270157)10GE2/0/0::(S-64N0017IPTV)
+ undo shutdown
+ ip address 122.229.4.165 255.255.255.252
+ pim sm
+ ospf cost 100
+ ospf network-type p2p
+ ospf timer hello 1
+ ospf timer dead 3
+ ip netstream inbound
+ ip netstream outbound
+ undo dcn 
+#
+interface GigabitEthernet2/1/5
+ description dT:LS-LS-CZ-Q-S9306-1.iTV.H2:(F1204270160)10GE1/0/2::(S-64N0009IPTV)
+ undo shutdown
+ ip address 122.229.4.173 255.255.255.252
+ pim sm
+ ospf cost 100
+ ospf network-type p2p
+ ospf timer hello 1
+ ospf timer dead 3
+ ip netstream inbound
+ ip netstream outbound
+ undo dcn 
+#
+interface GigabitEthernet2/1/6
+ description dT:QZ-QZ-NJ-Q-S9306-1.iTV.H2:(F1204270156)10GE6/0/0::(S-64N0010IPTV)
+ undo shutdown
+ ip address 122.229.4.181 255.255.255.252
+ pim sm
+ ospf cost 100
+ ospf network-type p2p
+ ospf timer hello 1
+ ospf timer dead 3
+ ip netstream inbound
+ ip netstream outbound
+ undo dcn 
+#
+interface GigabitEthernet2/1/7
+ description dT:ZS-ZS-PT-Q-S9306-1.iTV.H2:(F1204270165)10GE2/0/3::(S-64N0009IPTV)
+ undo shutdown
+ ip address 122.229.4.189 255.255.255.252
+ pim sm
+ ospf cost 100
+ ospf network-type p2p
+ ospf timer hello 1
+ ospf timer dead 3
+ ip netstream inbound
+ ip netstream outbound
+ undo dcn 
+#
+interface GigabitEthernet2/1/8
+ description dT:TZ-TZ-CN-QB-S12510-2.iTV.Z3:(F1606140189:ODF1-5-67/68)XGE1/0/18::(10GE0047IPTV)
+ undo shutdown
+ eth-trunk 8
+#
+interface GigabitEthernet2/1/9
+ description dT:WZ-WZ-XLP-QB-S12510-1.iTV.Z3:(F1606140172:ODF1-5-69/70)XGE2/0/17::(10GE0136IPTV)
+ undo shutdown
+ eth-trunk 9
+#
+interface GigabitEthernet2/1/10
+ description null
+ shutdown
+#
+interface GigabitEthernet2/1/11
+ description null
+ shutdown
+#
+interface GigabitEthernet3/0/0
+ description null
+ shutdown
+ undo dcn 
+#
+interface GigabitEthernet3/0/1
+ description null
+ shutdown
+ undo dcn 
+#
+interface GigabitEthernet3/0/2
+ description null
+ shutdown
+ undo dcn 
+#
+interface GigabitEthernet3/0/3
+ description null
+ shutdown
+ undo dcn 
+#
+interface GigabitEthernet3/0/4
+ description null
+ shutdown
+ undo dcn 
+#
+interface GigabitEthernet3/0/5
+ description null
+ shutdown
+ undo dcn 
+#
+interface GigabitEthernet3/0/6
+ description null
+ shutdown
+ undo dcn 
+#
+interface GigabitEthernet3/0/7
+ description null
+ shutdown
+ undo dcn 
+#
+interface GigabitEthernet3/0/8
+ description null
+ shutdown
+#
+interface GigabitEthernet3/0/9
+ description null
+ shutdown
+#
+interface GigabitEthernet3/0/10
+ description null
+ shutdown
+#
+interface GigabitEthernet3/0/11
+ description null
+ shutdown
+#
+interface GigabitEthernet3/0/12
+ description null
+ shutdown
+#
+interface GigabitEthernet3/0/13
+ description null
+ shutdown
+#
+interface GigabitEthernet3/0/14
+ description null
+ shutdown
+#
+interface GigabitEthernet3/0/15
+ description null
+ shutdown
+#
+interface GigabitEthernet3/0/16
+ description null
+ shutdown
+#
+interface GigabitEthernet3/0/17
+ description null
+ shutdown
+#
+interface GigabitEthernet3/0/18
+ description null
+ shutdown
+#
+interface GigabitEthernet3/0/19
+ description null
+ shutdown
+#
+interface GigabitEthernet3/0/20
+ description null
+ shutdown
+#
+interface GigabitEthernet3/0/21
+ description null
+ shutdown
+#
+interface GigabitEthernet3/0/22
+ description null
+ shutdown
+#
+interface GigabitEthernet3/0/23
+ description null
+ undo shutdown
+ port-observing observe-index 3
+#
+interface GigabitEthernet5/0/0
+ description null
+ shutdown
+ undo dcn 
+#
+interface GigabitEthernet5/0/1
+ description null
+ shutdown
+ undo dcn 
+#
+interface GigabitEthernet5/0/2
+ description null
+ shutdown
+ undo dcn 
+#
+interface GigabitEthernet5/0/3
+ description null
+ shutdown
+ undo dcn 
+#
+interface GigabitEthernet5/0/4
+ description null
+ shutdown
+ undo dcn 
+#
+interface GigabitEthernet5/0/5
+ description null
+ shutdown
+ undo dcn 
+#
+interface GigabitEthernet5/0/6
+ description null
+ shutdown
+ undo dcn 
+#
+interface GigabitEthernet5/0/7
+ description null
+ shutdown
+ undo dcn 
+#
+interface GigabitEthernet5/0/8
+ description null
+ shutdown
+#
+interface GigabitEthernet5/0/9
+ description null
+ shutdown
+#
+interface GigabitEthernet5/0/10
+ description null
+ shutdown
+#
+interface GigabitEthernet5/0/11
+ description null
+ shutdown
+#
+interface GigabitEthernet5/0/12
+ description null
+ shutdown
+#
+interface GigabitEthernet5/0/13
+ description null
+ shutdown
+#
+interface GigabitEthernet5/0/14
+ description null
+ shutdown
+#
+interface GigabitEthernet5/0/15
+ description null
+ shutdown
+#
+interface GigabitEthernet5/0/16
+ description null
+ shutdown
+#
+interface GigabitEthernet5/0/17
+ description null
+ shutdown
+#
+interface GigabitEthernet5/0/18
+ description null
+ shutdown
+#
+interface GigabitEthernet5/0/19
+ description null
+ shutdown
+#
+interface GigabitEthernet5/0/20
+ description null
+ shutdown
+#
+interface GigabitEthernet5/0/21
+ description null
+ shutdown
+#
+interface GigabitEthernet5/0/22
+ description null
+ shutdown
+#
+interface GigabitEthernet5/0/23
+ description null
+ shutdown
+#
+interface 100GE4/0/0
+ description pT:CS-HZ-ESN-C-NE40E-X16-1.iTV.H2:(local)100GE4/0/0
+ undo shutdown
+ eth-trunk 3
+ undo dcn 
+#
+interface 100GE4/1/0
+ description uT:CS-HZ-ESN-C-12812-2.iTV.H2:(local)100GE7/0/0
+ undo shutdown
+ eth-trunk 2
+ undo dcn 
+#
+interface 100GE6/0/0
+ description pT:CS-HZ-ESN-C-NE40E-X16-1.iTV.H2:(local)100GE6/0/0
+ undo shutdown
+ eth-trunk 3
+ undo dcn 
+#
+interface 100GE6/1/0
+ description null
+ shutdown
+ undo dcn 
+#
+interface NULL0
+#
+interface LoopBack0
+ description Tacacs-Manager
+ ip address 115.233.244.14 255.255.255.255
+#
+interface LoopBack1
+ description For manager
+ ip address 122.229.7.136 255.255.255.255
+#
+interface LoopBack10
+ description huawei-RP
+ ip address 122.229.7.137 255.255.255.255
+#
+l2tp-group default-lac
+#
+l2tp-group default-lns
+#
+bgp 64772
+ router-id 115.233.244.14
+ group pgQY internal
+ peer pgQY connect-interface LoopBack0
+ peer 115.233.244.3 as-number 64772
+ peer 115.233.244.3 group pgQY
+ peer 115.233.244.3 description *** IBGP session dT:CS-HZ-ESN-C-S9312-1.iTV.H3 ***
+ peer 115.233.244.4 as-number 64772
+ peer 115.233.244.4 group pgQY
+ peer 115.233.244.4 description *** IBGP session dT:CS-HZ-ESN-C-S9312-2.iTV.H3 ***
+ peer 115.233.244.7 as-number 64772
+ peer 115.233.244.7 group pgQY
+ peer 115.233.244.7 description *** IBGP session dT:CS-HZ-ESN-C-CE12812-1.iTV.H2 ***
+ peer 115.233.244.8 as-number 64772
+ peer 115.233.244.8 group pgQY
+ peer 115.233.244.8 description *** IBGP session dT:CS-HZ-ESN-C-CE12812-2.iTV.H2 ***
+ peer 115.233.244.15 as-number 64772
+ peer 115.233.244.15 group pgQY
+ peer 115.233.244.15 description *** IBGP session dT:CS-SX-SSN-C-CE12808-1.iTV.H2 ***
+ peer 115.233.244.16 as-number 64772
+ peer 115.233.244.16 group pgQY
+ peer 115.233.244.16 description *** IBGP session dT:CS-SX-SSN-C-CE12808S-1.iTV.H2 ***
+ peer 115.233.244.23 as-number 64772
+ peer 115.233.244.23 group pgQY
+ peer 115.233.244.23 description *** IBGP session dT:CS-SX-SSN-C-CE12808S-2.iTV.H6 ***
+ peer 115.233.244.35 as-number 64772
+ peer 115.233.244.35 group pgQY
+ peer 115.233.244.35 description *** IBGP session dT:HZ-HZ-WL-DSW-1.iTV.12510 ***
+ peer 115.233.244.36 as-number 64772
+ peer 115.233.244.36 group pgQY
+ peer 115.233.244.36 description *** IBGP session dT:HZ-HZ-JF-DSW-1.iTV.12510 ***
+ peer 115.233.244.74 as-number 64772
+ peer 115.233.244.74 group pgQY
+ peer 115.233.244.74 description *** IBGP session dT:NB-NB-YZ-Q-S9312-1.iTV.H2 ***
+ peer 115.233.244.75 as-number 64772
+ peer 115.233.244.75 group pgQY
+ peer 115.233.244.75 description *** IBGP session dT:NB-NB-JB-Q-S9312-1.iTV.H2 ***
+ peer 115.233.244.77 as-number 64772
+ peer 115.233.244.77 group pgQY
+ peer 115.233.244.77 description *** IBGP session dT:NB-NB-YZ-B-S12518-1.iTV.Z3 ***
+ peer 115.233.244.78 as-number 64772
+ peer 115.233.244.78 group pgQY
+ peer 115.233.244.78 description *** IBGP session dT:NB-NB-JB-QB-S12518-1.iTV.Z3 ***
+ peer 115.233.244.116 as-number 64772
+ peer 115.233.244.116 group pgQY
+ peer 115.233.244.116 description *** IBGP session dT:WZ-WZ-HD-XLP-12510-F-1.iTV.Z3 ***
+ peer 115.233.244.117 as-number 64772
+ peer 115.233.244.117 group pgQY
+ peer 115.233.244.117 description *** IBGP session dT:WZ-WZ-HD-QB-12510-F-1.iTV.Z3 ***
+ peer 115.233.244.129 as-number 64772
+ peer 115.233.244.129 group pgQY
+ peer 115.233.244.129 description *** IBGP session dT:SX-SX-DJ-Q-S9312-1.iTV.H2 ***
+ peer 115.233.244.130 as-number 64772
+ peer 115.233.244.130 group pgQY
+ peer 115.233.244.130 description *** IBGP session dT:SX-SX-QF-Q-S9312-1.iTV.H2 ***
+ peer 115.233.244.145 as-number 64772
+ peer 115.233.244.145 group pgQY
+ peer 115.233.244.145 description *** IBGP session dT:JX-JX-ZSL-Q-S9306-1.iTV.H2 ***
+ peer 115.233.244.147 as-number 64772
+ peer 115.233.244.147 group pgQY
+ peer 115.233.244.147 description *** IBGP session dT:JX-JX-QH-Q-S9306-1.iTV.H2 ***
+ peer 115.233.244.161 as-number 64772
+ peer 115.233.244.161 group pgQY
+ peer 115.233.244.161 description *** IBGP session dT:HU-HU-HQ-Q-S9306-1.iTV.H2 ***
+ peer 115.233.244.162 as-number 64772
+ peer 115.233.244.162 group pgQY
+ peer 115.233.244.162 description *** IBGP session dT:HU-HU-FH-Q-S9306-1.iTV.H2 ***
+ peer 115.233.244.166 as-number 64772
+ peer 115.233.244.166 group pgQY
+ peer 115.233.244.166 description *** IBGP session dT:HU-HUHQ-B-12510-F-2.iTV.Z3 ***
+ peer 115.233.244.167 as-number 64772
+ peer 115.233.244.167 group pgQY
+ peer 115.233.244.167 description *** IBGP session dT:HU-HUFH-B-12510-F-2.iTV.Z3 ***
+ peer 115.233.244.179 as-number 64772
+ peer 115.233.244.179 group pgQY
+ peer 115.233.244.179 description *** IBGP session dT:JH-JH-CN-Q-S9306-1.iTV.H2 ***
+ peer 115.233.244.183 as-number 64772
+ peer 115.233.244.183 group pgQY
+ peer 115.233.244.183 description *** IBGP session dT:JH-JH-CZ-Q-S9306-1.iTV.H2 ***
+ peer 115.233.244.193 as-number 64772
+ peer 115.233.244.193 group pgQY
+ peer 115.233.244.193 description *** IBGP session dT:LS-LS-CZ-Q-S9306-1.iTV.H2 ***
+ peer 115.233.244.195 as-number 64772
+ peer 115.233.244.195 group pgQY
+ peer 115.233.244.195 description *** IBGP session dT:LS-LS-CD-Q-S9306-1.iTV.H2 ***
+ peer 115.233.244.209 as-number 64772
+ peer 115.233.244.209 group pgQY
+ peer 115.233.244.209 description *** IBGP session dT:QZ-QZ-XDL-Q-S9306-1.iTV.H2 ***
+ peer 115.233.244.211 as-number 64772
+ peer 115.233.244.211 group pgQY
+ peer 115.233.244.211 description *** IBGP session dT:QZ-QZ-NJ-Q-S9306-1.iTV.H2 ***
+ peer 115.233.244.225 as-number 64772
+ peer 115.233.244.225 group pgQY
+ peer 115.233.244.225 description *** IBGP session dT:TZ-TZSNL-QB-S12510-1.iTV.Z3 ***
+ peer 115.233.244.226 as-number 64772
+ peer 115.233.244.226 group pgQY
+ peer 115.233.244.226 description *** IBGP session dT:TZ-TZCHN-QB-S12510-2.iTV.Z3 ***
+ peer 115.233.244.241 as-number 64772
+ peer 115.233.244.241 group pgQY
+ peer 115.233.244.241 description *** IBGP session dT:ZS-ZS-DH-Q-S9306-1.iTV.H2 ***
+ peer 115.233.244.242 as-number 64772
+ peer 115.233.244.242 group pgQY
+ peer 115.233.244.242 description *** IBGP session dT:ZS-ZS-PT-Q-S9306-1.iTV.H2 ***
+ group pgRR internal
+ peer pgRR connect-interface LoopBack0
+ peer 115.233.244.13 as-number 64772
+ peer 115.233.244.13 group pgRR
+ peer 115.233.244.13 description *** IBGP session pT:CS-HZ-ESN-C-NE40E-X16-1.iTV.H2 ***
+ #
+ ipv4-family unicast
+  undo synchronization
+  dampening
+  preference 20 200 200
+  import-route direct
+  import-route static route-policy rpStaticToBGP
+  maximum load-balancing 32
+  peer pgQY enable
+  peer pgQY route-policy rpFromIBGP import
+  peer pgQY reflect-client
+  peer pgQY next-hop-local
+  peer pgQY advertise-community
+  peer 115.233.244.3 enable
+  peer 115.233.244.3 group pgQY
+  peer 115.233.244.4 enable
+  peer 115.233.244.4 group pgQY
+  peer 115.233.244.7 enable
+  peer 115.233.244.7 group pgQY
+  peer 115.233.244.8 enable
+  peer 115.233.244.8 group pgQY
+  peer 115.233.244.15 enable
+  peer 115.233.244.15 group pgQY
+  peer 115.233.244.16 enable
+  peer 115.233.244.16 group pgQY
+  peer 115.233.244.23 enable
+  peer 115.233.244.23 group pgQY
+  peer 115.233.244.35 enable
+  peer 115.233.244.35 group pgQY
+  peer 115.233.244.36 enable
+  peer 115.233.244.36 group pgQY
+  peer 115.233.244.74 enable
+  peer 115.233.244.74 group pgQY
+  peer 115.233.244.75 enable
+  peer 115.233.244.75 group pgQY
+  peer 115.233.244.77 enable
+  peer 115.233.244.77 group pgQY
+  peer 115.233.244.78 enable
+  peer 115.233.244.78 group pgQY
+  peer 115.233.244.116 enable
+  peer 115.233.244.116 group pgQY
+  peer 115.233.244.117 enable
+  peer 115.233.244.117 group pgQY
+  peer 115.233.244.129 enable
+  peer 115.233.244.129 group pgQY
+  peer 115.233.244.130 enable
+  peer 115.233.244.130 group pgQY
+  peer 115.233.244.145 enable
+  peer 115.233.244.145 group pgQY
+  peer 115.233.244.147 enable
+  peer 115.233.244.147 group pgQY
+  peer 115.233.244.161 enable
+  peer 115.233.244.161 group pgQY
+  peer 115.233.244.162 enable
+  peer 115.233.244.162 group pgQY
+  peer 115.233.244.166 enable
+  peer 115.233.244.166 group pgQY
+  peer 115.233.244.167 enable
+  peer 115.233.244.167 group pgQY
+  peer 115.233.244.179 enable
+  peer 115.233.244.179 group pgQY
+  peer 115.233.244.183 enable
+  peer 115.233.244.183 group pgQY
+  peer 115.233.244.193 enable
+  peer 115.233.244.193 group pgQY
+  peer 115.233.244.195 enable
+  peer 115.233.244.195 group pgQY
+  peer 115.233.244.209 enable
+  peer 115.233.244.209 group pgQY
+  peer 115.233.244.211 enable
+  peer 115.233.244.211 group pgQY
+  peer 115.233.244.225 enable
+  peer 115.233.244.225 group pgQY
+  peer 115.233.244.226 enable
+  peer 115.233.244.226 group pgQY
+  peer 115.233.244.241 enable
+  peer 115.233.244.241 group pgQY
+  peer 115.233.244.242 enable
+  peer 115.233.244.242 group pgQY
+  peer pgRR enable
+  peer pgRR next-hop-local
+  peer pgRR advertise-community
+  peer 115.233.244.13 enable
+  peer 115.233.244.13 group pgRR
+#
+ospf 1
+ bandwidth-reference 10000
+ area 0.0.0.0
+  network 115.233.13.176 0.0.0.3
+  network 115.233.13.184 0.0.0.3
+  network 115.233.13.200 0.0.0.3
+  network 115.233.13.216 0.0.0.3
+  network 115.233.13.240 0.0.0.3
+  network 115.233.13.248 0.0.0.3
+  network 115.233.244.14 0.0.0.0
+  network 122.229.4.132 0.0.0.3
+  network 122.229.4.140 0.0.0.3
+  network 122.229.4.148 0.0.0.3
+  network 122.229.4.156 0.0.0.3
+  network 122.229.4.164 0.0.0.3
+  network 122.229.4.172 0.0.0.3
+  network 122.229.4.180 0.0.0.3
+  network 122.229.4.188 0.0.0.3
+  network 122.229.7.136 0.0.0.0
+  network 122.229.7.137 0.0.0.0
+  network 122.229.7.192 0.0.0.3
+  network 122.229.7.200 0.0.0.3
+#
+route-policy rpFromIBGP deny node 10
+ if-match ip-prefix plDefaultRoute
+#
+route-policy rpFromIBGP permit node 20
+#
+route-policy rpStaticToBGP permit node 10
+ if-match tag 10
+#
+route-policy rpStaticToBGP deny node 20
+#
+pim
+ static-rp 122.229.7.137 2050
+ static-rp 125.210.228.8 2055
+ static-rp 61.130.32.253 2051
+ static-rp 220.185.58.71 2052
+ static-rp 125.125.124.26 2053
+#
+msdp
+ originating-rp LoopBack0
+ peer 115.233.244.13 connect-interface LoopBack0
+#
+ip ip-prefix plDefaultRoute index 10 permit 0.0.0.0 0
+#
+ip route-static 0.0.0.0 0.0.0.0 115.233.13.186
+ip route-static 202.96.103.172 255.255.255.255 115.233.13.186
+#
+snmp-agent
+snmp-agent acl 2998
+snmp-agent local-engineid 800007DB038038BC0789E0
+snmp-agent community read cipher %$%$/C"MQZd(s6]QH73i=-8J#b3>hd)8Q6/3*<SE<m:[]e('b3A#"W~n<qg-kA*Z%H~]:_sS3J#b%$%$ acl 2998
+snmp-agent sys-info location ZJ-HZ-ESN-18F
+snmp-agent sys-info version all
+snmp-agent target-host trap address udp-domain 202.96.102.139 params securityname cipher @%@%Tk]"HKjwpM@p-*@IJ\-(#bMB@%@%
+snmp-agent trap enable
+undo snmp-agent trap enable feature-name port trap-name hwPortPhysicalRateDegradeAlarm
+undo snmp-agent trap enable feature-name port trap-name hwPortPhysicalRateDegradeAlarmResume
+undo snmp-agent trap enable feature-name port trap-name hwInputRateChangeOverThresholdNotice
+undo snmp-agent trap enable feature-name port trap-name hwOutputRateChangeOverThresholdNotice
+#
+undo ssh server compatible-ssh1x enable
+stelnet server enable
+ssh user root
+ssh user root authentication-type password
+ssh user root service-type stelnet
+#
+command-privilege level 0 view shell display cpu-usage
+command-privilege level 0 view shell display memory-usage
+command-privilege level 0 view shell display current-configuration
+#
+slot 1
+ ip netstream sampler to slot self 
+#
+slot 2
+ ip netstream sampler to slot self 
+#
+slot 3
+ ip netstream sampler to slot self 
+#
+slot 4
+ ip netstream sampler to slot self 
+#
+slot 5
+ ip netstream sampler to slot self 
+#
+slot 6
+ ip netstream sampler to slot self 
+#
+user-interface con 0
+ authentication-mode password
+ set authentication password cipher $1a$`n(%Ez/9bM$'.PXMJj8`5\][)'U8Hk<Fd*VV5$[$8`T@g)O4__"$
+user-interface aux 0
+user-interface vty 0 4
+ acl 2999 inbound
+ authentication-mode aaa
+ user privilege level 15
+ screen-length 0
+ protocol inbound all
+user-interface vty 16 20
+ acl 2999 inbound
+#
+local-aaa-server 
+#
+license
+#
+soc
+#
+return
+[CS-HZ-ESN-C-NE40E-X16-2.iTV.H2-ui-vty0-4]

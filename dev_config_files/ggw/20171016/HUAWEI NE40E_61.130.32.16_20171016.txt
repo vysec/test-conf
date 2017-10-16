@@ -1,0 +1,1128 @@
+
+#
+ sysname SX-SX-DM-SR-1.MAN.NE40E
+#
+ info-center source default channel 2 trap state off
+ info-center source LSPM channel 4 log level error
+ info-center loghost source LoopBack0
+ info-center loghost 115.239.131.2
+ info-center loghost 61.174.89.90
+ info-center logbuffer size 1024
+#
+ router id 61.130.32.16
+#
+ undo telnet ipv6 server enable
+#
+snmp-agent trap type base-trap
+#
+ dustproof check-timer day 0
+#
+ load-balance avoid-degradation vll all
+ load-balance avoid-degradation ipv4 all
+ load-balance avoid-degradation ipv6 all
+ load-balance avoid-degradation mpls all
+#
+diffserv domain default
+diffserv domain MAN-QoS
+ ip-dscp-inbound 16 phb af1 yellow
+ ip-dscp-inbound 24 phb af1 red
+ ip-dscp-inbound 32 phb ef green
+ ip-dscp-inbound 40 phb af3 green
+ ip-dscp-inbound 48 phb af4 green
+ ip-dscp-inbound 56 phb af3 yellow
+ ip-dscp-outbound af1 green map 8
+ ip-dscp-outbound af1 yellow map 16
+ ip-dscp-outbound af1 red map 24
+ ip-dscp-outbound af3 green map 40
+ ip-dscp-outbound af3 yellow map 56
+ ip-dscp-outbound af4 green map 48
+ ip-dscp-outbound ef green map 32
+ mpls-exp-inbound 2 phb af1 yellow
+ mpls-exp-inbound 3 phb af1 red
+ mpls-exp-inbound 4 phb ef green
+ mpls-exp-inbound 5 phb af3 green
+ mpls-exp-inbound 6 phb af4 green
+ mpls-exp-inbound 7 phb af3 yellow
+ mpls-exp-outbound af1 yellow map 2
+ mpls-exp-outbound af1 red map 3
+ mpls-exp-outbound af3 green map 5
+ mpls-exp-outbound af3 yellow map 7
+ mpls-exp-outbound af4 green map 6
+ mpls-exp-outbound ef green map 4
+diffserv domain qinq
+diffserv domain 5p3d
+#
+port-wred 0
+ color green low-limit 60 high-limit 90 discard-percentage 20
+port-wred 2
+ color green low-limit 40 high-limit 50 discard-percentage 1
+port-wred 1
+ color green low-limit 50 high-limit 80 discard-percentage 10
+#
+cpu-defend policy 5
+ whitelist acl 3200
+ blacklist acl 3204
+ user-defined-flow 1 acl 3201
+ user-defined-flow 2 acl 3202
+ user-defined-flow 3 acl 3203
+ car blacklist cir 256
+ car user-defined-flow 3 cir 500
+ priority whitelist high
+ priority blacklist low
+ priority user-defined-flow 1 high
+ priority user-defined-flow 2 middle
+ priority user-defined-flow 3 low
+ alarm drop-rate blacklist enable
+ alarm drop-rate blacklist threshold 100 interval 120
+ application-apperceive disable
+ process-sequence whitelist user-defined-flow blacklist
+#
+cpu-defend policy 6
+ whitelist acl 3200
+ blacklist acl 3212
+ user-defined-flow 1 acl 3201
+ user-defined-flow 2 acl 3202
+ user-defined-flow 3 acl 3203
+ user-defined-flow 4 acl 3204
+ user-defined-flow 5 acl 3205
+ user-defined-flow 6 acl 3206
+ user-defined-flow 7 acl 3207
+ user-defined-flow 8 acl 3208
+ user-defined-flow 9 acl 3209
+ user-defined-flow 10 acl 3210
+ user-defined-flow 11 acl 3211
+ user-defined-flow 12 acl 3213
+ alarm drop-rate user-defined-flow 1 enable
+ alarm drop-rate user-defined-flow 2 enable
+ alarm drop-rate user-defined-flow 3 enable
+ alarm drop-rate user-defined-flow 1 threshold 1 interval 60
+ alarm drop-rate user-defined-flow 2 threshold 1 interval 60
+ alarm drop-rate user-defined-flow 3 threshold 1 interval 60
+ car whitelist cir 2000
+ car blacklist cir 64
+ car user-defined-flow 3 cir 1000
+ car user-defined-flow 4 cir 1000
+ car user-defined-flow 5 cir 1000
+ car user-defined-flow 6 cir 512
+ car user-defined-flow 7 cir 512
+ car user-defined-flow 9 cir 512
+ car user-defined-flow 10 cir 1000
+ car user-defined-flow 11 cir 500
+ car user-defined-flow 12 cir 1000
+ priority user-defined-flow 1 high
+ priority user-defined-flow 2 high
+ priority user-defined-flow 3 high
+ priority user-defined-flow 4 middle
+ priority user-defined-flow 5 middle
+ priority user-defined-flow 6 high
+ priority user-defined-flow 7 middle
+ priority user-defined-flow 8 middle
+ priority user-defined-flow 9 middle
+ priority user-defined-flow 10 middle
+ priority user-defined-flow 11 middle
+ priority user-defined-flow 12 middle
+ alarm drop-rate blacklist enable
+ alarm drop-rate blacklist threshold 500 interval 120
+ application-apperceive disable
+ process-sequence whitelist user-defined-flow blacklist
+ undo abnormal-packet-defend enable
+ undo udp-packet-defend enable
+ undo tcpsyn-flood enable
+ undo fragment-flood enable
+#
+qos-profile 2M
+ car cir 2048 cbs 382976 pbs 0 green pass red discard
+qos-profile 6M
+ car cir 6144 cbs 1148928 pbs 0 green pass red discard
+qos-profile 8M
+ car cir 8192 cbs 1531904 pbs 0 green pass red discard
+qos-profile 10M
+ car cir 10240 cbs 1914880 pbs 0 green pass red discard
+qos-profile 4M
+ car cir 4096 cbs 786432 pbs 0 green pass red discard
+qos-profile 20M
+ car cir 20480 cbs 3932160 pbs 0 green pass red discard
+qos-profile 16M
+ car cir 16384 cbs 3063808 pbs 0 green pass red discard
+qos-profile 50M
+ car cir 51200 cbs 9574400 pbs 0 green pass red discard
+qos-profile 100M
+ car cir 102400 cbs 18700000 pbs 0 green pass red discard
+qos-profile 200M
+ car cir 204800 cbs 18700000 pbs 0 green pass red discard
+qos-profile 300M
+ car cir 307200 cbs 18700000 pbs 0 green pass red discard
+qos-profile 500M
+ car cir 512000 cbs 18700000 pbs 0 green pass red discard
+#
+ip vpn-instance vrf3-datamanager-64755:10000
+ description ShaoXingDianXinShuJuWangGuan
+ route-distinguisher 64755:10000
+ vpn-target 64755:1000000 4134:647550002 export-extcommunity
+ vpn-target 64755:1000000 4134:647550002 import-extcommunity
+ip vpn-instance vrf3-sxshb-64755:100340
+ description ShaoXingShiHuanBaoQuanQiuYan
+ route-distinguisher 64755:100340
+ vpn-target 64755:10034000 export-extcommunity
+ vpn-target 64755:10034000 64755:10014000 import-extcommunity
+ip vpn-instance vrf3-sxxnchzyh-64755:100520
+ description MP-ShaoXinXianNongChunHeZhuoYingHang
+ route-distinguisher 64755:100520
+ vpn-target 64755:10052000 export-extcommunity
+ vpn-target 64755:10052000 import-extcommunity
+#
+hwtacacs-server template sxacs
+ hwtacacs-server authentication 61.174.89.72
+ hwtacacs-server authorization 61.174.89.72
+ hwtacacs-server accounting 61.174.89.72
+ hwtacacs-server source-ip 61.130.32.16
+ hwtacacs-server shared-key 123456
+ undo hwtacacs-server user-name domain-included
+#
+hwtacacs-server template zjacs
+ hwtacacs-server authentication 202.96.102.141
+ hwtacacs-server authentication 61.153.176.183 secondary
+ hwtacacs-server authorization 202.96.102.141
+ hwtacacs-server authorization 61.153.176.183 secondary
+ hwtacacs-server accounting 202.96.102.141
+ hwtacacs-server accounting 61.153.176.183 secondary
+ hwtacacs-server source-ip 61.130.32.16
+ hwtacacs-server shared-key 123456
+#
+ mpls lsr-id 61.130.32.144
+ mpls
+#
+ mpls l2vpn
+#
+vsi vrf2-ShuiWuJiTuan-313005 static
+ pwsignal ldp
+  vsi-id 313005
+  peer 61.130.32.129
+#
+vsi vrf2-PS-311018 static
+ description VP-PaiShui
+ pwsignal ldp
+  vsi-id 311018
+  peer 61.130.32.129
+#
+mpls ldp
+#
+#
+ mpls ldp remote-peer sx-sx-dj-ne80e
+ remote-ip 61.130.32.129
+ undo remote-ip pwe3
+#
+acl number 2001
+ description For-Telnet-Control
+ rule 10 permit source 202.96.102.240 0
+ rule 20 permit source 202.96.102.47 0
+ rule 30 permit source 202.96.102.84 0
+ rule 40 permit source 202.96.103.188 0
+ rule 50 permit source 202.96.102.244 0
+ rule 60 permit source 61.174.89.82 0
+ rule 70 permit source 61.174.89.83 0
+ rule 80 permit source 61.174.89.84 0
+ rule 90 permit source 61.174.89.86 0
+ rule 100 permit source 61.174.89.89 0
+ rule 110 permit source 61.174.89.85 0
+ rule 120 permit source 202.96.102.139 0
+ rule 130 permit source 202.96.102.221 0
+ rule 140 permit source 61.174.89.90 0
+ rule 150 permit source 61.174.89.91 0
+ rule 160 permit source 115.239.131.12 0
+ rule 170 permit source 122.229.8.82 0
+ rule 1000 deny
+#
+acl number 2010
+ description SNMP
+ rule 10 permit source 61.174.89.82 0
+ rule 20 permit source 61.174.89.83 0
+ rule 30 permit source 61.174.89.84 0
+ rule 40 permit source 61.174.89.86 0
+ rule 50 permit source 61.174.89.89 0
+ rule 60 permit source 61.174.89.85 0
+ rule 70 permit source 202.96.102.139 0
+ rule 80 permit source 202.96.102.221 0
+ rule 90 permit source 61.174.89.90 0
+ rule 100 permit source 61.174.89.91 0
+ rule 1000 deny
+#
+acl number 2020
+ description Admin_Telnet
+ rule 0 permit source 202.96.107.0 0.0.0.127
+ rule 1 permit source 202.96.102.0 0.0.1.255
+ rule 2 permit source 61.174.88.0 0.0.1.255
+ rule 3 permit source 61.130.32.0 0.0.1.255
+ rule 4 permit source 220.187.240.0 0.0.15.255
+ rule 5 permit source 219.133.0.3 0
+ rule 6 permit source 122.224.0.0 0.0.0.255
+#
+acl number 2050
+ description IPTV_Multicast
+ rule 5 permit source 233.50.200.0 0.0.0.255
+ rule 10 permit source 233.60.200.2 0
+ rule 15 permit source 233.50.201.0 0.0.0.255
+#
+acl number 2051
+ rule 5 permit source 238.100.100.2 0
+ rule 10 permit source 233.58.201.0 0.0.0.255
+#
+acl number 3010
+ description For-Anti-Worm
+ rule 5 permit tcp destination-port eq 135
+ rule 10 permit udp destination-port eq 135
+ rule 15 permit tcp destination-port eq 137
+ rule 20 permit udp destination-port eq netbios-ns
+ rule 25 permit tcp destination-port eq 138
+ rule 30 permit udp destination-port eq netbios-dgm
+ rule 35 permit tcp destination-port eq 139
+ rule 40 permit udp destination-port eq netbios-ssn
+ rule 45 permit tcp destination-port eq 445
+ rule 50 permit udp destination-port eq 445
+ rule 55 permit tcp destination-port eq 593
+ rule 60 permit tcp destination-port eq 707
+ rule 65 permit udp destination-port eq 1434
+ rule 70 permit tcp destination-port eq 4444
+ rule 75 permit tcp destination-port eq 5800
+ rule 80 permit tcp destination-port eq 5900
+#
+acl number 3020
+ description For-Non-WEB
+ rule 5 permit tcp destination-port eq www
+ rule 10 permit tcp destination-port eq 8000
+ rule 15 permit tcp destination-port eq 8080
+#
+acl number 3200
+ rule 5 permit ip source 202.96.102.0 0.0.1.255
+ rule 10 permit ip source 61.174.88.0 0.0.1.255
+ rule 15 permit ip source 61.130.32.0 0.0.3.255
+ rule 20 permit ip source 220.187.240.0 0.0.15.255
+ rule 25 permit ip source 61.153.176.183 0
+ rule 30 permit ip source 115.233.160.0 0.0.15.255
+#
+acl number 3201
+ rule 5 permit udp source-port eq 646
+ rule 10 permit udp destination-port eq 646
+ rule 15 permit tcp source-port eq bgp
+ rule 20 permit tcp destination-port eq bgp
+ rule 25 permit tcp source-port eq 646
+ rule 30 permit tcp destination-port eq 646
+ rule 35 permit ospf
+ rule 40 permit 103
+ rule 45 permit igmp
+ rule 50 permit 112
+ rule 55 permit udp destination-port eq 639
+ rule 60 permit udp source-port eq 639
+ rule 65 permit tcp destination-port eq 639
+ rule 70 permit tcp source-port eq 639
+#
+acl number 3202
+ rule 5 permit udp source-port eq snmp
+ rule 10 permit udp destination-port eq snmp
+ rule 15 permit tcp source-port eq tacacs
+ rule 20 permit tcp destination-port eq tacacs
+ rule 25 permit udp source-port eq tacacs-ds
+ rule 30 permit udp destination-port eq tacacs-ds
+ rule 35 permit udp source-port eq ntp
+ rule 40 permit udp destination-port eq ntp
+ rule 45 permit tcp source-port eq ftp-data
+ rule 50 permit tcp destination-port eq ftp-data
+ rule 55 permit tcp destination-port eq ftp
+ rule 60 permit tcp source-port eq ftp
+ rule 65 permit tcp source-port eq telnet
+ rule 70 permit tcp destination-port eq telnet
+ rule 75 permit tcp source-port eq 22
+ rule 80 permit tcp destination-port eq 22
+#
+acl number 3203
+ rule 5 permit icmp
+#
+acl number 3204
+ rule 5 permit tcp
+ rule 10 permit udp
+#
+acl number 3205
+ rule 5 permit ip destination 224.0.0.0 0.0.0.255
+ rule 10 permit ip destination 255.255.255.255 0
+ rule 15 permit ip destination 233.0.0.0 0.255.255.255
+#
+acl number 3700
+ description For-Anti-Worm
+ rule 5 permit tcp destination-port eq 135
+ rule 10 permit udp destination-port eq 135
+ rule 15 permit tcp destination-port eq 137
+ rule 20 permit udp destination-port eq netbios-ns
+ rule 25 permit tcp destination-port eq 138
+ rule 30 permit udp destination-port eq netbios-dgm
+ rule 35 permit tcp destination-port eq 139
+ rule 40 permit udp destination-port eq netbios-ssn
+ rule 45 permit tcp destination-port eq 445
+ rule 50 permit udp destination-port eq 445
+ rule 55 permit tcp destination-port eq 593
+ rule 60 permit tcp destination-port eq 707
+ rule 65 permit udp destination-port eq 1434
+ rule 70 permit tcp destination-port eq 4444
+ rule 75 permit tcp destination-port eq 5800
+ rule 80 permit tcp destination-port eq 5900
+#
+acl number 3701
+ description For-Non-WEB
+ rule 5 permit tcp destination-port eq www
+ rule 15 permit tcp destination-port eq 8080
+#
+traffic classifier antiworm operator or
+ if-match acl 3010
+traffic classifier tcAny operator or
+ if-match any
+traffic classifier webnone operator or
+ if-match acl 3701
+traffic classifier anti operator or
+ if-match acl 3700
+traffic classifier nonweb operator or
+ if-match acl 3020
+#
+traffic behavior 100M
+ car cir 100000 cbs 33554432 pbs 33554432 green pass yellow pass red discard
+traffic behavior 8M
+ car cir 8192 cbs 1572864 pbs 1572864 green pass yellow pass red discard
+traffic behavior 500M
+ car cir 512000 cbs 33554432 pbs 33554432 green pass yellow pass red discard
+traffic behavior 2M
+ car cir 2048 cbs 393216 pbs 393216 green pass yellow pass red discard
+traffic behavior 20M
+ car cir 20480 cbs 3932160 pbs 3932160 green pass yellow pass red discard
+traffic behavior urpf
+ ip urpf loose
+traffic behavior 16M
+ car cir 16384 cbs 3145728 pbs 3145728 green pass yellow pass red discard
+traffic behavior 6M
+ car cir 6144 cbs 1179648 pbs 1179648 green pass yellow pass red discard
+traffic behavior permit
+traffic behavior 1000M
+ car cir 1000000 cbs 33554432 pbs 33554432 green pass yellow pass red discard
+traffic behavior 60M
+ car cir 61440 cbs 11796480 pbs 11796480 green pass yellow pass red discard
+traffic behavior 10M
+ car cir 10240 cbs 1966080 pbs 1966080 green pass yellow pass red discard
+traffic behavior 50M
+ car cir 51200 cbs 9830400 pbs 9830400 green pass yellow pass red discard
+traffic behavior 200M
+ car cir 200000 cbs 33554432 pbs 33554432 green pass yellow pass red discard
+traffic behavior deny
+ deny
+traffic behavior 4M
+ car cir 4096 cbs 786432 pbs 786432 green pass yellow pass red discard
+#
+traffic policy 20M_IP
+ undo share-mode
+ classifier antiworm behavior deny
+ classifier tcAny behavior 20M
+traffic policy 16M_IP_NONWEB
+ undo share-mode
+ classifier antiworm behavior deny
+ classifier nonweb behavior deny
+ classifier tcAny behavior 16M
+traffic policy 2M_IP_NONWEB
+ undo share-mode
+ classifier antiworm behavior deny
+ classifier nonweb behavior deny
+ classifier tcAny behavior 2M
+traffic policy 10M_MP
+ undo share-mode
+ classifier tcAny behavior 10M
+traffic policy 60M_IP_NONWEB
+ undo share-mode
+ statistics enable
+ classifier antiworm behavior deny
+ classifier nonweb behavior deny
+ classifier tcAny behavior 60M
+traffic policy 1000M_IP
+ undo share-mode
+ statistics enable
+ classifier antiworm behavior deny
+ classifier tcAny behavior 1000M
+traffic policy 1000M_IP_NONWEB
+ undo share-mode
+ classifier antiworm behavior deny
+ classifier nonweb behavior deny
+ classifier tcAny behavior 1000M
+traffic policy 10M_IP_NONWEB
+ undo share-mode
+ classifier antiworm behavior deny
+ classifier nonweb behavior deny
+ classifier tcAny behavior 10M
+traffic policy 16M_IP
+ undo share-mode
+ classifier antiworm behavior deny
+ classifier tcAny behavior 16M
+traffic policy 200M_IP
+ undo share-mode
+ classifier antiworm behavior deny
+ classifier tcAny behavior 200M
+traffic policy 200M_IP_NONWEB
+ undo share-mode
+ classifier antiworm behavior deny
+ classifier nonweb behavior deny
+ classifier tcAny behavior 200M
+traffic policy 2M_IP
+ undo share-mode
+ classifier antiworm behavior deny
+ classifier tcAny behavior 2M
+traffic policy 60M_IP
+ undo share-mode
+ classifier antiworm behavior deny
+ classifier tcAny behavior 60M
+traffic policy 10M_IP
+ undo share-mode
+ statistics enable
+ classifier antiworm behavior deny
+ classifier tcAny behavior 10M
+traffic policy 6M_IP_NONWEB
+ undo share-mode
+ classifier antiworm behavior deny
+ classifier nonweb behavior deny
+ classifier tcAny behavior 6M
+traffic policy 50M_MP
+ undo share-mode
+ classifier tcAny behavior 50M
+traffic policy 50M_IP_NONWEB
+ undo share-mode
+ classifier antiworm behavior deny
+ classifier nonweb behavior deny
+ classifier tcAny behavior 50M
+traffic policy 6M_IP
+ undo share-mode
+ classifier antiworm behavior deny
+ classifier tcAny behavior 6M
+traffic policy 100M_IP
+ undo share-mode
+ statistics enable
+ classifier antiworm behavior deny
+ classifier tcAny behavior 100M
+traffic policy 100M_IP_NONWEB
+ undo share-mode
+ statistics enable
+ classifier antiworm behavior deny
+ classifier nonweb behavior deny
+ classifier tcAny behavior 100M
+traffic policy 50M_IP
+ undo share-mode
+ classifier antiworm behavior deny
+ classifier tcAny behavior 50M
+traffic policy 4M_IP_NONWEB
+ undo share-mode
+ classifier antiworm behavior deny
+ classifier nonweb behavior deny
+ classifier tcAny behavior 4M
+traffic policy 4M_IP
+ undo share-mode
+ classifier antiworm behavior deny
+ classifier tcAny behavior 4M
+traffic policy 8M_IP_NONWEB
+ undo share-mode
+ classifier antiworm behavior deny
+ classifier nonweb behavior deny
+ classifier tcAny behavior 8M
+traffic policy deny_antiworm
+ share-mode
+ statistics enable
+ classifier antiworm behavior deny
+traffic policy deny_antiworm_nonweb
+ share-mode
+ statistics enable
+ classifier antiworm behavior deny
+ classifier nonweb behavior deny
+traffic policy deny_anti
+ share-mode
+ classifier antiworm behavior deny
+traffic policy deny_anti_urpf_in
+ share-mode
+ classifier antiworm behavior deny
+ classifier tcAny behavior urpf
+traffic policy deny_anti_web
+ share-mode
+ classifier anti behavior deny
+ classifier webnone behavior deny
+traffic policy 20M_IP_NONWEB
+ undo share-mode
+ classifier nonweb behavior deny
+ classifier antiworm behavior deny
+ classifier tcAny behavior 20M
+traffic policy 8M_IP
+ undo share-mode
+ classifier antiworm behavior deny
+ classifier tcAny behavior 8M
+#
+aaa
+ local-user zjdxnoc password cipher %$%$V.Ic0>"Z92!b%)Nt$C'IH)5P%$%$
+ local-user zjdxnoc service-type telnet
+ local-user zjdxnoc level 3
+ authentication-scheme default
+  authentication-mode  local  hwtacacs
+  authentication-super  hwtacacs  super
+ authentication-scheme huawei
+ #
+ authorization-scheme default
+  authorization-mode  local  hwtacacs
+ authorization-scheme huawei
+ #
+ accounting-scheme default
+  accounting-mode hwtacacs
+ #
+ domain default
+  hwtacacs-server zjacs
+  idle-cut 10 10
+ #
+ recording-scheme zjacs
+  recording-mode hwtacacs zjacs
+ #
+ system recording-scheme zjacs
+ outbound recording-scheme zjacs
+ cmd recording-scheme zjacs
+ #
+#
+isis 100
+ is-level level-2
+ cost-style wide
+ circuit-cost 100000 level-2
+ network-entity 86.4755.0575.0611.3003.2016.00
+ is-name SX-SX-DM-SR-1.MAN.NE40E
+ import-route static route-policy rpStaticToISIS
+ preference 155
+ log-peer-change
+ maximum load-balancing 16
+#
+ ntp-service source-interface LoopBack0
+ ntp-service unicast-server 61.130.32.123 preference
+ ntp-service unicast-server 61.130.32.124
+#
+interface Aux0/0/1
+ link-protocol ppp
+ shutdown
+#
+interface Eth-Trunk0
+#
+interface Eth-Trunk1
+ description uT:SX-SX-DJ-SR-1.MAN.NE80E:()ETH7
+ ip address 220.187.249.118 255.255.255.252
+ isis enable 100
+ isis circuit-type p2p
+ isis circuit-level level-2
+ isis cost 3000 level-2
+ isis small-hello
+ ospf network-type p2p
+ mpls
+ mpls ldp
+ trust upstream MAN-QoS
+#
+interface Eth-Trunk2
+ description uT:SX-SX-DJ-SR-2.MAN.NE80E:()ETH7
+ ip address 220.187.249.122 255.255.255.252
+ isis enable 100
+ isis circuit-type p2p
+ isis circuit-level level-2
+ isis cost 3000 level-2
+ isis small-hello
+ ospf network-type p2p
+ mpls
+ mpls ldp
+ trust upstream MAN-QoS
+#
+interface Eth-Trunk11
+ mtu 1524
+ mac-address 00e0-fca5-0011
+ description dT:SX-SX-DM-DSW-1.MAN.S9306:()Eth-Trunk1(3/0/0,4/0/0)
+ mode user-termination
+#
+interface Eth-Trunk12
+ mtu 1524
+ mac-address 00e0-fca5-0012
+ description dT:SX-SX-MS-DSW-1.MAN.S9306:()Eth-Trunk1(3/0/0,4/0/0)
+ mode user-termination
+#
+interface Eth-Trunk18
+ mtu 1524
+ description dT:SX-DM-SW2-S9306-2.MAN
+ mode user-termination
+#
+interface Eth-Trunk18.159
+ description VP-SWJT-GuoJiWuLiuZhongXin
+ control-vid 159 qinq-termination
+ qinq termination pe-vid 2302 ce-vid 3009
+ l2 binding vsi vrf2-ShuiWuJiTuan-313005
+#
+interface Eth-Trunk18.161
+ description MP-SXSHB-QingMaoFangZhi
+ control-vid 161 qinq-termination
+ qinq termination pe-vid 2302 ce-vid 3011
+ ip binding vpn-instance vrf3-sxshb-64755:100340
+ ip address 42.8.2.49 255.255.255.240
+ arp broadcast enable
+#
+interface Eth-Trunk18.162
+ description MP-SXSHB-MingShengYaoYe
+ control-vid 162 qinq-termination
+ qinq termination pe-vid 2302 ce-vid 3012
+ ip binding vpn-instance vrf3-sxshb-64755:100340
+ ip address 42.8.2.81 255.255.255.240
+ arp broadcast enable
+#
+interface Eth-Trunk18.164
+ description VP-PaiShui-12#
+ control-vid 164 qinq-termination
+ qinq termination pe-vid 2302 ce-vid 3014
+ l2 binding vsi vrf2-PS-311018
+#
+interface Eth-Trunk18.165
+ description IP-QingMaoFangZhi
+ control-vid 165 qinq-termination
+ qinq termination pe-vid 2302 ce-vid 3015
+ ip address 61.174.211.185 255.255.255.248
+ traffic-policy deny_antiworm inbound
+ traffic-policy deny_antiworm_nonweb outbound
+ arp broadcast enable
+ qos-profile 50M inbound pe-vid 2302 ce-vid 3015
+ qos-profile 50M outbound pe-vid 2302 ce-vid 3015
+#
+interface Eth-Trunk18.168
+ description IP-XinSanJiangYinRan
+ shutdown
+ control-vid 168 qinq-termination
+ qinq termination pe-vid 2302 ce-vid 3018
+ ip address 60.190.195.25 255.255.255.252
+ traffic-policy deny_antiworm inbound
+ traffic-policy deny_antiworm outbound
+ arp broadcast enable
+ qos-profile 16M inbound pe-vid 2302 ce-vid 3018
+ qos-profile 16M outbound pe-vid 2302 ce-vid 3018
+#
+interface Eth-Trunk18.169
+ description MP-QQY-HuanBao-FeiYaYinRan
+ control-vid 169 qinq-termination
+ qinq termination pe-vid 2302 ce-vid 3019
+ ip binding vpn-instance vrf3-sxshb-64755:100340
+ ip address 42.8.1.17 255.255.255.240
+ arp broadcast enable
+#
+interface Eth-Trunk18.170
+ description MP-QQY-HuanBao-YiYaoWeiShengSu
+ control-vid 170 qinq-termination
+ qinq termination pe-vid 2302 ce-vid 3020
+ ip binding vpn-instance vrf3-sxshb-64755:100340
+ ip address 42.8.1.97 255.255.255.240
+ arp broadcast enable
+#
+interface Eth-Trunk18.172
+ description IP-LongXiangZhenZhiKeJi
+ control-vid 172 qinq-termination
+ qinq termination pe-vid 2302 ce-vid 3022
+ ip address 122.224.24.21 255.255.255.252
+ traffic-policy deny_antiworm inbound
+ traffic-policy deny_antiworm_nonweb outbound
+ arp broadcast enable
+ qos-profile 20M inbound
+ qos-profile 20M outbound
+#
+interface Eth-Trunk18.173
+ description IP-GaoShuGuanLiChu
+ control-vid 173 qinq-termination
+ qinq termination pe-vid 2302 ce-vid 3023
+ ip address 122.224.25.45 255.255.255.252
+ traffic-policy deny_antiworm inbound
+ traffic-policy deny_antiworm_nonweb outbound
+ arp broadcast enable
+ qos-profile 100M inbound
+ qos-profile 100M outbound
+#
+interface Eth-Trunk18.175
+ description IP-WeiHuaZhiYi
+ control-vid 175 qinq-termination
+ qinq termination pe-vid 2302 ce-vid 3025
+ ip address 122.224.1.77 255.255.255.252
+ traffic-policy deny_antiworm inbound
+ traffic-policy deny_antiworm_nonweb outbound
+ arp broadcast enable
+ qos-profile 6M inbound
+ qos-profile 6M outbound
+#
+interface Eth-Trunk18.176
+ description IP-ZheJiangYiYaoWeiShengSu
+ control-vid 176 qinq-termination
+ qinq termination pe-vid 2302 ce-vid 3026
+ ip address 122.224.1.153 255.255.255.248
+ traffic-policy deny_antiworm inbound
+ traffic-policy deny_antiworm_nonweb outbound
+ arp broadcast enable
+ qos-profile 10M inbound pe-vid 2302 ce-vid 3026
+ qos-profile 10M outbound pe-vid 2302 ce-vid 3026
+#
+interface Eth-Trunk18.178
+ description IP-QinMaoFangZhi
+ control-vid 178 qinq-termination
+ qinq termination pe-vid 2302 ce-vid 3028
+ ip address 122.224.36.241 255.255.255.252
+ traffic-policy deny_antiworm inbound
+ traffic-policy deny_antiworm_nonweb outbound
+ arp broadcast enable
+ qos-profile 10M inbound pe-vid 2302 ce-vid 3028
+ qos-profile 10M outbound pe-vid 2302 ce-vid 3028
+#
+interface Eth-Trunk18.180
+ description VP5751LAN15425223-PaiShui-PaoJiangGuoJiWuLiu
+ control-vid 180 qinq-termination
+ qinq termination pe-vid 2302 ce-vid 3030
+ l2 binding vsi vrf2-PS-311018
+#
+interface Eth-Trunk18.182
+ description pe-vid 2302 ce-vid 3032
+ control-vid 182 qinq-termination
+ qinq termination pe-vid 2302 ce-vid 3032
+ ip address 122.224.37.121 255.255.255.252
+ traffic-policy deny_antiworm inbound
+ traffic-policy deny_antiworm_nonweb outbound
+ arp broadcast enable
+ qos-profile 50M inbound pe-vid 2302 ce-vid 3032
+ qos-profile 50M outbound pe-vid 2302 ce-vid 3032
+#
+interface Eth-Trunk18.184
+ description IP-JiYaWuLiu
+ control-vid 184 qinq-termination
+ qinq termination pe-vid 2302 ce-vid 3034
+ traffic-policy deny_antiworm inbound
+ traffic-policy deny_antiworm_nonweb outbound
+ arp broadcast enable
+ qos-profile 6M inbound pe-vid 2302 ce-vid 3034
+ qos-profile 6M outbound pe-vid 2302 ce-vid 3034
+#
+interface GigabitEthernet0/0/0
+ speed auto
+ duplex auto
+ shutdown
+#
+interface GigabitEthernet1/0/0
+ negotiation auto
+ description dT:SX-SX-DXD-SR-NE80E-1:(F1100332267)GE11/0/4
+ undo shutdown
+ eth-trunk 1
+ port-queue be wfq weight 40 shaping shaping-percentage 100 outbound
+ port-queue af1 wfq weight 15 shaping shaping-percentage 80 outbound
+ port-queue af3 wfq weight 30 shaping shaping-percentage 100 outbound
+ port-queue af4 wfq weight 5 shaping shaping-percentage 100 outbound
+ port-queue ef pq shaping shaping-percentage 30 outbound
+#
+interface GigabitEthernet1/0/1
+ negotiation auto
+ description dT:SX-SX-DXD-SR-NE80E-2:(F1100332274)GE11/0/4
+ undo shutdown
+ eth-trunk 2
+ port-queue be wfq weight 40 shaping shaping-percentage 100 outbound
+ port-queue af1 wfq weight 15 shaping shaping-percentage 80 outbound
+ port-queue af3 wfq weight 30 shaping shaping-percentage 100 outbound
+ port-queue af4 wfq weight 5 shaping shaping-percentage 100 outbound
+ port-queue ef pq shaping shaping-percentage 30 outbound
+#
+interface GigabitEthernet1/0/2
+ negotiation auto
+ description dT:SX-DM-SW2-S9306-2.MAN:(Local)GE3/0/5
+ undo shutdown
+ eth-trunk 18
+#
+interface GigabitEthernet1/0/3
+ negotiation auto
+ description dT:SX-SX-MS-SW1-S9306-2.MAN:(F1100332106)GE3/0/7
+ undo shutdown
+#
+interface GigabitEthernet1/0/3.100
+#
+interface GigabitEthernet1/0/4
+ undo shutdown
+ mode user-termination
+#
+interface GigabitEthernet1/0/4.100
+#
+interface GigabitEthernet1/0/4.101
+ description ceshi
+ shutdown
+ control-vid 101 qinq-termination
+ qinq termination pe-vid 1700 ce-vid 101
+ traffic-policy deny_antiworm inbound
+ traffic-policy deny_antiworm outbound
+ arp broadcast enable
+ qos-profile 10M inbound pe-vid 1700 ce-vid 101
+ qos-profile 10M outbound pe-vid 1700 ce-vid 101
+#
+interface GigabitEthernet1/0/4.102
+#
+interface GigabitEthernet1/0/5
+ negotiation auto
+ description dT:SX-SX-DM-DSW-1.MAN.S9306:(Local)GE3/0/0
+ undo shutdown
+ eth-trunk 11
+#
+interface GigabitEthernet1/0/6
+ negotiation auto
+ description dT:SX-SX-MS-DSW-1.MAN.S9306:()GE3/0/0::PROCESSING
+ undo shutdown
+ eth-trunk 12
+#
+interface GigabitEthernet1/0/7
+ shutdown
+#
+interface GigabitEthernet1/0/8
+ shutdown
+#
+interface GigabitEthernet1/0/9
+ shutdown
+#
+interface GigabitEthernet1/0/10
+ shutdown
+#
+interface GigabitEthernet1/0/11
+ shutdown
+#
+interface GigabitEthernet2/0/0
+ negotiation auto
+ description dT:SX-SX-DXD-SR-NE80E-1:(F1100332268)GE12/0/4
+ undo shutdown
+ eth-trunk 1
+ port-queue be wfq weight 40 shaping shaping-percentage 100 outbound
+ port-queue af1 wfq weight 15 shaping shaping-percentage 80 outbound
+ port-queue af3 wfq weight 30 shaping shaping-percentage 100 outbound
+ port-queue af4 wfq weight 5 shaping shaping-percentage 100 outbound
+ port-queue ef pq shaping shaping-percentage 30 outbound
+#
+interface GigabitEthernet2/0/1
+ negotiation auto
+ description dT:SX-SX-DXD-SR-NE80E-2:(F1100332275)GE12/0/4
+ undo shutdown
+ eth-trunk 2
+ port-queue be wfq weight 40 shaping shaping-percentage 100 outbound
+ port-queue af1 wfq weight 15 shaping shaping-percentage 80 outbound
+ port-queue af3 wfq weight 30 shaping shaping-percentage 100 outbound
+ port-queue af4 wfq weight 5 shaping shaping-percentage 100 outbound
+ port-queue ef pq shaping shaping-percentage 30 outbound
+#
+interface GigabitEthernet2/0/2
+ negotiation auto
+ description dT:SX-DM-SW2-S9306-2.MAN:(Local)GE4/0/5
+ undo shutdown
+ eth-trunk 18
+#
+interface GigabitEthernet2/0/3
+ negotiation auto
+ description dT:SX-SX-MS-DSW-2.MAN.S9306()GE4/0/7
+ undo shutdown
+#
+interface GigabitEthernet2/0/4
+ shutdown
+#
+interface GigabitEthernet2/0/5
+ negotiation auto
+ description dT:SX-SX-DM-DSW-1.MAN.S9306:(Local)GE4/0/0::PROCESSING
+ undo shutdown
+ eth-trunk 11
+#
+interface GigabitEthernet2/0/6
+ negotiation auto
+ description dT:SX-SX-MS-DSW-1.MAN.S9306:()GE4/0/0::PROCESSING
+ undo shutdown
+ eth-trunk 12
+#
+interface GigabitEthernet2/0/7
+ shutdown
+#
+interface GigabitEthernet2/0/8
+ shutdown
+#
+interface GigabitEthernet2/0/9
+ shutdown
+#
+interface GigabitEthernet2/0/10
+ shutdown
+#
+interface GigabitEthernet2/0/11
+ negotiation auto
+ undo shutdown
+#
+interface NULL0
+#
+interface LoopBack0
+ description For-Management
+ ip address 61.130.32.16 255.255.255.255
+ isis enable 100
+ isis circuit-level level-2
+#
+interface LoopBack1
+ ip address 61.130.32.144 255.255.255.255
+ isis enable 100
+ isis circuit-level level-2
+#
+bgp 64755
+ router-id 61.130.32.16
+ undo default ipv4-unicast
+ group pgCR internal
+ peer pgCR connect-interface LoopBack0
+ peer 61.130.32.123 as-number 64755
+ peer 61.130.32.123 group pgCR
+ peer 61.130.32.123 description To-SX-SX-DJ-CR-1.MAN.CRS
+ peer 61.130.32.124 as-number 64755
+ peer 61.130.32.124 group pgCR
+ peer 61.130.32.124 description To-SX-SX-QFC-CR-1.MAN.CRS
+ #
+ ipv4-family unicast
+  undo synchronization
+  dampening
+  preference 20 200 200
+  import-route direct route-policy rpCONN
+  import-route static route-policy rpStaticToBGP
+  maximum load-balancing 8
+  peer pgCR enable
+  peer pgCR route-policy rpSET_COMM_OUT export
+  peer pgCR advertise-community
+  peer 61.130.32.123 enable
+  peer 61.130.32.123 group pgCR
+  peer 61.130.32.124 enable
+  peer 61.130.32.124 group pgCR
+ #
+ ipv4-family vpnv4
+  policy vpn-target
+  peer 61.130.32.123 enable
+  peer 61.130.32.124 enable
+ #
+ ipv4-family vpn-instance vrf3-datamanager-64755:10000
+  import-route direct
+  import-route static
+ #
+ ipv4-family vpn-instance vrf3-sxshb-64755:100340
+  import-route direct
+  import-route static
+ #
+ ipv4-family vpn-instance vrf3-sxxnchzyh-64755:100520
+  import-route direct
+  import-route static
+#
+ospf 100 router-id 61.130.32.16
+ silent-interface LoopBack0
+ silent-interface LoopBack1
+ preference 160
+ bandwidth-reference 100000
+ area 0.0.0.0
+  network 61.130.32.16 0.0.0.0
+  network 220.187.249.118 0.0.0.0
+  network 220.187.249.122 0.0.0.0
+  network 61.130.32.144 0.0.0.0
+#
+route-policy rpStaticToISIS permit node 10
+ if-match tag 10
+#
+route-policy rpSET_COMM_OUT deny node 10
+ if-match ip-prefix plDefaultRoute
+#
+route-policy rpSET_COMM_OUT deny node 20
+ if-match ip-prefix plPrivateRoute
+#
+route-policy rpSET_COMM_OUT permit node 30
+ apply community 64755:11083 64755:1303
+#
+route-policy rpCONN deny node 10
+ if-match ip-prefix plPrivateRoute
+#
+route-policy rpCONN permit node 20
+#
+route-policy rpStaticToBGP permit node 10
+ if-match tag 100
+#
+ ip ip-prefix plDefaultRoute index 10 permit 0.0.0.0 0
+ ip ip-prefix plPrivateRoute index 10 permit 10.0.0.0 8 greater-equal 8 less-equal 32
+ ip ip-prefix plPrivateRoute index 20 permit 172.16.0.0 12 greater-equal 12 less-equal 32
+ ip ip-prefix plPrivateRoute index 30 permit 192.168.0.0 16 greater-equal 16 less-equal 32
+ ip ip-prefix plPrivateRoute index 40 permit 127.0.0.0 8 greater-equal 8 less-equal 32
+#
+ ip route-static default-preference 1
+#
+ snmp-agent
+ snmp-agent local-engineid 000007DB7FFFFFFF00005CC4
+ snmp-agent community read cipher %$%$b$@^+>{0UCN65H4*Hp%N,"Je|:7q#r,IWD*1\:Ne}EM-"Jh,!OC46{YmZ5F#qCX~cvr<Jq,"%$%$ acl 2010
+ snmp-agent sys-info contact Huawei_Customer_Service: 800-8302118
+ snmp-agent sys-info location Shaoxing_shaoxing_office
+ snmp-agent sys-info version v2c v3
+ snmp-agent target-host trap  address udp-domain 202.96.102.254 params securityname hz2006snmp
+ snmp-agent trap source LoopBack0
+ snmp-agent trap enable feature-name TRUNK trap-name hwExtLinkDown
+ snmp-agent trap enable feature-name TRUNK trap-name hwExtLinkUp
+ snmp-agent trap enable feature-name OSPF trap-name ospfIfStateChange
+ snmp-agent trap enable feature-name OSPF trap-name ospfNbrStateChange
+ snmp-agent trap enable feature-name OSPF trap-name ospfLsdbOverflow
+ snmp-agent trap enable feature-name OSPF trap-name ospfRestartStatusChange
+ snmp-agent trap enable feature-name OSPF trap-name ospfIfConfigError
+ snmp-agent trap enable feature-name bgp trap-name BACKWARD
+ snmp-agent trap enable feature-name MPLS_LSPM trap-name mplsXCUp
+ snmp-agent trap enable feature-name MPLS_LSPM trap-name mplsXCDown
+ snmp-agent trap enable feature-name MPLS_LSPM trap-name hwMplsStaticLspUp
+ snmp-agent trap enable feature-name MPLS_LSPM trap-name hwMplsStaticLspDown
+ snmp-agent trap enable feature-name L2VPN trap-name hwVplsVcDown
+ snmp-agent trap enable feature-name L2VPN trap-name hwVplsVcUp
+ snmp-agent trap enable feature-name L2VPN trap-name hwVplsVsiDown
+ snmp-agent trap enable feature-name L2VPN trap-name hwVplsVsiUp
+ snmp-agent trap enable feature-name L2VPN trap-name hwPWVcDown
+ snmp-agent trap enable feature-name L2VPN trap-name hwPWVcUp
+ snmp-agent trap enable feature-name ldp trap-name Session-Up
+ snmp-agent trap enable feature-name ldp trap-name Session-Down
+ snmp-agent trap enable feature-name ldp trap-name Session-Up-MIB
+ snmp-agent trap enable feature-name ldp trap-name Session-Down-MIB
+ snmp-agent trap enable feature-name IFNET trap-name hwIfMonitorCrcErrorRising
+ snmp-agent trap enable feature-name IFNET trap-name hwIfMonitorCrcErrorResume
+ snmp-agent trap enable feature-name IFNET trap-name hwIfMonitorSdhErrorRising
+ snmp-agent trap enable feature-name IFNET trap-name hwIfMonitorSdhErrorResume
+ snmp-agent trap enable feature-name IFNET trap-name hwIfMonitorHalfDuplexRising
+ snmp-agent trap enable feature-name IFNET trap-name hwIfFlowDown
+ snmp-agent trap enable feature-name IFNET trap-name hwIfFlowUp
+ snmp-agent trap enable feature-name IFNET trap-name hwIfNameChange
+ snmp-agent trap enable feature-name IFNET trap-name hwIfNameChangeResume
+ snmp-agent trap enable feature-name IFNET trap-name hwIfMonitorInputRateRising
+ snmp-agent trap enable feature-name IFNET trap-name hwIfMonitorInputRateResume
+ snmp-agent trap enable feature-name IFNET trap-name hwIfMonitorOutputRateRising
+ snmp-agent trap enable feature-name IFNET trap-name hwIfMonitorOutputRateResume
+ snmp-agent trap enable feature-name IFNET trap-name hwIfControlFlapSuppress
+ snmp-agent trap enable feature-name IFNET trap-name hwIfControlFlapResume
+ snmp-agent trap enable feature-name IFNET trap-name hwIfMonitorSdhB1ErrorRising
+ snmp-agent trap enable feature-name IFNET trap-name hwIfMonitorSdhB1ErrorResume
+ snmp-agent trap enable feature-name IFNET trap-name hwIfMonitorSdhB2ErrorRising
+ snmp-agent trap enable feature-name IFNET trap-name hwIfMonitorSdhB2ErrorResume
+ snmp-agent trap enable feature-name IFNET trap-name hwIfMonitorSymbolErrorRising
+ snmp-agent trap enable feature-name IFNET trap-name hwIfMonitorSymbolErrorResume
+ snmp-agent trap enable feature-name etrunk trap-name hwETrunkStatusChange
+ snmp-agent trap enable feature-name etrunk trap-name hwETrunkMemberStatusChange
+ snmp-agent trap enable feature-name CONFIGURATION trap-name hwCfgManEventlog
+ snmp-agent trap enable feature-name CONFIGURATION trap-name hwCfgOperateCompletion
+ snmp-agent trap enable feature-name SYSTEM trap-name hwSysReloadNotification
+ snmp-agent trap enable feature-name SYSTEM trap-name hwPatchErrorTrap
+ snmp-agent trap enable feature-name SYSTEM trap-name hwSysSlaveSwitchFailNotification
+ snmp-agent trap enable feature-name SYSTEM trap-name hwSysSlaveSwitchSuccessNotification
+ snmp-agent trap enable feature-name standard trap-name coldstart
+ snmp-agent trap enable feature-name standard trap-name warmstart
+ snmp-agent trap enable feature-name standard trap-name authentication
+ snmp-agent trap enable feature-name standard trap-name linkup
+ snmp-agent trap enable feature-name standard trap-name linkdown
+#
+ header login information "WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!"
+#
+slot 1
+ cpu-defend-policy 6
+#
+slot 2
+ cpu-defend-policy 6
+#
+user-interface maximum-vty 10
+user-interface con 0
+ authentication-mode password
+ set authentication password cipher %$%$"AoJ,0XN}FpQZeE%C#y~,"D5ZVR.=fZ@w*.xEt)%DF9."D8,%$%$
+ screen-length 0
+user-interface aux 0
+user-interface vty 0 9
+ acl 2001 inbound
+ authentication-mode aaa
+user-interface vty 16 20
+#
+return
+<SX-SX-DM-SR-1.MAN.NE40E>

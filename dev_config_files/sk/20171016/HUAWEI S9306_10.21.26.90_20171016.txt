@@ -1,0 +1,674 @@
+
+!Software Version V200R008C00SPC500
+#
+sysname QZ-LY-ZZC-DSW-1.MAN.S9306
+#
+super password level 3 cipher %$%$YJ8aMIj[JJ|--\F.;B,TRJu{x*LFJX\`oIM!.Q/Lj#,RJu!R%$%$
+#
+info-center source default channel 2 log level warning trap level warning
+info-center source default channel 4 log level notification
+info-center source SHELL channel 4 log level notification
+info-center source NTP channel 4 log state off 
+info-center loghost source Vlanif23
+info-center loghost 10.192.0.11 facility local4
+info-center loghost 10.192.0.12 facility local4
+#
+vlan batch 20 to 23 26 to 28 31 156 190 192 to 193 201 205 209 228 to 229
+vlan batch 231 250 284 294 to 296 300 524 604 606 to 607 614 700
+vlan batch 727 800 818 823 830 to 831 839 897 913 1349 to 1350 1585 to 1590
+vlan batch 1592 to 1596 3009 3522 3565 to 3569 3635 3677 3898 to 3899 3909
+#
+undo authentication unified-mode
+#
+set save-configuration interval 43200 delay 30
+#
+telnet server enable
+telnet ipv6 server enable
+#
+lldp enable
+#
+undo http server enable
+undo http secure-server enable
+#
+undo management-port isolate enable
+undo management-plane isolate enable
+#
+clock timezone GMT add 08:00:00
+#
+diffserv domain default
+#
+hwtacacs-server template zjdx
+ hwtacacs-server authentication 70.0.0.32
+ hwtacacs-server authorization 70.0.0.32
+ hwtacacs-server accounting 70.0.0.32
+ hwtacacs-server source-ip 10.21.26.90
+ hwtacacs-server shared-key cipher %^%#\.^m1$n"}Y-f-',J!#~Kp'&E5_!/TC+{'%HO=E{K%^%#
+ hwtacacs-server timer response-timeout 30
+ undo hwtacacs-server user-name domain-included
+#
+acl number 2000  
+ description SNMP
+ rule 10 permit source 10.192.0.0 0.0.0.255 
+ rule 20 permit source 10.31.255.0 0.0.0.255 
+ rule 30 permit source 70.0.1.0 0.0.0.127 
+ rule 100 deny 
+acl number 2001  
+ description Telnet
+ rule 10 permit source 10.10.0.0 0.0.1.255 
+ rule 20 permit source 10.192.0.0 0.0.0.31 
+ rule 30 permit source 10.21.26.0 0.0.0.255 
+ rule 40 permit source 70.0.0.0 0.0.3.255 
+ rule 50 permit source 10.31.255.0 0.0.0.255 
+ rule 100 deny 
+acl number 2002  
+ description NTP
+ rule 10 permit source 70.0.0.32 0 
+ rule 100 deny 
+#
+traffic classifier tcAny operator or precedence 10
+ if-match any
+traffic classifier tcIAD operator or precedence 5
+ if-match cvlan-id 3599 to 3600
+#
+traffic behavior tb100m
+ permit
+ car cir 102400 pir 102400 cbs 12800000 pbs 12800000 mode color-blind green pass yellow pass red discard
+traffic behavior tb10m
+ permit
+ car cir 10240 pir 10240 cbs 1280000 pbs 1280000 mode color-blind green pass yellow pass red discard
+traffic behavior tb1m
+ permit
+ car cir 1024 pir 1024 cbs 128000 pbs 128000 mode color-blind green pass yellow pass red discard
+traffic behavior tb20m
+ permit
+ car cir 20480 pir 20480 cbs 2560000 pbs 2560000 mode color-blind green pass yellow pass red discard
+traffic behavior tb2m
+ permit
+ car cir 2048 pir 2048 cbs 256000 pbs 256000 mode color-blind green pass yellow pass red discard
+traffic behavior tb4m
+ permit
+ car cir 4096 pir 4096 cbs 512000 pbs 512000 mode color-blind green pass yellow pass red discard
+traffic behavior tb50m
+ permit
+ car cir 51200 pir 51200 cbs 6400000 pbs 6400000 mode color-blind green pass yellow pass red discard
+traffic behavior tb6m
+ permit
+ car cir 6144 pir 6144 cbs 768000 pbs 768000 mode color-blind green pass yellow pass red discard
+traffic behavior tb8m
+ permit
+ car cir 8192 pir 8192 cbs 1024000 pbs 1024000 mode color-blind green pass yellow pass red discard
+traffic behavior tbIAD
+ permit
+ remark 8021p 4
+#
+traffic policy 100m match-order auto
+ classifier tcAny behavior tb100m
+traffic policy 10m match-order auto
+ classifier tcAny behavior tb10m
+traffic policy 1m match-order auto
+ classifier tcAny behavior tb1m
+traffic policy 20m match-order auto
+ classifier tcAny behavior tb20m
+traffic policy 2m match-order auto
+ classifier tcAny behavior tb2m
+traffic policy 4m match-order auto
+ classifier tcAny behavior tb4m
+traffic policy 50m match-order auto
+ classifier tcAny behavior tb50m
+traffic policy 6m match-order auto
+ classifier tcAny behavior tb6m
+traffic policy 8m match-order auto
+ classifier tcAny behavior tb8m
+traffic policy tpIAD match-order auto
+ classifier tcIAD behavior tbIAD
+#
+drop-profile default
+#
+vlan 20
+ description cisco-switch-managed
+vlan 21
+ description Manager_UT_ADSL
+vlan 22
+ description Manager_ZTE_ADSL
+vlan 23
+ description For-Management
+vlan 26
+ description Manager_LouDao_Switch
+vlan 27
+ description zaozhichangshenghuoqu_donglijiankong
+vlan 192
+ description shangyutou-vdsl
+vlan 193
+ description LongYou_Zhixiao
+vlan 201
+ description HuaMao_SCHOOL
+vlan 205
+ description WuJing_GeRen
+vlan 209
+ description XinShiTong_Vlan
+vlan 229
+ description TaEnZhiYe-GongSi
+vlan 231
+ description YaLun_GongSi
+vlan 250
+ description xinxidi
+vlan 284
+ description vdsl
+vlan 294
+ description WangYouZhiJia_netbar(chenxin)
+vlan 300
+ description ZhongYiYuan_LAN
+vlan 524
+ description QiXiangJu
+vlan 700
+ description Connect_29xx
+vlan 727
+ description Uplink_ly4006-2
+vlan 800
+ description ADSL_MANAGER
+vlan 818
+ description ZaoZiChangArea_ZTE_PPPoE_1-3#
+vlan 823
+ description ZhaoZiChang_adsl
+vlan 831
+ description ShiLiPu_ZTE8220_PPPoE_1#
+vlan 839
+ description ZaoZiChang_ZTE8220_PPPoE_1
+vlan 897
+ description LY_VDSL_Manage_PPPoE
+vlan 1349
+ description P_ZaoZhiChangShenghouQu
+vlan 1350
+ description P_ZaoZiChang_ZTE8220
+vlan 1585
+ description P_ZaoZhiChangShuSe10#
+vlan 1586
+ description P_ZaoZhiChangShuSe21#
+vlan 1587
+ description P_ChaoYangXiaoQu2#
+vlan 1588
+ description P_DongHuaJieB#
+vlan 1589
+ description LY_LYJF_9210_1_1-4#
+vlan 1590
+ description VLAN2374
+vlan 1592
+ description P_ZaoZhiChang_jifang
+vlan 1593
+ description P_ZaoZhiChangShuSe27#
+vlan 1594
+ description P_ShiLiPu_jifang
+vlan 1595
+ description P_LongYouzhongXue_ADSL
+vlan 1596
+ description P_ShengZiJifang
+vlan 3009
+ description To_CaiShuiVPN-DongHuaSheQu
+vlan 3565
+ description ZZC35_LongYou_Zhixiao193
+vlan 3566
+ description ZZC35_HuaMao_SCHOOL201
+vlan 3567
+ description ZZC35_TaEnZhiYe-GongSi229
+vlan 3568
+ description ZZC35_YaLun_GongSi231
+vlan 3569
+ description ZZC35_WangYouZhiJia_netbar(chenx
+vlan 3635
+ description LY_XinXiDiGongSi250
+vlan 3909
+ description TaEnZhiYeHuanBaoJianKong
+#
+aaa
+ authentication-scheme default
+ authentication-scheme zjdx
+  authentication-mode hwtacacs local
+ authorization-scheme default
+ authorization-scheme zjdx
+  authorization-mode  hwtacacs local
+ accounting-scheme default
+ accounting-scheme zjdx
+  accounting-mode hwtacacs
+  accounting start-fail online
+ recording-scheme zjdx
+  recording-mode hwtacacs zjdx
+ cmd recording-scheme zjdx
+ outbound recording-scheme zjdx
+ system recording-scheme zjdx
+ domain default
+ domain default_admin
+  authentication-scheme zjdx
+  accounting-scheme zjdx
+  authorization-scheme zjdx
+  hwtacacs-server zjdx
+ local-user admin password irreversible-cipher %^%#H-4A;[r:{@w*[q>'u;AAY(dR+'<<g,^pXuLI:KI@dU'>"i)IT'wJ/@WM<aPT%^%#
+ local-user admin service-type http
+ local-user local password irreversible-cipher %^%#zMmz4&dA%UVWM_,PP!>'%Jjq3bU2a3[t85UdVV8LGeSC%vr`T+jX/`TiFN;<%^%#
+ local-user local privilege level 3
+ local-user local service-type telnet terminal
+ local-user zjnoc password irreversible-cipher %^%#diB.,QA}D8JE#H7|.2+Z5A|g=M3e6%FSfy-Pvk(Y6w-d34r[>S{zTvGeXHbW%^%#
+ local-user zjnoc privilege level 3
+ local-user zjnoc service-type telnet terminal
+#
+ntp-service access peer 2002
+ntp-service unicast-server 70.0.0.32 version 2 source-interface Vlanif23 preference
+#
+interface Vlanif23
+ description For-Management
+ ip address 10.21.26.90 255.255.254.0
+#
+interface Eth-Trunk8
+ description uT:QZ-LY-LY-DSW-1.MAN.S9306:ETH15(GE4/0/15,GE6/0/15)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 20 to 23 26 to 28 156 to 399 500 to 502 504 to 523 525 to 542 544 to 1200 1350 1585 to 1590 1592 to 1596
+ port trunk allow-pass vlan 3009 3400 to 3854 3856 to 4093
+#
+interface Ethernet0/0/0
+ ip address 192.168.100.1 255.255.255.252
+#
+interface GigabitEthernet3/0/0
+ description TaEnZhiYeHuanBaoJianKong.CORP::kehu
+ port link-type access
+ port default vlan 3909
+#
+interface GigabitEthernet3/0/1
+ description DongHuaSheQuCaiZhengSuo.GOV::kehu
+ port link-type access
+ port default vlan 3009
+#
+interface GigabitEthernet3/0/2
+ shutdown
+#
+interface GigabitEthernet3/0/3
+ description dT:QZ-LY-WYZhiJia-ASW-1.MAN.S2403H:(F0101010001)ETH0/25
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 26
+ port hybrid untagged vlan 1588
+ port vlan-stacking vlan 2501 to 2575 stack-vlan 1588
+ port vlan-stacking vlan 3832 stack-vlan 1588
+#
+interface GigabitEthernet3/0/4
+ shutdown
+#
+interface GigabitEthernet3/0/5
+ description dT:QZ-LY-ZHGZKXL-LSW-1.MAN.RJ5750:(F1407040002)FE0/1
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 21 to 26
+ port hybrid untagged vlan 1592
+ port vlan-stacking vlan 231 stack-vlan 1592
+ port vlan-stacking vlan 434 stack-vlan 1592
+ port vlan-stacking vlan 543 stack-vlan 1592
+ port vlan-stacking vlan 614 stack-vlan 1592
+ port vlan-stacking vlan 700 stack-vlan 1592
+ port vlan-stacking vlan 913 stack-vlan 1592
+ port vlan-stacking vlan 1201 to 1700 stack-vlan 1592
+ port vlan-stacking vlan 2501 to 2600 stack-vlan 1592
+ port vlan-stacking vlan 3101 stack-vlan 1592
+ port vlan-stacking vlan 3363 stack-vlan 1592
+ port vlan-stacking vlan 3500 stack-vlan 1592
+ port vlan-stacking vlan 3568 stack-vlan 1592
+ port vlan-stacking vlan 3600 stack-vlan 1592
+ port vlan-stacking vlan 3901 stack-vlan 1592
+ port vlan-stacking vlan 3909 stack-vlan 1592
+#
+interface GigabitEthernet3/0/6
+ shutdown
+#
+interface GigabitEthernet3/0/7
+ description dT:QZ-LY-SLPu-ASW-1.MAN.S2403H:(F0511160008)ETH0/1
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 21 to 26
+ port hybrid untagged vlan 1594
+ port vlan-stacking vlan 503 stack-vlan 1594
+ port vlan-stacking vlan 1201 to 1700 stack-vlan 1594
+ port vlan-stacking vlan 2501 to 2525 stack-vlan 1594
+ port vlan-stacking vlan 3360 stack-vlan 1594
+ port vlan-stacking vlan 3600 stack-vlan 1594
+ port vlan-stacking vlan 3855 stack-vlan 1594
+ port vlan-stacking vlan 3998 to 3999 stack-vlan 1594
+#
+interface GigabitEthernet3/0/8
+ description 5701LAN09009919 To GuangHuaQiCaiChangJianKong.CORP 6M
+ port link-type access
+ port default vlan 3677
+#
+interface GigabitEthernet3/0/9
+ description TaEnZaoZhi.CORP::kehu
+ port link-type access
+ port default vlan 3567
+#
+interface GigabitEthernet3/0/10
+ shutdown
+#
+interface GigabitEthernet3/0/11
+ shutdown
+#
+interface GigabitEthernet3/0/12
+ description XinXiDi.CORP::kehu
+ port link-type access
+ port default vlan 3635
+#
+interface GigabitEthernet3/0/13
+ shutdown
+#
+interface GigabitEthernet3/0/14
+ shutdown
+#
+interface GigabitEthernet3/0/15
+ shutdown
+#
+interface GigabitEthernet3/0/16
+ description dT:QZ-LY-ZZC-ASW-1.MAN.S2403:(Local)ETH1/0/1
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 23 26
+ port hybrid untagged vlan 1589
+ port vlan-stacking vlan 2501 to 2550 stack-vlan 1589
+ port vlan-stacking vlan 3366 stack-vlan 1589
+ port vlan-stacking vlan 3748 stack-vlan 1589
+ port vlan-stacking vlan 3766 stack-vlan 1589
+ port vlan-stacking vlan 3851 stack-vlan 1589
+#
+interface GigabitEthernet3/0/17
+ shutdown
+#
+interface GigabitEthernet3/0/18
+ shutdown
+#
+interface GigabitEthernet3/0/19
+ shutdown
+#
+interface GigabitEthernet3/0/20
+ shutdown
+#
+interface GigabitEthernet3/0/21
+ shutdown
+#
+interface GigabitEthernet3/0/22
+ shutdown
+#
+interface GigabitEthernet3/0/23
+ shutdown
+#
+interface GigabitEthernet3/0/24
+ shutdown
+#
+interface GigabitEthernet3/0/25
+ shutdown
+#
+interface GigabitEthernet3/0/26
+ shutdown
+#
+interface GigabitEthernet3/0/27
+ shutdown
+#
+interface GigabitEthernet3/0/28
+ shutdown
+#
+interface GigabitEthernet3/0/29
+ shutdown
+#
+interface GigabitEthernet3/0/30
+ shutdown
+#
+interface GigabitEthernet3/0/31
+ shutdown
+#
+interface GigabitEthernet3/0/32
+ shutdown
+#
+interface GigabitEthernet3/0/33
+ shutdown
+#
+interface GigabitEthernet3/0/34
+ shutdown
+#
+interface GigabitEthernet3/0/35
+ shutdown
+#
+interface GigabitEthernet3/0/36
+ shutdown
+#
+interface GigabitEthernet3/0/37
+ shutdown
+#
+interface GigabitEthernet3/0/38
+ shutdown
+#
+interface GigabitEthernet3/0/39
+ shutdown
+#
+interface GigabitEthernet3/0/40
+ shutdown
+#
+interface GigabitEthernet3/0/41
+ shutdown
+#
+interface GigabitEthernet3/0/42
+ shutdown
+#
+interface GigabitEthernet3/0/43
+ shutdown
+#
+interface GigabitEthernet3/0/44
+ shutdown
+#
+interface GigabitEthernet3/0/45
+ shutdown
+#
+interface GigabitEthernet3/0/46
+ shutdown
+#
+interface GigabitEthernet3/0/47
+ description ZaoZhiChangShengHuoQuDongLiJianKong::kehu
+ port link-type access
+ port default vlan 27
+#
+interface GigabitEthernet4/0/0
+ shutdown
+#
+interface GigabitEthernet4/0/1
+ description uT:QZ-LY-LY-DSW-1.MAN.S9306:(F0803310001)GE4/0/15
+ eth-trunk 8
+#
+interface GigabitEthernet4/0/2
+ shutdown
+#
+interface GigabitEthernet4/0/3
+ shutdown
+#
+interface GigabitEthernet4/0/4
+ shutdown
+#
+interface GigabitEthernet4/0/5
+ shutdown
+#
+interface GigabitEthernet4/0/6
+ shutdown
+#
+interface GigabitEthernet4/0/7
+ shutdown
+#
+interface GigabitEthernet4/0/8
+ shutdown
+#
+interface GigabitEthernet4/0/9
+ shutdown
+#
+interface GigabitEthernet4/0/10
+ shutdown
+#
+interface GigabitEthernet4/0/11
+ shutdown
+#
+interface GigabitEthernet4/0/12
+ description dT:QZ-LY-JMin-ASW-1.MAN.ZX3228:()GE3/1
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 21 to 26 28 3009
+ port hybrid untagged vlan 1585
+ port vlan-stacking vlan 27 stack-vlan 1585
+ port vlan-stacking vlan 294 stack-vlan 1585
+ port vlan-stacking vlan 543 stack-vlan 1585
+ port vlan-stacking vlan 604 stack-vlan 1585
+ port vlan-stacking vlan 700 stack-vlan 1585
+ port vlan-stacking vlan 1201 to 1700 stack-vlan 1585
+ port vlan-stacking vlan 2526 to 2550 stack-vlan 1585
+ port vlan-stacking vlan 3102 stack-vlan 1585
+ port vlan-stacking vlan 3600 stack-vlan 1585
+ port vlan-stacking vlan 3675 stack-vlan 1585
+ port vlan-stacking vlan 3680 stack-vlan 1585
+ port vlan-stacking vlan 3715 stack-vlan 1585
+ port vlan-stacking vlan 3998 stack-vlan 1585
+#
+interface GigabitEthernet4/0/13
+ shutdown
+#
+interface GigabitEthernet4/0/14
+ description dT:QZ-LY-SZhi-DSL-1.MAN.ZX8220:(F1103090021)GE8/4
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 22
+ port hybrid untagged vlan 1596
+ port vlan-stacking vlan 1361 to 1680 stack-vlan 1596
+#
+interface GigabitEthernet4/0/15
+ shutdown
+#
+interface GigabitEthernet4/0/16
+ shutdown
+#
+interface GigabitEthernet4/0/17
+ shutdown
+#
+interface GigabitEthernet4/0/18
+ shutdown
+#
+interface GigabitEthernet4/0/19
+ shutdown
+#
+interface GigabitEthernet4/0/20
+ shutdown
+#
+interface GigabitEthernet4/0/21
+ shutdown
+#
+interface GigabitEthernet4/0/22
+ shutdown
+#
+interface GigabitEthernet4/0/23
+ shutdown
+#
+interface GigabitEthernet6/0/0
+ shutdown
+#
+interface GigabitEthernet6/0/1
+ description uT:QZ-LY-LY-DSW-1.MAN.S9306:(F1003230004)GE6/0/15
+ eth-trunk 8
+#
+interface GigabitEthernet6/0/2
+ shutdown
+#
+interface GigabitEthernet6/0/3
+ shutdown
+#
+interface GigabitEthernet6/0/4
+ shutdown
+#
+interface GigabitEthernet6/0/5
+ shutdown
+#
+interface GigabitEthernet6/0/6
+ shutdown
+#
+interface GigabitEthernet6/0/7
+ shutdown
+#
+interface GigabitEthernet6/0/8
+ shutdown
+#
+interface GigabitEthernet6/0/9
+ shutdown
+#
+interface GigabitEthernet6/0/10
+ shutdown
+#
+interface GigabitEthernet6/0/11
+ shutdown
+#
+interface GigabitEthernet6/0/12
+ shutdown
+#
+interface GigabitEthernet6/0/13
+ description dT:QZ-LY-ZZC-DSL-1.MAN.8220:(Local)GE8/4
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 22
+ port hybrid untagged vlan 1350
+ port vlan-stacking vlan 1201 to 1680 stack-vlan 1350
+ port vlan-stacking vlan 3600 stack-vlan 1350
+#
+interface GigabitEthernet6/0/14
+ shutdown
+#
+interface GigabitEthernet6/0/15
+ shutdown
+#
+interface GigabitEthernet6/0/16
+ shutdown
+#
+interface GigabitEthernet6/0/17
+ shutdown
+#
+interface GigabitEthernet6/0/18
+ shutdown
+#
+interface GigabitEthernet6/0/19
+ shutdown
+#
+interface GigabitEthernet6/0/20
+ shutdown
+#
+interface GigabitEthernet6/0/21
+ shutdown
+#
+interface GigabitEthernet6/0/22
+ shutdown
+#
+interface GigabitEthernet6/0/23
+ shutdown
+#
+interface NULL0
+#
+ip route-static 0.0.0.0 0.0.0.0 10.21.26.1
+#
+snmp-agent
+snmp-agent local-engineid 000007DB7FFFFFFF000047CC
+snmp-agent community read cipher %^%#5[e#@bf.2$`{./>JYF7~~-8$8\OD2'0i<d'1H|!Q2VDgFJS!EJ-]Z,Q^UlY0.Jxz1#K,8!(tOIL=9J^.%^%# acl 2000
+snmp-agent sys-info contact QZ-LY-LY
+snmp-agent sys-info location QZ-LY-ZZC
+snmp-agent sys-info version all
+snmp-agent target-host trap address udp-domain 10.192.0.11 params securityname cipher %^%#G3hA('1X[2|'eY1:"fhLcy}f~"y$T>*`~@0R7w+S%^%# v2c
+snmp-agent target-host trap address udp-domain 10.192.0.12 params securityname cipher %^%#'vxvU'j"V2^"K-"7#CE*t)Z!*SRW`K97-\~/wD@.%^%# v2c
+snmp-agent trap source Vlanif23
+snmp-agent trap enable
+#
+ssh server compatible-ssh1x enable
+#
+header login information " WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!"
+#
+user-interface con 0
+user-interface vty 0 4
+ acl 2001 inbound
+ authentication-mode aaa
+ idle-timeout 5 0
+ protocol inbound telnet
+user-interface vty 16 20
+ protocol inbound telnet
+#
+assistant task savelogfile
+ if-match timer cron * 0 0/1 * * * *
+ perform 1 batch-file savelogfile.bat
+#
+return
+<QZ-LY-ZZC-DSW-1.MAN.S9306>

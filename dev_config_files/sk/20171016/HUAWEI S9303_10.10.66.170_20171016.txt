@@ -1,0 +1,584 @@
+
+!Software Version V200R008C00SPC500
+#
+sysname LS-QT-HaiKou-DSW-2.MAN.9303
+#
+info-center source default channel 2 log level warning trap level warning
+info-center source SHELL channel 4 log level informational
+info-center loghost source Vlanif29
+info-center loghost 10.10.1.130 facility local4
+info-center loghost 10.10.1.133 facility local4
+info-center loghost 218.74.123.118 facility local4
+#
+vlan batch 11 18 23 to 24 27 29 40 44 90 123 265
+vlan batch 270 275 278 300 450 483 700 999 1048 1079
+vlan batch 1310 1429 1451 1470 1476 1601 1619 1677 to 1682 1704 1710
+vlan batch 1761 1770 1779 1782 1797 to 1799 2119 2129 2131 2179 2185
+vlan batch 2202 to 2203 2400 to 2450 3067 to 3069 3121 3129 to 3130 3308 3310 3321 3358 3401
+vlan batch 3403 3407 3468 3563 3599 3817 to 3818 3821 3843 to 3844 3847 3861 to 3863
+vlan batch 3866 3871 3938 3948 3951 3960 to 3971
+#
+undo authentication unified-mode
+#
+telnet server enable
+telnet ipv6 server enable
+#
+dot1x enable
+#
+undo management-port isolate enable
+undo management-plane isolate enable
+#
+clock timezone UTC add 00:00:00
+#
+diffserv domain default
+#
+radius-server template telnet
+ radius-server shared-key cipher %^%#-J>5AAdx^Y;OhR7_axT0!YKhRxcSOA":joWZ]W\(%^%#
+ radius-server authentication 10.10.1.138 1812 weight 80
+ radius-server accounting 10.10.1.138 1813 weight 80
+ undo radius-server user-name domain-included
+#
+hwtacacs-server template lsdx
+ hwtacacs-server authentication 10.10.1.235
+ hwtacacs-server authorization 10.10.1.235
+ hwtacacs-server accounting 10.10.1.235
+ hwtacacs-server source-ip 10.10.66.170
+ hwtacacs-server shared-key cipher %^%#=mgvJx\;Z=sy68UOG*b=_TYW=:=BhKn3#*5vGKh,%^%#
+#
+acl number 3000  
+ description For FangBinDu
+ rule 5 deny tcp destination-port eq 445 
+ rule 10 deny tcp source-port eq 135 
+ rule 15 deny udp source-port eq 135 
+ rule 20 deny tcp destination-port eq 135 
+ rule 25 deny udp destination-port eq 135 
+ rule 30 deny tcp source-port eq 139 
+ rule 35 deny tcp destination-port eq 139 
+ rule 40 deny udp destination-port eq 1434 
+ rule 45 deny tcp destination-port eq 4444 
+ rule 50 deny udp destination-port eq netbios-ns 
+ rule 55 deny udp destination-port eq netbios-dgm 
+ rule 60 deny udp source-port eq netbios-ns 
+ rule 65 deny udp source-port eq netbios-dgm 
+ rule 70 deny tcp source-port eq 137 
+ rule 75 deny tcp destination-port eq 593 
+ rule 80 deny tcp source-port eq 4444 
+ rule 85 deny tcp source-port eq 593 
+ rule 90 deny udp destination-port eq 1026 
+ rule 95 deny udp destination-port eq 1027 
+ rule 100 permit ip 
+#
+traffic classifier tc1 operator or precedence 20
+ if-match acl 3000
+#
+traffic behavior tb1
+ permit
+#
+traffic policy tp1 match-order auto
+ classifier tc1 behavior tb1
+#
+drop-profile default
+#
+aaa
+ authentication-scheme default
+ authentication-scheme telnet
+  authentication-mode radius local
+  authentication-super none
+ authentication-scheme hwtacacs
+  authentication-mode hwtacacs local
+ authorization-scheme default
+ authorization-scheme hwtacacs
+  authorization-mode  hwtacacs local
+ accounting-scheme default
+ accounting-scheme telnet
+ accounting-scheme hwtacacs
+  accounting-mode hwtacacs
+  accounting realtime 3
+  accounting start-fail online
+ recording-scheme hwtacacs
+  recording-mode hwtacacs lsdx
+ cmd recording-scheme hwtacacs
+ domain default
+ domain default_admin
+  authentication-scheme hwtacacs
+  accounting-scheme hwtacacs
+  authorization-scheme hwtacacs
+  hwtacacs-server lsdx
+ local-user admin password irreversible-cipher %^%#I-dw0,#[h3V}Ds3'm}sO]<.D:&n72!CjSy7f)+&V$5F6#t~*fO"Fen$4V5pE%^%#
+ local-user admin privilege level 3
+ local-user admin service-type telnet
+#
+ntp-service unicast-server 10.10.62.19 version 2 source-interface Vlanif29 preference
+ntp-service unicast-server 10.10.62.139 version 2 source-interface Vlanif29
+#
+interface Vlanif29
+ ip address 10.10.66.170 255.255.255.128
+#
+interface Vlanif999
+ ip address 11.11.66.170 255.255.255.0
+#
+interface Vlanif3310
+#
+interface Vlanif3321
+#
+interface Vlanif3817
+#
+interface Vlanif3843
+ ip address 20.34.0.61 255.255.255.240
+#
+interface Vlanif3862
+ shutdown
+#
+interface Vlanif3948
+#
+interface Eth-Trunk1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 44 1470 1704 1770 3129 to 3130 3308 3310 3321 3599 3843 to 3844
+ port trunk allow-pass vlan 3847 3861 to 3863 3866 3948 3951
+#
+interface Eth-Trunk2
+ description uT:LS-QT-HaiKou-OLT-4.MAN.C320(GI1/0/8,GI1/0/9)-SM1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 18 27 1451 3599
+#
+interface Eth-Trunk3
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 999 3308 3844 3847 3861 to 3862
+#
+interface Eth-Trunk4
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 1310 1451 1470 1601 1619 1677 to 1682 1770 1797
+#
+interface Eth-Trunk5
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 1310 1451 1470 1601 1619 1677 to 1682 1770 1782 1797
+#
+interface Eth-Trunk6
+ description uT:LS-QT-HaiKou-DSW-3.MAN.ZTE8908(GI1/018.GI1/19)-ETH6
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 11 18 23 to 24 27 29 40 44 90 123 265
+ port trunk allow-pass vlan 270 275 278 300 450 483 700 999 1048 1079
+ port trunk allow-pass vlan 1310 1429 1451 1470 1476 1601 1619 1677 to 1682 1704 1710
+ port trunk allow-pass vlan 1770 1779 1782 1797 to 1799 2119 2129 2131 2179 2185 2202 to 2203
+ port trunk allow-pass vlan 2400 to 2450 3067 to 3069 3121 3129 to 3130 3308 3310 3321 3358 3401 3403
+ port trunk allow-pass vlan 3407 3468 3563 3599 3817 to 3818 3821 3843 to 3844 3847 3861 to 3863 3866
+ port trunk allow-pass vlan 3871 3938 3948 3951 3960 to 3971
+#
+interface Ethernet0/0/0
+#
+interface GigabitEthernet1/0/0
+ description VPN-EDU-HaiKouZenXiao::kehu
+ port link-type access
+ port default vlan 265
+#
+interface GigabitEthernet1/0/1
+ undo negotiation auto
+ port link-type trunk
+ port trunk allow-pass vlan 23 to 24 1429 1470 1476
+#
+interface GigabitEthernet1/0/2
+ undo negotiation auto
+ description dT:LS-QT-HaiKou-DSW-3.MAN.C3550:(local)gi0/2
+ port link-type trunk
+ port trunk allow-pass vlan 11 23 to 24 29 40 44 123 265 270 275 278
+ port trunk allow-pass vlan 450 483 1048 1079 1601 1619 1677 to 1682 1710 1779 1797 to 1799
+ port trunk allow-pass vlan 2119 2129 2131 2179 2185 2202 to 2203 2400 to 2450 3067 to 3069 3121 3358
+ port trunk allow-pass vlan 3401 3403 3407 3817 3938
+#
+interface GigabitEthernet1/0/3
+ undo negotiation auto
+ port link-type trunk
+ port trunk allow-pass vlan 29 265 278 450 1677 1682 1704 1710 2185 3121
+ port trunk allow-pass vlan 3401 3403 3407 3821 3866
+#
+interface GigabitEthernet1/0/4
+ undo negotiation auto
+ port link-type trunk
+ port trunk allow-pass vlan 29 265 300 1678 1680 2185 3129 to 3130 3401 3403 3407
+ port trunk allow-pass vlan 3818
+#
+interface GigabitEthernet1/0/5
+ undo negotiation auto
+ description dT:LS-QT-HaiKou-OLT-3.MAN.C220:(local)GE2/1
+ port link-type trunk
+ port trunk allow-pass vlan 18 27 1770 1782 3598 to 3599
+#
+interface GigabitEthernet1/0/6
+ undo negotiation auto
+ port link-type trunk
+ port trunk allow-pass vlan 29 265 300 1679 2185 3129 to 3130 3401 3403 3407
+#
+interface GigabitEthernet1/0/7
+ undo negotiation auto
+ shutdown
+ port link-type dot1q-tunnel
+ port default vlan 1681
+#
+interface GigabitEthernet1/0/8
+ description dT:LS-QT-HaiKou-OLT-4.MAN.C320:(local)GE7/1
+ eth-trunk 2
+#
+interface GigabitEthernet1/0/9
+ description dT:LS-QT-HaiKou-OLT-4.MAN.C320:(local)GE8/1
+ eth-trunk 2
+#
+interface GigabitEthernet1/0/10
+ eth-trunk 3
+#
+interface GigabitEthernet1/0/11
+ eth-trunk 3
+#
+interface GigabitEthernet1/0/12
+ undo negotiation auto
+ port link-type trunk
+ port trunk allow-pass vlan 11 18 23 to 24 27 29 40 123 265 270 275
+ port trunk allow-pass vlan 278 300 450 483 1048 1079 1310 1601 1619 1677 to 1682
+ port trunk allow-pass vlan 1704 1710 1770 1779 1782 1797 to 1799 2119 2129 2131 2179
+ port trunk allow-pass vlan 2185 2202 to 2203 3067 to 3069 3121 3401 3403 3407 3563 3817 to 3818 3821
+ port trunk allow-pass vlan 3938
+#
+interface GigabitEthernet1/0/13
+ undo negotiation auto
+ eth-trunk 1
+#
+interface GigabitEthernet1/0/14
+ eth-trunk 4
+#
+interface GigabitEthernet1/0/15
+ eth-trunk 5
+#
+interface GigabitEthernet1/0/16
+ description VPN-EDU-HaiKouZenZong::kehu
+ port link-type access
+ port default vlan 265
+#
+interface GigabitEthernet1/0/17
+#
+interface GigabitEthernet1/0/18
+ undo negotiation auto
+ description uT:LS-QT-HaiKou-DSW-1.MAN.ZTE8908:(LOCAL)GE1/1
+ eth-trunk 6
+#
+interface GigabitEthernet1/0/19
+ undo negotiation auto
+ description uT:LS-QT-HaiKou-DSW-1.MAN.ZTE8908:(LOCAL)GE1/2
+ eth-trunk 6
+#
+interface GigabitEthernet1/0/20
+ undo negotiation auto
+ port link-type trunk
+#
+interface GigabitEthernet1/0/21
+ undo negotiation auto
+ description uT:LS-QT-HaiKou-DSW-1.MAN.ZTE8908:(LOCAL)GE1/3
+ eth-trunk 6
+#
+interface GigabitEthernet1/0/22
+ undo negotiation auto
+ description uT:LS-QT-HaiKou-DSW-1.MAN.ZTE8908:(LOCAL)GE1/4
+ eth-trunk 6
+#
+interface GigabitEthernet1/0/23
+ undo negotiation auto
+ eth-trunk 1
+#
+interface GigabitEthernet2/0/0
+ description ShanXun-HaiKouNanAnGaoTie::kehu
+ port link-type dot1q-tunnel
+ port default vlan 1310
+#
+interface GigabitEthernet2/0/1
+ description VPN-SiFa-HaiKou::kehu
+ port link-type access
+ port default vlan 3817
+#
+interface GigabitEthernet2/0/2
+ description test-DongLiJianKong::kehu
+ port link-type access
+ port default vlan 300
+#
+interface GigabitEthernet2/0/3
+ description VPN-SheBao-HaiKouZhen::kehu
+ port link-type trunk
+ port trunk allow-pass vlan 3129 to 3130
+#
+interface GigabitEthernet2/0/4
+ undo negotiation auto
+ speed 10
+ description IP-HaiKouYingYeJianKong::kehu
+ port link-type access
+ port default vlan 3310
+#
+interface GigabitEthernet2/0/5
+ description VPN-JiaoJinKaKou-ShiMenDong::kehu
+ port link-type access
+ port default vlan 3951
+#
+interface GigabitEthernet2/0/6
+ description VPN-JiaoYouZhan-GaoShao::kehu
+ port link-type access
+ port default vlan 3863
+#
+interface GigabitEthernet2/0/7
+ description VPN-HangGuanSuo-ShiMenDongDuKou::kehu
+ port link-type access
+ port default vlan 3871
+#
+interface GigabitEthernet2/0/8
+ shutdown
+ port link-type access
+ port default vlan 3321
+#
+interface GigabitEthernet2/0/9
+ description VPN-GLD-JianKong-JieFu::kehu
+ port link-type access
+ port default vlan 3121
+#
+interface GigabitEthernet2/0/10
+ description GOV-HaiKou-PaiChuSuo::kehu
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 90 3468
+#
+interface GigabitEthernet2/0/11
+ description VPN-ShuiLi-JianKong-ShiMenDong::kehu
+ port link-type access
+ port default vlan 3403
+#
+interface GigabitEthernet2/0/12
+ description VPN-NongShanYinHang-HaiKouZhiHang::kehu
+ port link-type trunk
+ port trunk allow-pass vlan 3960 to 3971
+#
+interface GigabitEthernet2/0/13
+#
+interface GigabitEthernet2/0/14
+#
+interface GigabitEthernet2/0/15
+#
+interface GigabitEthernet2/0/16
+#
+interface GigabitEthernet2/0/17
+#
+interface GigabitEthernet2/0/18
+#
+interface GigabitEthernet2/0/19
+#
+interface GigabitEthernet2/0/20
+#
+interface GigabitEthernet2/0/21
+#
+interface GigabitEthernet2/0/22
+#
+interface GigabitEthernet2/0/23
+#
+interface GigabitEthernet2/0/24
+#
+interface GigabitEthernet2/0/25
+#
+interface GigabitEthernet2/0/26
+#
+interface GigabitEthernet2/0/27
+#
+interface GigabitEthernet2/0/28
+#
+interface GigabitEthernet2/0/29
+#
+interface GigabitEthernet2/0/30
+#
+interface GigabitEthernet2/0/31
+#
+interface GigabitEthernet2/0/32
+#
+interface GigabitEthernet2/0/33
+#
+interface GigabitEthernet2/0/34
+#
+interface GigabitEthernet2/0/35
+#
+interface GigabitEthernet2/0/36
+#
+interface GigabitEthernet2/0/37
+#
+interface GigabitEthernet2/0/38
+#
+interface GigabitEthernet2/0/39
+#
+interface GigabitEthernet2/0/40
+#
+interface GigabitEthernet2/0/41
+#
+interface GigabitEthernet2/0/42
+#
+interface GigabitEthernet2/0/43
+#
+interface GigabitEthernet2/0/44
+#
+interface GigabitEthernet2/0/45
+#
+interface GigabitEthernet2/0/46
+ port link-type access
+ port default vlan 2185
+#
+interface GigabitEthernet2/0/47
+ port link-type access
+ port default vlan 2185
+#
+interface GigabitEthernet3/0/0
+ undo negotiation auto
+ speed 100
+ description VPN-GOV-QingTianShiMenDong5AChuanJianBanGongShi::kehu
+ port link-type access
+ port default vlan 3563
+#
+interface GigabitEthernet3/0/1
+#
+interface GigabitEthernet3/0/2
+ undo negotiation auto
+ description dT:LS-QT-HaiKou-OLT-1.MAN.HW5680T-1:(local)GE7/1
+ port link-type trunk
+ port trunk allow-pass vlan 23 to 24 1797 to 1799
+#
+interface GigabitEthernet3/0/3
+ description test-HaiKouYingYe::kehu
+ port link-type trunk
+ port trunk allow-pass vlan 450 700
+#
+interface GigabitEthernet3/0/4
+#
+interface GigabitEthernet3/0/5
+#
+interface GigabitEthernet3/0/6
+#
+interface GigabitEthernet3/0/7
+#
+interface GigabitEthernet3/0/8
+#
+interface GigabitEthernet3/0/9
+#
+interface GigabitEthernet3/0/10
+#
+interface GigabitEthernet3/0/11
+#
+interface GigabitEthernet3/0/12
+#
+interface GigabitEthernet3/0/13
+#
+interface GigabitEthernet3/0/14
+#
+interface GigabitEthernet3/0/15
+#
+interface GigabitEthernet3/0/16
+#
+interface GigabitEthernet3/0/17
+#
+interface GigabitEthernet3/0/18
+#
+interface GigabitEthernet3/0/19
+#
+interface GigabitEthernet3/0/20
+#
+interface GigabitEthernet3/0/21
+#
+interface GigabitEthernet3/0/22
+#
+interface GigabitEthernet3/0/23
+#
+interface GigabitEthernet3/0/24
+#
+interface GigabitEthernet3/0/25
+#
+interface GigabitEthernet3/0/26
+#
+interface GigabitEthernet3/0/27
+#
+interface GigabitEthernet3/0/28
+#
+interface GigabitEthernet3/0/29
+#
+interface GigabitEthernet3/0/30
+#
+interface GigabitEthernet3/0/31
+#
+interface GigabitEthernet3/0/32
+#
+interface GigabitEthernet3/0/33
+#
+interface GigabitEthernet3/0/34
+#
+interface GigabitEthernet3/0/35
+#
+interface GigabitEthernet3/0/36
+ port link-type access
+ port default vlan 1704
+#
+interface GigabitEthernet3/0/37
+#
+interface GigabitEthernet3/0/38
+#
+interface GigabitEthernet3/0/39
+#
+interface GigabitEthernet3/0/40
+#
+interface GigabitEthernet3/0/41
+#
+interface GigabitEthernet3/0/42
+#
+interface GigabitEthernet3/0/43
+#
+interface GigabitEthernet3/0/44
+#
+interface GigabitEthernet3/0/45
+#
+interface GigabitEthernet3/0/46
+ shutdown
+ port link-type access
+ port default vlan 2185
+#
+interface GigabitEthernet3/0/47
+ description HaiKouYinYe(LF)::kehu
+ port link-type access
+ port default vlan 2185
+#
+interface NULL0
+#
+ip route-static 0.0.0.0 0.0.0.0 10.10.66.129
+#
+snmp-agent
+snmp-agent local-engineid 000007DB7FFFFFFF00003C8C
+snmp-agent community read cipher %^%#'-rsICJ4l*38V}G<E+9M+(aY3'7o'3\KC:K!U`%S.6LMHkBhAO+Xe'1E~_,D@>D}.6@KN:!d'F36BL(C%^%#
+snmp-agent sys-info contact R&D Nanjing, Huawei Technologies co.,Ltd.
+snmp-agent sys-info location Nanjing China
+snmp-agent sys-info version all
+snmp-agent target-host trap address udp-domain 10.10.1.132 udp-port 161 params securityname cipher %^%#S>\V.eo0,W42t*!6Tdc+-1s;6\&ByQ--y(QFt%e#%^%#
+undo snmp-agent trap enable feature-name DLDP
+undo snmp-agent trap enable feature-name LDTTRAP
+undo snmp-agent trap enable feature-name LLDPTRAP
+snmp-agent trap enable feature-name BASETRAP
+#
+ssh server compatible-ssh1x enable
+#
+header login information " WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user! "
+#
+user-interface con 0
+user-interface vty 0 4
+ authentication-mode aaa
+ user privilege level 1
+ protocol inbound telnet
+user-interface vty 16 20
+ protocol inbound telnet
+#
+port-group default
+#
+port-group eth
+#
+port-group priority
+#
+return
+<LS-QT-HaiKou-DSW-2.MAN.9303>

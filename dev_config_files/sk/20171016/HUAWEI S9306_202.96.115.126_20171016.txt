@@ -1,0 +1,608 @@
+
+!Software Version V200R003C00SPC500
+#
+sysname ZS-PT-LX-DSW-1.MAN.9306
+#
+info-center source default channel 2 log level warning trap level warning
+info-center source SHELL channel 4 log level informational
+info-center loghost source Vlanif10
+info-center loghost 202.96.115.126
+#
+vlan batch 10 911 3104 3800 3884 3886 3994 3996 to 3999
+#
+domain zsdx admin
+#
+undo http server enable
+undo http secure-server enable
+#
+undo nap slave enable
+#
+ dba-profile default0 type3 assure 40000 max 80000
+#
+diffserv domain default
+#
+hwtacacs-server template zsdx
+ hwtacacs-server authentication 202.96.115.27
+ hwtacacs-server authorization 202.96.115.27
+ hwtacacs-server accounting 202.96.115.27
+ hwtacacs-server source-ip 202.96.115.126
+ hwtacacs-server shared-key cipher %@%@'Ju'"uq~$9nq*`0l|7h7CDvN%@%@
+ undo hwtacacs-server user-name domain-included
+#
+ line-profile default0
+#
+ service-profile default0
+#
+acl number 2000
+ rule 5 permit source 61.175.176.224 0.0.0.31
+ rule 10 permit source 61.175.111.64 0.0.0.31
+ rule 15 permit source 61.174.92.0 0.0.0.255
+ rule 20 permit source 61.174.93.0 0.0.0.255
+ rule 25 permit source 220.187.30.192 0.0.0.63
+ rule 30 permit source 61.153.37.224 0.0.0.15
+ rule 35 permit source 220.187.27.216 0.0.0.7
+#
+acl number 3000
+ rule 0 deny tcp destination-port eq 445
+ rule 1 deny udp destination-port eq 445
+ rule 2 deny tcp destination-port eq 135
+ rule 3 deny tcp destination-port eq 136
+ rule 4 deny tcp destination-port eq 137
+ rule 5 deny tcp destination-port eq 138
+ rule 6 deny tcp destination-port eq 139
+ rule 7 deny udp destination-port eq 135
+ rule 8 deny udp destination-port eq 136
+ rule 9 deny udp destination-port eq netbios-ns
+ rule 10 deny udp destination-port eq netbios-dgm
+ rule 11 deny udp destination-port eq netbios-ssn
+ rule 12 deny udp destination-port eq 1434
+ rule 13 deny udp destination-port eq 6667
+ rule 14 deny udp destination-port eq 7626
+ rule 15 deny udp destination-port eq 6789
+ rule 16 deny udp destination-port eq 5800
+ rule 17 deny udp destination-port eq 5900
+ rule 18 deny tcp destination-port eq 5900
+ rule 19 deny tcp destination-port eq 5800
+ rule 20 deny tcp destination-port eq 1999
+ rule 21 deny tcp destination-port eq 5554
+ rule 22 deny tcp destination-port eq 9995
+ rule 23 deny tcp destination-port eq 9996
+ rule 24 deny udp destination-port eq 12345
+ rule 25 deny udp destination-port eq 1057
+ rule 26 deny udp destination-port eq 2616
+#
+traffic classifier huawei operator or precedence 5
+ if-match acl 3000
+#
+traffic behavior huawei
+ deny
+#
+traffic policy huawei
+ classifier huawei behavior huawei
+#
+drop-profile default
+#
+vlan 10
+ description HW-SW-MGN
+vlan 911
+ description bianfangdadui
+vlan 3104
+ description HaiYangJianCe-VPN
+vlan 3800
+ description LianXinJiFang-E-JianKong
+vlan 3994
+ description ShouLie-Netbar
+vlan 3996
+ description BanShengDongYouKu-MaTou(VPN)
+vlan 3997
+ description GuangTai-Hotel
+vlan 3998
+ description JiaoJinDui-FKPingTai-GAQQY
+vlan 3999
+ description TianCheng-Hotel
+#
+aaa
+ authentication-scheme default
+ authentication-scheme zsdx
+  authentication-mode hwtacacs local
+ authorization-scheme default
+ authorization-scheme zsdx
+  authorization-mode hwtacacs local
+ accounting-scheme default
+ accounting-scheme zsdx
+  accounting-mode hwtacacs
+  accounting start-fail online
+ domain default
+ domain default_admin
+ domain zsdx
+  authentication-scheme zsdx
+  accounting-scheme zsdx
+  authorization-scheme zsdx
+  hwtacacs-server zsdx
+ local-user admin password cipher %@%@*H)*IW9Ac#MYQAV+:{r!CDw7%@%@
+ undo local-user admin service-type
+ local-user zjnoc password cipher %@%@ZT/2(g5%Z+\%hh._,E8,CDw>%@%@
+ local-user zjnoc privilege level 3
+ local-user zjnoc service-type telnet terminal
+ local-user zsadm password cipher %@%@M2;,'aD#<IoX.}3OePVWCDwH%@%@
+ local-user zsadm service-type telnet
+#
+ntp-service unicast-server 202.96.115.130
+#
+interface Vlanif10
+ ip address 202.96.115.126 255.255.255.252
+#
+interface Eth-Trunk0
+ description uT:ZS-PT-DG-SR-1.MAN.NE40:ETH7(GE1/0/6,GE2/0/6)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 10 911 3104 3800 3884 3886 3981 3994 3996 to 3999
+ traffic-policy huawei inbound
+#
+interface Eth-Trunk5
+ description uT:ZS-PT-DG-BAS-2.MAN.7750:LAG2(GE1/1/4,GE2/1/4)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ mode lacp
+#
+interface Ethernet0/0/0
+ ip address 10.11.104.2 255.255.255.0
+#
+interface GigabitEthernet1/0/0
+ undo negotiation auto
+ description uT:ZS-PT-DG-SR-1.MAN.NE40:(F0910280005)GE1/0/6
+ eth-trunk 0
+#
+interface GigabitEthernet1/0/1
+ undo negotiation auto
+ description uT:ZS-PT-DG-BAS-2.MAN.7750:(F1108260005)GE1/1/4
+ eth-trunk 5
+#
+interface GigabitEthernet1/0/2
+ undo negotiation auto
+ description WaiTanJiaYuan_LAN
+ shutdown
+#
+interface GigabitEthernet1/0/3
+ description JiaoJinDui-FKPingTai-GAQQY
+ port link-type access
+ port default vlan 3998
+#
+interface GigabitEthernet1/0/4
+ undo negotiation auto
+ description MingXiuYuan-Lan
+ shutdown
+#
+interface GigabitEthernet1/0/5
+#
+interface GigabitEthernet1/0/6
+#
+interface GigabitEthernet1/0/7
+#
+interface GigabitEthernet1/0/8
+#
+interface GigabitEthernet1/0/9
+#
+interface GigabitEthernet1/0/10
+#
+interface GigabitEthernet1/0/11
+#
+interface GigabitEthernet1/0/12
+#
+interface GigabitEthernet1/0/13
+#
+interface GigabitEthernet1/0/14
+#
+interface GigabitEthernet1/0/15
+#
+interface GigabitEthernet1/0/16
+#
+interface GigabitEthernet1/0/17
+#
+interface GigabitEthernet1/0/18
+#
+interface GigabitEthernet1/0/19
+#
+interface GigabitEthernet1/0/20
+#
+interface GigabitEthernet1/0/21
+#
+interface GigabitEthernet1/0/22
+#
+interface GigabitEthernet1/0/23
+#
+interface GigabitEthernet2/0/0
+ undo negotiation auto
+ description uT:ZS-PT-DG-BAS-2.MAN.7750:(F1108260004)GE2/1/4
+ eth-trunk 5
+#
+interface GigabitEthernet2/0/1
+ undo negotiation auto
+ description uT:ZS-PT-DG-SR-1.MAN.NE40:(F1006240002)GE2/0/6
+ eth-trunk 0
+#
+interface GigabitEthernet2/0/2
+#
+interface GigabitEthernet2/0/3
+#
+interface GigabitEthernet2/0/4
+#
+interface GigabitEthernet2/0/5
+#
+interface GigabitEthernet2/0/6
+#
+interface GigabitEthernet2/0/7
+#
+interface GigabitEthernet2/0/8
+#
+interface GigabitEthernet2/0/9
+#
+interface GigabitEthernet2/0/10
+#
+interface GigabitEthernet2/0/11
+#
+interface GigabitEthernet2/0/12
+#
+interface GigabitEthernet2/0/13
+#
+interface GigabitEthernet2/0/14
+#
+interface GigabitEthernet2/0/15
+#
+interface GigabitEthernet2/0/16
+#
+interface GigabitEthernet2/0/17
+#
+interface GigabitEthernet2/0/18
+#
+interface GigabitEthernet2/0/19
+#
+interface GigabitEthernet2/0/20
+#
+interface GigabitEthernet2/0/21
+#
+interface GigabitEthernet2/0/22
+#
+interface GigabitEthernet2/0/23
+#
+interface GigabitEthernet5/0/0
+ description MiaoMiao_WangBa
+#
+interface GigabitEthernet5/0/1
+#
+interface GigabitEthernet5/0/2
+#
+interface GigabitEthernet5/0/3
+#
+interface GigabitEthernet5/0/4
+#
+interface GigabitEthernet5/0/5
+#
+interface GigabitEthernet5/0/6
+#
+interface GigabitEthernet5/0/7
+#
+interface GigabitEthernet5/0/8
+#
+interface GigabitEthernet5/0/9
+#
+interface GigabitEthernet5/0/10
+#
+interface GigabitEthernet5/0/11
+#
+interface GigabitEthernet5/0/12
+#
+interface GigabitEthernet5/0/13
+#
+interface GigabitEthernet5/0/14
+#
+interface GigabitEthernet5/0/15
+#
+interface GigabitEthernet5/0/16
+#
+interface GigabitEthernet5/0/17
+#
+interface GigabitEthernet5/0/18
+#
+interface GigabitEthernet5/0/19
+#
+interface GigabitEthernet5/0/20
+#
+interface GigabitEthernet5/0/21
+#
+interface GigabitEthernet5/0/22
+#
+interface GigabitEthernet5/0/23
+#
+interface GigabitEthernet5/0/24
+#
+interface GigabitEthernet5/0/25
+#
+interface GigabitEthernet5/0/26
+#
+interface GigabitEthernet5/0/27
+#
+interface GigabitEthernet5/0/28
+#
+interface GigabitEthernet5/0/29
+#
+interface GigabitEthernet5/0/30
+#
+interface GigabitEthernet5/0/31
+#
+interface GigabitEthernet5/0/32
+#
+interface GigabitEthernet5/0/33
+#
+interface GigabitEthernet5/0/34
+#
+interface GigabitEthernet5/0/35
+#
+interface GigabitEthernet5/0/36
+#
+interface GigabitEthernet5/0/37
+#
+interface GigabitEthernet5/0/38
+#
+interface GigabitEthernet5/0/39
+#
+interface GigabitEthernet5/0/40
+#
+interface GigabitEthernet5/0/41
+#
+interface GigabitEthernet5/0/42
+#
+interface GigabitEthernet5/0/43
+#
+interface GigabitEthernet5/0/44
+#
+interface GigabitEthernet5/0/45
+#
+interface GigabitEthernet5/0/46
+#
+interface GigabitEthernet5/0/47
+#
+interface GigabitEthernet6/0/0
+ undo negotiation auto
+ speed 10
+ description TianChen-Hotel
+ shutdown
+ port link-type access
+ port default vlan 3999
+#
+interface GigabitEthernet6/0/1
+ undo negotiation auto
+ speed 100
+ port link-type access
+#
+interface GigabitEthernet6/0/2
+ shutdown
+ port link-type access
+#
+interface GigabitEthernet6/0/3
+ undo negotiation auto
+ speed 100
+ shutdown
+ port link-type access
+#
+interface GigabitEthernet6/0/4
+ undo negotiation auto
+ speed 100
+ shutdown
+ port link-type access
+#
+interface GigabitEthernet6/0/5
+ undo negotiation auto
+ speed 100
+ shutdown
+ port link-type access
+#
+interface GigabitEthernet6/0/6
+ description DongGanChaiChang-GA'QQY-GaiPOn
+ shutdown
+ port link-type access
+#
+interface GigabitEthernet6/0/7
+ port link-type access
+#
+interface GigabitEthernet6/0/8
+ undo negotiation auto
+ speed 100
+ description GuangTai-Hotel
+ shutdown
+ port link-type access
+ port default vlan 3997
+#
+interface GigabitEthernet6/0/9
+ port link-type dot1q-tunnel
+ qos pq 4 wrr 0 to 3 5 to 7
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/10
+ description BianJian-JianKong-BanShengDongYouKu(Chai)
+ shutdown
+ port link-type access
+#
+interface GigabitEthernet6/0/11
+ undo negotiation auto
+ speed 10
+ description BanShengDongYouKu-MaTou
+ port link-type access
+ port default vlan 3996
+ broadcast-suppression 1
+#
+interface GigabitEthernet6/0/12
+ undo negotiation auto
+ speed 10
+ description BanShengDong-HaiYangJianCe-VPN
+ port link-type access
+ port default vlan 3104
+#
+interface GigabitEthernet6/0/13
+ undo negotiation auto
+ speed 10
+ description HongRunFangDiChan-PPPOE
+ port link-type access
+#
+interface GigabitEthernet6/0/14
+ undo negotiation auto
+ speed 10
+ port link-type access
+#
+interface GigabitEthernet6/0/15
+ undo negotiation auto
+ speed 10
+ description PT-SheHuiFuLiYuan(4M)
+ shutdown
+ port link-type access
+ port default vlan 3886
+#
+interface GigabitEthernet6/0/16
+ undo negotiation auto
+ speed 10
+ description BanShengDongYouKu
+ port link-type access
+#
+interface GigabitEthernet6/0/17
+ undo negotiation auto
+ speed 10
+ description BanDaoKaFei(2M)
+ port link-type access
+ port default vlan 3884
+#
+interface GigabitEthernet6/0/18
+ shutdown
+ port link-type access
+#
+interface GigabitEthernet6/0/19
+ description CNC-JiuZhouHuaYuan
+ shutdown
+ port link-type dot1q-tunnel
+ qos pq 4 wrr 0 to 3 5 to 7
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/20
+ description bianfangdadui
+ port link-type access
+ port default vlan 911
+#
+interface GigabitEthernet6/0/21
+ shutdown
+ port link-type access
+#
+interface GigabitEthernet6/0/22
+ description LianXinJiFang-E-JianKong
+ port link-type access
+ port default vlan 3800
+#
+interface GigabitEthernet6/0/23
+ shutdown
+ port link-type access
+#
+interface GigabitEthernet6/0/24
+ description ShouLie-Netbar(100M)
+ port link-type access
+ port default vlan 3994
+#
+interface GigabitEthernet6/0/25
+#
+interface GigabitEthernet6/0/26
+#
+interface GigabitEthernet6/0/27
+#
+interface GigabitEthernet6/0/28
+#
+interface GigabitEthernet6/0/29
+#
+interface GigabitEthernet6/0/30
+#
+interface GigabitEthernet6/0/31
+#
+interface GigabitEthernet6/0/32
+#
+interface GigabitEthernet6/0/33
+#
+interface GigabitEthernet6/0/34
+#
+interface GigabitEthernet6/0/35
+#
+interface GigabitEthernet6/0/36
+ shutdown
+#
+interface GigabitEthernet6/0/37
+ shutdown
+#
+interface GigabitEthernet6/0/38
+ shutdown
+#
+interface GigabitEthernet6/0/39
+ shutdown
+#
+interface GigabitEthernet6/0/40
+ shutdown
+#
+interface GigabitEthernet6/0/41
+ shutdown
+#
+interface GigabitEthernet6/0/42
+ undo negotiation auto
+ speed 100
+ shutdown
+#
+interface GigabitEthernet6/0/43
+ undo negotiation auto
+ speed 100
+ shutdown
+#
+interface GigabitEthernet6/0/44
+#
+interface GigabitEthernet6/0/45
+#
+interface GigabitEthernet6/0/46
+#
+interface GigabitEthernet6/0/47
+#
+interface NULL0
+#
+ip route-static 0.0.0.0 0.0.0.0 202.96.115.125
+#
+snmp-agent
+snmp-agent local-engineid 000007DB7FFFFFFF0000543F
+snmp-agent community read cipher %$%$y+L#9*Ns4SAX"A"f4D,@CD}yS%T<Kv%Zj)%E,dNdK`;/D}|CcIju9KCcDWK6sg1n%ndK}(CD%$%$ acl 2000
+snmp-agent community read cipher %$%$/]lzSK|DOFq$wg7~.xBWCD}D<\(&3g"'|(w`WSAMhBaCD}GC|xk'+jg:)T%s>U~>(xV*}PCD%$%$
+snmp-agent sys-info contact HuaWei HangZhou China ,TEL:800-8302118
+snmp-agent sys-info location ZhouShan Telecom,ZS-PT-LX-ASW-S9306
+snmp-agent sys-info version all
+undo snmp-agent trap enable feature-name DLDP
+undo snmp-agent trap enable feature-name LDTTRAP
+undo snmp-agent trap enable feature-name LLDPTRAP
+snmp-agent trap enable feature-name BASETRAP
+#
+header login information " WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!"
+#
+user-interface maximum-vty 15
+user-interface con 0
+ idle-timeout 0 0
+ screen-length 0
+user-interface vty 0 14
+ acl 2000 inbound
+ authentication-mode aaa
+ user privilege level 15
+ idle-timeout 5 0
+ screen-length 20
+user-interface vty 16 20
+#
+return
+<ZS-PT-LX-DSW-1.MAN.9306>

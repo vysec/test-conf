@@ -1,0 +1,445 @@
+
+!Software Version V200R008C00SPC500
+#
+sysname SX-SY-DG-DSW-2.MAN.S9306
+#
+vlan batch 5 1023 1472 1478 1491 1840 1846 1859 2269 2300
+vlan batch 2430 2457 2662 3055 3062 3080
+#
+undo authentication unified-mode
+#
+telnet server enable
+telnet ipv6 server enable
+#
+qos car 200m cir 204800 cbs 38502400
+qos car 30m cir 30720 cbs 5775360
+#
+undo http server enable
+undo http secure-server enable
+#
+undo management-port isolate enable
+undo management-plane isolate enable
+#
+clock timezone PRC add 08:00:00
+#
+diffserv domain default
+#
+hwtacacs-server template sxacs
+ hwtacacs-server authentication 10.249.32.12
+ hwtacacs-server authentication 75.255.254.12 secondary
+ hwtacacs-server authorization 10.249.32.12
+ hwtacacs-server authorization 75.255.254.12 secondary
+ hwtacacs-server accounting 10.249.32.12
+ hwtacacs-server accounting 75.255.254.12 secondary
+ hwtacacs-server source-ip 10.251.100.31
+ hwtacacs-server shared-key cipher %^%#"9tKYbdr|5xUvj:{]z["MV!eLQVx'(FJ59Y55BV@%^%#
+ undo hwtacacs-server user-name domain-included
+#
+acl number 2000  
+ description For-SNMP-Control
+ rule 5 permit source 10.249.32.0 0.0.0.255 
+ rule 10 permit source 10.31.255.0 0.0.0.31 
+ rule 100 deny 
+acl number 2001  
+ description For-Telnet-Control
+ rule 5 permit source 10.248.0.0 0.7.255.255 
+ rule 10 permit source 10.31.255.0 0.0.0.31 
+ rule 100 deny 
+#
+drop-profile default
+#
+vlan 1472
+ description ChangTang-OLT-1-GPON-FTTH-PPPOE
+vlan 1478
+ description To-CT-C300-G-FTTH-PPPoE
+vlan 1491
+ description To-CT-OLT-C300-G-FTTH-PPPoE
+vlan 1840
+ description ChangTang-OLT-1-GPON-FTTH-ITV
+vlan 1846
+ description To-CT-C300-G-FTTH-ITV
+vlan 1859
+ description To-CT-OLT-C300-G-FTTH-ITV
+vlan 2269
+ description EPON-DongGuan-OLT-5-Pvlan
+vlan 2300
+ description DG-QiYeShanXun-Pvlan
+vlan 2457
+ description CT-OLT-1-LAN-PEVLAN
+vlan 2662
+ description DG-OLT-5-LAN-PEVLAN
+vlan 3055
+ description WB-HuaFuYiJie
+vlan 3062
+ description WB-WuTuoBang
+vlan 3080
+ description WB-GuoJie
+#
+aaa
+ authentication-scheme default
+  authentication-mode hwtacacs local
+  authentication-super hwtacacs super
+ authorization-scheme default
+  authorization-mode  hwtacacs local
+ accounting-scheme default
+  accounting-mode hwtacacs
+  accounting start-fail online
+ domain default
+ domain default_admin
+  hwtacacs-server sxacs
+ local-user admin password irreversible-cipher %^%#5@igJ9p9%>^X4197~[{K5O7;HX.:.X{J<m"H*s,'};#7F/n,LN_;APHGdw,!%^%#
+ local-user admin service-type http
+ local-user huawei password irreversible-cipher %^%#~D&\/#5$/*8$`:Pk&7\0rbQ9#2=4$R6nHqXT$bc0KEz#3PykP=}4Z0GvT(:S%^%#
+ local-user huawei privilege level 3
+ local-user huawei service-type telnet terminal
+#
+ntp-service unicast-server 10.251.100.1 source-interface Vlanif5 preference
+#
+interface Vlanif5
+ ip address 10.251.100.31 255.255.248.0
+#
+interface Vlanif1023
+ ip address 172.18.0.1 255.255.255.252
+#
+interface Eth-Trunk1
+ description uT:SX-SY-CX-SR-1.MAN.NE80E:ETH24(GE11/0/2,GE12/0/2)
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 2430 3055 3062 3080
+#
+interface Eth-Trunk2
+ description dT:SX-SY-DG-OLT-5.MAN.ZTE.C300:SG1(GE1/19/1,GE1/20/1)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 5 2269 2300 2662
+#
+interface Eth-Trunk3
+ description uT:SX-SY-CX-BAS-1.MAN.ME60:Eth-Trunk5(GE1/0/4,GE2/0/4)
+ undo port hybrid vlan 1
+ mode lacp
+#
+interface Eth-Trunk4
+ description dT:SX-SY-CT-OLT-1.MAN.ZTE.C300(G):SG1(GE1/19/3,GE1/20/3)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 5 1472 1478 1491 1840 1846 1859 2457
+ mode lacp
+#
+interface Eth-Trunk5
+#
+interface Eth-Trunk7
+ description dT:SX-SY-CX-DSW-1.MAN.H3C12510F:LA83(10GE1/0/0/18,10GE2/0/0/18)
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 1472 1478 1491 1840 1846 1859 2269 2300 2457 2662
+ mode lacp
+#
+interface Eth-Trunk24
+#
+interface Ethernet0/0/0
+#
+interface GigabitEthernet3/0/0
+ description uT:SX-SY-CX-SR-1.MAN.NE80E:(F1301140013)GE11/0/2
+ eth-trunk 1
+#
+interface GigabitEthernet3/0/1
+ description uT:SX-SY-CX-BAS-1.MAN.ME60:(F1301140014)GE1/0/4
+ eth-trunk 3
+#
+interface GigabitEthernet3/0/2
+ description dT:SX-SY-CT-OLT-1.MAN.ZTE.C300(G):(F1506290032)GE1/19/3
+ eth-trunk 4
+#
+interface GigabitEthernet3/0/3
+#
+interface GigabitEthernet3/0/4
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet3/0/5
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet3/0/6
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet3/0/7
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet3/0/8
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet3/0/9
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet3/0/10
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet3/0/11
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet3/0/12
+ description dT:SX-SY-DG-OLT-5.MAN.ZTE.C300:(Local)GE1/19/1
+ eth-trunk 2
+#
+interface GigabitEthernet3/0/13
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet3/0/14
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet3/0/15
+#
+interface GigabitEthernet3/0/16
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet3/0/17
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet3/0/18
+#
+interface GigabitEthernet3/0/19
+ description WB-GuoJie::kehu
+ port link-type access
+ port default vlan 3080
+ qos lr cir 30720 cbs 3840000 outbound
+ qos car inbound 30m 
+#
+interface GigabitEthernet3/0/20
+ description WB-HuaFuYiJie
+ port link-type access
+ port default vlan 3055
+ qos lr cir 204800 cbs 25600000 outbound
+ qos car inbound 200m 
+#
+interface GigabitEthernet3/0/21
+ description VP-ChangTangXiaoXue::kehu
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 2430
+ port vlan-stacking vlan 3100 to 3200 stack-vlan 2430
+#
+interface GigabitEthernet3/0/22
+ description MP-DongGuanZhenXiaoXue::kehu
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 2430
+ port vlan-stacking vlan 3100 to 3200 stack-vlan 2430
+#
+interface GigabitEthernet3/0/23
+ description pT:SX-SY-DG-DSW-1.MAN.S9306:(Local)GE2/0/23
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 5 2269
+#
+interface GigabitEthernet4/0/0
+ description uT:SX-SY-CX-SR-1.MAN.NE80E:(F1301140015)GE12/0/2
+ eth-trunk 1
+#
+interface GigabitEthernet4/0/1
+ description uT:SX-SY-CX-BAS-1.MAN.ME60:(F1301140017)GE2/0/4
+ eth-trunk 3
+#
+interface GigabitEthernet4/0/2
+ description dT:SX-SY-CT-OLT-1.MAN.ZTE.C300(G):(F1506290033)GE1/20/3
+ eth-trunk 4
+#
+interface GigabitEthernet4/0/3
+#
+interface GigabitEthernet4/0/4
+#
+interface GigabitEthernet4/0/5
+#
+interface GigabitEthernet4/0/6
+#
+interface GigabitEthernet4/0/7
+#
+interface GigabitEthernet4/0/8
+#
+interface GigabitEthernet4/0/9
+#
+interface GigabitEthernet4/0/10
+#
+interface GigabitEthernet4/0/11
+#
+interface GigabitEthernet4/0/12
+ description dT:SX-SY-DG-OLT-5.MAN.ZTE.C300:(Local)GE1/20/1
+ eth-trunk 2
+#
+interface GigabitEthernet4/0/13
+#
+interface GigabitEthernet4/0/14
+#
+interface GigabitEthernet4/0/15
+#
+interface GigabitEthernet4/0/16
+#
+interface GigabitEthernet4/0/17
+#
+interface GigabitEthernet4/0/18
+#
+interface GigabitEthernet4/0/19
+#
+interface GigabitEthernet4/0/20
+ description 5751UBD24712610 TO WB-WuTuoBang
+ port link-type access
+ port default vlan 3062
+ qos lr cir 204800 cbs 25600000 outbound
+ qos car inbound 200m 
+#
+interface GigabitEthernet4/0/21
+#
+interface GigabitEthernet4/0/22
+ description MP-ZhuKeZhenZhongXue::kehu
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 2430
+ port vlan-stacking vlan 3100 to 3200 stack-vlan 2430
+#
+interface GigabitEthernet4/0/23
+ description VP-DongGuanZhongXue::kehu
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 2430
+ port vlan-stacking vlan 3100 to 3200 stack-vlan 2430
+#
+interface GigabitEthernet6/0/0
+#
+interface GigabitEthernet6/0/1
+#
+interface GigabitEthernet6/0/2
+#
+interface GigabitEthernet6/0/3
+#
+interface GigabitEthernet6/0/4
+#
+interface GigabitEthernet6/0/5
+#
+interface GigabitEthernet6/0/6
+#
+interface GigabitEthernet6/0/7
+#
+interface GigabitEthernet6/0/8
+#
+interface GigabitEthernet6/0/9
+#
+interface GigabitEthernet6/0/10
+#
+interface GigabitEthernet6/0/11
+#
+interface GigabitEthernet6/0/12
+#
+interface GigabitEthernet6/0/13
+#
+interface GigabitEthernet6/0/14
+#
+interface GigabitEthernet6/0/15
+#
+interface GigabitEthernet6/0/16
+#
+interface GigabitEthernet6/0/17
+#
+interface GigabitEthernet6/0/18
+#
+interface GigabitEthernet6/0/19
+#
+interface GigabitEthernet6/0/20
+#
+interface GigabitEthernet6/0/21
+#
+interface GigabitEthernet6/0/22
+#
+interface GigabitEthernet6/0/23
+#
+interface GigabitEthernet6/0/24
+#
+interface GigabitEthernet6/0/25
+#
+interface GigabitEthernet6/0/26
+#
+interface GigabitEthernet6/0/27
+#
+interface GigabitEthernet6/0/28
+#
+interface GigabitEthernet6/0/29
+#
+interface GigabitEthernet6/0/30
+#
+interface GigabitEthernet6/0/31
+#
+interface GigabitEthernet6/0/32
+#
+interface GigabitEthernet6/0/33
+#
+interface GigabitEthernet6/0/34
+#
+interface GigabitEthernet6/0/35
+#
+interface GigabitEthernet6/0/36
+#
+interface GigabitEthernet6/0/37
+#
+interface GigabitEthernet6/0/38
+#
+interface GigabitEthernet6/0/39
+#
+interface GigabitEthernet6/0/40
+#
+interface GigabitEthernet6/0/41
+#
+interface GigabitEthernet6/0/42
+#
+interface GigabitEthernet6/0/43
+#
+interface GigabitEthernet6/0/44
+#
+interface GigabitEthernet6/0/45
+#
+interface GigabitEthernet6/0/46
+#
+interface GigabitEthernet6/0/47
+#
+interface XGigabitEthernet1/0/0
+ description dT:SX-SY-CX-DSW-1.MAN.H3C12510F:(F1609190035)10GE1/0/0/18
+ eth-trunk 7
+#
+interface XGigabitEthernet1/0/1
+ description dT:SX-SY-CX-DSW-1.MAN.H3C12510F:(F1609190036)10GE2/0/0/18
+ eth-trunk 7
+#
+interface XGigabitEthernet1/0/2
+#
+interface XGigabitEthernet1/0/3
+#
+interface NULL0
+#
+ip route-static 0.0.0.0 0.0.0.0 10.251.100.1
+#
+snmp-agent
+snmp-agent local-engineid 000007DB7FFFFFFF0000727B
+snmp-agent community read cipher %^%#%S$!%MKU`#qBOzCqluD'o}VY,<GBU+8SgU(l!rdLB`<"*ML6+K.]M,F{UwhNIvmHTk6S@".oPm=ArZTL%^%# acl 2000
+snmp-agent sys-info contact R&D Nanjing, Huawei Technologies co.,Ltd.
+snmp-agent sys-info location Nanjing China
+snmp-agent sys-info version all
+undo snmp-agent trap enable feature-name DLDP
+undo snmp-agent trap enable feature-name LDTTRAP
+undo snmp-agent trap enable feature-name LLDPTRAP
+snmp-agent trap enable feature-name BASETRAP
+#
+ssh server compatible-ssh1x enable
+#
+header login information " WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!"
+#
+user-interface maximum-vty 15
+user-interface con 0
+ idle-timeout 0 0
+ screen-length 0
+user-interface vty 0 4
+ acl 2001 inbound
+ authentication-mode aaa
+ user privilege level 15
+ idle-timeout 20 0
+ screen-length 0
+ protocol inbound telnet
+user-interface vty 5 14
+ authentication-mode none
+ user privilege level 3
+ idle-timeout 20 0
+ screen-length 0
+ protocol inbound telnet
+user-interface vty 16 20
+ protocol inbound telnet
+#
+return
+<SX-SY-DG-DSW-2.MAN.S9306>

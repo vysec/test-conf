@@ -1,0 +1,742 @@
+
+#
+!Software Version V200R001C00SPC300
+sysname HZ-HZ-KL-DSW-1.MAN.9306
+#
+super password level 3 cipher %$%$tEGX"8t['0Z#OC2:%zMFMpg^UD:oX~/fQ$Bixz$XVzpPwvmh%$%$
+#
+info-center source default channel 2 log level debugging
+info-center source SHELL channel 4 log level informational
+info-center loghost source Vlanif50
+info-center loghost 10.254.0.1 facility local4
+info-center loghost 122.224.79.2 facility local4
+#
+vlan batch 45 50 to 51 123 1401 1404 1407 1409 to 1410 1414 1432 3151 to 3200
+#
+domain default admin
+#
+qos car qoscar1 cir 102400 pir 123600 cbs 1000000 pbs 1250000
+qos car 10m cir 10240 cbs 2048000
+qos car 20m cir 20480 cbs 2048000
+qos car 30m cir 30720 cbs 2048000
+qos car 50m cir 51200 cbs 2048000
+qos car 2m cir 2048 cbs 1280000
+qos car 4m cir 4096 cbs 2560000
+qos car 200m cir 204800 cbs 2048000
+#
+undo http server enable
+#
+undo nap slave enable
+#
+ dba-profile default0 type3 assure 40000 max 80000
+#
+diffserv domain default
+#
+radius-server template newhzdx
+ radius-server shared-key simple hzct@rsa
+ radius-server authentication 61.164.19.211 1812
+ radius-server authentication 61.164.19.213 1812 secondary
+ radius-server accounting 61.164.19.211 1813
+ radius-server accounting 61.164.19.213 1813 secondary
+ undo radius-server user-name domain-included
+#
+hwtacacs-server template hzdx
+ hwtacacs-server authentication 202.96.96.86
+ hwtacacs-server authentication 202.101.172.38 secondary
+ hwtacacs-server authorization 202.96.96.86
+ hwtacacs-server authorization 202.101.172.38 secondary
+ hwtacacs-server accounting 202.96.96.86
+ hwtacacs-server accounting 202.101.172.38 secondary
+ hwtacacs-server source-ip 172.28.5.3
+ hwtacacs-server shared-key simple hzdx
+ undo hwtacacs-server user-name domain-included
+#
+ line-profile default0
+#
+ service-profile default0
+#
+acl number 2000
+ rule 0 permit source 172.16.254.252 0
+ rule 5 permit source 202.96.102.253 0
+ rule 10 permit source 202.96.102.254 0
+ rule 15 permit source 10.254.0.0 0.0.0.255
+ rule 20 permit source 192.168.11.0 0.0.0.255
+ rule 25 permit source 192.168.1.0 0.0.0.255
+ rule 31 permit source 10.10.10.34 0
+ rule 32 permit source 10.10.10.35 0
+ rule 33 permit source 10.31.255.0 0.0.0.31
+ rule 100 deny
+#
+acl number 2001
+ rule 5 permit source 172.16.254.252 0
+ rule 10 permit source 202.96.102.253 0
+ rule 15 permit source 202.96.102.254 0
+ rule 25 permit source 192.168.208.0 0.0.0.255
+ rule 30 permit source 192.168.209.0 0.0.0.255
+ rule 35 permit source 192.168.210.0 0.0.0.255
+ rule 40 permit source 192.168.0.0 0.0.127.255
+ rule 45 permit source 10.254.0.0 0.0.0.31
+ rule 51 permit source 10.10.10.34 0
+ rule 52 permit source 10.10.10.35 0
+ rule 100 deny
+#
+acl number 2002
+ rule 0 permit source 172.16.254.248 0.0.0.7
+ rule 5 permit source 10.254.0.0 0.0.0.31
+ rule 10 permit source 192.168.0.0 0.0.255.255
+ rule 15 permit source 172.28.0.0 0.0.255.255
+ rule 100 deny
+#
+acl number 2003
+ rule 0 permit source 192.168.11.99 0
+ rule 100 deny
+#
+acl number 2006
+ rule 51 permit source 10.10.10.34 0
+ rule 52 permit source 10.10.10.35 0
+#
+acl number 2016
+ rule 1 permit source 172.16.247.0 0.0.0.31
+ rule 2 permit source 172.16.254.0 0.0.0.15
+ rule 3 permit source 10.254.0.0 0.0.0.31
+ rule 4 permit source 10.31.255.0 0.0.0.255
+ rule 5 permit source 10.254.3.0 0.0.0.255
+ rule 6 permit source 10.10.10.0 0.0.0.63
+ rule 7 permit source 192.168.100.0 0.0.0.3
+ rule 8 permit source 172.16.0.0 0.0.0.7
+ rule 9 permit source 10.20.200.14 0
+ rule 10 permit source 10.20.200.18 0
+ rule 11 permit source 192.168.1.0 0.0.0.255
+ rule 12 permit source 192.168.4.0 0.0.0.255
+ rule 13 permit source 192.168.8.0 0.0.0.255
+ rule 14 permit source 192.168.11.0 0.0.0.255
+ rule 15 permit source 192.168.119.0 0.0.0.255
+ rule 16 permit source 192.168.105.0 0.0.0.255
+ rule 17 permit source 192.168.67.0 0.0.0.255
+ rule 18 permit source 172.28.11.251 0
+ rule 19 permit source 192.168.101.0 0.0.0.255
+ rule 20 permit source 192.168.48.0 0.0.0.255
+ rule 1000 deny
+#
+traffic classifier mark operator or precedence 5
+ if-match vlan-id 3599 to 3600
+#
+traffic behavior mark
+ remark 8021p 4
+#
+traffic policy mark
+ classifier mark behavior mark
+#
+drop-profile default
+#
+vlan 50
+ description Huawei-Switch-NetManagerment
+vlan 51
+ description E320-Manager-Vlan
+vlan 1404
+ description DSLAM-ALC-7302XD-1-KangLe
+vlan 1407
+ description DSLAM-ALC-7302XD-2-KangLe
+vlan 1410
+ description DSLAM-ALC-7302FD-1-KangLe
+vlan 1414
+ description DSLAM-ALC-7302XD-3-KangLe
+#
+aaa
+ authentication-scheme default
+ authentication-scheme hzdx
+  authentication-mode hwtacacs local
+  authentication-super hwtacacs super
+ authentication-scheme newhzdx
+  authentication-mode local radius
+ authorization-scheme default
+ authorization-scheme hwtacacs
+  authorization-mode hwtacacs
+ authorization-scheme hzdx
+  authorization-mode hwtacacs local
+ accounting-scheme default
+ accounting-scheme hwtacacs
+  accounting-mode hwtacacs
+  accounting realtime 3
+ accounting-scheme hzdx
+  accounting start-fail online
+ accounting-scheme newhzdx
+  accounting start-fail online
+ recording-scheme hzdx
+ domain default
+  authentication-scheme newhzdx
+  accounting-scheme newhzdx
+  radius-server  newhzdx
+ domain default_admin
+ domain hzdx
+  authentication-scheme hzdx
+  accounting-scheme hwtacacs
+  authorization-scheme hwtacacs
+  hwtacacs-server hzdx
+ domain newhzdx
+  authentication-scheme newhzdx
+  accounting-scheme newhzdx
+  radius-server  newhzdx
+ local-user 123 password cipher %$%$g,Cj;Gfd)&qCFr)^}yqPM-$x%$%$
+ local-user 123 privilege level 3
+ local-user 123 service-type telnet
+ local-user 9306 password cipher %$%$tPcu;1_m0>7]riEjnMMK,jaX%$%$
+ local-user 9306 privilege level 3
+ local-user 9306 ftp-directory cfcard:/
+ local-user 9306 service-type ftp
+ local-user root password cipher %$%$4G`8QNFI|G4#[`Wel6XVMf]T%$%$
+ local-user root privilege level 3
+ local-user root service-type telnet terminal
+ local-user admin password cipher %$%$I6.ASV)hJET,p"Dn.YM%3aXO%$%$
+ local-user admin service-type http
+ local-user aaa@huawei.com password cipher %$%$c%}\(wr|.U8g6'M<3`vW53*!%$%$
+#
+ntp-service unicast-server 61.164.1.7 source-interface Vlanif50 preference
+ntp-service unicast-server 61.130.120.35 source-interface Vlanif50
+#
+interface Vlanif50
+ description Test
+ ip address 172.28.5.3 255.255.255.0
+#
+interface Vlanif51
+ description Test
+ ip address 192.168.110.142 255.255.255.252
+#
+interface Eth-Trunk1
+ description uT:HZ-HZ-GX-SW-1&2.MAN.H3C12510F:BA10(10GE1/0/0/10,10GE2/0/0/10)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 50 to 51 1404 1407 1410 1414 1432 3151 to 3200
+ traffic-policy mark inbound
+ mode lacp-static
+#
+interface Ethernet0/0/0
+ ip address 192.168.1.2 255.255.255.0
+#
+interface GigabitEthernet3/0/0
+ shutdown
+#
+interface GigabitEthernet3/0/1
+ undo negotiation auto
+ description DSLAM-ALC-7302XD-1-KangLe
+ port link-type dot1q-tunnel
+ port default vlan 1404
+ traffic-policy mark inbound
+ qos pq 4 wrr 0 to 3 5 to 7
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet3/0/2
+ undo negotiation auto
+ shutdown
+ port link-type dot1q-tunnel
+ traffic-policy mark inbound
+ qos pq 4 wrr 0 to 3 5 to 7
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet3/0/3
+ undo negotiation auto
+ shutdown
+ port link-type dot1q-tunnel
+ traffic-policy mark inbound
+ qos pq 4 wrr 0 to 3 5 to 7
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet3/0/4
+ undo negotiation auto
+ shutdown
+ port link-type dot1q-tunnel
+ traffic-policy mark inbound
+ qos pq 4 wrr 0 to 3 5 to 7
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet3/0/5
+ shutdown
+#
+interface GigabitEthernet3/0/6
+ shutdown
+#
+interface GigabitEthernet3/0/7
+ shutdown
+#
+interface GigabitEthernet3/0/8
+ shutdown
+#
+interface GigabitEthernet3/0/9
+ shutdown
+#
+interface GigabitEthernet3/0/10
+ shutdown
+#
+interface GigabitEthernet3/0/11
+ shutdown
+#
+interface GigabitEthernet3/0/12
+ shutdown
+#
+interface GigabitEthernet3/0/13
+ shutdown
+#
+interface GigabitEthernet3/0/14
+ shutdown
+#
+interface GigabitEthernet3/0/15
+ shutdown
+#
+interface GigabitEthernet3/0/16
+ shutdown
+#
+interface GigabitEthernet3/0/17
+ shutdown
+#
+interface GigabitEthernet3/0/18
+ shutdown
+#
+interface GigabitEthernet3/0/19
+ shutdown
+#
+interface GigabitEthernet3/0/20
+ shutdown
+#
+interface GigabitEthernet3/0/21
+ shutdown
+#
+interface GigabitEthernet3/0/22
+ shutdown
+#
+interface GigabitEthernet3/0/23
+ shutdown
+#
+interface GigabitEthernet3/0/24
+ shutdown
+#
+interface GigabitEthernet3/0/25
+ shutdown
+#
+interface GigabitEthernet3/0/26
+ shutdown
+#
+interface GigabitEthernet3/0/27
+ shutdown
+#
+interface GigabitEthernet3/0/28
+ shutdown
+#
+interface GigabitEthernet3/0/29
+ shutdown
+#
+interface GigabitEthernet3/0/30
+ shutdown
+#
+interface GigabitEthernet3/0/31
+ shutdown
+#
+interface GigabitEthernet3/0/32
+ shutdown
+#
+interface GigabitEthernet3/0/33
+ shutdown
+#
+interface GigabitEthernet3/0/34
+ shutdown
+#
+interface GigabitEthernet3/0/35
+ shutdown
+#
+interface GigabitEthernet3/0/36
+ shutdown
+#
+interface GigabitEthernet3/0/37
+ shutdown
+#
+interface GigabitEthernet3/0/38
+ shutdown
+#
+interface GigabitEthernet3/0/39
+ shutdown
+#
+interface GigabitEthernet3/0/40
+ shutdown
+#
+interface GigabitEthernet3/0/41
+ shutdown
+#
+interface GigabitEthernet3/0/42
+ shutdown
+#
+interface GigabitEthernet3/0/43
+ shutdown
+#
+interface GigabitEthernet3/0/44
+ shutdown
+#
+interface GigabitEthernet3/0/45
+ shutdown
+#
+interface GigabitEthernet3/0/46
+ shutdown
+#
+interface GigabitEthernet3/0/47
+ shutdown
+#
+interface GigabitEthernet4/0/0
+ undo negotiation auto
+ shutdown
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ traffic-policy mark inbound
+ qos pq 4 wrr 0 to 3 5 to 7
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet4/0/1
+ undo negotiation auto
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet4/0/2
+ undo negotiation auto
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet4/0/3
+ undo negotiation auto
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet4/0/4
+ undo negotiation auto
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet4/0/5
+ shutdown
+#
+interface GigabitEthernet4/0/6
+ shutdown
+#
+interface GigabitEthernet4/0/7
+ shutdown
+#
+interface GigabitEthernet4/0/8
+ shutdown
+#
+interface GigabitEthernet4/0/9
+ shutdown
+#
+interface GigabitEthernet4/0/10
+ shutdown
+#
+interface GigabitEthernet4/0/11
+ shutdown
+#
+interface GigabitEthernet4/0/12
+ shutdown
+#
+interface GigabitEthernet4/0/13
+ shutdown
+#
+interface GigabitEthernet4/0/14
+ shutdown
+#
+interface GigabitEthernet4/0/15
+ shutdown
+#
+interface GigabitEthernet4/0/16
+ shutdown
+#
+interface GigabitEthernet4/0/17
+ shutdown
+#
+interface GigabitEthernet4/0/18
+ shutdown
+#
+interface GigabitEthernet4/0/19
+ shutdown
+#
+interface GigabitEthernet4/0/20
+ shutdown
+#
+interface GigabitEthernet4/0/21
+ shutdown
+#
+interface GigabitEthernet4/0/22
+ shutdown
+#
+interface GigabitEthernet4/0/23
+ shutdown
+#
+interface GigabitEthernet4/0/24
+ shutdown
+#
+interface GigabitEthernet4/0/25
+ shutdown
+#
+interface GigabitEthernet4/0/26
+ shutdown
+#
+interface GigabitEthernet4/0/27
+ shutdown
+#
+interface GigabitEthernet4/0/28
+ shutdown
+#
+interface GigabitEthernet4/0/29
+ shutdown
+#
+interface GigabitEthernet4/0/30
+ shutdown
+#
+interface GigabitEthernet4/0/31
+ shutdown
+#
+interface GigabitEthernet4/0/32
+ shutdown
+#
+interface GigabitEthernet4/0/33
+ shutdown
+#
+interface GigabitEthernet4/0/34
+ shutdown
+#
+interface GigabitEthernet4/0/35
+ shutdown
+#
+interface GigabitEthernet4/0/36
+ shutdown
+#
+interface GigabitEthernet4/0/37
+ shutdown
+#
+interface GigabitEthernet4/0/38
+ shutdown
+#
+interface GigabitEthernet4/0/39
+ shutdown
+#
+interface GigabitEthernet4/0/40
+ shutdown
+#
+interface GigabitEthernet4/0/41
+ shutdown
+#
+interface GigabitEthernet4/0/42
+ shutdown
+#
+interface GigabitEthernet4/0/43
+ shutdown
+#
+interface GigabitEthernet4/0/44
+ shutdown
+#
+interface GigabitEthernet4/0/45
+ shutdown
+#
+interface GigabitEthernet4/0/46
+ shutdown
+#
+interface GigabitEthernet4/0/47
+ shutdown
+#
+interface XGigabitEthernet1/0/0
+ description uT:HZ-HZ-GX-SW-1&2.MAN.H3C12510F:(F0901050064)10GE1/0/0/10
+ eth-trunk 1
+ qos pq 4 wrr 0 to 3 5 to 7
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface XGigabitEthernet1/0/1
+ shutdown
+#
+interface XGigabitEthernet1/0/2
+ shutdown
+#
+interface XGigabitEthernet1/0/3
+ shutdown
+#
+interface XGigabitEthernet2/0/0
+ shutdown
+ qos pq 4 wrr 0 to 3 5 to 7
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface XGigabitEthernet2/0/1
+ description uT:HZ-HZ-GX-SW-1&2.MAN.H3C12510F:(F1405140078)10GE2/0/0/10
+ eth-trunk 1
+ qos pq 4 wrr 0 to 3 5 to 7
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface XGigabitEthernet2/0/2
+ shutdown
+#
+interface XGigabitEthernet2/0/3
+ shutdown
+#
+interface XGigabitEthernet5/0/0
+#
+interface XGigabitEthernet5/0/1
+#
+interface XGigabitEthernet5/0/2
+#
+interface XGigabitEthernet5/0/3
+#
+interface XGigabitEthernet5/0/4
+#
+interface XGigabitEthernet5/0/5
+#
+interface XGigabitEthernet5/0/6
+#
+interface XGigabitEthernet5/0/7
+#
+interface XGigabitEthernet5/0/8
+#
+interface XGigabitEthernet5/0/9
+#
+interface XGigabitEthernet5/0/10
+#
+interface XGigabitEthernet5/0/11
+#
+interface XGigabitEthernet5/0/12
+#
+interface XGigabitEthernet5/0/13
+#
+interface XGigabitEthernet5/0/14
+#
+interface XGigabitEthernet5/0/15
+#
+interface XGigabitEthernet6/0/0
+#
+interface XGigabitEthernet6/0/1
+#
+interface XGigabitEthernet6/0/2
+#
+interface XGigabitEthernet6/0/3
+#
+interface XGigabitEthernet6/0/4
+#
+interface XGigabitEthernet6/0/5
+#
+interface XGigabitEthernet6/0/6
+#
+interface XGigabitEthernet6/0/7
+#
+interface XGigabitEthernet6/0/8
+#
+interface XGigabitEthernet6/0/9
+#
+interface XGigabitEthernet6/0/10
+#
+interface XGigabitEthernet6/0/11
+#
+interface XGigabitEthernet6/0/12
+#
+interface XGigabitEthernet6/0/13
+#
+interface XGigabitEthernet6/0/14
+#
+interface XGigabitEthernet6/0/15
+#
+interface NULL0
+ description Test
+#
+ip route-static 0.0.0.0 0.0.0.0 172.28.5.253
+#
+snmp-agent
+snmp-agent local-engineid 800007DB03AC4E914C9F40
+snmp-agent community read cipher %$%$eg}x&J{3%"C1!(*m#CJ5M8/&%$%$ acl 2000
+snmp-agent sys-info contact HZ-HZ-GX
+snmp-agent sys-info location HangZhou_KangLe_Office_2F
+snmp-agent sys-info version all
+snmp-agent trap source Vlanif50
+#
+command-privilege level 0 view system display current-configuration
+#
+user-interface maximum-vty 10
+user-interface con 0
+ authentication-mode password
+ set authentication password cipher %$%$isp%#"u$FLIR_OBN(Jg8]8/&Y2UA9PVzJ0<B\m6PW3tBv>50%$%$
+ idle-timeout 0 0
+ screen-length 0
+user-interface vty 0 4
+ acl 2016 inbound
+ authentication-mode aaa
+ user privilege level 3
+user-interface vty 5 9
+ authentication-mode aaa
+ user privilege level 3
+user-interface vty 16 20
+#
+return
+[HZ-HZ-KL-DSW-1.MAN.9306]

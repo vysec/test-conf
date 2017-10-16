@@ -1,0 +1,1387 @@
+
+#
+sysname JH-JH-CN-BAS-4.WLAN.ME60
+#
+info-center source default channel 2 trap state off level informational
+info-center source default channel 4 log level informational
+info-center loghost source LoopBack0
+info-center loghost 115.239.131.2
+info-center loghost 61.130.254.250
+info-center loghost 220.188.119.243 facility local4
+#
+router id 61.130.38.106
+#
+vlan batch 1008
+#
+mac-address aging-time 1800
+#
+ user-group pre_wlan
+ user-group wlan-city
+ user-group wlan-test
+ user-group wlan-free
+ user-group wlan-isale
+ user-group xking
+ user-group pppoe
+ user-group web
+ user-group pre_iwifi
+ user-group pre_mac
+#
+undo telnet ipv6 server enable
+#
+undo nap slave enable
+#
+clock timezone PRC add 08:00:00
+#
+fan speed auto
+#
+ undo set power input-power
+#
+snmp-agent trap type entity-trap
+#
+ board power-on-delay 20
+#
+slot 1
+ http-reply enable
+#
+slot 2
+ http-reply enable
+#
+diffserv domain default
+diffserv domain 5p3dbas
+diffserv domain 5p3d
+#
+flow-queue default
+#
+service-template template-default0
+service-template template-default1
+service-template template-default2
+service-template template-default3
+service-template template-default4
+#
+qos-profile pppoe_qos_10m
+ car cir 1024 cbs 102400 pbs 16384 green pass yellow pass red discard inbound
+ car cir 11240 cbs 1024000 pbs 16384 green pass yellow pass red discard outbound
+qos-profile pppoe_qos_1500k
+ car cir 1536 cbs 153600 pbs 16384 green pass yellow pass red discard inbound
+ car cir 1536 cbs 153600 pbs 16384 green pass yellow pass red discard outbound
+qos-profile pppoe_qos_512k
+ car cir 512 cbs 51200 pbs 16384 green pass yellow pass red discard inbound
+ car cir 512 cbs 51200 pbs 16384 green pass yellow pass red discard outbound
+qos-profile wlan_qos_10m
+qos-profile wlan_qos_4m
+ car cir 1152 cbs 115200 pbs 16384 green pass yellow pass red discard inbound
+ car cir 4454 cbs 445400 pbs 16384 green pass yellow pass red discard outbound
+qos-profile default
+qos-profile default-1
+qos-profile pppoe_qos_256k
+ car cir 256 cbs 25600 pbs 16384 green pass yellow pass red discard inbound
+ car cir 256 cbs 25600 pbs 16384 green pass yellow pass red discard outbound
+#
+ radius-server source interface LoopBack0
+ radius-server dead-count 40 dead-time 5 dead-interval 5
+radius-server group wlan
+ radius-server authentication 220.191.201.18 1812 weight 0
+ radius-server authentication 202.101.172.243 1812 weight 0
+ radius-server accounting 220.191.201.18 1813 weight 0
+ radius-server accounting 202.101.172.243 1813 weight 0
+ radius-server accounting 61.130.242.178 1813 weight 0
+ radius-server shared-key lsxx717
+ radius-server timeout 10
+ radius-server format-attribute nas-port z8o12i12
+ radius-server attribute translate
+ radius-server user-name original
+ radius-server algorithm loading-share
+ radius-attribute disable NAS-Port-Id send
+ radius-attribute disable HW-Subscriber-QoS-Profile receive
+ radius-attribute disable HW-QOS-Profile-Name receive
+ radius-attribute disable HW-Domain-Name receive
+#
+radius-server group xking-webpush
+ radius-server authentication 61.175.255.51 1812 weight 0
+ radius-server accounting 61.175.255.51 1813 weight 0
+ radius-server shared-key Test
+#
+radius-server group iwifi
+ radius-server authentication 122.229.30.49 1812 weight 0
+ radius-server accounting 122.229.30.49 1813 weight 0
+ radius-server shared-key ct10000
+ radius-server user-name original
+#
+#
+radius-server authorization 61.175.255.51 shared-key Test server-group xking-webpush
+#
+#
+hwtacacs-server template zjdx
+ hwtacacs-server authentication 202.96.102.141
+ hwtacacs-server authentication 61.153.176.183 secondary
+ hwtacacs-server authorization 202.96.102.141
+ hwtacacs-server authorization 61.153.176.183 secondary
+ hwtacacs-server accounting 202.96.102.141
+ hwtacacs-server accounting 61.153.176.183 secondary
+ hwtacacs-server source-ip 61.130.38.106
+ hwtacacs-server shared-key cipher %@%@i)NS!/N`!.rvPP9]v|G"<$D$%@%@
+ undo hwtacacs-server user-name domain-included
+#
+acl number 2000
+#
+acl number 2001
+ description For-Telnet-Control
+ rule 10 permit source 202.96.102.240 0
+ rule 20 permit source 202.96.102.244 0
+ rule 30 permit source 202.96.102.47 0
+ rule 40 permit source 202.96.102.84 0
+ rule 50 permit source 202.96.103.188 0
+ rule 60 permit source 220.188.118.249 0
+ rule 70 permit source 220.188.118.250 0
+ rule 80 permit source 220.188.118.251 0
+ rule 90 permit source 220.188.118.252 0
+ rule 100 permit source 220.188.118.253 0
+ rule 110 permit source 220.188.118.254 0
+ rule 120 permit source 220.188.119.243 0
+ rule 130 permit source 202.96.102.139 0
+ rule 140 permit source 202.96.102.221 0
+ rule 150 permit source 61.175.255.39 0
+ rule 1000 deny
+#
+acl number 2010
+ description For-SNMP-Control
+ rule 5 permit source 220.188.118.249 0
+ rule 10 permit source 220.188.118.250 0
+ rule 15 permit source 220.188.118.251 0
+ rule 25 permit source 220.188.118.252 0
+ rule 30 permit source 220.188.118.253 0
+ rule 35 permit source 220.188.118.254 0
+ rule 40 permit source 220.188.119.243 0
+ rule 50 deny
+#
+acl number 2015
+ rule 5 permit source 220.191.201.18 0
+#
+acl number 3099
+#
+acl number 3100
+ description For-anti-virus
+ rule 1 permit udp destination-port eq netbios-ssn
+ rule 2 permit udp destination-port eq netbios-ns
+ rule 3 permit udp destination-port eq 593
+ rule 4 permit udp destination-port eq 445
+ rule 5 permit udp destination-port eq 4444
+ rule 6 permit udp destination-port eq 135
+ rule 7 permit tcp destination-port eq 3332
+ rule 8 permit tcp destination-port eq 9996
+ rule 9 permit tcp destination-port eq 4444
+ rule 10 permit tcp destination-port eq 5554
+ rule 11 permit tcp destination-port eq 445
+ rule 12 permit tcp destination-port eq 593
+ rule 13 permit tcp destination-port eq 6669
+ rule 14 permit tcp destination-port range 137 139
+ rule 15 permit tcp destination-port eq 135
+ rule 16 permit tcp destination-port eq 1434
+ rule 17 permit tcp destination-port range 3127 3130
+ rule 18 permit tcp destination-port eq 1025
+ rule 19 permit tcp destination-port eq 42
+ rule 20 permit udp destination-port eq 1068
+ rule 21 permit udp destination-port eq 1434
+ rule 22 permit udp destination-port eq 5554
+ rule 23 permit udp destination-port eq 9996
+ rule 24 permit udp destination-port range 1026 1027
+ rule 25 permit tcp destination-port eq 1068
+#
+acl number 3500
+ description web-server_deny_out
+ rule 5 deny ip destination 60.191.115.11 0
+ rule 10 permit ip
+#
+acl number 3501
+ description web-server_deny_in
+ rule 5 deny ip source 60.191.115.11 0
+ rule 10 permit ip
+#
+acl number 6009
+#
+acl number 6099
+ description wlanpermit
+ rule 5 permit ip source user-group pre_wlan destination ip-address 60.191.115.11 0
+ rule 10 permit ip source user-group pre_wlan destination ip-address 220.189.127.107 0
+ rule 15 permit ip source user-group pre_wlan destination ip-address 220.189.127.108 0
+ rule 25 permit ip source user-group pre_wlan destination ip-address 122.224.110.108 0
+ rule 30 permit ip source user-group pre_wlan destination ip-address 122.224.110.100 0
+ rule 35 permit ip source user-group pre_wlan destination ip-address 60.190.255.30 0
+ rule 40 permit ip source user-group pre_wlan destination ip-address 61.129.122.128 0.0.0.15
+ rule 45 permit ip source user-group pre_wlan destination ip-address 123.127.121.41 0
+ rule 50 permit ip source user-group pre_wlan destination ip-address 219.142.79.192 0
+ rule 55 permit ip source user-group pre_wlan destination ip-address 61.144.34.107 0
+ rule 60 permit ip source user-group pre_wlan destination ip-address 219.142.89.66 0
+ rule 65 permit ip source user-group pre_wlan destination ip-address 218.17.246.185 0
+ rule 70 permit ip source user-group pre_wlan destination ip-address 61.131.3.98 0
+ rule 75 permit ip source user-group pre_wlan destination ip-address 219.142.89.142 0
+ rule 80 permit ip source user-group pre_wlan destination ip-address 222.66.26.201 0
+ rule 85 permit ip source user-group pre_wlan destination ip-address 124.74.240.140 0
+ rule 90 permit ip source user-group pre_wlan destination ip-address 123.127.232.192 0
+ rule 95 permit ip source user-group pre_wlan destination ip-address 211.138.112.238 0
+ rule 100 permit ip source user-group pre_wlan destination ip-address 202.96.118.167 0
+ rule 105 permit ip source user-group pre_wlan destination ip-address 202.108.88.50 0
+ rule 110 permit ip source user-group pre_wlan destination ip-address 219.142.91.0 0.0.0.127
+ rule 115 permit ip source user-group pre_wlan destination ip-address 61.129.61.164 0
+ rule 120 permit ip source user-group pre_wlan destination ip-address 60.191.124.236 0
+ rule 125 permit ip source user-group pre_wlan destination ip-address 218.2.247.64 0.0.0.31
+ rule 130 permit ip source user-group pre_wlan destination ip-address 124.74.244.0 0.0.0.15
+ rule 140 permit ip source user-group pre_wlan destination ip-address 122.224.110.96 0.0.0.31
+ rule 145 permit ip source user-group pre_wlan destination ip-address 202.101.166.240 0.0.0.7
+ rule 150 permit ip source user-group pre_wlan destination ip-address 202.108.144.0 0.0.0.255
+ rule 155 permit ip source user-group pre_wlan destination ip-address 61.130.122.72 0.0.0.7
+ rule 165 permit ip source user-group pre_wlan destination ip-address 218.30.64.0 0.0.0.255
+ rule 170 permit ip source user-group pre_wlan destination ip-address 58.246.81.64 0.0.0.31
+ rule 175 permit ip source user-group pre_wlan destination ip-address 122.224.205.3 0
+ rule 180 permit ip source user-group pre_wlan destination ip-address 212.67.79.45 0
+ rule 185 permit ip source user-group pre_wlan destination ip-address 218.66.47.194 0
+ rule 195 permit ip source user-group pre_wlan destination ip-address 218.30.64.121 0
+ rule 200 permit ip source user-group pre_wlan destination ip-address 124.74.213.12 0
+ rule 205 permit ip source user-group pre_wlan destination ip-address 60.190.202.209 0
+ rule 210 permit ip source user-group pre_wlan destination ip-address 60.191.244.2 0
+ rule 215 permit ip source user-group pre_wlan destination ip-address 60.191.244.5 0
+ rule 220 permit ip source user-group pre_wlan destination ip-address 211.100.35.132 0
+ rule 225 permit ip source ip-address 60.191.115.11 0 destination user-group pre_wlan
+ rule 230 permit ip source ip-address 220.189.127.107 0 destination user-group pre_wlan
+ rule 235 permit ip source ip-address 220.189.127.108 0 destination user-group pre_wlan
+ rule 245 permit ip source ip-address 122.224.110.108 0 destination user-group pre_wlan
+ rule 250 permit ip source ip-address 122.224.110.100 0 destination user-group pre_wlan
+ rule 255 permit ip source ip-address 60.190.255.30 0 destination user-group pre_wlan
+ rule 260 permit ip source ip-address 61.129.122.128 0.0.0.15 destination user-group pre_wlan
+ rule 265 permit ip source ip-address 123.127.121.41 0 destination user-group pre_wlan
+ rule 270 permit ip source ip-address 219.142.79.192 0 destination user-group pre_wlan
+ rule 275 permit ip source ip-address 61.144.34.107 0 destination user-group pre_wlan
+ rule 280 permit ip source ip-address 219.142.89.66 0 destination user-group pre_wlan
+ rule 285 permit ip source ip-address 218.17.246.185 0 destination user-group pre_wlan
+ rule 290 permit ip source ip-address 61.131.3.98 0 destination user-group pre_wlan
+ rule 295 permit ip source ip-address 219.142.89.142 0 destination user-group pre_wlan
+ rule 300 permit ip source ip-address 222.66.26.201 0 destination user-group pre_wlan
+ rule 305 permit ip source ip-address 124.74.240.140 0 destination user-group pre_wlan
+ rule 310 permit ip source ip-address 123.127.232.192 0 destination user-group pre_wlan
+ rule 315 permit ip source ip-address 211.138.112.238 0 destination user-group pre_wlan
+ rule 320 permit ip source ip-address 202.96.118.167 0 destination user-group pre_wlan
+ rule 325 permit ip source ip-address 202.108.88.50 0 destination user-group pre_wlan
+ rule 330 permit ip source ip-address 219.142.91.0 0.0.0.127 destination user-group pre_wlan
+ rule 335 permit ip source ip-address 61.129.61.164 0 destination user-group pre_wlan
+ rule 340 permit ip source ip-address 60.191.124.236 0 destination user-group pre_wlan
+ rule 345 permit ip source ip-address 218.2.247.64 0.0.0.31 destination user-group pre_wlan
+ rule 350 permit ip source ip-address 124.74.244.0 0.0.0.15 destination user-group pre_wlan
+ rule 360 permit ip source ip-address 122.224.110.96 0.0.0.31 destination user-group pre_wlan
+ rule 365 permit ip source ip-address 202.101.166.240 0.0.0.7 destination user-group pre_wlan
+ rule 370 permit ip source ip-address 202.108.144.0 0.0.0.255 destination user-group pre_wlan
+ rule 375 permit ip source ip-address 61.130.122.72 0.0.0.7 destination user-group pre_wlan
+ rule 385 permit ip source ip-address 218.30.64.0 0.0.0.255 destination user-group pre_wlan
+ rule 390 permit ip source ip-address 58.246.81.64 0.0.0.31 destination user-group pre_wlan
+ rule 395 permit ip source ip-address 122.224.205.3 0 destination user-group pre_wlan
+ rule 400 permit ip source ip-address 212.67.79.45 0 destination user-group pre_wlan
+ rule 405 permit ip source ip-address 218.66.47.194 0 destination user-group pre_wlan
+ rule 415 permit ip source ip-address 218.30.64.121 0 destination user-group pre_wlan
+ rule 420 permit ip source ip-address 124.74.213.12 0 destination user-group pre_wlan
+ rule 425 permit ip source ip-address 60.190.202.209 0 destination user-group pre_wlan
+ rule 430 permit ip source ip-address 60.191.244.2 0 destination user-group pre_wlan
+ rule 435 permit ip source ip-address 60.191.244.5 0 destination user-group pre_wlan
+ rule 440 permit ip source ip-address 211.100.35.132 0 destination user-group pre_wlan
+ rule 445 permit ip source ip-address 125.112.14.10 0 destination user-group pre_wlan
+ rule 450 permit ip source user-group pre_wlan destination ip-address 125.112.14.10 0
+ rule 475 permit ip source user-group pre_wlan destination ip-address 180.166.7.150 0
+ rule 480 permit ip source user-group pre_wlan destination ip-address 61.155.203.41 0
+ rule 490 permit ip source ip-address 115.239.134.69 0 destination user-group pre_wlan
+ rule 500 permit ip source user-group pre_wlan destination ip-address 115.239.138.18 0
+ rule 510 permit ip source ip-address 115.239.138.18 0 destination user-group pre_wlan
+ rule 520 permit ip source ip-address 180.166.7.150 0 destination user-group pre_wlan
+ rule 530 permit ip source user-group pre_wlan destination ip-address 118.85.193.3 0
+ rule 540 permit ip source user-group pre_wlan destination ip-address 118.84.194.129 0
+ rule 550 permit ip source ip-address 118.85.193.3 0 destination user-group pre_wlan
+ rule 560 permit ip source ip-address 118.84.194.129 0 destination user-group pre_wlan
+ rule 570 permit ip source user-group pre_wlan destination ip-address 42.99.16.0 0.0.0.63
+ rule 580 permit ip source ip-address 42.99.16.0 0.0.0.63 destination user-group pre_wlan
+ rule 590 permit ip source user-group pre_wlan destination ip-address 101.95.47.0 0.0.0.15
+ rule 600 permit ip source ip-address 101.95.47.0 0.0.0.15 destination user-group pre_wlan
+ rule 610 permit ip source user-group pre_wlan destination ip-address 118.85.207.65 0
+ rule 620 permit ip source ip-address 118.85.207.65 0 destination user-group pre_wlan
+ rule 630 permit ip source ip-address 115.239.134.129 0 destination user-group pre_wlan
+ rule 640 permit ip source user-group pre_wlan destination ip-address 115.239.134.129 0
+ rule 650 permit ip source user-group pre_wlan destination ip-address 42.99.0.0 0.0.0.255
+ rule 660 permit ip source ip-address 42.99.0.0 0.0.0.255 destination user-group pre_wlan
+ rule 670 permit ip source user-group pre_wlan destination ip-address 122.229.31.16 0
+ rule 680 permit ip source ip-address 122.229.31.16 0 destination user-group pre_wlan
+ rule 690 permit ip source user-group pre_wlan destination ip-address 180.166.195.2 0
+ rule 700 permit ip source ip-address 180.166.195.2 0 destination user-group pre_wlan
+ rule 710 permit ip source ip-address 122.229.30.29 0 destination user-group pre_wlan
+ rule 720 permit ip source user-group pre_wlan destination ip-address 122.229.30.29 0
+ rule 730 permit ip source ip-address 183.136.239.5 0 destination user-group pre_wlan
+ rule 740 permit ip source user-group pre_wlan destination ip-address 183.136.239.5 0
+ rule 760 permit ip source user-group pre_iwifi destination ip-address 115.239.134.129 0
+ rule 770 permit ip source user-group pre_iwifi destination ip-address 115.239.134.67 0
+ rule 780 permit ip source user-group pre_iwifi destination ip-address 60.191.244.2 0
+ rule 790 permit ip source user-group pre_iwifi destination ip-address 60.191.244.5 0
+ rule 800 permit ip source user-group pre_iwifi destination ip-address 122.229.31.0 0.0.0.255
+ rule 810 permit ip source user-group pre_iwifi destination ip-address 122.229.30.159 0
+ rule 820 permit ip source user-group pre_iwifi destination ip-address 122.229.30.160 0
+ rule 821 permit ip source ip-address 116.228.151.89 0 destination user-group pre_wlan
+ rule 822 permit ip source user-group pre_wlan destination ip-address 116.228.151.89 0
+ rule 830 permit ip source ip-address 42.99.2.4 0 destination user-group pre_wlan
+ rule 835 permit ip source user-group pre_wlan destination ip-address 42.99.2.4 0
+ rule 840 permit ip source user-group pre_wlan destination ip-address 180.168.41.75 0
+ rule 850 permit ip source ip-address 180.168.41.75 0 destination user-group pre_wlan
+#
+acl number 6100
+ description forwlan
+ rule 5 permit tcp source user-group pre_wlan destination-port eq www
+ rule 10 permit tcp source user-group pre_wlan destination-port eq 8080
+ rule 15 permit ip source user-group pre_wlan
+ rule 20 permit tcp source user-group pre_iwifi destination-port eq www
+ rule 30 permit tcp source user-group pre_iwifi destination-port eq 8080
+ rule 40 permit ip source user-group pre_iwifi
+#
+acl number 6101
+ rule 5 permit ip destination user-group pre_wlan
+#
+acl number 6102
+ description forwlan
+ rule 5 permit tcp source user-group wlan-test destination-port eq www
+ rule 10 permit tcp source user-group wlan-test destination-port eq 8080
+ rule 15 permit ip source user-group wlan-test
+#
+acl number 6110
+#
+acl number 6199
+ description wlancitypermit
+ rule 5 permit ip source user-group wlan-city destination ip-address 60.191.244.2 0
+ rule 10 permit ip source user-group wlan-city destination ip-address 60.191.244.5 0
+ rule 15 permit ip source user-group wlan-city destination ip-address 61.175.255.51 0
+ rule 20 permit ip source ip-address 60.191.244.2 0 destination user-group wlan-city
+ rule 25 permit ip source ip-address 60.191.244.5 0 destination user-group wlan-city
+ rule 30 permit ip source ip-address 61.175.255.51 0 destination user-group wlan-city
+ rule 35 permit ip source user-group wlan-city destination ip-address 183.155.35.0 0.0.0.255
+ rule 40 permit ip source ip-address 183.155.35.0 0.0.0.255 destination user-group wlan-city
+ rule 45 permit ip source user-group wlan-city destination ip-address 17.149.36.0 0.0.0.255
+ rule 50 permit ip source ip-address 17.149.36.0 0.0.0.255 destination user-group wlan-city
+#
+acl number 6200
+ description forwlancity
+ rule 5 permit tcp source user-group wlan-city destination-port eq www
+ rule 10 permit tcp source user-group wlan-city destination-port eq 8080
+ rule 15 permit ip source user-group wlan-city
+#
+acl number 6201
+ rule 5 permit ip destination user-group wlan-city
+#
+acl number 6299
+ description wlanisalepermit
+ rule 5 permit ip source user-group wlan-isale destination ip-address 60.191.244.2 0
+ rule 10 permit ip source user-group wlan-isale destination ip-address 60.191.244.5 0
+ rule 15 permit ip source user-group wlan-isale destination ip-address 60.190.255.28 0
+ rule 20 permit ip source ip-address 60.191.244.2 0 destination user-group wlan-isale
+ rule 25 permit ip source ip-address 60.191.244.5 0 destination user-group wlan-isale
+ rule 30 permit ip source ip-address 60.190.255.28 0 destination user-group wlan-isale
+ rule 35 permit ip source ip-address 115.209.3.1 0 destination user-group wlan-isale
+ rule 40 permit ip source user-group wlan-isale destination ip-address 115.209.3.1 0
+ rule 45 permit ip source ip-address 61.175.255.46 0 destination user-group wlan-isale
+ rule 50 permit ip source user-group wlan-isale destination ip-address 61.175.255.46 0
+ rule 55 permit ip source ip-address 115.233.6.84 0 destination user-group wlan-isale
+#
+acl number 6301
+ rule 5 permit ip destination user-group wlan-isale
+ rule 10 permit ip source user-group wlan-isale
+#
+acl number 6305
+ rule 5 permit ip source ip-address 61.130.38.106 0 destination ip-address 220.191.201.18 0
+ rule 10 permit ip source ip-address 61.130.38.106 0 destination ip-address 202.101.172.243 0
+#
+acl number 9000
+ rule 1 permit tcp source user-group any source-port eq www
+ rule 2 permit tcp source user-group any source-port eq 8080
+ rule 3 permit tcp source user-group pppoe source-port eq smtp
+#
+traffic classifier web_in operator or
+ if-match acl 3501
+traffic classifier wlan_city_deny operator or
+ if-match acl 6200
+traffic classifier anti-virus operator or
+ if-match acl 3100
+traffic classifier wlan_isale_out_deny operator or
+ if-match acl 6301
+traffic classifier wlan_isale_permit operator or
+ if-match acl 6299
+traffic classifier wlan_permit operator or
+ if-match acl 6099
+traffic classifier web operator or
+ if-match acl 9000
+traffic classifier wlan-test_deny operator or
+traffic classifier wlan_city_permit operator or
+ if-match acl 6199
+traffic classifier wlan_out_deny operator or
+ if-match acl 6101
+traffic classifier wlan_out_permit operator or
+ if-match acl 6099
+traffic classifier web_out operator or
+ if-match acl 3500
+traffic classifier radiusmirror operator or
+ if-match acl 6305
+traffic classifier wlan_city_out_permit operator or
+ if-match acl 6199
+traffic classifier wlan-test_permit operator or
+traffic classifier wlan_deny operator or
+ if-match acl 6100
+#
+traffic behavior wlan_city_redirect
+ http-redirect plus
+traffic behavior web_in
+traffic behavior wlan_permit
+traffic behavior wlan_redirect
+ http-redirect plus
+traffic behavior wlan_city_out_deny
+ deny
+traffic behavior permit
+traffic behavior wlan_out_deny
+ deny
+traffic behavior wlan_out_permit
+traffic behavior web_out
+traffic behavior radiusmirror
+traffic behavior deny
+ deny
+#
+traffic policy wlan_control
+ share-mode
+ classifier wlan_permit behavior wlan_permit
+ classifier wlan_deny behavior wlan_redirect
+ classifier anti-virus behavior deny
+ classifier wlan_isale_permit behavior wlan_permit
+ classifier wlan_isale_out_deny behavior deny
+ classifier wlan_city_permit behavior wlan_permit
+ classifier wlan_city_deny behavior wlan_redirect
+traffic policy pre_wlan_out
+ share-mode
+ classifier anti-virus behavior deny
+ classifier wlan_out_permit behavior wlan_out_permit
+ classifier wlan_out_deny behavior wlan_out_deny
+ classifier wlan_isale_permit behavior wlan_permit
+ classifier wlan_isale_out_deny behavior deny
+ classifier wlan_city_out_permit behavior wlan_out_permit
+traffic policy service-control
+ share-mode
+traffic policy wlan-test_control
+ share-mode
+traffic policy wlan-control
+ share-mode
+ classifier web behavior deny
+#
+ip pool wlan bas local
+ gateway 183.155.0.1 255.255.224.0
+ section 0 183.155.0.0 183.155.31.254
+ dns-server 60.191.244.5 60.191.244.2
+ lease 0 0 10
+#
+ip pool wlan-2 bas local
+ gateway 183.147.96.1 255.255.240.0
+ section 0 183.147.96.0 183.147.111.255
+ dns-server 60.191.244.5 60.191.244.2
+ lease 0 0 10
+#
+ip pool wlan-isale bas local
+ gateway 115.209.3.1 255.255.255.0
+ section 0 115.209.3.2 115.209.3.254
+ dns-server 60.191.244.5 60.191.244.2
+ lease 0 0 10
+#
+dot1x-template 1
+#
+aaa
+ nas-serial JH-JH-CN-BAS-4.WLAN.ME60
+ http-redirect enable
+ default-user-name include mac-address -
+ default-password simple 51MAC
+ local-user zjdxnoc password irreversible-cipher %$%$j:F%DK'Zr=4%bt5Qm;X(%<cjU[SP=FgLp=b!T5MzrdtV<cm%%$%$
+ local-user zjdxnoc service-type telnet
+ local-user zjdxnoc level 3
+ local-user zjdxnoc state active
+ authentication-scheme default0
+ authentication-scheme default1
+ authentication-scheme default
+  authentication-mode local radius
+ authentication-scheme wlan
+ authentication-scheme lo
+ authentication-scheme local
+  authentication-mode local
+ authentication-scheme telnet
+  authentication-mode hwtacacs local
+ authentication-scheme pre_mac
+  authening authen-fail online authen-domain pre_iwifi
+ #
+ authorization-scheme default
+ authorization-scheme telnet
+  authorization-mode hwtacacs local
+ #
+ accounting-scheme default0
+ accounting-scheme default1
+ accounting-scheme wlan
+  accounting interim interval 15
+ accounting-scheme telnet
+  accounting-mode hwtacacs
+ accounting-scheme acct2
+ #
+ domain default0
+ domain default1
+ domain default_admin
+  authentication-scheme telnet
+  authorization-scheme telnet
+  accounting-scheme telnet
+  hwtacacs-server zjdx
+ domain pre_wlan
+  authentication-scheme default0
+  accounting-scheme default0
+  ip-pool wlan
+  ip-pool wlan-2
+  qos-profile pppoe_qos_512k inbound
+  qos-profile pppoe_qos_512k outbound
+  user-group pre_wlan
+  idle-cut 15 0
+  web-server url https://portal.wifi.189.cn/zj
+  web-server url-parameter
+  web-server redirect-key user-location userlocation
+  web-server redirect-key mscg-ip mscgip
+  http-hostcar enable
+ domain wlan
+  authentication-scheme wlan
+  accounting-scheme wlan
+  ip-pool wlan
+  ip-pool wlan-2
+  radius-server group wlan
+  qos-profile pppoe_qos_10m inbound
+  qos-profile pppoe_qos_10m outbound
+ domain wlan-free
+  authentication-scheme default0
+  accounting-scheme default0
+  ip-pool wlan
+  ip-pool wlan-2
+  qos-profile pppoe_qos_10m inbound
+  qos-profile pppoe_qos_10m outbound
+  user-group wlan-free
+ domain wlan-isale
+  authentication-scheme default0
+  accounting-scheme default0
+  ip-pool wlan-isale
+  user-group wlan-isale
+ domain wlan-city
+  authentication-scheme default0
+  accounting-scheme acct2
+  ip-pool wlan
+  ip-pool wlan-2
+  radius-server group xking-webpush
+  qos-profile wlan_qos_4m inbound
+  qos-profile wlan_qos_4m outbound
+  user-group wlan-city
+  web-server url http://61.175.255.51:8080
+  http-hostcar enable
+ domain roamwlan
+  authentication-scheme wlan
+  accounting-scheme wlan
+  ip-pool wlan
+  ip-pool wlan-2
+  radius-server group wlan
+  qos-profile pppoe_qos_10m inbound
+  qos-profile pppoe_qos_10m outbound
+ domain pre_iwifi
+  authentication-scheme default0
+  accounting-scheme default0
+  ip-pool wlan
+  ip-pool wlan-2
+  user-group pre_iwifi
+  web-server url http://portal.51iwifi.com:80/aci10/login
+  web-server url-parameter
+  web-server redirect-key user-location nasid
+  web-server redirect-key user-mac-address usermac simple
+  web-server redirect-key mscg-ip wlanacip
+  web-server redirect-key user-ip-address userip
+  web-server redirect-key mscg-name wlanacname
+  http-hostcar enable
+ domain 51iwifi.com
+  authentication-scheme wlan
+  accounting-scheme wlan
+  ip-pool wlan
+  ip-pool wlan-2
+  radius-server group iwifi
+ domain jh.zjtc
+  authentication-scheme default0
+  accounting-scheme default0
+  l2tp-group jh.zjtc.lns
+ domain awifi_zj_jh
+  authentication-scheme pre_mac
+  accounting-scheme default0
+  ip-pool wlan
+  ip-pool wlan-2
+  mac-authentication enable
+  radius-server group iwifi
+  user-group pre_mac
+  web-server 122.229.31.17
+  web-server url http://portal.51iwifi.com:80/aci10/login
+  web-server url-parameter
+  web-server redirect-key user-location nasid
+  web-server redirect-key user-mac-address usermac simple
+  web-server redirect-key mscg-ip wlanacip
+  web-server redirect-key user-ip-address userip
+  web-server redirect-key mscg-name wlanacname
+  http-hostcar enable
+ domain jh_dongyang
+  authentication-scheme pre_mac
+  accounting-scheme default0
+  ip-pool wlan
+  ip-pool wlan-2
+  mac-authentication enable
+  radius-server group iwifi
+  web-server redirect-key user-mac-address usermac simple
+  http-hostcar enable
+ #
+#
+multicastbandwidth
+#
+isis 100
+ is-level level-2
+ cost-style wide
+ circuit-cost 100000 level-2
+ network-entity 86.4759.0579.0611.3003.8106.00
+ is-name JH-DX-CN-BAS-WLAN.ME60
+ preference 155
+ log-peer-change
+ maximum load-balancing 16
+#
+ntp-service source-interface LoopBack0
+ntp-service unicast-server 61.130.158.8
+ntp-service unicast-server 61.130.158.4 preference
+#
+interface Aux0/0/1
+ link-protocol ppp
+ undo shutdown
+#
+interface Eth-Trunk1
+ description uT:JH-JH-CN-CR-2.MAN.CRS()GE0/14/0/9
+#
+interface Eth-Trunk1.1
+#
+interface Eth-Trunk1.53
+ vlan-type dot1q 53
+ description uT:JH-JH-CN-CR-2.MAN.NE5000E:()GE1/9/2/17.53
+ ip address 61.130.39.170 255.255.255.252
+ isis enable 100
+ isis circuit-type p2p
+ isis circuit-level level-2
+ isis cost 3000 level-2
+ isis small-hello
+ trust upstream default
+#
+interface Eth-Trunk2
+ description uT:JH-JH-CZ-CR-1.MAN.NE5000E:()GE1/9/0/19
+#
+interface Eth-Trunk2.53
+ vlan-type dot1q 53
+ description uT:JH-JH-CZ-CR-1.MAN.NE5000E:()GE1/9/0/19.53
+ ip address 61.174.196.158 255.255.255.252
+ isis enable 100
+ isis circuit-type p2p
+ isis circuit-level level-2
+ isis cost 3000 level-2
+ isis small-hello
+ trust upstream default
+#
+interface Eth-Trunk3
+ description TO_JH-JH-CN-S9303-1-WLAN
+ mode lacp-static
+#
+interface Eth-Trunk3.1
+ description TO_JH-JH-WC
+ user-vlan 2049 3047 qinq 1001
+ user-vlan 3049 3100 qinq 1001
+ user-vlan 2801 3100 qinq 1021
+ user-vlan 2801 3100 qinq 1041
+ bas
+ #
+  access-type layer2-subscriber default-domain pre-authentication pre_wlan authentication wlan
+  nas-port-type 802.11
+  roam-domain roamwlan
+  dhcp session-mismatch action offline
+  authentication-method web
+ #
+#
+interface Eth-Trunk3.2
+ description TO_JH-JH-JD
+ user-vlan 3101 3333 qinq 1002
+ user-vlan 3337 3398 qinq 1002
+ user-vlan 3400 qinq 1002
+ user-vlan 3101 3400 qinq 1022
+ user-vlan 3101 3400 qinq 1042
+ bas
+ #
+  access-type layer2-subscriber default-domain pre-authentication pre_wlan authentication wlan
+  nas-port-type 802.11
+  roam-domain roamwlan
+  dhcp session-mismatch action offline
+  authentication-method web
+ #
+#
+interface Eth-Trunk3.3
+ description TO_JH-JH-YW
+ user-vlan 2501 2621 qinq 1003
+ user-vlan 2628 2783 qinq 1003
+ user-vlan 2785 2791 qinq 1003
+ user-vlan 2793 2800 qinq 1003
+ user-vlan 2501 2800 qinq 1023
+ user-vlan 2501 2656 qinq 1043
+ user-vlan 2659 2708 qinq 1043
+ user-vlan 2711 2800 qinq 1043
+ bas
+ #
+  access-type layer2-subscriber default-domain pre-authentication pre_wlan authentication wlan
+  nas-port-type 802.11
+  roam-domain roamwlan
+  dhcp session-mismatch action offline
+  authentication-method web
+ #
+#
+interface Eth-Trunk3.4
+ description TO_JH-JH-DY
+ user-vlan 2201 2424 qinq 1004
+ user-vlan 2427 2456 qinq 1004
+ user-vlan 2458 2500 qinq 1004
+ user-vlan 2201 2500 qinq 1024
+ user-vlan 2201 2463 qinq 1044
+ user-vlan 2465 2500 qinq 1044
+ bas
+ #
+  access-type layer2-subscriber default-domain pre-authentication pre_wlan authentication wlan
+  nas-port-type 802.11
+  roam-domain roamwlan
+  dhcp session-mismatch action offline
+  authentication-method web
+ #
+#
+interface Eth-Trunk3.5
+ description TO_JH-JH-LX
+ user-vlan 1901 2160 qinq 1005
+ user-vlan 2163 2200 qinq 1005
+ user-vlan 1901 2200 qinq 1025
+ bas
+ #
+  access-type layer2-subscriber default-domain pre-authentication pre_wlan authentication wlan
+  nas-port-type 802.11
+  roam-domain roamwlan
+  dhcp session-mismatch action offline
+  authentication-method web
+ #
+#
+interface Eth-Trunk3.6
+ description TO_JH-JH-YK
+ user-vlan 1601 1831 qinq 1006
+ user-vlan 1834 1900 qinq 1006
+ user-vlan 1601 1900 qinq 1026
+ user-vlan 1601 1900 qinq 1046
+ bas
+ #
+  access-type layer2-subscriber default-domain pre-authentication pre_wlan authentication wlan
+  nas-port-type 802.11
+  roam-domain roamwlan
+  dhcp session-mismatch action offline
+  authentication-method web
+ #
+#
+interface Eth-Trunk3.7
+ description TO_JH-JH-WY
+ user-vlan 1301 1600 qinq 1007
+ user-vlan 1301 1600 qinq 1027
+ user-vlan 1301 1567 qinq 1047
+ user-vlan 1569 1600 qinq 1047
+ bas
+ #
+  access-type layer2-subscriber default-domain pre-authentication pre_wlan authentication wlan
+  nas-port-type 802.11
+  roam-domain roamwlan
+  dhcp session-mismatch action offline
+  authentication-method web
+ #
+#
+interface Eth-Trunk3.8
+ description TO_JH-JH-PJ
+ user-vlan 1001 1261 qinq 1008
+ user-vlan 1263 1300 qinq 1008
+ user-vlan 1001 1300 qinq 1028
+ user-vlan 1001 1100 qinq 1048
+ user-vlan 1286 1300 qinq 1048
+ bas
+ #
+  access-type layer2-subscriber default-domain pre-authentication pre_wlan authentication wlan
+  nas-port-type 802.11
+  roam-domain roamwlan
+  dhcp session-mismatch action offline
+  authentication-method web
+ #
+#
+interface Eth-Trunk3.9
+ description TO_JH-JH-PA
+ user-vlan 701 1000 qinq 1009
+ user-vlan 701 1000 qinq 1029
+ user-vlan 701 987 qinq 1049
+ user-vlan 989 1000 qinq 1049
+ bas
+ #
+  access-type layer2-subscriber default-domain pre-authentication pre_wlan authentication wlan
+  nas-port-type 802.11
+  roam-domain roamwlan
+  dhcp session-mismatch action offline
+  authentication-method web
+ #
+#
+interface Eth-Trunk3.10
+ description TO_JH-JH-ZSD
+ user-vlan 401 700 qinq 1020
+ user-vlan 401 700 qinq 1030
+ bas
+ #
+  access-type layer2-subscriber default-domain pre-authentication pre_wlan authentication wlan
+  nas-port-type 802.11
+  roam-domain roamwlan
+  authentication-method web
+ #
+#
+interface Eth-Trunk3.11
+ description TO_JH-JH-iSale
+ user-vlan 3048 qinq 1001
+ user-vlan 3334 3336 qinq 1002
+ user-vlan 3399 qinq 1002
+ user-vlan 2622 2627 qinq 1003
+ user-vlan 2792 qinq 1003
+ user-vlan 2425 2426 qinq 1004
+ user-vlan 2161 2162 qinq 1005
+ user-vlan 1262 qinq 1006
+ user-vlan 1832 1833 qinq 1006
+ user-vlan 1262 qinq 1008
+ user-vlan 2657 2658 qinq 1043
+ user-vlan 2709 2710 qinq 1043
+ user-vlan 2464 qinq 1044
+ user-vlan 1568 qinq 1047
+ user-vlan 988 qinq 1049
+ bas
+ #
+  access-type layer2-subscriber default-domain pre-authentication wlan-isale
+  dhcp session-mismatch action offline
+  authentication-method web
+ #
+#
+interface Eth-Trunk3.12
+ description description TO_JH-JH-jhtelecom
+#
+interface Eth-Trunk3.13
+ description To_JH_eCity
+ user-vlan 2457 qinq 1004
+ user-vlan 201 400 qinq 1058
+ user-vlan 3801 3900 qinq 1058
+ bas
+ #
+  access-type layer2-subscriber default-domain pre-authentication wlan-city authentication wlan-city
+  dhcp session-mismatch action offline
+  authentication-method web
+ #
+#
+interface Eth-Trunk3.14
+ description TO_JH-JH-wmac
+#
+interface Eth-Trunk3.15
+ description TO_JH-JH-JZY
+ user-vlan 601 699 qinq 1010
+ bas
+ #
+  access-type layer2-subscriber default-domain pre-authentication pre_wlan authentication wlan
+  nas-port-type 802.11
+  roam-domain roamwlan
+  authentication-method web
+ #
+#
+interface Eth-Trunk3.16
+ user-vlan 2784 qinq 1003
+ bas
+ #
+  access-type layer2-subscriber default-domain pre-authentication wlan-free
+  dhcp session-mismatch action offline
+  authentication-method web
+ #
+#
+interface Eth-Trunk3.17
+ description dT:PC
+ user-vlan 3501 3699 qinq 1062 1067
+ user-vlan 3501 3657 qinq 1068
+ user-vlan 3659 3699 qinq 1068
+ user-vlan 3501 3545 qinq 1069
+ user-vlan 3548 3699 qinq 1069
+ user-vlan 3501 3556 qinq 1070
+ user-vlan 3558 3699 qinq 1070
+ user-vlan 3501 3699 qinq 1071
+ user-vlan 3501 3612 qinq 1072
+ user-vlan 3614 3699 qinq 1072
+ user-vlan 3501 3699 qinq 1073 1076
+ bas
+ #
+  access-type layer2-subscriber default-domain pre-authentication pre_iwifi authentication 51iwifi.com
+  roam-domain 51iwifi.com
+  authentication-method web
+  user detect retransmit 3 interval 30
+ #
+#
+interface Eth-Trunk3.18
+ description dT:AWIFI_MAC
+ user-vlan 3546 3547 qinq 1069
+ user-vlan 3557 qinq 1070
+ bas
+ #
+  access-type layer2-subscriber default-domain pre-authentication awifi_zj_jh authentication 51iwifi.com
+  nas-port-type 802.11
+  roam-domain roamwlan
+  dhcp session-mismatch action offline
+  authentication-method web
+ #
+#
+interface Eth-Trunk3.19
+#
+interface Eth-Trunk3.20
+ description dT:dongyangwuxianchengshi
+ shutdown
+ user-vlan 3658 qinq 1068
+ user-vlan 3613 qinq 1072
+ bas
+ #
+  access-type layer2-subscriber default-domain pre-authentication jh_dongyang authentication 51iwifi.com
+  nas-port-type 802.11
+  roam-domain roamwlan
+  dhcp session-mismatch action offline
+  authentication-method web
+ #
+#
+interface Eth-Trunk7
+ description dT:JH-JH-CN-WLAN-S9303-2.MAN:ETH-TRUNK7
+ mode lacp-static
+#
+interface Eth-Trunk7.1
+ description TO_JH-JH-WC
+ user-vlan 2049 2976 qinq 1001
+ user-vlan 2978 3047 qinq 1001
+ user-vlan 3049 3100 qinq 1001
+ user-vlan 601 699 qinq 1010
+ user-vlan 2801 3100 qinq 1021
+ user-vlan 2801 3100 qinq 1041
+ bas
+ #
+  access-type layer2-subscriber default-domain pre-authentication pre_wlan authentication wlan
+  nas-port-type 802.11
+  roam-domain roamwlan
+  dhcp session-mismatch action offline
+  authentication-method web
+ #
+#
+interface Eth-Trunk7.2
+ description TO_JH-JH-JD
+ user-vlan 3101 3324 qinq 1002
+ user-vlan 3326 3333 qinq 1002
+ user-vlan 3337 3398 qinq 1002
+ user-vlan 3101 3400 qinq 1022
+ user-vlan 3101 3372 qinq 1042
+ user-vlan 3374 3400 qinq 1042
+ user-vlan 4070 4093 qinq 1060
+ bas
+ #
+  access-type layer2-subscriber default-domain pre-authentication pre_wlan authentication wlan
+  nas-port-type 802.11
+  roam-domain roamwlan
+  dhcp session-mismatch action offline
+  authentication-method web
+ #
+#
+interface Eth-Trunk7.3
+ description TO_JH-JH-YW
+ user-vlan 2501 2621 qinq 1003
+ user-vlan 2628 2783 qinq 1003
+ user-vlan 2785 2791 qinq 1003
+ user-vlan 2793 2800 qinq 1003
+ user-vlan 2501 2800 qinq 1023
+ user-vlan 2501 2656 qinq 1043
+ user-vlan 2659 2708 qinq 1043
+ user-vlan 2711 2800 qinq 1043
+ bas
+ #
+  access-type layer2-subscriber default-domain pre-authentication pre_wlan authentication wlan
+  nas-port-type 802.11
+  roam-domain roamwlan
+  dhcp session-mismatch action offline
+  authentication-method web
+ #
+#
+interface Eth-Trunk7.4
+ description TO_JH-JH-DY
+ user-vlan 2201 2424 qinq 1004
+ user-vlan 2427 2500 qinq 1004
+ user-vlan 2201 2500 qinq 1024
+ user-vlan 2201 2463 qinq 1044
+ user-vlan 2465 2500 qinq 1044
+ bas
+ #
+  access-type layer2-subscriber default-domain pre-authentication pre_wlan authentication wlan
+  nas-port-type 802.11
+  roam-domain roamwlan
+  dhcp session-mismatch action offline
+  authentication-method web
+ #
+#
+interface Eth-Trunk7.5
+ description TO_JH-JH-LX
+ user-vlan 1901 2160 qinq 1005
+ user-vlan 2163 2200 qinq 1005
+ user-vlan 1901 2200 qinq 1025
+ user-vlan 1901 2200 qinq 1045
+ bas
+ #
+  access-type layer2-subscriber default-domain pre-authentication pre_wlan authentication wlan
+  nas-port-type 802.11
+  roam-domain roamwlan
+  dhcp session-mismatch action offline
+  authentication-method web
+ #
+#
+interface Eth-Trunk7.6
+ description TO_JH-JH-YK
+ user-vlan 1601 1831 qinq 1006
+ user-vlan 1834 1900 qinq 1006
+ user-vlan 1601 1900 qinq 1026
+ user-vlan 1601 1900 qinq 1046
+ bas
+ #
+  access-type layer2-subscriber default-domain pre-authentication pre_wlan authentication wlan
+  nas-port-type 802.11
+  roam-domain roamwlan
+  dhcp session-mismatch action offline
+  authentication-method web
+ #
+#
+interface Eth-Trunk7.7
+ description TO_JH-JH-WY
+ user-vlan 1301 1600 qinq 1007
+ user-vlan 1301 1600 qinq 1027
+ user-vlan 1301 1565 qinq 1047
+ user-vlan 1567 qinq 1047
+ user-vlan 1569 1600 qinq 1047
+ bas
+ #
+  access-type layer2-subscriber default-domain pre-authentication pre_wlan authentication wlan
+  nas-port-type 802.11
+  roam-domain roamwlan
+  dhcp session-mismatch action offline
+  authentication-method web
+ #
+#
+interface Eth-Trunk7.8
+ description TO_JH-JH-PJ
+ user-vlan 1001 1261 qinq 1008
+ user-vlan 1263 1300 qinq 1008
+ user-vlan 1001 1300 qinq 1028
+ user-vlan 1001 1300 qinq 1048
+ bas
+ #
+  access-type layer2-subscriber default-domain pre-authentication pre_wlan authentication wlan
+  nas-port-type 802.11
+  roam-domain roamwlan
+  dhcp session-mismatch action offline
+  authentication-method web
+ #
+#
+interface Eth-Trunk7.9
+ description TO_JH-JH-PA
+ user-vlan 701 1000 qinq 1009
+ user-vlan 701 1000 qinq 1029
+ user-vlan 701 987 qinq 1049
+ user-vlan 989 1000 qinq 1049
+ bas
+ #
+  access-type layer2-subscriber default-domain pre-authentication pre_wlan authentication wlan
+  nas-port-type 802.11
+  roam-domain roamwlan
+  dhcp session-mismatch action offline
+  authentication-method web
+ #
+#
+interface Eth-Trunk7.11
+ description TO_JH-JH-iSale
+ user-vlan 3048 qinq 1001
+ user-vlan 3334 3336 qinq 1002
+ user-vlan 3399 qinq 1002
+ user-vlan 2622 2627 qinq 1003
+ user-vlan 2792 qinq 1003
+ user-vlan 2425 2426 qinq 1004
+ user-vlan 2161 2162 qinq 1005
+ user-vlan 1262 qinq 1006
+ user-vlan 1832 1833 qinq 1006
+ user-vlan 1262 qinq 1008
+ user-vlan 2657 2658 qinq 1043
+ user-vlan 2709 2710 qinq 1043
+ user-vlan 2464 qinq 1044
+ user-vlan 1568 qinq 1047
+ user-vlan 988 qinq 1049
+ bas
+ #
+  access-type layer2-subscriber default-domain pre-authentication wlan-isale
+  dhcp session-mismatch action offline
+  authentication-method web
+ #
+#
+interface Eth-Trunk7.13
+ description To_JH_eCity
+ user-vlan 201 400 qinq 1058
+ user-vlan 3801 3900 qinq 1058
+ bas
+ #
+  access-type layer2-subscriber default-domain pre-authentication wlan-city authentication wlan-city
+  dhcp session-mismatch action offline
+  authentication-method web
+ #
+#
+interface Eth-Trunk7.14
+ description TO_JH-JH-anytest
+ user-vlan any-other
+ bas
+ #
+  access-type layer2-subscriber default-domain pre-authentication pre_wlan authentication wlan
+  nas-port-type 802.11
+  roam-domain roamwlan
+  dhcp session-mismatch action offline
+  authentication-method web
+ #
+#
+interface Eth-Trunk7.16
+ user-vlan 2784 qinq 1003
+ bas
+ #
+  access-type layer2-subscriber default-domain pre-authentication wlan-free
+  dhcp session-mismatch action offline
+  authentication-method web
+ #
+#
+interface Eth-Trunk7.17
+ description dT:PC
+ user-vlan 3501 3699 qinq 1062 1076
+ bas
+ #
+  access-type layer2-subscriber default-domain pre-authentication pre_iwifi authentication 51iwifi.com
+  roam-domain 51iwifi.com
+  authentication-method web
+  user detect retransmit 3 interval 30
+ #
+#
+interface Virtual-Template0
+ ppp authentication-mode auto
+#
+interface GigabitEthernet0/0/0
+ speed auto
+ duplex auto
+ undo shutdown
+ ip address 192.168.188.2 255.255.255.0
+#
+interface GigabitEthernet1/0/0
+ description uT:JH-JH-CN-CR-2.MAN.NE5000E:(local)GE1/9/2/17
+ undo shutdown
+ eth-trunk 1
+#
+interface GigabitEthernet1/0/1
+ port-type fiber-1000
+ description dT:JH-JH-CN-S9303-1-WLAN:(local)GE1/0/1
+ undo shutdown
+ eth-trunk 3
+#
+interface GigabitEthernet1/0/2
+ undo shutdown
+#
+interface GigabitEthernet1/0/3
+ port-type fiber-1000
+ description dT:JH-JH-CN-S9303-1-WLAN:(local)GE1/0/3
+ undo shutdown
+ eth-trunk 3
+#
+interface GigabitEthernet1/0/4
+ undo shutdown
+#
+interface GigabitEthernet1/0/5
+ undo shutdown
+#
+interface GigabitEthernet1/0/6
+ undo shutdown
+#
+interface GigabitEthernet1/0/7
+ undo shutdown
+#
+interface GigabitEthernet1/0/8
+ undo shutdown
+#
+interface GigabitEthernet1/0/9
+ undo shutdown
+#
+interface GigabitEthernet1/1/0
+ shutdown
+#
+interface GigabitEthernet2/0/0
+ description uT:JH-JH-CZ-CR-1.MAN.NE5000E:(F1008060012)GE1/9/0/19
+ undo shutdown
+ eth-trunk 2
+#
+interface GigabitEthernet2/0/1
+ port-type fiber-1000
+ undo shutdown
+ eth-trunk 3
+#
+interface GigabitEthernet2/0/2
+ undo shutdown
+#
+interface GigabitEthernet2/0/3
+ undo shutdown
+#
+interface GigabitEthernet2/0/4
+ undo shutdown
+#
+interface GigabitEthernet2/0/5
+ undo shutdown
+#
+interface GigabitEthernet2/0/6
+ undo shutdown
+#
+interface GigabitEthernet2/0/7
+ undo shutdown
+#
+interface GigabitEthernet2/0/8
+ undo shutdown
+#
+interface GigabitEthernet2/0/9
+ undo shutdown
+#
+interface GigabitEthernet2/1/0
+ undo shutdown
+#
+interface NULL0
+#
+interface LoopBack0
+ description For IPV4 traffic
+ ip address 61.130.38.106 255.255.255.255
+ isis enable 100
+ isis circuit-level level-2
+#
+l2tp-group default-lac
+ tunnel name HUAWEI
+#
+l2tp-group default-lns
+ tunnel name HUAWEI
+#
+l2tp-group jh.zjtc.lns
+ undo tunnel authentication
+ tunnel load-sharing
+ tunnel name zj-lac
+ start l2tp ip 202.96.97.240 ip 61.164.1.37
+#
+bgp 64759
+ router-id 61.130.38.106
+ undo default ipv4-unicast
+ group pgCR internal
+ peer pgCR connect-interface LoopBack0
+ peer 61.130.158.4 as-number 64759
+ peer 61.130.158.4 group pgCR
+ peer 61.130.158.4 description To JH-JH-CZ-CR-1.MAN.CRS
+ peer 61.130.158.8 as-number 64759
+ peer 61.130.158.8 group pgCR
+ peer 61.130.158.8 description To JH-JH-CN-CR-2.MAN.CRS
+ #
+ ipv4-family unicast
+  undo synchronization
+  preference 20 200 200
+  network 115.209.3.0 255.255.255.0
+  network 183.147.96.0 255.255.240.0
+  network 183.155.0.0 255.255.224.0
+  import-route direct route-policy rpCONN
+  import-route static route-policy rpStaticToBGP
+  maximum load-balancing 8
+  peer pgCR enable
+  peer pgCR route-policy rpFROMCR_IN import
+  peer pgCR route-policy rpSET_COMM_OUT export
+  peer pgCR advertise-community
+  peer 61.130.158.4 enable
+  peer 61.130.158.4 group pgCR
+  peer 61.130.158.8 enable
+  peer 61.130.158.8 group pgCR
+#
+route-policy rpCONN deny node 10
+ if-match ip-prefix plPrivateRoute
+#
+route-policy rpCONN permit node 20
+#
+ dhcp-decline ip-address-status idle
+#
+ip ip-prefix plDefaultRoute index 10 permit 0.0.0.0 0
+ip ip-prefix plPrivateRoute index 10 permit 10.0.0.0 8 greater-equal 24 less-equal 32
+ip ip-prefix plPrivateRoute index 20 permit 172.16.0.0 12 greater-equal 12 less-equal 32
+ip ip-prefix plPrivateRoute index 30 permit 192.168.0.0 16 greater-equal 16 less-equal 32
+ip ip-prefix plPrivateRoute index 40 permit 127.0.0.0 8 greater-equal 8 less-equal 32
+ip ip-prefix plPrivateRoute index 50 permit 11.20.0.0 16 greater-equal 16 less-equal 32
+ip ip-prefix plPppoe index 10 permit 125.120.124.0 24
+#
+ip route-static 115.209.3.0 255.255.255.0 NULL0 tag 100
+ip route-static 183.155.34.0 255.255.255.0 NULL0 tag 100
+#
+snmp-agent
+snmp-agent local-engineid 000007DB7FFFFFFF00004490
+snmp-agent community read cipher %$%$`G+uTfF0;:}B7z$uaK6F<$Y'3G}j3FEXxRqcc"GVxKJ4$Y*<%w=Q<[7kN$:_'LBhX2y6Y3<$%$%$ acl 2010
+snmp-agent sys-info version all
+snmp-agent trap source LoopBack0
+#
+ traffic-policy wlan_control inbound
+ traffic-policy pre_wlan_out outbound
+#
+ web-auth-server source interface LoopBack0
+ web-auth-server listening-port 3288
+ web-auth-server 60.191.115.11 port 50100 key simple huawei
+ web-auth-server 122.224.127.7 port 50100 key simple huawei
+ web-auth-server 122.224.127.8 port 50100 key simple huawei
+ web-auth-server 122.224.127.9 port 50100 key simple huawei
+ web-auth-server 122.224.127.4 port 50100 key simple huawei
+ web-auth-server 122.224.127.13 port 50100 key simple huawei
+ web-auth-server 115.239.138.17 port 50100 key simple huawei
+ web-auth-server 122.229.31.17 port 50100
+#
+slot 1
+ hostcar cir 128
+ http-hostcar cir 128
+ observe-filter 1 local src-ip 220.191.201.18 255.255.255.255
+ observe-filter 2 local dst-ip 202.101.172.243 255.255.255.255
+ observe-filter 3 local dst-ip 220.191.201.18 255.255.255.255
+ observe-filter 4 local src-ip 202.101.172.243 255.255.255.255
+#
+slot 2
+ hostcar cir 32
+ http-hostcar cir 32
+ observe-filter 1 local src-ip 220.191.201.18 255.255.255.255
+ observe-filter 2 local dst-ip 202.101.172.243 255.255.255.255
+ observe-filter 3 local dst-ip 220.191.201.18 255.255.255.255
+ observe-filter 4 local src-ip 202.101.172.243 255.255.255.255
+#
+user-interface maximum-vty 10
+user-interface con 0
+ authentication-mode password
+ set authentication password cipher %@%@3O-oV,HBESdh}>F5&P|7%<b7]/p@BKlHyTq\yq(5C0PJ<b:%%@%@
+user-interface aux 0
+user-interface vty 0 4
+ acl 2001 inbound
+ authentication-mode aaa
+ user privilege level 15
+ screen-length 0
+user-interface vty 5 9
+ acl 2001 inbound
+ authentication-mode aaa
+ user privilege level 15
+ screen-length 40
+user-interface vty 16 20
+#
+local-aaa-server
+#
+license
+#
+return
+[JH-JH-CN-BAS-4.WLAN.ME60-ui-vty0-4]

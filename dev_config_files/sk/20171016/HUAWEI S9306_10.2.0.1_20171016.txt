@@ -1,0 +1,562 @@
+
+!Software Version V200R008C00SPC500
+#
+sysname QZ-QZ-XDL-PE-1.ZW.S9306
+#
+super password level 3 cipher %$%$u7%l:#eA@PtwB%&kaG{:,jaX;Iw9%$;3f'A7*bLI{y**.pgb%$%$
+#
+info-center source default channel 2 log level warning trap level warning
+info-center source SHELL channel 4 log level notification
+info-center source NTP channel 4 log state off 
+info-center loghost source LoopBack2
+info-center loghost 10.192.0.11 facility local4
+info-center loghost 10.192.0.12 facility local4
+#
+ipv6
+#
+router id 10.2.0.1
+#
+vlan batch 20 to 23 50 to 58 1402 2001 to 2002 2010 2020
+#
+undo authentication unified-mode
+#
+set save-configuration interval 43200 delay 30
+#
+assign resource-mode slot 3 mode enhanced-ipv4
+assign resource-mode slot 6 mode enhanced-ipv4
+#
+telnet server enable
+telnet ipv6 server enable
+#
+lldp enable
+#
+undo http server enable
+#
+undo management-port isolate enable
+undo management-plane isolate enable
+#
+clock timezone GMT add 08:00:00
+#
+diffserv domain default
+#
+ip vpn-instance TWGC
+ ipv4-family
+  route-distinguisher 570:101
+  apply-label per-route
+  vpn-target 570:101 export-extcommunity
+  vpn-target 570:101 import-extcommunity
+#
+hwtacacs-server template acs
+ hwtacacs-server authentication 70.0.0.32
+ hwtacacs-server authorization 70.0.0.32
+ hwtacacs-server accounting 70.0.0.32
+ hwtacacs-server source-ip 10.2.1.1
+ hwtacacs-server shared-key cipher %^%#GR=V-!Dy(L}yFACE<;j9Z\97S;-sS0G^Hl3`2G2>%^%#
+ hwtacacs-server timer response-timeout 30
+ undo hwtacacs-server user-name domain-included
+#
+mpls lsr-id 10.2.0.1
+mpls
+#
+mpls ldp
+#
+#
+acl number 2000  
+ description SNMP
+ step 10
+ rule 10 permit source 10.192.0.0 0.0.0.255 
+ rule 20 permit source 10.31.255.0 0.0.0.255 
+ rule 30 permit source 70.0.1.0 0.0.0.127 
+ rule 50 permit source 70.0.0.0 0.0.3.255 
+ rule 100 deny 
+acl number 2001  
+ description Telnet
+ rule 10 permit source 10.10.0.0 0.0.1.255 
+ rule 20 permit source 10.192.0.0 0.0.0.31 
+ rule 30 permit source 10.2.1.0 0.0.0.255 
+ rule 40 permit source 10.31.255.0 0.0.0.255 
+ rule 50 permit source 70.0.0.0 0.0.3.255 
+ rule 100 deny 
+acl number 2002  
+ description NTP
+ rule 10 permit source 70.0.0.32 0 
+ rule 100 deny 
+#
+acl number 3001  
+ description worm
+ rule 5 deny tcp destination-port eq 137 vpn-instance TWGC 
+ rule 10 deny tcp destination-port eq 138 vpn-instance TWGC 
+ rule 15 deny tcp destination-port eq 139 vpn-instance TWGC 
+ rule 20 deny tcp destination-port eq 445 vpn-instance TWGC 
+ rule 25 permit ip vpn-instance TWGC 
+#
+traffic classifier worm operator or precedence 5
+ if-match acl 3001
+#
+traffic behavior worm
+ permit
+#
+traffic policy worm match-order config
+ classifier worm behavior worm
+#
+drop-profile default
+#
+vlan 20
+ description Management_Switch_OLT
+vlan 21
+ description Management_Customer_Device
+vlan 22
+ description Management_Pon-1
+vlan 23
+ description Management_Pon-TC
+vlan 50
+ description Connect_QZJJ-TW-H3C10504-IRF
+vlan 51
+ description Connect_QZ-QZ-NJ-PE-1.ZW.S9306
+vlan 52
+ description Connect_QZ-QZ-XZ-PE-1.ZW.S9306
+vlan 53
+ description TWGC_Connect_XDL-SR1
+vlan 54
+ description TWGC_Connect_XDL-SR2
+vlan 55
+ description dT:QZ-LYJJ-H3C7503-1::TWGC
+vlan 56
+ description dT:QZ-CSJJ-H3C7503-1::TWGC
+vlan 57
+ description device_Connect_XDL-SR1
+vlan 58
+ description dT:KCJJ-HW5300
+vlan 1402
+ description Temp_for_QZXY
+vlan 2001
+ description QZ-QZ-XDL-OLT-1.ZW.HW5680T::TWGC
+vlan 2002
+ description QZ-QZ-TC-OLT-1.ZW.HW5680T::TWGC
+vlan 2010
+ description KeChengGongAnJu_QingBaoZhongXin
+vlan 2020
+ description QZ-QZ-XDL-OLT-1.ZW.HW5680T::TWGC(forSmallSubnet)
+#
+aaa
+ authentication-scheme default
+ authentication-scheme acs
+  authentication-mode hwtacacs local
+  authentication-super hwtacacs super
+ authorization-scheme default
+ authorization-scheme acs
+  authorization-mode  hwtacacs local
+ accounting-scheme default
+ accounting-scheme acs
+  accounting-mode hwtacacs
+  accounting start-fail online
+ recording-scheme acs
+  recording-mode hwtacacs acs
+ cmd recording-scheme acs
+ outbound recording-scheme acs
+ system recording-scheme acs
+ domain default
+ domain default_admin
+  authentication-scheme acs
+  accounting-scheme acs
+  authorization-scheme acs
+  hwtacacs-server acs
+ undo local-user admin
+ local-user local password irreversible-cipher %^%#<)LY$GZw@~f&c<Sg9RhL+5AaTNP9mLKNq;G{8f\819351.SY9%=BfI5ZanT2%^%#
+ local-user local privilege level 3
+ local-user local service-type telnet
+ local-user zjnoc password irreversible-cipher %^%#s$tODsW'@AD;>x'5Rv*Shld2#t5`CBv2F/0,yhlW%T+l9ZPM$O%k7F4j:}8A%^%#
+ local-user zjnoc privilege level 3
+ local-user zjnoc service-type telnet terminal
+#
+ntp-service access peer 2002
+#
+interface Vlanif20
+ description Management_Switch_OLT
+ ip address 10.2.16.1 255.255.254.0
+#
+interface Vlanif21
+ description Management_Customer_Device
+ ip address 10.2.18.1 255.255.254.0
+#
+interface Vlanif22
+ description Management_Pon-1
+ ip address 10.2.20.1 255.255.255.0
+#
+interface Vlanif23
+ ip address 10.2.21.1 255.255.255.0
+#
+interface Vlanif50
+ description Connect_QZJJ-TW-H3C10504-IRF
+ ip binding vpn-instance TWGC
+ ip address 172.28.145.10 255.255.255.252
+#
+interface Vlanif51
+ description Connect_QZ-QZ-NJ-PE-1.ZW.S9306
+ ip address 172.28.145.17 255.255.255.252
+ mpls
+ mpls ldp
+#
+interface Vlanif52
+ description Connect_QZ-QZ-XZ-PE-1.ZW.S9306
+ ip address 172.28.145.21 255.255.255.252
+ mpls
+ mpls ldp
+#
+interface Vlanif53
+ description TWGC_Connect_XDL-SR1
+ ip binding vpn-instance TWGC
+ ip address 172.28.145.25 255.255.255.252
+#
+interface Vlanif54
+ description TWGC_Connect_XDL-SR2
+ ip binding vpn-instance TWGC
+ ip address 172.28.145.29 255.255.255.252
+#
+interface Vlanif55
+ description dT:QZ-LYJJ-H3C7503-1::TWGC
+ ip binding vpn-instance TWGC
+ ip address 172.28.155.1 255.255.255.252
+#
+interface Vlanif56
+ description dT:QZ-CSJJ-H3C7503-1::TWGC
+ ip binding vpn-instance TWGC
+ ip address 172.28.157.1 255.255.255.252
+#
+interface Vlanif57
+ description device_Connect_XDL-SR1
+ ip address 10.2.2.2 255.255.255.252
+#
+interface Vlanif58
+ description dT:KCJJ-HW5300:()GE
+ ip binding vpn-instance TWGC
+ ip address 172.28.145.85 255.255.255.252
+#
+interface Vlanif2001
+ description QZ-QZ-XDL-OLT-1.ZW.HW5680T::TWGC
+ ip binding vpn-instance TWGC
+ ip address 172.28.0.1 255.255.255.0
+ ip address 33.193.0.1 255.255.255.0 sub
+ ip address 33.192.162.1 255.255.255.0 sub
+#
+interface Vlanif2002
+ ip binding vpn-instance TWGC
+ ip address 172.28.1.1 255.255.255.0
+ ip address 33.193.2.1 255.255.255.0 sub
+ ip address 33.193.3.1 255.255.255.0 sub
+ ip address 33.192.127.1 255.255.255.240 sub
+#
+interface Vlanif2010
+ description KeChengGongAnJu_QingBaoZhongXin
+ ip binding vpn-instance TWGC
+ ip address 172.28.6.1 255.255.255.128
+ ip address 33.192.124.1 255.255.255.128 sub
+#
+interface Vlanif2020
+ description QZ-QZ-XDL-OLT-1.ZW.HW5680T::TWGC(forSmallSubnet)
+ ip binding vpn-instance TWGC
+ ip address 172.28.7.1 255.255.255.192
+#
+interface Eth-Trunk1
+ description uT:QZJJ-TW-H3C10504-IRF:eth-2
+ port hybrid pvid vlan 50
+ port hybrid tagged vlan 21
+ port hybrid untagged vlan 50
+ mode lacp
+#
+interface Eth-Trunk2
+ description pT:QZ-QZ-NJ-PE-1.ZW.S9306:LAG2(10GE6/0/2)
+ port link-type access
+ port default vlan 51
+ mode lacp
+#
+interface Eth-Trunk3
+ description pT:QZ-QZ-XZ-PE-1.ZW.S9306:LAG1(10GE6/0/2)
+ port link-type access
+ port default vlan 52
+ mode lacp
+#
+interface Eth-Trunk4
+ description dT:QZ-QZ-XDL-SR-1.MAN.7750:LAG20(GE1/1/19,GE1/1/16,GE10/1/4,GE10/1/5)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 53 55 to 57
+ mode lacp
+#
+interface Eth-Trunk5
+ description dT:QZ-QZ-XDL-SR-2.MAN.7750:LAG20(GE1/1/19)
+ port link-type trunk
+ port trunk allow-pass vlan 54
+ mode lacp
+#
+interface Eth-Trunk12
+ description dT:QZ-QZ-XDL-OLT-4.M2N.E5680T:LAG1(GE0/19/0,GE0/20/0)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 20 22 2001 2020
+ mode lacp
+#
+interface Eth-Trunk14
+ description dT:QZ-QZ-TC-OLT-3.M2N.E5680T:LAG1(GE0/19/0)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 20 23 2002
+ mode lacp
+#
+interface Ethernet0/0/0
+ shutdown
+ ip address 192.168.100.1 255.255.255.252
+#
+interface GigabitEthernet3/0/0
+ undo negotiation auto
+ description dT:QZ-QZ-XDL-SR-1.MAN.7750:(local)GE1/1/19
+ eth-trunk 4
+#
+interface GigabitEthernet3/0/1
+ undo negotiation auto
+ description dT:QZ-QZ-XDL-SR-2.MAN.7750:(local)GE1/1/19
+ eth-trunk 5
+#
+interface GigabitEthernet3/0/2
+ description KCJJ-HW5300:(F1005310006)GE0/0/45::kehu
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 21 58
+#
+interface GigabitEthernet3/0/3
+ shutdown
+#
+interface GigabitEthernet3/0/4
+ undo negotiation auto
+ description dT:QZ-QZ-XDL-SR-1.MAN.7750:(local)GE1/1/16
+ eth-trunk 4
+#
+interface GigabitEthernet3/0/5
+ shutdown
+#
+interface GigabitEthernet3/0/6
+ description KeChengGongAnJu_QingBaoZhongXin::kehu
+ port link-type access
+ port default vlan 2010
+#
+interface GigabitEthernet3/0/7
+ shutdown
+#
+interface GigabitEthernet3/0/8
+ shutdown
+#
+interface GigabitEthernet3/0/9
+ undo negotiation auto
+ description dT:QZ-QZ-XDL-SR-1.MAN.7750:(local)GE10/1/4
+ eth-trunk 4
+#
+interface GigabitEthernet3/0/10
+ undo negotiation auto
+ description dT:QZ-QZ-XDL-SR-1.MAN.7750:(local)GE10/1/5
+ eth-trunk 4
+#
+interface GigabitEthernet3/0/11
+ shutdown
+#
+interface GigabitEthernet3/0/12
+ undo negotiation auto
+ description dT:QZ-QZ-XDL-OLT-4.M2N.E5680T:(F1303140002)GE0/19/0
+ eth-trunk 12
+#
+interface GigabitEthernet3/0/13
+ undo negotiation auto
+ description dT:QZ-QZ-XDL-OLT-4.M2N.E5680T:(F1303140003)GE0/20/0
+ eth-trunk 12
+#
+interface GigabitEthernet3/0/14
+ description dT:QZ-QZ-TC-OLT-3.M2N.E5680T:(F1304250002)GE0/19/0
+ eth-trunk 14
+#
+interface GigabitEthernet3/0/15
+ description dT:QZ-QZ-TC-OLT-3.M2N.E5680T:(F1705082263)GE0/19/1
+ eth-trunk 14
+#
+interface GigabitEthernet3/0/16
+ shutdown
+#
+interface GigabitEthernet3/0/17
+ shutdown
+#
+interface GigabitEthernet3/0/18
+ shutdown
+#
+interface GigabitEthernet3/0/19
+ shutdown
+#
+interface GigabitEthernet3/0/20
+ shutdown
+#
+interface GigabitEthernet3/0/21
+ shutdown
+#
+interface GigabitEthernet3/0/22
+ shutdown
+#
+interface GigabitEthernet3/0/23
+ shutdown
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 1402
+#
+interface XGigabitEthernet6/0/0
+ description QZJJ-TW-H3C10504-IRF:(F1304260009)10GE0/1/0/2::kehu
+ eth-trunk 1
+#
+interface XGigabitEthernet6/0/1
+ shutdown
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 1402
+#
+interface XGigabitEthernet6/0/2
+ description pT:QZ-QZ-NJ-PE-1.ZW.S9306:(F1303260006)10GE6/0/2
+ eth-trunk 2
+#
+interface XGigabitEthernet6/0/3
+ description pT:QZ-QZ-XZ-PE-1.ZW.S9306:(F1303280001)10GE6/0/2
+ eth-trunk 3
+#
+interface NULL0
+#
+interface LoopBack0
+ description For-BGP
+ ip address 10.2.0.1 255.255.255.255
+#
+interface LoopBack1
+ description For-TWGC
+ ip binding vpn-instance TWGC
+ ip address 172.28.144.21 255.255.255.255
+#
+interface LoopBack2
+ description For-Management
+ ip address 10.2.1.1 255.255.255.255
+#
+bgp 62570
+ group zw internal
+ peer zw connect-interface LoopBack0
+ peer 10.2.0.2 as-number 62570
+ peer 10.2.0.2 group zw
+ peer 10.2.0.3 as-number 62570
+ peer 10.2.0.3 group zw
+ peer 10.2.0.4 as-number 62570
+ peer 10.2.0.4 group zw
+ peer 10.2.0.5 as-number 62570
+ peer 10.2.0.5 group zw
+ #
+ ipv4-family unicast
+  undo synchronization
+  peer zw enable
+  peer zw reflect-client
+  peer zw next-hop-local
+  peer 10.2.0.2 enable
+  peer 10.2.0.2 group zw
+  peer 10.2.0.3 enable
+  peer 10.2.0.3 group zw
+  peer 10.2.0.4 enable
+  peer 10.2.0.4 group zw
+  peer 10.2.0.5 enable
+  peer 10.2.0.5 group zw
+ #
+ ipv4-family vpnv4
+  policy vpn-target
+  peer 10.2.0.2 enable
+  peer 10.2.0.2 next-hop-local
+  peer zw enable
+  peer zw reflect-client
+  peer 10.2.0.3 enable
+  peer 10.2.0.3 group zw
+  peer 10.2.0.4 enable
+  peer 10.2.0.4 group zw
+  peer 10.2.0.5 enable
+  peer 10.2.0.5 group zw
+ #
+ ipv4-family vpn-instance TWGC
+  network 0.0.0.0
+  import-route direct
+  import-route static
+  import-route ospf 2
+#
+ospf 1
+ import-route direct
+ import-route static
+ bandwidth-reference 100000
+ area 0.0.0.0
+  network 10.2.0.1 0.0.0.0
+  network 10.2.8.0 0.0.0.3
+  network 172.28.145.16 0.0.0.3
+  network 172.28.145.20 0.0.0.3
+#
+ospf 2 router-id 172.28.144.21 vpn-instance TWGC
+ import-route direct
+ import-route static
+ import-route bgp permit-ibgp cost 10
+ bandwidth-reference 100000
+ route-tag disable
+ area 0.0.0.0
+  network 172.28.144.21 0.0.0.0
+  network 172.28.145.8 0.0.0.3
+  network 172.28.155.0 0.0.0.3
+  network 172.28.157.0 0.0.0.3
+ area 0.0.0.1
+  network 172.28.145.24 0.0.0.3
+  network 172.28.145.28 0.0.0.3
+#
+route-policy abc permit node 10
+#
+ip route-static 10.10.0.0 255.255.254.0 10.2.2.1 description XDL-SR1::vprn200002
+ip route-static 10.31.255.0 255.255.255.224 10.2.2.1 description XDL-SR1::vprn200002
+ip route-static 10.192.0.0 255.255.255.224 10.2.2.1 description XDL-SR1::vprn200002
+ip route-static 70.0.0.0 255.255.254.0 10.2.2.1 description XDL-SR1::vprn200002
+ip route-static 70.0.2.0 255.255.255.0 10.2.2.1 description XDL-SR1::vprn200002
+ip route-static vpn-instance TWGC 33.194.160.0 255.255.255.0 172.28.145.86 description dT:KCJJ
+ip route-static vpn-instance TWGC 192.168.211.0 255.255.255.0 172.28.145.86 description dT:KCJJ
+ip route-static vpn-instance TWGC 192.168.213.0 255.255.255.0 172.28.145.86 description dT:KCJJ
+ip route-static vpn-instance TWGC 192.168.221.0 255.255.255.0 172.28.145.86 description dT:KCJJ
+#
+snmp-agent
+snmp-agent local-engineid 800007DB037054F586C980
+snmp-agent community read cipher %^%#iV{%'7i7-<{yBFIXo2XA+b80<.Z%6M_CaoLAQFA3)*{eYqTRYW0F^]+t[Oe0Ci)pORplV"J^R,Z`P_\B%^%# acl 2000
+snmp-agent sys-info contact QZ-QZ-XDL
+snmp-agent sys-info location QZ-QZ-XDL
+snmp-agent sys-info version all
+snmp-agent target-host trap address udp-domain 10.192.0.11 params securityname cipher %^%#;^}`V"a;=Fy%8fQO#tXN<:d~)FxqyLbQqP8o_sq~%^%#
+snmp-agent target-host trap address udp-domain 10.192.0.12 params securityname cipher %^%#ym[m4:2+b!=e|SUS4N@D|{wr:`!U&2iiqv$[No[B%^%#
+snmp-agent trap source LoopBack2
+snmp-agent trap enable
+#
+ssh server compatible-ssh1x enable
+#
+header login information " WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!"
+#
+user-interface maximum-vty 15
+user-interface con 0
+ authentication-mode password
+ set authentication password cipher %^%#-1[5&l%p&V}:A3#"g!yYhRWr>'d3lUFt2k7ouht):.g~"C3P6E$1BZHH+nuB%^%#
+ idle-timeout 0 0
+ screen-length 0
+user-interface vty 0 4
+ acl 2001 inbound
+ authentication-mode aaa
+ idle-timeout 5 0
+ protocol inbound telnet
+user-interface vty 5 14
+ acl 2001 inbound
+ authentication-mode aaa
+ user privilege level 3
+ idle-timeout 0 0
+ screen-length 0
+ protocol inbound telnet
+user-interface vty 16 20
+ protocol inbound telnet
+#
+assistant task savelogfile
+ if-match timer cron * 0 0/1 * * * *
+ perform 1 batch-file savelogfile.bat
+#
+return
+<QZ-QZ-XDL-PE-1.ZW.S9306>

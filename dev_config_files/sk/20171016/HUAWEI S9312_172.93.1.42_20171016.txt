@@ -1,0 +1,2453 @@
+
+!Software Version V200R008C00SPC500
+#
+sysname NB-NB-HT-DSW-1.MAN.9312
+#
+super password level 3 cipher %$%$"g[E.TPO9LaK9|!/W1J&.)OZ:SDbMplb8;*yT\$@Sv,1)O].%$%$
+#
+info-center source default channel 2 log level warning
+info-center loghost source Vlanif93
+info-center loghost 172.200.100.6 facility local6
+#
+vlan batch 40 to 42 50 75 77 79 to 80 90 93 212 to 213 225 to 226 385
+vlan batch 1205 to 1206 1263 1318 1322 to 1323 1338 to 1339 1342 1345 to 1347 1399 to 1416 1449 to 1456 1460 to 1461
+vlan batch 1539 to 1540 1544 1556 1562 1570 1584 to 1585 1592 1599 1605 1614 to 1617
+vlan batch 1619 to 1620 1638 1646 to 1647 1663 to 1664 1692 to 1702 1706 to 1707 1709 to 1716 1721 to 1724 1727 to 1735 1737
+vlan batch 1741 1743 to 1744 1746 1748 1750 to 1752 1754 to 1756 1759 to 1760 1763 1765 1767 to 1768
+vlan batch 1771 1773 to 1774 1776 to 1780 1782 to 1783 1785 1787 1791 to 1796 1799 1803 to 1805 1810 to 1812
+vlan batch 1826 to 1829 1831 1836 1839 to 1841 1851 to 1853 1856 1860 to 1862 1864 1868 1870
+vlan batch 1872 1874 to 1875 1877 1880 1882 to 1883 1885 to 1887 1994 2011 to 2015 2066 to 2068 2106
+vlan batch 2129 2168 to 2169 2204 to 2206 2208 to 2209 2691 3052 to 3058 3065 3075 to 3078 3085 to 3086 3109
+vlan batch 3118 3668 3695 3724 3732 3753 3771 3789 3803 3844 to 3849
+vlan batch 3854 3857 3860 3862 3865 3867 3870 3876 3890 3892
+vlan batch 3894 3925 3927 3943 3958 3963 3966 3969 3973 3979 to 3980
+vlan batch 3984 3992 to 3995 4000
+#
+undo authentication unified-mode
+#
+igmp-snooping enable
+#
+telnet server enable
+telnet ipv6 server enable
+#
+undo http server enable
+undo http secure-server enable
+#
+undo management-port isolate enable
+undo management-plane isolate enable
+#
+clock timezone UTC add 00:00:00
+#
+observe-port 1 interface GigabitEthernet12/0/47
+observe-port 8 interface GigabitEthernet12/0/40
+#
+diffserv domain default
+#
+hwtacacs-server template nbdx
+ hwtacacs-server authentication 172.200.100.249
+ hwtacacs-server authorization 172.200.100.249
+ hwtacacs-server accounting 172.200.100.249
+ hwtacacs-server source-ip 172.93.1.42
+ hwtacacs-server shared-key cipher %^%#{lj&W6q>;V'>3%+YARnT+O,4Cnx(qTQUl"GmpcHO%^%#
+ undo hwtacacs-server user-name domain-included
+#
+acl number 2000  
+ description For_Telnet
+ rule 5 permit source 61.153.82.90 0 
+ rule 10 permit source 202.96.102.247 0 
+ rule 15 permit source 202.96.102.0 0.0.1.255 
+ rule 20 permit source 202.101.167.192 0.0.0.63 
+ rule 25 permit source 61.153.112.128 0.0.0.31 
+ rule 30 permit source 172.93.0.0 0.0.255.255 
+ rule 35 permit source 172.200.100.0 0.0.0.255 
+ rule 40 permit source 172.199.0.0 0.0.255.255 
+acl number 2015  
+ description For-SNMP
+ rule 10 permit source 172.200.100.12 0 
+ rule 20 permit source 172.200.100.6 0 
+ rule 30 permit source 172.200.100.13 0 
+ rule 40 permit source 172.200.100.7 0 
+ rule 50 permit source 172.200.100.8 0 
+ rule 60 permit source 172.200.100.9 0 
+ rule 70 permit source 172.200.100.10 0 
+ rule 80 permit source 172.200.100.11 0 
+ rule 90 permit source 172.200.100.14 0 
+ rule 100 permit source 172.200.100.15 0 
+ rule 110 permit source 172.200.100.5 0 
+ rule 120 permit source 172.200.100.4 0 
+ rule 130 permit source 172.200.100.3 0 
+ rule 1500 deny 
+#
+traffic classifier mirror operator or precedence 10
+ if-match vlan-id 1750 cvlan-id 770
+traffic classifier tcCritical operator or precedence 5
+ if-match vlan-id 3599 to 3600
+#
+traffic behavior mirror
+ permit
+ mirroring to observe-port 1 
+traffic behavior tbCritical
+ permit
+ remark 8021p 4
+#
+traffic policy mirror match-order auto
+ classifier mirror behavior mirror
+traffic policy tpCritical match-order auto
+ classifier tcCritical behavior tbCritical
+#
+drop-profile default
+#
+vlan 40
+ description HT-EPON-1
+vlan 41
+ description FH-OLT-Manager
+vlan 42
+ description epon-manager
+vlan 75
+ description For-LAN-NetManagement
+vlan 77
+ description For-LAN-NetManagement
+vlan 79
+ description Wlan-maneger
+vlan 80
+ description iwifi
+vlan 90
+ description shanxun-test
+vlan 93
+ description For_S9306_NetManagement
+vlan 1205
+ description FTTH-mianshashichang
+vlan 1206
+ description FTTH-mianshashichang
+vlan 1263
+ description test
+vlan 1318
+ description ITV-huitongbingguan
+vlan 1322
+ description ITV-haidajianse
+vlan 1323
+ description ITV-haolaijubingguan
+vlan 1338
+ description ITV-tanjianding
+vlan 1339
+ description ITV-luweijiudian
+vlan 1342
+ description ITV-dongrenguangxue
+vlan 1345
+ description ITV-delijituan-1
+vlan 1346
+ description ITV-delijituan-2
+vlan 1347
+ description ITV-delijituan-3
+vlan 1399
+ description epon-mianshashichang
+vlan 1400
+ description To ZhuangQiaoGongYeYuan-HW-DSLAM
+vlan 1401
+ description To QiuShi-HW1-DSLAM
+vlan 1403
+ description To YaoJiangXiaoQu-HW-DSLAM
+vlan 1404
+ description To YangShi-HW-DSLAM
+vlan 1405
+ description To HongTangChuangYeYuan-HW-DSLAM
+vlan 1406
+ description To HongTang-HW2-DSLAM
+vlan 1407
+ description To QiuShi-HW2-DSLAM
+vlan 1408
+ description To HongTang-HW3-DSLAM
+vlan 1409
+ description To HongTangLinJia-HW-DSLAM
+vlan 1410
+ description To HongTangGongYunJiTuan-ACL-DSLAM
+vlan 1411
+ description To_ZhengLiBaoZhuang-HW-DSALM
+vlan 1412
+ description QinQinJiaYuan-HW1-DSLAM
+vlan 1413
+ description To_YaoJiangXiaoQu-HW2-DSLAM
+vlan 1414
+ description To_YiHeMingYuan-HW-DSLAM
+vlan 1415
+ description AnShan7302_DSLAM
+vlan 1416
+ description To_HongTang-ACL-DSLAM-fd1
+vlan 1449
+ description To XieJiaAnZhiXiaoQu-HW1-DSLAM
+vlan 1450
+ description To XieJiaAnZhiXiaoQu-HW2-DSLAM
+vlan 1451
+ description To XieJiaAnZhiXiaoQu-HW3-DSLAM
+vlan 1452
+ description To_ChunHuiJiaYuan-HW-DSALM
+vlan 1453
+ description To_MianShaShiChang-HW-DSLAM
+vlan 1454
+ description To_ChunHuiJiaYuan-HW2-DSALM
+vlan 1455
+ description To_ChunHuiJiaYuan-ACL2-DSLAM
+vlan 1456
+ description To_ChunHuiJiaYuan-ACL1-DSLAM
+vlan 1460
+ description To XieJiaAnZhiXiaoQu-HW4-DSLAM
+vlan 1539
+ description Yaojianghuayuan_HW3_DSLAM
+vlan 1540
+ description To XinLianXiaoQu_7302_DSLAM
+vlan 1544
+ description hongtang-hw-DSLAM-MA5600-04
+vlan 1562
+ description QinQinJiaYuan-HW1-DSLAM
+vlan 1585
+ description QiuShi3-HW3-DSLAM
+vlan 1599
+ description To_ningqinjiayuan-7302-DSLAM
+vlan 1605
+ description To_XieJiaAnZhiXiaoQu-HW2-2-DSLAM
+vlan 1614
+ description dT:guangshananqu-gpon-3
+vlan 1615
+ description lidihaiwaitan
+vlan 1616
+ description GPON-TEST
+vlan 1617
+ description heshengda
+vlan 1619
+ description GPON-hongtangsanhu
+vlan 1620
+ description GPON-hongtangsanhu
+vlan 1638
+ name huijia
+vlan 1646
+ description GPON-ningjingyiqi
+vlan 1647
+ description GPON-Yangshumingyuan
+vlan 1701
+ description FTTH-Ningxinjiayuan
+vlan 1702
+ description jb-wangda-ftth
+vlan 1706
+ description FTTH-zhaojiacunbaoyunzhuang-hengfengyan
+vlan 1707
+ description FTTH_HongDuHuaYuan2
+vlan 1709
+ description FTTH-chunhuijiayuan1&2
+vlan 1710
+ description FTTH-xiashencun
+vlan 1711
+ description FTTH-Yihemingyuan-2qi
+vlan 1712
+ description FTTH-YaoJiangHuaYuan
+vlan 1713
+ description FTTH-shangshanxincun
+vlan 1714
+ description FTTH-guangshayiting
+vlan 1715
+ description FTTH-JuChenWuLiu
+vlan 1716
+ description FTTH-yingjialiyuan
+vlan 1721
+ description FTTB-tianshuijiayuan-4
+vlan 1722
+ description FTTB-tianshuijiayuan-3
+vlan 1723
+ description FTTB-tianshuijiayuan-2
+vlan 1724
+ description FTTB-tianshuijiayuan-1
+vlan 1727
+ description Epon-kelidianqi
+vlan 1728
+ description FTTB-tianhejiayuan-1qi
+vlan 1729
+ description FTTB-shuishanglanshan-kuorong
+vlan 1730
+ description FTTB-shuishanglanshan
+vlan 1731
+ description FTTB-tianhejiayuan1qi
+vlan 1732
+ description FTTB-huijiaxinyuan-2
+vlan 1733
+ description FTTB-huijiaxinyuan-1
+vlan 1734
+ description FTTB-qinqinjiayuan
+vlan 1735
+ description fttb-dongligongsi
+vlan 1737
+ description FTTB-xinxinjiayuan
+vlan 1743
+ description FTTB-Hongtangdajiudian
+vlan 1744
+ description FTTB-AoLin80-2qi
+vlan 1746
+ description JB-WANDA-EPON
+vlan 1748
+ description JinYanZhaoMing-epon
+vlan 1750
+ description FTTH-Yaojianghuayuan
+ traffic-policy mirror inbound
+ traffic-policy mirror outbound
+vlan 1751
+ description FTTH-qiushi-xipian
+vlan 1752
+ description FTTH-hengshancun
+vlan 1754
+ description QinNianChuanYeZhonXin
+vlan 1755
+ description FTTN-Jiangbeichuangyetouziyuanqu-B
+vlan 1756
+ description FTTB-yiqiwuliu
+vlan 1759
+ description FTTB-yuanlongbizhiyouxiangongsi
+vlan 1760
+ description OuLinHuaYuan-epon
+vlan 1763
+ description AolinhuayuanFTTB
+vlan 1765
+ description MingChenKeJi-epon
+vlan 1767
+ description JingTianTongYe_shanxun
+vlan 1771
+ description FTTB-JiangbeiYongjiangjituan
+vlan 1773
+ description FTTB-TianHeJiaYuan2qi
+vlan 1774
+ description JiaYiXinYuanNan-epon
+vlan 1776
+ description HuaRunTaiRun-epon
+vlan 1777
+ description FTTB-Ruifugongyejituan
+vlan 1778
+ description FTTB-JBLiFangYu
+vlan 1779
+ description FTTB-haitiansimaoyi
+vlan 1780
+ description HongJiaCun-epon
+vlan 1782
+ description XinXinJiaYuan-epon
+vlan 1783
+ description BeiChenChunSe-epon
+vlan 1785
+ description FTTB-weinengjinchukou
+vlan 1787
+ description YiJiaXinYuan-epon
+vlan 1791
+ description RongHuiMuYe-epon
+vlan 1792
+ description EPON-MaoLiMaoAo
+vlan 1793
+ description FTTB-hualunruitai
+vlan 1794
+ description epon-qinqinjiayuan
+vlan 1795
+ description HongDuHuaYuan-2-EPON
+vlan 1796
+ description EPON-XinXinDuShi
+vlan 1799
+ description FTTB-hongtang_ICBC
+vlan 1803
+ description GPON-Hongtangsanhu
+vlan 1804
+ description GPON1-hetangyayuan
+vlan 1805
+ description ftth-qiushi
+vlan 1810
+ description GPON1-yujiacun
+vlan 1811
+ description GPON2-xijiangcun
+vlan 1812
+ description GPON-cunhuijiayuan
+vlan 1826
+ description hongduhuayuan
+vlan 1827
+ description FTTH-xiashengcun
+vlan 1828
+ description FTTH-zhongceshoulou
+vlan 1829
+ description FTTH-Xiejialiyuan
+vlan 1831
+ description FTTO-yongjiangjituan
+vlan 1836
+ description FTTH-hongduhuayuan
+vlan 1839
+ description FTTH-xishaocun
+vlan 1840
+ description FTTH-guangshayitingbeiqu
+vlan 1841
+ description FTTH-sanhejiayuan
+vlan 1851
+ description OLT9-FTTB-shenggangjiaju
+vlan 1852
+ description yishengyuanbingguan
+vlan 1853
+ description FTTB-TENGYUNBINGGUANG
+vlan 1856
+ description FTTB-guangshayitingnanqu
+vlan 1860
+ description FTTB-lvsenongzhuang
+vlan 1861
+ description hemudumaoyi
+vlan 1862
+ description FTTB-lingfengbingguan
+vlan 1864
+ description zq_qiliyibiaosushe
+vlan 1868
+ description FTTB-lifangyu
+vlan 1870
+ description FTTB-kangboruidianqi
+vlan 1872
+ description FTTB-wanjiahongchaoshigongyu
+vlan 1874
+ description FTTB-Qinqinjiayuan
+vlan 1875
+ description FTTB-Weizimateshushe
+vlan 1877
+ description FTTB-Qiushichun
+vlan 1882
+ description FTTB-lidefangchanguangxiadian
+vlan 1883
+ description FTTB-hongtangbaoma4Sshushe
+vlan 1885
+ description FTTB-Heshengda
+vlan 1886
+ description FTTB-huihaoyinyiwuye
+vlan 1887
+ description FTTB-tianhanggongmao
+vlan 1994
+ description gongwang
+vlan 2011
+ description GPON-HW-OLT1
+vlan 2012
+ description FTTH-qiushi-xipian
+vlan 2168
+ description GPON-ningjingyiqi
+vlan 2169
+ description GPON-Yangshumingyuan-itv
+vlan 2204
+ description EPON-XinXinDuShi
+vlan 2205
+ description HongDuHuaYuan-2-EPON
+vlan 2206
+ description epon-qinqinjiayuan
+vlan 2208
+ description EPON-MaoLiMaoAo
+vlan 2209
+ description RongHuiMuYe-epon
+vlan 2691
+ description gudingip
+vlan 3052
+ description V-jiabeigouwu
+vlan 3053
+ description fulisaipiao_vpn
+vlan 3055
+ description V-xinshijiyiyao
+vlan 3056
+ description V-gudingIPdizhi
+vlan 3057
+ description V-ningboribaoshe
+vlan 3058
+ description V-caihongdayaofang
+vlan 3065
+ description V-yinzhounongbao
+vlan 3695
+ description baiguoyuan
+vlan 3724
+ description haishushidaicaiyin
+vlan 3732
+ description lianhuakuaike
+vlan 3771
+ description xinhuashudian-VPN
+vlan 3789
+ description huayitangdayaofang
+vlan 3803
+ description laodongjujiuyewang
+vlan 3844
+ description shebaowang
+vlan 3845
+ description jiangbeijiuyeju
+vlan 3846
+ description laodongju-xinyibao
+vlan 3847
+ description dahongying
+vlan 3854
+ description yaoqingqing-sw
+vlan 3857
+ description yongfayunshu-gudingip
+vlan 3860
+ description cichengzhenyiyuan
+vlan 3862
+ description zq_xiangxinyiyuan
+vlan 3865
+ description fengshuijiaju
+vlan 3867
+ description haiwangxingchen
+vlan 3870
+ description huanbaoju-vpn
+vlan 3876
+ description xiaomimishuichan
+vlan 3890
+ description taibao-caixian
+vlan 3927
+ description ShiMingDaYaoFang-vpn
+vlan 3958
+ description V-zhongguoshihua
+vlan 3963
+ description jiudianbaobei
+vlan 3966
+ description xinmeixin
+vlan 3969
+ description V-ningbohuanbaoju
+vlan 3973
+ description V-qixiangju
+vlan 3980
+ description V-gonganjuyinzhang
+vlan 3992
+ description dianxin-daili
+vlan 3993
+ description jiajialechashi
+vlan 3994
+ description V-laodongjiuyewang
+vlan 3995
+ description jiabeichaoshi
+vlan 4000
+ description ITV-zubo
+#
+aaa
+ authentication-scheme default
+ authentication-scheme nbdx
+  authentication-mode hwtacacs local
+ authorization-scheme default
+ authorization-scheme nbdx
+  authorization-mode  hwtacacs local
+ accounting-scheme default
+ accounting-scheme nbdx
+  accounting-mode hwtacacs
+  accounting realtime 3
+  accounting start-fail online
+ recording-scheme scheme0
+  recording-mode hwtacacs nbdx
+ cmd recording-scheme scheme0
+ outbound recording-scheme scheme0
+ domain default
+ domain default_admin
+  authentication-scheme nbdx
+  accounting-scheme nbdx
+  authorization-scheme nbdx
+  hwtacacs-server nbdx
+ local-user admin password irreversible-cipher %^%#OP@+HwM{Y+!Qk6EO!Jl(zM_k%Pt|`T^Leh*f-RxOMXpR"nP2y+{^1#2PwuD8%^%#
+ local-user admin service-type telnet
+ local-user zjnoc password irreversible-cipher %^%#',d|~TGL}0Ut}L$R91q'B7NvEd4.,!8I>d5$@YRV+rsu'3>D@.^^K|V1HUQ~%^%#
+ local-user zjnoc privilege level 3
+ local-user zjnoc service-type terminal
+#
+interface Vlanif93
+ description For_S9306_NetManagement
+ ip address 172.93.1.42 255.255.255.252
+#
+interface Vlanif4000
+#
+interface Eth-Trunk0
+#
+interface Eth-Trunk1
+ description dT:HT_OLT-1-1:Eth-Trunk1
+ port link-type trunk
+ port trunk allow-pass vlan 40 1776 1782 to 1783 3803 3845 3848 3925 3963 3993 to 3994
+#
+interface Eth-Trunk2
+ description dT:HT_OLT-1-2:Eth-Trunk1
+ port link-type trunk
+ port trunk allow-pass vlan 40 1780 1791 to 1792 1794 to 1796 1875 1877 3845
+#
+interface Eth-Trunk3
+ description uT:NB-NB-HT-BAS-1.MAN.ME60:Eth-Trunk3
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 79 to 80 90 93 1263 1721 1727 to 1729 1731 to 1733 1743 1759 1763
+ port trunk allow-pass vlan 1785 1794 to 1795 1799
+ mode lacp
+ load-balance src-dst-mac
+#
+interface Eth-Trunk4
+ description uT:NB-NB-HT-BAS-1.MAN.ME60:Eth-Trunk4
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 40 to 42 1754 to 1755 1760 1765 1776 to 1778 1780
+ mode lacp
+ load-balance src-dst-mac
+#
+interface Eth-Trunk5
+ description dT:HT_OLT-2:Eth-Trunk1
+ port link-type trunk
+ port trunk allow-pass vlan 40 1399 1754 1760 1765 1774 1880 3845 3963 3980
+ port trunk allow-pass vlan 3992 to 3993
+#
+interface Eth-Trunk6
+ description dT:HT_OLT-3:Eth-Trunk1
+ port link-type trunk
+ port trunk allow-pass vlan 40 1702 1746 1748 1886 3724 3732 3963 3966 3992
+#
+interface Eth-Trunk7
+ description dT:HT_OLT-4:Eth-Trunk1
+ port link-type trunk
+ port trunk allow-pass vlan 40 1709 1721 1744 1763 1773 3695 3927 3993
+#
+interface Eth-Trunk8
+ description dT:HT_OLT-5:Eth-Trunk1
+ port link-type trunk
+ port trunk allow-pass vlan 40 1710 1734 to 1735 1737 1793
+#
+interface Eth-Trunk9
+ description dT:HT_OLT-6:Eth-Trunk1
+ port link-type trunk
+ port trunk allow-pass vlan 42 1713 to 1714 1716 3845 3963 3992 to 3993
+#
+interface Eth-Trunk10
+ description dT:HT_OLT-7:Eth-Trunk1
+ port link-type trunk
+ port trunk allow-pass vlan 40 1727 to 1729 1731 to 1733 1759 1777 to 1778 1882 to 1883 1885 1887 3963
+#
+interface Eth-Trunk11
+ description dT:HT_OLT-8:Eth-Trunk1
+ port link-type trunk
+ port trunk allow-pass vlan 42 1701 1706 to 1707 1755 3845 3963 3973
+#
+interface Eth-Trunk12
+ description dT:HT_OLT-9:Eth-Trunk1
+ port link-type trunk
+ port trunk allow-pass vlan 40 1711 to 1712 1743 1756 1771 1779 1785 1799 1851 to 1853 3668
+ port trunk allow-pass vlan 3845 3963 3980
+#
+interface Eth-Trunk13
+ description dT:HT_OLT_10Eth-Trunk1
+ port link-type trunk
+ port trunk allow-pass vlan 40 1782 1831 1856 1860 to 1862 1868 1870 1872 3845 3963
+ port trunk allow-pass vlan 3973 3993 to 3994
+#
+interface Eth-Trunk14
+ description dT:HT_OLT-6-2 fenliu:Eth-Trunk2
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 1715
+#
+interface Eth-Trunk15
+ description dT:HT_10GEPON-1:Eth-Trunk1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ mode lacp
+#
+interface Eth-Trunk16
+ description dT:HT_10GEPON-1_1:Eth-Trunk2
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 40 1721 1727 to 1729 1731 to 1734 1744 1746 1748 1754 1759 to 1760 1763
+ port trunk allow-pass vlan 1765 1773 to 1774 1776 to 1777 1780 1783 1787 1791 to 1795 1874 3927 3963
+ port trunk allow-pass vlan 3980
+ mode lacp
+#
+interface Eth-Trunk21
+ description dT:HT_GPON_1:Eth-Trunk1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 42 1750 to 1751 1803 to 1805 1994 2013 to 2014 3845 3963 3973 3980 3995
+ mode lacp
+#
+interface Eth-Trunk22
+ description dT:HT_GPON_2:Eth-Trunk1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 42 1803 1805 1810 to 1812 1826 to 1829 1836 3845 3963 3980
+#
+interface Eth-Trunk23
+ description dT:HT_GPON_3:Eth-Trunk1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 42 1205 to 1206 1839 to 1841 2106 2129 3963 3980
+ mode lacp
+#
+interface Eth-Trunk25
+ description dT:HT_GPON_5:Eth-Trunk1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 42 1638 1646 to 1647 2168 to 2169
+ mode lacp
+#
+interface Eth-Trunk31
+ description dT:HT_GPON_1-1:Eth-Trunk2
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 1750 to 1752 2011 to 2012 2015
+ mode lacp
+#
+interface Eth-Trunk32
+ description dT:HT_GPON_2-1:Eth-Trunk2
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 1805 1826 to 1829 2066 to 2068
+ mode lacp
+#
+interface Eth-Trunk33
+ description dT:HT_GPON_3-1:Eth-Trunk2
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 1205 1614 to 1615
+ mode lacp
+#
+interface Eth-Trunk34
+ description dT:HT_GPON_4:Eth-Trunk1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 42 1616 to 1617 1619 to 1620 3963
+ mode lacp
+#
+interface Eth-Trunk35
+ description dT:HT_GPON_6 FH:Eth-Trunk1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 41
+ mode lacp
+#
+interface Eth-Trunk36
+ description dT:HT_GPON_7_SHISHANGDASHA HW:Eth-Trunk1
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 42
+ mode lacp
+#
+interface Eth-Trunk40
+ description ITV HT-9312 TO HTBAS2
+#
+interface Eth-Trunk41
+ description uT:NB-NB-HT-BAS-1.MAN.ME60:(local)Eth-Trunk41
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ mode lacp
+#
+interface Eth-Trunk50
+ description dT:NB-NB-CC-9306.MAN:(local)Eth-trunk50
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 77 212 to 213 225 to 226 3052 to 3053 3056 to 3058 3065 3076 to 3077 3079 to 3080 3732 3789
+ port trunk allow-pass vlan 3844 to 3846 3860 3870 3927 3958 3963 3966 3969 3973 3980
+ port trunk allow-pass vlan 3992 to 3995
+ mode lacp
+#
+interface Eth-Trunk60
+ description dT:NB-NB-ZQ-9306.MAN:(local)Eth-trunk60
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 75 77 212 to 213 225 to 226 380 1768 1796 1864 3052 3055 to 3056
+ port trunk allow-pass vlan 3065 3076 to 3078 3668 3803 3845 to 3846 3854 3857 3862 3865 3867
+ port trunk allow-pass vlan 3876 3890 3927 3958 3963 3966 3973 3980 3992 to 3994
+ mode lacp
+#
+interface Eth-Trunk63
+ port link-type access
+ port default vlan 4000
+ mode lacp
+#
+interface Eth-Trunk101
+ description uT:NB-NB-HT-BAS-2.MAN.ME60:Eth-Trunk1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 1399 1701 1709 to 1711 1750 1771 1779 1868 1872 1874 to 1875 1877
+ mode lacp
+#
+interface Eth-Trunk103
+ description uT:NB-NB-HT-BAS-2.MAN.ME60:Eth-Trunk5
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 1318 1322 to 1323 1338 to 1339 1342 1345 to 1347 1400 to 1416 1449 to 1456 1460 to 1461 1539 to 1540 1544
+ port trunk allow-pass vlan 1556 1562 1570 1584 to 1585 1592 1599 1605 1663 to 1664 1692 to 1700 1702
+ port trunk allow-pass vlan 1706 to 1707 1751 to 1752 1827 1831 1860
+ mode lacp
+#
+interface Eth-Trunk110
+ description uT:NB-NB-HT-BAS-1.MAN.ME60:(local)Eth-trunk5-shanxun
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 4 90 1727 to 1728 1734 to 1735 1743 1748 1759 1763 1767 1771
+ port trunk allow-pass vlan 1777 1785 1796 1799 1861 1864 1868
+ mode lacp
+#
+interface Eth-Trunk115
+ description uT:NB-NB-HT-BAS.MAN.7750:(local)lag:115
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ mode lacp
+#
+interface Ethernet0/0/0
+ shutdown
+#
+interface Ethernet1/0/0
+ description dT:WLAN-JiangBeiWanDa
+ port hybrid untagged vlan 79
+ port vlan-stacking vlan 1600 to 2000 stack-vlan 79
+#
+interface Ethernet1/0/1
+#
+interface Ethernet1/0/2
+#
+interface Ethernet1/0/3
+ description dT:WLAN-Anshanjifang-Jinxinjituan
+ port hybrid untagged vlan 79
+ port vlan-stacking vlan 1600 to 2000 stack-vlan 79
+#
+interface Ethernet1/0/4
+ description dT:WLAN-wobang
+ port hybrid untagged vlan 79
+ port vlan-stacking vlan 1600 to 2000 stack-vlan 79
+#
+interface Ethernet1/0/5
+ description dT:WLAN-9thRenminyiyuan
+ port hybrid untagged vlan 79
+ port vlan-stacking vlan 1600 to 2000 stack-vlan 79
+#
+interface Ethernet1/0/6
+ description sh-mls-iwifi
+ port hybrid untagged vlan 80
+ port vlan-stacking vlan 1001 to 1600 stack-vlan 80
+#
+interface Ethernet1/0/7
+ description sh-mls-iwifi
+ port hybrid untagged vlan 80
+ port vlan-stacking vlan 1001 to 1600 stack-vlan 80
+#
+interface Ethernet1/0/8
+#
+interface Ethernet1/0/9
+#
+interface Ethernet1/0/10
+#
+interface Ethernet1/0/11
+#
+interface Ethernet1/0/12
+#
+interface Ethernet1/0/13
+#
+interface Ethernet1/0/14
+ description dT:WLAN-ningqinjiayuanyingyeting
+ port hybrid untagged vlan 79
+ port vlan-stacking vlan 1600 to 2000 stack-vlan 79
+#
+interface Ethernet1/0/15
+#
+interface Ethernet1/0/16
+#
+interface Ethernet1/0/17
+ description dT:WLAN-hongtangyingyeting
+ port hybrid untagged vlan 79
+ port vlan-stacking vlan 1600 to 2000 stack-vlan 79
+#
+interface Ethernet1/0/18
+#
+interface Ethernet1/0/19
+#
+interface Ethernet1/0/20
+#
+interface Ethernet1/0/21
+#
+interface Ethernet1/0/22
+#
+interface Ethernet1/0/23
+#
+interface Ethernet1/0/24
+ description dT:WLAN-luweidajiudian
+ port hybrid untagged vlan 79
+ port vlan-stacking vlan 1600 to 2000 stack-vlan 79
+#
+interface Ethernet1/0/25
+ description dT:WLAN-YinYiHaiDeShangYeZhongXin
+ port hybrid untagged vlan 79
+ port vlan-stacking vlan 1600 to 2000 stack-vlan 79
+#
+interface Ethernet1/0/26
+#
+interface Ethernet1/0/27
+#
+interface Ethernet1/0/28
+#
+interface Ethernet1/0/29
+#
+interface Ethernet1/0/30
+#
+interface Ethernet1/0/31
+#
+interface Ethernet1/0/32
+#
+interface Ethernet1/0/33
+#
+interface Ethernet1/0/34
+#
+interface Ethernet1/0/35
+#
+interface Ethernet1/0/36
+#
+interface Ethernet1/0/37
+#
+interface Ethernet1/0/38
+#
+interface Ethernet1/0/39
+#
+interface Ethernet1/0/40
+#
+interface Ethernet1/0/41
+#
+interface Ethernet1/0/42
+#
+interface Ethernet1/0/43
+#
+interface Ethernet1/0/44
+#
+interface Ethernet1/0/45
+#
+interface Ethernet1/0/46
+#
+interface Ethernet1/0/47
+ undo negotiation auto
+ port link-type access
+ port default vlan 40
+#
+interface GigabitEthernet3/0/0
+ undo negotiation auto
+ description dT:HT_GPON_1-1:(local)GE19/2
+ eth-trunk 31
+#
+interface GigabitEthernet3/0/1
+ undo negotiation auto
+ description dT:HT_GPON_2-1:(local)GE19/1
+ eth-trunk 32
+#
+interface GigabitEthernet3/0/2
+ shutdown
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 75 77 212 to 213 225 to 226 380 3052 to 3058 3065 3075 to 3080 3085 to 3086 3109
+ port trunk allow-pass vlan 3118 3695 3724 3732 3753 3789 3803 3844 to 3849 3854 3857
+ port trunk allow-pass vlan 3860 3862 3865 3867 3870 3876 3890 3892 3894 3927
+ port trunk allow-pass vlan 3943 3958 3963 3966 3969 3973 3979 to 3980 3984 3992 3994 to 3995
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet3/0/3
+ undo negotiation auto
+ description dT:HT_OLT_10:(local)GE19/2
+ eth-trunk 13
+#
+interface GigabitEthernet3/0/4
+ undo negotiation auto
+ description dT:HT_GPON_1-1:(local)GE19/1
+ eth-trunk 31
+#
+interface GigabitEthernet3/0/5
+ undo negotiation auto
+ description dT:HT_GPON_2-1:(local)GE19/2
+ eth-trunk 32
+#
+interface GigabitEthernet3/0/6
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS-1.MAN.ME60:(local)GE1/0/0
+ eth-trunk 3
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet3/0/7
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS-1.MAN.ME60:(local)GE1/0/1
+ eth-trunk 3
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet3/0/8
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS-1.MAN.ME60:(local)GE1/0/2
+ eth-trunk 3
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet3/0/9
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS-1.MAN.ME60:(local)GE1/0/3
+ eth-trunk 3
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet3/0/10
+ undo negotiation auto
+ port link-type trunk
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet3/0/11
+ undo negotiation auto
+ port link-type trunk
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet3/0/12
+ undo negotiation auto
+ description dT:HT_OLT-2:(local)GE19/2
+ eth-trunk 5
+#
+interface GigabitEthernet3/0/13
+ undo negotiation auto
+ description dT:HT_OLT-2:(local)GE19/1
+ eth-trunk 5
+#
+interface GigabitEthernet3/0/14
+ undo negotiation auto
+ description dT:HT_OLT-2:(local)GE19/2
+ eth-trunk 5
+#
+interface GigabitEthernet3/0/15
+ undo negotiation auto
+ description dT:HT_OLT-2:(local)GE19/1
+ eth-trunk 5
+#
+interface GigabitEthernet3/0/16
+ undo negotiation auto
+ description dT:HT_OLT-1-2:(local)GE19/2
+ eth-trunk 2
+#
+interface GigabitEthernet3/0/17
+ undo negotiation auto
+ description dT:HT_OLT-1-2:(local)GE19/1
+ eth-trunk 2
+#
+interface GigabitEthernet3/0/18
+ undo negotiation auto
+ description dT:HT_OLT-1-2:(local)GE19/2
+ eth-trunk 2
+#
+interface GigabitEthernet3/0/19
+ undo negotiation auto
+ description dT:HT_OLT-1-2:(local)GE19/1
+ eth-trunk 2
+#
+interface GigabitEthernet3/0/20
+ undo negotiation auto
+ description dT:HT_OLT-1-1:(local)GE19/2
+ eth-trunk 1
+#
+interface GigabitEthernet3/0/21
+ undo negotiation auto
+ description dT:HT_OLT-1-1:(local)GE19/1
+ eth-trunk 1
+#
+interface GigabitEthernet3/0/22
+ undo negotiation auto
+ description dT:HongTang-HW1-DSLAM
+ port hybrid tagged vlan 212 to 213 3052 3056 3065 3075 to 3077 3086 3109 3845 3848 3958
+ port hybrid tagged vlan 3963 3966 3973 3980 3984 3993 3995
+ port hybrid untagged vlan 1402 1700
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1402
+ port vlan-stacking vlan 3600 stack-vlan 1402
+#
+interface GigabitEthernet3/0/23
+ undo negotiation auto
+ description dT:NB-HongTang-HW5100-3-DSLAM
+ port hybrid tagged vlan 212 to 213 3052 3056 3065 3075 to 3077 3086 3109 3848 3958 3963
+ port hybrid tagged vlan 3966 3973 3980 3984 3992 to 3993
+ port hybrid untagged vlan 1461
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1461
+ port vlan-stacking vlan 3600 stack-vlan 1461
+#
+interface GigabitEthernet4/0/0
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS-1.MAN.ME60:(local)GE2/0/0
+ eth-trunk 4
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet4/0/1
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS-1.MAN.ME60:(local)GE2/0/1
+ eth-trunk 4
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet4/0/2
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS-1.MAN.ME60:(local)GE2/0/2
+ eth-trunk 4
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet4/0/3
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS-1.MAN.ME60:(local)GE2/0/3
+ eth-trunk 4
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet4/0/4
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS-1.MAN.ME60:(local)GE3/0/4
+ eth-trunk 3
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet4/0/5
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS-1.MAN.ME60:(local)GE3/0/5
+ eth-trunk 3
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet4/0/6
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS-1.MAN.ME60:(local)GE3/0/6 ::Processing
+ eth-trunk 3
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet4/0/7
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS-1.MAN.ME60:(local)GE3/0/7
+ eth-trunk 3
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet4/0/8
+ undo negotiation auto
+ description dT:HT_OLT_10:(local)GE19/1
+ eth-trunk 13
+#
+interface GigabitEthernet4/0/9
+ undo negotiation auto
+ description dT:HT_GPON_1:(local)GE19/2
+ eth-trunk 21
+#
+interface GigabitEthernet4/0/10
+ undo negotiation auto
+ description dT:HT_OLT-9:(local)GE19/1
+ eth-trunk 12
+#
+interface GigabitEthernet4/0/11
+ undo negotiation auto
+ description dT:HT_OLT-9:(local)GE19/2
+ eth-trunk 12
+#
+interface GigabitEthernet4/0/12
+ undo negotiation auto
+ description dT:HT_OLT-3:(local)GE19/1
+ eth-trunk 6
+#
+interface GigabitEthernet4/0/13
+ undo negotiation auto
+ description dT:HT_OLT-3:(local)GE19/2
+ eth-trunk 6
+#
+interface GigabitEthernet4/0/14
+ undo negotiation auto
+ description dT:HT_OLT-3:(local)GE19/1
+ eth-trunk 6
+#
+interface GigabitEthernet4/0/15
+ undo negotiation auto
+ description dT:HT_OLT-3:(local)GE19/2
+ eth-trunk 6
+#
+interface GigabitEthernet4/0/16
+ undo negotiation auto
+ description dT:HT_OLT-4:(local)GE19/1
+ eth-trunk 7
+#
+interface GigabitEthernet4/0/17
+ undo negotiation auto
+ description dT:HT_OLT-4:(local)GE19/2
+ eth-trunk 7
+#
+interface GigabitEthernet4/0/18
+ undo negotiation auto
+ description dT:HT_OLT-4:(local)GE19/1
+ eth-trunk 7
+#
+interface GigabitEthernet4/0/19
+ undo negotiation auto
+ description dT:HT_OLT-4:(local)GE19/2
+ eth-trunk 7
+#
+interface GigabitEthernet4/0/20
+ undo negotiation auto
+ description dT:HT_OLT-5:(local)GE19/1
+ eth-trunk 8
+#
+interface GigabitEthernet4/0/21
+ undo negotiation auto
+ description dT:HT_OLT-5:(local)GE19/2
+ eth-trunk 8
+#
+interface GigabitEthernet4/0/22
+ undo negotiation auto
+ description dT:HT_OLT-5:(local)GE19/1
+ eth-trunk 8
+#
+interface GigabitEthernet4/0/23
+ undo negotiation auto
+ description dT:HT_OLT-5:(local)GE19/2
+ eth-trunk 8
+#
+interface GigabitEthernet5/0/0
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS-1.MAN.ME60:(local)GE3/0/0
+ eth-trunk 4
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet5/0/1
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS-1.MAN.ME60:(local)GE3/0/1
+ eth-trunk 4
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet5/0/2
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS-1.MAN.ME60:(local)GE3/0/2
+ eth-trunk 4
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet5/0/3
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS-1.MAN.ME60:(local)GE3/0/3
+ eth-trunk 4
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet5/0/4
+ undo negotiation auto
+ description dT:HT_OLT_10:(local)GE19/1
+ eth-trunk 13
+#
+interface GigabitEthernet5/0/5
+ undo negotiation auto
+ description dT:HT_OLT_10:(local)GE19/2
+ eth-trunk 13
+#
+interface GigabitEthernet5/0/6
+ undo negotiation auto
+ description dT:ITV-huitongbingguan :Processing
+ port hybrid tagged vlan 75 77
+ port hybrid untagged vlan 1318
+ port vlan-stacking vlan 101 to 1600 stack-vlan 1318
+#
+interface GigabitEthernet5/0/7
+ undo negotiation auto
+ description dT:ITV-huitongbingguan :Processing
+ port hybrid tagged vlan 75 77
+ port hybrid untagged vlan 1318
+ port vlan-stacking vlan 101 to 1600 stack-vlan 1318
+#
+interface GigabitEthernet5/0/8
+ description dT:ITV-tanjianding
+ port hybrid tagged vlan 77
+ port hybrid untagged vlan 1338
+ port vlan-stacking vlan 101 to 1600 stack-vlan 1338
+#
+interface GigabitEthernet5/0/9
+ undo negotiation auto
+ description dT:HT_GPON_1:(local)GE19/1
+ eth-trunk 21
+#
+interface GigabitEthernet5/0/10
+ undo negotiation auto
+ description dT:HT_OLT-9:(local)GE19/1
+ eth-trunk 12
+#
+interface GigabitEthernet5/0/11
+ undo negotiation auto
+ description dT:HT_OLT-9:(local)GE19/2
+ eth-trunk 12
+#
+interface GigabitEthernet5/0/12
+ undo negotiation auto
+ description dT:HT_OLT-7:(local)GE19/1
+ eth-trunk 10
+#
+interface GigabitEthernet5/0/13
+ undo negotiation auto
+ description dT:HT_OLT-7:(local)GE19/2
+ eth-trunk 10
+#
+interface GigabitEthernet5/0/14
+ undo negotiation auto
+ description dT:HT_OLT-7:(local)GE19/1
+ eth-trunk 10
+#
+interface GigabitEthernet5/0/15
+ undo negotiation auto
+ description dT:HT_OLT-7:(local)GE19/2
+ eth-trunk 10
+#
+interface GigabitEthernet5/0/16
+ undo negotiation auto
+ description dT:HT_OLT-6:(local)GE19/1
+ eth-trunk 9
+#
+interface GigabitEthernet5/0/17
+ undo negotiation auto
+ description dT:HT_OLT-6:(local)GE19/2
+ eth-trunk 9
+#
+interface GigabitEthernet5/0/18
+ undo negotiation auto
+ description dT:HT_OLT-6:(local)GE19/1
+ eth-trunk 9
+#
+interface GigabitEthernet5/0/19
+ undo negotiation auto
+ description dT:HT_OLT-6:(local)GE19/2
+ eth-trunk 9
+#
+interface GigabitEthernet5/0/20
+ undo negotiation auto
+ description dT:HT_OLT-8:(local)GE19/1
+ eth-trunk 11
+#
+interface GigabitEthernet5/0/21
+ undo negotiation auto
+ description dT:HT_OLT-8:(local)GE19/2
+ eth-trunk 11
+#
+interface GigabitEthernet5/0/22
+ undo negotiation auto
+ description dT:HT_OLT-8:(local)GE19/1
+ eth-trunk 11
+#
+interface GigabitEthernet5/0/23
+ undo negotiation auto
+ description dT:HT_OLT-8:(local)GE19/2
+ eth-trunk 11
+#
+interface GigabitEthernet6/0/0
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS-2.MAN.ME60:(local)GE1/1/0::Processing
+ eth-trunk 101
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/1
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS-2.MAN.ME60:(local)GE1/1/1::Processing
+ eth-trunk 101
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/2
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS-2.MAN.ME60:(local)GE1/1/2::Processing
+ eth-trunk 103
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/3
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS-2.MAN.ME60:(local)GE1/1/3::Processing
+ eth-trunk 103
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/4
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS-2.MAN.ME60:(local)GE4/1/0
+ eth-trunk 101
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/5
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS-2.MAN.ME60:(local)GE4/1/1
+ eth-trunk 101
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/6
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS-2.MAN.ME60:(local)GE4/1/2
+ eth-trunk 103
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/7
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS-2.MAN.ME60-Gi4/1/3::Processing
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet6/0/8
+ undo negotiation auto
+ description dT:HT_GPON_3-1:(local)GE19/1
+ eth-trunk 33
+#
+interface GigabitEthernet6/0/9
+ undo negotiation auto
+ description pT:NB-NB-CC-DSW-1.MAN.9306:(local)GE2/0/1
+ eth-trunk 50
+#
+interface GigabitEthernet6/0/10
+ undo negotiation auto
+ description dT:HT_GPON_3:(local)GE19/2
+ eth-trunk 23
+ qos pq 4 wrr 0 to 3 5 to 7 
+#
+interface GigabitEthernet6/0/11
+ undo negotiation auto
+ qos pq 4 wrr 0 to 3 5 to 7 
+#
+interface GigabitEthernet6/0/12
+ description dT:HT_GPON_2:(local)GE19/1
+ eth-trunk 22
+#
+interface GigabitEthernet6/0/13
+#
+interface GigabitEthernet6/0/14
+ undo negotiation auto
+ description dT:HT_OLT-2:(local)GE19/2
+ eth-trunk 5
+#
+interface GigabitEthernet6/0/15
+ undo negotiation auto
+ description dT:HT_OLT-2:(local)GE19/1
+ eth-trunk 5
+#
+interface GigabitEthernet6/0/16
+ description dT:XinLianXiaoQu_7302_DSLAM::kehu
+ port hybrid tagged vlan 226 3845 3993 to 3994
+ port hybrid untagged vlan 1540
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1540
+ port vlan-stacking vlan 3600 stack-vlan 1540
+#
+interface GigabitEthernet6/0/17
+ undo negotiation auto
+ shutdown
+ port hybrid tagged vlan 212 to 213 3056 3085 3845 3865 3963 3973
+ port hybrid untagged vlan 1400 1692
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1400
+ port vlan-stacking vlan 3600 stack-vlan 1400
+#
+interface GigabitEthernet6/0/18
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS-1.MAN.ME60:(local)GE2/0/5
+ eth-trunk 41
+#
+interface GigabitEthernet6/0/19
+ undo negotiation auto
+ description dT:HT_GPON_3-1:(local)GE19/1
+ eth-trunk 33
+#
+interface GigabitEthernet6/0/20
+ undo negotiation auto
+ description dT:QiuShi3-HW3-DSLAM
+ shutdown
+ port hybrid tagged vlan 212 to 213 3845 3854
+ port hybrid untagged vlan 1585
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1585
+ port vlan-stacking vlan 3600 stack-vlan 1585
+#
+interface GigabitEthernet6/0/21
+ undo negotiation auto
+ description dT:YiHeMingYuan-HW-DSLAM::kehu
+ port hybrid tagged vlan 212 to 213 3845 3994
+ port hybrid untagged vlan 1414 1556
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1414
+ port vlan-stacking vlan 3600 stack-vlan 1414
+#
+interface GigabitEthernet6/0/22
+ undo negotiation auto
+ shutdown
+ port hybrid tagged vlan 212 to 213 3845 3963 3973
+ port hybrid untagged vlan 1413
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1413
+ port vlan-stacking vlan 3600 stack-vlan 1413
+#
+interface GigabitEthernet6/0/23
+ description dT: ITV-delijituan-1
+ port hybrid tagged vlan 77
+ port hybrid untagged vlan 1345
+ port vlan-stacking vlan 101 to 1600 stack-vlan 1345
+#
+interface GigabitEthernet7/0/0
+ description pT:NB-NB-HT-SR-9306:(local)GE2/0/3
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 75 77 90 212 to 213 225 to 226 380 385 1263 1994 3052 to 3058
+ port trunk allow-pass vlan 3065 3075 to 3080 3085 to 3086 3109 3118 3668 3695 3724 3732 3753
+ port trunk allow-pass vlan 3789 3803 3844 to 3849 3854 3857 3860 3862 3865 3867 3870
+ port trunk allow-pass vlan 3876 3890 3892 3894 3925 3927 3943 3958 3963 3966
+ port trunk allow-pass vlan 3969 3973 3979 to 3980 3984 3992 to 3995
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet7/0/1
+ description pT:NB-NB-ZQ-9306.MAN:(local)GE2/0/3
+ eth-trunk 60
+#
+interface GigabitEthernet7/0/2
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS-2.MAN.ME60:(local)GE1/1/4::Processing
+ eth-trunk 101
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet7/0/3
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS-2.MAN.ME60:(local)GE1/1/5::Processing
+ eth-trunk 101
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet7/0/4
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS-2.MAN.ME60:(local)GE4/1/4
+ eth-trunk 101
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet7/0/5
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS-2.MAN.ME60:(local)GE4/1/5
+ eth-trunk 101
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet7/0/6
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS-2.MAN.ME60:(local)GE4/1/8
+ eth-trunk 103
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet7/0/7
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS-2.MAN.ME60:(local)GE4/1/9
+ eth-trunk 103
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet7/0/8
+ undo negotiation auto
+ description dT:HT_GPON_3-1:(local)GE19/1
+ eth-trunk 33
+#
+interface GigabitEthernet7/0/9
+ undo negotiation auto
+ description dT:HT_GPON_3:(local)GE19/2
+ eth-trunk 23
+#
+interface GigabitEthernet7/0/10
+ undo negotiation auto
+ description dT:HT_OLT-6:(local)GE19/2
+ eth-trunk 14
+#
+interface GigabitEthernet7/0/11
+ undo negotiation auto
+ description dT:HT_OLT-6:(local)GE19/1
+ eth-trunk 14
+#
+interface GigabitEthernet7/0/12
+ description dT:HT_GPON_2:(local)GE19/2
+ eth-trunk 22
+#
+interface GigabitEthernet7/0/13
+ undo negotiation auto
+ description dT:HT_GPON_3-1:(local)GE19/1
+ eth-trunk 33
+#
+interface GigabitEthernet7/0/14
+ undo negotiation auto
+ description dT:ChunHuiJiaYuan-HW2-DSALM
+ shutdown
+ port hybrid tagged vlan 212 to 213 3077 3963 3973 3992 3994
+ port hybrid untagged vlan 1454
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1454
+ port vlan-stacking vlan 3600 stack-vlan 1454
+#
+interface GigabitEthernet7/0/15
+ undo negotiation auto
+ description dT:XieJiaAnZhiXiaoQu-HW2-2-DSLAM::kehu
+ port hybrid tagged vlan 213 3845 3892 3958 3963
+ port hybrid untagged vlan 1605
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1605
+ port vlan-stacking vlan 3600 stack-vlan 1605
+#
+interface GigabitEthernet7/0/16
+ shutdown
+ port hybrid tagged vlan 225 to 226 3845 3847 3963 3966 3973
+ port hybrid untagged vlan 1456
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1456
+ port vlan-stacking vlan 3600 stack-vlan 1456
+#
+interface GigabitEthernet7/0/17
+ description dT:ChunHuiJiaYuan-ACL2-DSLAM
+ shutdown
+ port hybrid tagged vlan 225 to 226 3054 3966 3992
+ port hybrid untagged vlan 1455
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1455
+ port vlan-stacking vlan 3600 stack-vlan 1455
+#
+interface GigabitEthernet7/0/18
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS-1.MAN.ME60:(local)GE4/0/7
+ eth-trunk 41
+#
+interface GigabitEthernet7/0/19
+ undo negotiation auto
+ description dT:HongTangChuangYeYuan-HW-DSLAM
+ port hybrid tagged vlan 212 to 213 3865 3870 3894 3969
+ port hybrid untagged vlan 1405 1698
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1405
+ port vlan-stacking vlan 3600 stack-vlan 1405
+#
+interface GigabitEthernet7/0/20
+ undo negotiation auto
+ description dT:HT_GPON_2-1:(local)GE19/2
+ eth-trunk 32
+#
+interface GigabitEthernet7/0/21
+ undo negotiation auto
+ description dT:HT_GPON_2-1:(local)GE0/19/1
+ eth-trunk 32
+#
+interface GigabitEthernet7/0/22
+ undo negotiation auto
+ description dT:HT_GPON_2-1:(local)GE0/19/2
+ eth-trunk 32
+#
+interface GigabitEthernet7/0/23
+ undo negotiation auto
+ description dT:HT_GPON_2-1:(local)GE0/19/3
+ eth-trunk 32
+#
+interface GigabitEthernet8/0/0
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS-2.MAN.ME60:(local)GE5/0/0
+ eth-trunk 103
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet8/0/1
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS-2.MAN.ME60:(local)GE5/0/1
+ eth-trunk 103
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet8/0/2
+#
+interface GigabitEthernet8/0/3
+#
+interface GigabitEthernet8/0/4
+#
+interface GigabitEthernet8/0/5
+#
+interface GigabitEthernet8/0/6
+#
+interface GigabitEthernet8/0/7
+ undo negotiation auto
+ shutdown
+#
+interface GigabitEthernet8/0/8
+ description MLS-SUNHU
+#
+interface GigabitEthernet8/0/9
+ description MLS-SUNHU2
+#
+interface GigabitEthernet8/0/10
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS.MAN.7750:(local)GE1/2/1
+ eth-trunk 115
+#
+interface GigabitEthernet8/0/11
+ description dT:HT_GPON_4:(local)GE19/1
+#
+interface GigabitEthernet8/0/12
+ undo negotiation auto
+ description dT:HT_OLT-9:(local)GE19/2
+ eth-trunk 12
+#
+interface GigabitEthernet8/0/13
+ undo negotiation auto
+ description dT:HT_OLT-9:(local)GE19/1
+ eth-trunk 12
+#
+interface GigabitEthernet8/0/14
+ undo negotiation auto
+ description dT:HT_GPON_1-1:(local)GE19/1
+ eth-trunk 31
+#
+interface GigabitEthernet8/0/15
+ undo negotiation auto
+ description dT:HT_GPON_2-1:(local)GE19/2
+ eth-trunk 32
+#
+interface GigabitEthernet8/0/16
+ description dT:HT_10GEPON-1:(local)GE19/1
+ eth-trunk 15
+#
+interface GigabitEthernet8/0/17
+ description dT:HT_10GEPON-1:(local)GE19/2
+ eth-trunk 15
+#
+interface GigabitEthernet8/0/18
+ undo negotiation auto
+ description dT:HT_OLT-7:(local)GE19/1
+ eth-trunk 10
+#
+interface GigabitEthernet8/0/19
+ undo negotiation auto
+ description dT:HT_OLT-7:(local)GE19/2
+ eth-trunk 10
+#
+interface GigabitEthernet8/0/20
+ undo negotiation auto
+ description dT:HT_GPON_1-1:(local)GE19/1
+ eth-trunk 31
+#
+interface GigabitEthernet8/0/21
+ undo negotiation auto
+ description dT:HT_GPON_2-1:(local)GE19/2
+ eth-trunk 32
+#
+interface GigabitEthernet8/0/22
+ undo negotiation auto
+ description dT:HT_OLT-7:(local)GE19/1
+ eth-trunk 10
+#
+interface GigabitEthernet8/0/23
+ undo negotiation auto
+ description dT:HT_OLT-7:(local)GE19/2
+ eth-trunk 10
+#
+interface GigabitEthernet10/0/0
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS-1.MAN.ME60:(local)GE4/0/2
+ eth-trunk 110
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet10/0/1
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS-1.MAN.ME60:(local)GE4/0/3
+ eth-trunk 110
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface GigabitEthernet10/0/2
+ undo negotiation auto
+ description pT:NB-NB-CC-9306.MAN(F1408050055)GE4/0/6
+ eth-trunk 50
+#
+interface GigabitEthernet10/0/3
+ undo negotiation auto
+ description pT:NB-NB-ZQ-S9306:(F1503090040)GE4/0/4
+ eth-trunk 60
+#
+interface GigabitEthernet10/0/4
+#
+interface GigabitEthernet10/0/5
+#
+interface GigabitEthernet10/0/6
+#
+interface GigabitEthernet10/0/7
+ undo negotiation auto
+ shutdown
+#
+interface GigabitEthernet10/0/8
+#
+interface GigabitEthernet10/0/9
+#
+interface GigabitEthernet10/0/10
+ undo negotiation auto
+ description uT:NB-NB-HT-BAS.MAN.7750:(local)GE2/2/1
+ eth-trunk 115
+#
+interface GigabitEthernet10/0/11
+#
+interface GigabitEthernet10/0/12
+ undo negotiation auto
+ eth-trunk 33
+#
+interface GigabitEthernet10/0/13
+ undo negotiation auto
+ eth-trunk 33
+#
+interface GigabitEthernet10/0/14
+ undo negotiation auto
+ eth-trunk 33
+#
+interface GigabitEthernet10/0/15
+ undo negotiation auto
+ eth-trunk 33
+#
+interface GigabitEthernet10/0/16
+ description dT:HT_10GEPON-1:(local)GE19/1
+ eth-trunk 15
+#
+interface GigabitEthernet10/0/17
+ description dT:HT_10GEPON-1:(local)GE19/2
+ eth-trunk 15
+#
+interface GigabitEthernet10/0/18
+ undo negotiation auto
+ description dT:HT_GPON_1-1:(local):GE19/1
+ eth-trunk 31
+#
+interface GigabitEthernet10/0/19
+ undo negotiation auto
+ description dT:HT_GPON_1-1:(local):GE19/2
+ eth-trunk 31
+#
+interface GigabitEthernet10/0/20
+ undo negotiation auto
+ description dT:HT_GPON_1-1:(local):GE19/3
+ eth-trunk 31
+#
+interface GigabitEthernet10/0/21
+ undo negotiation auto
+ description dT:HT_GPON_4:(local)GE19/1
+ eth-trunk 31
+#
+interface GigabitEthernet10/0/22
+ undo negotiation auto
+ description dT:HT_OLT-9:(local)GE19/2
+ eth-trunk 12
+#
+interface GigabitEthernet10/0/23
+ undo negotiation auto
+ description dT:HT_OLT-9:(local)GE19/1
+ eth-trunk 12
+#
+interface GigabitEthernet12/0/0
+ description dT:ITV-huitongbingguan
+ port hybrid tagged vlan 75 77
+ port hybrid untagged vlan 1318
+ port vlan-stacking vlan 101 to 1600 stack-vlan 1318
+#
+interface GigabitEthernet12/0/1
+ description dT:ITV-huitongbingguan
+ port hybrid tagged vlan 75 77
+ port hybrid untagged vlan 1318
+ port vlan-stacking vlan 101 to 1600 stack-vlan 1318
+#
+interface GigabitEthernet12/0/2
+ undo negotiation auto
+ speed 100
+ description dT:XieJiaAnZhiXiaoQu-HW1-DSLAM
+ shutdown
+ port hybrid tagged vlan 212 to 213 3077 3963 3980 3994
+ port hybrid untagged vlan 1449
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1449
+ port vlan-stacking vlan 3600 stack-vlan 1449
+#
+interface GigabitEthernet12/0/3
+ undo negotiation auto
+ speed 100
+ shutdown
+ port hybrid tagged vlan 212 to 213 3055 3065 3078 3862 3980
+ port hybrid untagged vlan 1450
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1450
+ port vlan-stacking vlan 3600 stack-vlan 1450
+#
+interface GigabitEthernet12/0/4
+ undo negotiation auto
+ speed 100
+ description dT:XieJiaAnZhiXiaoQu-HW3-DSLAM
+ shutdown
+ port hybrid tagged vlan 212 to 213 3077 3848 3958 3963
+ port hybrid untagged vlan 1451
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1451
+ port vlan-stacking vlan 3600 stack-vlan 1451
+#
+interface GigabitEthernet12/0/5
+ undo negotiation auto
+ speed 100
+ description dT:XieJiaAnZhiXiaoQu-HW4-DSLAM
+ shutdown
+ port hybrid tagged vlan 212 to 213 3077 3963 3994
+ port hybrid untagged vlan 1460
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1460
+ port vlan-stacking vlan 3600 stack-vlan 1460
+#
+interface GigabitEthernet12/0/6
+ description dT:ITV-dongrenguangxue::kehu
+ port hybrid tagged vlan 77
+ port hybrid untagged vlan 1342
+ port vlan-stacking vlan 101 to 1600 stack-vlan 1342
+#
+interface GigabitEthernet12/0/7
+#
+interface GigabitEthernet12/0/8
+#
+interface GigabitEthernet12/0/9
+ shutdown
+#
+interface GigabitEthernet12/0/10
+ description dT:ITV-haidajianse::kehu
+ port hybrid tagged vlan 77
+ port hybrid untagged vlan 1322
+ port vlan-stacking vlan 101 to 1600 stack-vlan 1322
+#
+interface GigabitEthernet12/0/11
+#
+interface GigabitEthernet12/0/12
+ undo negotiation auto
+ description dT:HongTang-HW3-DSLAM
+ port hybrid tagged vlan 212 to 213 3845 3927 3963
+ port hybrid untagged vlan 1408 1592
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1408
+ port vlan-stacking vlan 3600 stack-vlan 1408
+#
+interface GigabitEthernet12/0/13
+ undo negotiation auto
+ speed 100
+ description dT:HongTang-HW2-DSLAM
+ port hybrid tagged vlan 212 to 213 3056 3894 3963 3973 3993
+ port hybrid untagged vlan 1406 1699
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1406
+ port vlan-stacking vlan 3600 stack-vlan 1406
+#
+interface GigabitEthernet12/0/14
+ description dT:HongTang-ACL-DSLAM-fd1
+ port hybrid tagged vlan 226 3845 3849 3963 3980
+ port hybrid untagged vlan 1416 1584
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1416
+ port vlan-stacking vlan 3600 stack-vlan 1416
+#
+interface GigabitEthernet12/0/15
+ description dT:HongTang-ACL-DSLAM-fd1
+ port hybrid tagged vlan 226 3845 3849 3963 3980
+ port hybrid untagged vlan 1416 1584
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1416
+ port vlan-stacking vlan 3600 stack-vlan 1416
+#
+interface GigabitEthernet12/0/16
+#
+interface GigabitEthernet12/0/17
+ shutdown
+ port hybrid tagged vlan 212 to 213
+ port hybrid untagged vlan 1411 1570
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1411
+ port vlan-stacking vlan 3600 stack-vlan 1411
+#
+interface GigabitEthernet12/0/18
+ shutdown
+ port hybrid tagged vlan 212 to 213
+ port hybrid untagged vlan 1410 1663
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1410
+ port vlan-stacking vlan 3600 stack-vlan 1410
+#
+interface GigabitEthernet12/0/19
+ description dT:YaoJiangXiaoQu-HW-DSLAM
+ shutdown
+ port hybrid tagged vlan 212 to 213 3077 3943 3963
+ port hybrid untagged vlan 1403 1695
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1403
+ port vlan-stacking vlan 3600 stack-vlan 1403
+#
+interface GigabitEthernet12/0/20
+ description dT:YangShi-HW-DSLAM
+ port hybrid tagged vlan 212 to 213 3065 3845
+ port hybrid untagged vlan 1404 1696
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1404
+ port vlan-stacking vlan 3600 stack-vlan 1404
+#
+interface GigabitEthernet12/0/21
+ undo negotiation auto
+ description dT:hongtang-hw-DSLAM-MA5600-04
+ port hybrid tagged vlan 212 to 213 3973
+ port hybrid untagged vlan 1544
+ port vlan-stacking vlan 301 to 1600 stack-vlan 1544
+ port vlan-stacking vlan 3600 stack-vlan 1544
+#
+interface GigabitEthernet12/0/22
+ description dT:WLAN-hongtangjiedao-banshidating
+ port hybrid untagged vlan 79
+ port vlan-stacking vlan 1600 to 2000 stack-vlan 79
+#
+interface GigabitEthernet12/0/23
+ description dT:WLAN-jiangbeigongyequ-guanweihui
+ port hybrid untagged vlan 79
+ port vlan-stacking vlan 1600 to 2000 stack-vlan 79
+#
+interface GigabitEthernet12/0/24
+ description dT:WLAN-hongtangweishengfuwuzhongxin
+ port hybrid untagged vlan 79
+ port vlan-stacking vlan 1600 to 2000 stack-vlan 79
+#
+interface GigabitEthernet12/0/25
+ description dT:WLAN-sunhu
+ port hybrid untagged vlan 79
+ port vlan-stacking vlan 1600 to 2000 stack-vlan 79
+#
+interface GigabitEthernet12/0/26
+ description dT:WLAN lvsexuexiao
+ port hybrid untagged vlan 79
+ port vlan-stacking vlan 1600 to 2000 stack-vlan 79
+#
+interface GigabitEthernet12/0/27
+ description dT:WLAN-baoguosi
+ port hybrid untagged vlan 79
+ port vlan-stacking vlan 1600 to 2000 stack-vlan 79
+#
+interface GigabitEthernet12/0/28
+ description dT:WLAN-dianzishangwucheng
+ port hybrid untagged vlan 79
+ port vlan-stacking vlan 1600 to 2000 stack-vlan 79
+#
+interface GigabitEthernet12/0/29
+ description iwifi::kehu
+ port hybrid untagged vlan 80
+ port vlan-stacking vlan 1001 to 1600 stack-vlan 80
+#
+interface GigabitEthernet12/0/30
+ description iwifi::kehu
+ port hybrid untagged vlan 80
+ port vlan-stacking vlan 1001 to 1600 stack-vlan 80
+#
+interface GigabitEthernet12/0/31
+ description WLAN-SunHuLvYouDuJiaQu-processing
+ port hybrid untagged vlan 79
+ port vlan-stacking vlan 1600 to 2000 stack-vlan 79
+#
+interface GigabitEthernet12/0/32
+#
+interface GigabitEthernet12/0/33
+#
+interface GigabitEthernet12/0/34
+#
+interface GigabitEthernet12/0/35
+#
+interface GigabitEthernet12/0/36
+#
+interface GigabitEthernet12/0/37
+ port link-type access
+ port default vlan 3966
+#
+interface GigabitEthernet12/0/38
+#
+interface GigabitEthernet12/0/39
+#
+interface GigabitEthernet12/0/40
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet12/0/41
+#
+interface GigabitEthernet12/0/42
+#
+interface GigabitEthernet12/0/43
+#
+interface GigabitEthernet12/0/44
+#
+interface GigabitEthernet12/0/45
+#
+interface GigabitEthernet12/0/46
+ description dT:monitor-gonganjiankong::kehu
+ port hybrid tagged vlan 40 3958 3966
+ port hybrid untagged vlan 1702
+ port vlan-stacking vlan 50 stack-vlan 1702
+#
+interface GigabitEthernet12/0/47
+ description dT:monitor-jbtest::kehu
+ port link-type access
+ port default vlan 1750
+#
+interface XGigabitEthernet2/0/0
+ description uT:NB-NB-HT-BAS-1.MAN.ME60:(local)10GE7/0/1::processing
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 1615 1791 to 1793
+#
+interface XGigabitEthernet2/0/1
+#
+interface XGigabitEthernet2/0/2
+#
+interface XGigabitEthernet2/0/3
+#
+interface XGigabitEthernet2/0/4
+#
+interface XGigabitEthernet2/0/5
+#
+interface XGigabitEthernet2/0/6
+#
+interface XGigabitEthernet2/0/7
+#
+interface XGigabitEthernet2/0/8
+#
+interface XGigabitEthernet2/0/9
+#
+interface XGigabitEthernet2/0/10
+#
+interface XGigabitEthernet2/0/11
+ description dT:HT_GPON_6_FH:(local)GE19/1
+ eth-trunk 35
+#
+interface XGigabitEthernet2/0/12
+ description dT:HT_GPON_7_HW:(local)GE19/0
+ eth-trunk 36
+#
+interface XGigabitEthernet2/0/13
+ description dT:HT_GPON_4:(local)GE19/1
+ eth-trunk 34
+#
+interface XGigabitEthernet2/0/14
+#
+interface XGigabitEthernet2/0/15
+#
+interface XGigabitEthernet9/0/0
+ description uT:NB-NB-HT-BAS-1.MAN.ME60:(local)10GE5/0/0
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 1205 to 1206 1614 1616 to 1617 1619 1647 1734 to 1735 1737 1756 1773 to 1774 1782 to 1783
+ port trunk allow-pass vlan 1787 1840 to 1841 1851 to 1853 1856 1861 to 1862 1870 1880 1883 1887 2013 to 2015
+ port trunk allow-pass vlan 2106 2129 2169 3966
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface XGigabitEthernet9/0/1
+ description uT:NB-NB-HT-BAS-2.MAN.ME60:(local)10GE2/0/0
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 1620 1638 1646 1712 to 1716 1744 1746 1748 1803 to 1805 1810 to 1812 1826
+ port trunk allow-pass vlan 1828 to 1829 1836 1839 1882 1885 to 1886 2011 to 2012 2066 to 2068 2168 3966
+ qos pq 4 wrr 0 to 3 5 to 7 
+ qos queue 0 wrr weight 5
+ qos queue 1 wrr weight 5
+ qos queue 2 wrr weight 5
+ qos queue 3 wrr weight 5
+ qos queue 5 wrr weight 15
+ qos queue 6 wrr weight 5
+ qos queue 7 wrr weight 5
+#
+interface XGigabitEthernet9/0/2
+ description dT:HT_10GEPON-1_1:(local)GE19/1
+ eth-trunk 16
+#
+interface XGigabitEthernet9/0/3
+ description dT:HT_10GEPON-1_1:(local)GE19/2
+ eth-trunk 16
+#
+interface XGigabitEthernet11/0/0
+ description uT:NB-NB-HT-BAS-2.MAN.ME60:(local)10GE2/1/1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface XGigabitEthernet11/0/1
+#
+interface XGigabitEthernet11/0/2
+#
+interface XGigabitEthernet11/0/3
+#
+interface XGigabitEthernet11/0/4
+#
+interface XGigabitEthernet11/0/5
+#
+interface XGigabitEthernet11/0/6
+#
+interface XGigabitEthernet11/0/7
+#
+interface XGigabitEthernet11/0/8
+#
+interface XGigabitEthernet11/0/9
+#
+interface XGigabitEthernet11/0/10
+#
+interface XGigabitEthernet11/0/11
+ description dT:HT_GPON_6_FH:(local)GE19/2
+ eth-trunk 35
+#
+interface XGigabitEthernet11/0/12
+ description dT:HT_GPON_7_HW:(local)GE19/1
+ eth-trunk 36
+#
+interface XGigabitEthernet11/0/13
+ description dT:HT_GPON_4:(local)GE19/2
+ eth-trunk 34
+#
+interface XGigabitEthernet11/0/14
+ description dT:HT_GPON_5:(local)GE19/1
+ eth-trunk 25
+#
+interface XGigabitEthernet11/0/15
+ description dT:HT_GPON_5:(local)GE19/2
+ eth-trunk 25
+#
+interface NULL0
+#
+cpu-defend policy 1
+ auto-port-defend protocol arp-request arp-reply dhcp icmp ip-fragment
+#
+ip route-static 172.0.0.0 255.0.0.0 172.93.1.41
+#
+snmp-agent
+snmp-agent local-engineid 000007DB7FFFFFFF000012AB
+snmp-agent community read cipher %^%#-[)T5\*cE8HH}v,l&L5OM,mK-'RuzEH81C>pDv&(fd;2&,)GREg7yX9@KPz6-9F4D<qrK>06b!CVLP6:%^%# acl 2015
+snmp-agent sys-info contact HuaWei 800-8302118
+snmp-agent sys-info location NB-YZHongtang
+snmp-agent sys-info version all
+snmp-agent target-host trap address udp-domain 172.200.100.5 udp-port 161 params securityname cipher %^%#eU{O"8}B9#iREEX@}/KA1r0G72wY_Jm<SjIL*V3'%^%#
+snmp-agent target-host trap address udp-domain 218.75.80.158 udp-port 161 params securityname cipher %^%#n]Mf;1ysIXGc<gCr,i/&`${-'%N,U,C[:_9=mn-4%^%#
+snmp-agent trap enable feature-name IFNET trap-name linkDown
+snmp-agent trap enable feature-name IFNET trap-name linkUp
+snmp-agent trap enable feature-name CONFIGURATION
+snmp-agent trap enable feature-name SNMP trap-name authenticationFailure
+undo snmp-agent trap enable feature-name L2IFPPI trap-name hwMacFlappingAlarm
+undo snmp-agent trap enable feature-name DLDP
+undo snmp-agent trap enable feature-name LDTTRAP
+undo snmp-agent trap enable feature-name LLDPTRAP
+snmp-agent trap enable feature-name VFS
+snmp-agent trap enable feature-name BASETRAP
+#
+ssh server compatible-ssh1x enable
+#
+header login information " WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!"
+#
+cpu-defend-policy 1 global
+cpu-defend-policy 1
+#
+user-interface con 0
+ authentication-mode password
+ user privilege level 3
+ set authentication password cipher %^%#o2]}~Y=L)Yu-BD5=Qmr:}rhA0C^z)-\.)v$HjiS,}r^F0y1v}=Vwk(*_So[=%^%#
+user-interface vty 0 4
+ acl 2000 inbound
+ authentication-mode aaa
+ protocol inbound all
+user-interface vty 16 20
+ protocol inbound telnet
+#
+return
+<NB-NB-HT-DSW-1.MAN.9312>

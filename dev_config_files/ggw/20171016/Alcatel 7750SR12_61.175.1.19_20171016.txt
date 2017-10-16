@@ -1,0 +1,6244 @@
+--------------------environment no more--------------------
+ 
+A:NB-CX-WS-BR-1.MAN.7750#
+--------------------admin display-config--------------------
+ 
+# TiMOS-C-13.0.R9 cpm/hops64 ALCATEL SR 7750 Copyright (c) 2000-2016 Alcatel-Lucent.
+# All rights reserved. All use subject to applicable license agreements.
+# Built on Tue May 17 10:37:09 PDT 2016 by builder in /rel13.0/b1/R9/panos/main
+
+# Generated SAT OCT 14 23:00:09 2017 UTC
+
+exit all
+configure
+#--------------------------------------------------
+echo "System Configuration"
+#--------------------------------------------------
+    system
+        name "NB-CX-WS-BR-1.MAN.7750"
+        chassis-mode c
+        dns
+        exit
+        load-balancing
+            l4-load-balancing
+            lsr-load-balancing lbl-ip
+        exit
+        selective-fib
+        snmp
+        exit
+        time
+            ntp
+                server 61.175.0.1 version 3 prefer
+                server 61.175.0.2 version 3
+                no shutdown
+            exit
+            sntp
+                shutdown
+            exit
+            zone GMT8 08
+        exit
+        thresholds
+            rmon
+            exit
+        exit
+    exit
+#--------------------------------------------------
+echo "System Security Configuration"
+#--------------------------------------------------
+    system
+        security
+            telnet-server
+            password
+                authentication-order local tacplus  
+                attempts 3 time 5 lockout 0
+            exit
+            tacplus
+                accounting
+                authorization 
+                timeout 20
+                server 1 address 115.239.131.9 secret "MglpQ7AGWeEBUNqy9tKQ4k" hash2
+                server 2 address 122.229.8.65 secret "ZRr1DCqDN//mKqzMm.S/t." hash2
+            exit
+            no user "admin"
+            user "Alcatel"
+                password "$2y$10$2bAZspgbF5dk0CVKk9StA.dM501iA3/GNtYPW5WreJPlDuysiLU.G"
+                access console ftp 
+                console
+                    member "default"
+                    member "administrative"
+                exit
+            exit
+            user "nbdx"
+                password "$2y$10$Yb8Y7UFp6m56WR.SYIb1A.UWJvOXXscFkUj/9kDqBzidhm1l/.SHK"
+                access console 
+                console
+                    member "default"
+                    member "administrative"
+                exit
+            exit
+            user "zjnoc"
+                password "$2y$10$zFNkcrvfIxF10XmBGuoo..IpGzOuvisLcd8VKSsJJdMJG0ENEyQs6"
+                access console ftp li 
+                console
+                    no member "default"
+                    member "administrative"
+                exit
+            exit
+            snmp
+                community "Wyoot.Rs2k." hash2 r version both
+                community "07uJjwX1drSD8lxYzihjZ." hash2 r version both
+            exit
+            ssh
+                server-shutdown
+            exit
+            per-peer-queuing
+            cpm-queue
+                queue 100 create
+                    cbs 1000
+                    mbs 1000
+                    rate 10000 cir 10000
+                exit
+                queue 101 create
+                    cbs 1000
+                    mbs 1000
+                    rate 10000 cir 10000
+                exit
+                queue 102 create
+                    cbs 200
+                    mbs 200
+                    rate 2000 cir 2000
+                exit
+                queue 103 create
+                    cbs 200
+                    mbs 200
+                    rate 2000 cir 2000
+                exit
+                queue 104 create
+                    cbs 300
+                    mbs 300
+                    rate 3000 cir 3000
+                exit
+                queue 105 create
+                    cbs 200
+                    mbs 200
+                    rate 2000 cir 2000
+                exit
+                queue 106 create
+                    cbs 100
+                    mbs 100
+                    rate 1000 cir 1000
+                exit
+                queue 107 create
+                    cbs 100
+                    mbs 100
+                    rate 1000 cir 1000
+                exit
+                queue 108 create
+                    cbs 1000
+                    mbs 1000
+                    rate 10000 cir 10000
+                exit
+                queue 109 create
+                    cbs 1000
+                    mbs 1000
+                    rate 10000 cir 10000
+                exit
+                queue 112 create
+                    cbs 50
+                    mbs 50
+                    rate 256 cir 256
+                exit
+                queue 113 create
+                    cbs 50
+                    mbs 50
+                    rate 512 cir 512
+                exit
+                queue 120 create
+                    cbs 100
+                    mbs 100
+                    rate 1000 cir 1000
+                exit
+                queue 124 create
+                    rate 512 
+                exit
+                queue 125 create
+                    rate 100 
+                exit
+                queue 200 create
+                    cbs 50
+                    mbs 50
+                    rate 512 cir 512
+                exit
+            exit
+            cpu-protection
+                policy 1 create
+                exit
+                policy 2 create
+                    per-source-rate 600
+                exit
+                policy 10 create
+                    description "CPU-Protection Policy assigned to IES direct connect"
+                    per-source-rate 10
+                exit
+                policy 20 create
+                    description "CPU-Protection Policy assigned to VPRN"
+                    per-source-rate 10
+                exit
+                policy 30 create
+                    description "CPU-Protection Policy assigned to VPLS"
+                    per-source-rate 10
+                exit
+                policy 50 create
+                    description "CPU-Protection Policy assigned to Msap"
+                    per-source-rate 10
+                exit
+                policy 99 create
+                    per-source-rate 10
+                exit
+                policy 100 create
+                    description "CPU-Protection Policy assigned to Capture SAP"
+                    overall-rate 200
+                    per-source-rate 10
+                exit
+                policy 254 create
+                exit
+                policy 255 create
+                exit
+                protocol-protection 
+            exit
+        exit
+    exit
+#--------------------------------------------------
+echo "System Login Control Configuration"
+#--------------------------------------------------
+    system
+        login-control
+            telnet
+                inbound-max-sessions 10
+                outbound-max-sessions 10
+            exit
+            idle-timeout 10
+            pre-login-message "WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!"
+            no login-banner
+        exit
+    exit
+#--------------------------------------------------
+echo "Log Configuration"
+#--------------------------------------------------
+    log 
+        file-id 10 
+            location cf3: 
+        exit 
+        file-id 50 
+            location cf3: 
+            rollover 1440 retention 360 
+        exit 
+        filter 3 
+            default-action forward
+            entry 10 
+                action drop
+                match
+                    application eq "nat"
+                exit 
+            exit 
+            entry 20 
+                action drop
+                match
+                    application eq "pppoe"
+                exit 
+            exit 
+            entry 30 
+                action drop
+                match
+                    application eq "dhcps"
+                exit 
+            exit 
+            entry 40 
+                action drop
+                match
+                    application eq "dhcp"
+                exit 
+            exit 
+            entry 50 
+                action drop
+                match
+                    application eq "svcmgr"
+                exit 
+            exit 
+            entry 60 
+                action drop
+                match
+                    application eq "igmp"
+                exit 
+            exit 
+            entry 70 
+                action drop
+                match
+                    application eq "security"
+                    number eq 2031
+                exit 
+            exit 
+            entry 80 
+                action drop
+                match
+                    application eq "security"
+                    number eq 2032
+                exit 
+            exit 
+            entry 90 
+                action drop
+                match
+                    application eq "system"
+                    number eq 2006
+                exit 
+            exit 
+            entry 100 
+                action drop
+                match
+                    application eq "system"
+                    number eq 2007
+                exit 
+            exit 
+            entry 110 
+                action drop
+                match
+                    application eq "system"
+                    number eq 2011
+                exit 
+            exit 
+            entry 120 
+                action drop
+                match
+                    application eq "ip"
+                    number eq 2008
+                exit 
+            exit 
+            entry 130 
+                action drop
+                match
+                    application eq "ospf"
+                exit 
+            exit 
+        exit 
+        event-control "chassis" 2058 generate
+        event-control "chassis" 2059 generate
+        event-control "chassis" 2063 generate
+        event-control "chassis" 2076 generate
+        event-control "chassis" 2098 generate
+        event-control "chassis" 2099 generate
+        event-control "chassis" 2101 generate
+        event-control "chassis" 2102 generate
+        event-control "chassis" 2103 generate
+        event-control "chassis" 2104 generate
+        event-control "chassis" 2110 generate
+        event-control "chassis" 2129 generate
+        event-control "ldp" 2013 generate
+        event-control "ldp" 2014 generate
+        event-control "ldp" 2015 generate
+        event-control "user" 2011 generate
+        syslog 1
+            description "To-NOC-Syslog-Server"
+            address 61.153.112.148
+            facility local4
+        exit 
+        syslog 2
+            description "To-SOC-Syslog-Server"
+            address 115.239.131.2
+        exit 
+        log-id 10
+            time-format local
+            from main security change 
+            to file 10
+            no shutdown
+        exit
+        log-id 20
+            time-format local
+            from main security change 
+            to syslog 1
+            no shutdown
+        exit
+        log-id 21
+            time-format local
+            from main security change 
+            to syslog 2
+            no shutdown
+        exit
+        log-id 30
+            time-format local
+            from main security change 
+            to syslog 1
+            no shutdown
+        exit
+        log-id 50
+            filter 3
+            time-format local
+            from main security change 
+            to file 50
+            no shutdown
+        exit
+        log-id 99
+            time-format local
+            no shutdown
+        exit
+        log-id 100
+            time-format local
+            no shutdown
+        exit
+    exit 
+#--------------------------------------------------
+echo "Filter Match lists Configuration"
+#--------------------------------------------------
+    filter 
+        match-list
+            ip-prefix-list "bgp-peer" create
+                apply-path
+                    bgp-peers 1 group ".*" neighbor ".*"
+                exit
+            exit
+        exit
+    exit 
+#--------------------------------------------------
+echo "System Security Cpm Hw Filters and PKI Configuration"
+#--------------------------------------------------
+    system
+        security
+            cpm-filter
+                ip-filter
+                    entry 50 create
+                        action queue 100
+                        description "whitelist1"
+                        match 
+                            src-ip 202.96.102.0/23
+                        exit
+                    exit
+                    entry 51 create
+                        action queue 100
+                        description "whitelist1"
+                        match 
+                            src-ip 202.101.167.192/26
+                        exit
+                    exit
+                    entry 52 create
+                        action queue 100
+                        description "whitelist1"
+                        match 
+                            src-ip 115.239.139.0/28
+                        exit
+                    exit
+                    entry 200 create
+                        action queue 112
+                        match protocol udp
+                            src-ip 61.175.0.1/32
+                            src-port 123 65535
+                        exit
+                    exit
+                    entry 201 create
+                        action queue 112
+                        match protocol udp
+                            src-ip 61.175.0.2/32
+                            src-port 123 65535
+                        exit
+                    exit
+                    entry 202 create
+                        action queue 112
+                        match protocol tcp
+                            src-ip 202.96.102.141/32
+                        exit
+                    exit
+                    entry 203 create
+                        action queue 112
+                        match protocol tcp
+                            src-ip 61.153.176.183/32
+                        exit
+                    exit
+                    entry 204 create
+                        action queue 112
+                        match protocol tcp
+                            src-ip 115.239.131.9/32
+                        exit
+                    exit
+                    entry 205 create
+                        action queue 112
+                        match protocol tcp
+                            src-ip 122.229.8.65/32
+                        exit
+                    exit
+                    entry 248 create
+                        action drop
+                        description "drop unkown NTP-server"
+                        match protocol udp
+                            src-port 123 65535
+                        exit
+                    exit
+                    entry 249 create
+                        action drop
+                        description "NTP from unknown"
+                        match protocol udp
+                            dst-port 123 65535
+                        exit
+                    exit
+                    entry 301 create
+                        action queue 108
+                        match protocol tcp
+                            dst-port 23 65535
+                            src-ip 115.239.131.12/32
+                        exit
+                    exit
+                    entry 302 create
+                        action queue 108
+                        match protocol tcp
+                            dst-port 23 65535
+                            src-ip 122.229.8.81/32
+                        exit
+                    exit
+                    entry 303 create
+                        action queue 108
+                        match protocol tcp
+                            dst-port 23 65535
+                            src-ip 115.239.139.10/32
+                        exit
+                    exit
+                    entry 310 create
+                        action queue 108
+                        match protocol tcp
+                            dst-port 23 65535
+                            src-ip 202.96.102.240/32
+                        exit
+                    exit
+                    entry 311 create
+                        action queue 108
+                        match protocol tcp
+                            dst-port 23 65535
+                            src-ip 202.96.102.47/32
+                        exit
+                    exit
+                    entry 312 create
+                        action queue 108
+                        match protocol tcp
+                            dst-port 23 65535
+                            src-ip 202.96.102.84/32
+                        exit
+                    exit
+                    entry 313 create
+                        action queue 108
+                        match protocol tcp
+                            dst-port 23 65535
+                            src-ip 202.96.103.188/32
+                        exit
+                    exit
+                    entry 314 create
+                        action queue 108
+                        match protocol tcp
+                            dst-port 23 65535
+                            src-ip 202.96.102.244/32
+                        exit
+                    exit
+                    entry 315 create
+                        action queue 108
+                        match protocol tcp
+                            dst-port 23 65535
+                            src-ip 202.96.102.139/32
+                        exit
+                    exit
+                    entry 316 create
+                        action queue 108
+                        match protocol tcp
+                            dst-port 23 65535
+                            src-ip 202.96.102.221/32
+                        exit
+                    exit
+                    entry 317 create
+                        action queue 108
+                        match protocol tcp
+                            dst-port 23 65535
+                            src-ip 61.153.112.129/32
+                        exit
+                    exit
+                    entry 318 create
+                        action queue 108
+                        match protocol tcp
+                            dst-port 23 65535
+                            src-ip 61.153.112.134/32
+                        exit
+                    exit
+                    entry 319 create
+                        action queue 108
+                        match protocol tcp
+                            dst-port 23 65535
+                            src-ip 61.153.112.142/32
+                        exit
+                    exit
+                    entry 320 create
+                        action queue 108
+                        match protocol tcp
+                            dst-port 23 65535
+                            src-ip 61.153.112.143/32
+                        exit
+                    exit
+                    entry 321 create
+                        action queue 108
+                        match protocol tcp
+                            dst-port 23 65535
+                            src-ip 61.153.112.144/32
+                        exit
+                    exit
+                    entry 322 create
+                        action queue 108
+                        match protocol tcp
+                            dst-port 23 65535
+                            src-ip 61.153.112.145/32
+                        exit
+                    exit
+                    entry 323 create
+                        action queue 108
+                        match protocol tcp
+                            dst-port 23 65535
+                            src-ip 61.153.112.146/32
+                        exit
+                    exit
+                    entry 324 create
+                        action queue 108
+                        match protocol tcp
+                            dst-port 23 65535
+                            src-ip 61.153.112.147/32
+                        exit
+                    exit
+                    entry 325 create
+                        action queue 108
+                        match protocol tcp
+                            dst-port 23 65535
+                            src-ip 61.153.112.148/32
+                        exit
+                    exit
+                    entry 326 create
+                        action queue 108
+                        match protocol tcp
+                            dst-port 23 65535
+                            src-ip 61.153.112.133/32
+                        exit
+                    exit
+                    entry 327 create
+                        action queue 108
+                        match protocol tcp
+                            dst-port 23 65535
+                            src-ip 61.153.112.150/32
+                        exit
+                    exit
+                    entry 328 create
+                        action queue 108
+                        match protocol tcp
+                            dst-port 23 65535
+                            src-ip 202.96.103.164/32
+                        exit
+                    exit
+                    entry 349 create
+                        action queue 109
+                        match protocol udp
+                            dst-port 161 65535
+                            src-ip 115.239.139.10/32
+                        exit
+                    exit
+                    entry 350 create
+                        action queue 109
+                        match protocol udp
+                            dst-port 161 65535
+                            src-ip 202.96.102.139/32
+                        exit
+                    exit
+                    entry 351 create
+                        action queue 109
+                        match protocol udp
+                            dst-port 161 65535
+                            src-ip 202.96.102.221/32
+                        exit
+                    exit
+                    entry 352 create
+                        action queue 109
+                        match protocol udp
+                            dst-port 161 65535
+                            src-ip 61.153.112.129/32
+                        exit
+                    exit
+                    entry 353 create
+                        action queue 109
+                        match protocol udp
+                            dst-port 161 65535
+                            src-ip 61.153.112.134/32
+                        exit
+                    exit
+                    entry 354 create
+                        action queue 109
+                        match protocol udp
+                            dst-port 161 65535
+                            src-ip 61.153.112.142/32
+                        exit
+                    exit
+                    entry 355 create
+                        action queue 109
+                        match protocol udp
+                            dst-port 161 65535
+                            src-ip 61.153.112.143/32
+                        exit
+                    exit
+                    entry 356 create
+                        action queue 109
+                        match protocol udp
+                            dst-port 161 65535
+                            src-ip 61.153.112.144/32
+                        exit
+                    exit
+                    entry 357 create
+                        action queue 109
+                        match protocol udp
+                            dst-port 161 65535
+                            src-ip 61.153.112.145/32
+                        exit
+                    exit
+                    entry 358 create
+                        action queue 109
+                        match protocol udp
+                            dst-port 161 65535
+                            src-ip 61.153.112.146/32
+                        exit
+                    exit
+                    entry 359 create
+                        action queue 109
+                        match protocol udp
+                            dst-port 161 65535
+                            src-ip 61.153.112.147/32
+                        exit
+                    exit
+                    entry 360 create
+                        action queue 109
+                        match protocol udp
+                            dst-port 161 65535
+                            src-ip 61.153.112.148/32
+                        exit
+                    exit
+                    entry 361 create
+                        action queue 109
+                        match protocol udp
+                            dst-port 161 65535
+                            src-ip 61.153.112.133/32
+                        exit
+                    exit
+                    entry 362 create
+                        action queue 109
+                        match protocol udp
+                            dst-port 161 65535
+                            src-ip 61.153.112.150/32
+                        exit
+                    exit
+                    entry 363 create
+                        action queue 109
+                        match protocol udp
+                            dst-port 161 65535
+                            src-ip 61.153.82.210/32
+                        exit
+                    exit
+                    entry 368 create
+                        action queue 109
+                        match protocol udp
+                            dst-port 161 65535
+                            src-ip 115.231.36.12/32
+                        exit
+                    exit
+                    entry 369 create
+                        action queue 109
+                        match protocol udp
+                            dst-port 161 65535
+                            src-ip 115.233.70.198/32
+                        exit
+                    exit
+                    entry 370 create
+                        action queue 113
+                        match protocol icmp
+                        exit
+                    exit
+                    entry 397 create
+                        action drop
+                        match protocol udp
+                            dst-port 161 65535
+                        exit
+                    exit
+                    entry 399 create
+                        action drop
+                        match protocol tcp
+                            dst-port 23 65535
+                        exit
+                    exit
+                    entry 500 create
+                        action accept
+                        match protocol igp
+                        exit
+                    exit
+                    entry 510 create
+                        action accept
+                        description "RIP udp dst-port 520"
+                        match protocol udp
+                            dst-port 520 65535
+                        exit
+                    exit
+                    entry 600 create
+                        action accept
+                        description "neighborCR"
+                        match protocol tcp
+                            dst-port 179 65535
+                            src-ip ip-prefix-list "bgp-peer"
+                        exit
+                    exit
+                    entry 601 create
+                        action accept
+                        description "neighborCR"
+                        match protocol tcp
+                            src-ip ip-prefix-list "bgp-peer"
+                            src-port 179 65535
+                        exit
+                    exit
+                    entry 608 create
+                        action drop
+                        description "BGP default drop client"
+                        match protocol tcp
+                            dst-port 179 65535
+                        exit
+                    exit
+                    entry 609 create
+                        action drop
+                        description "BGP default drop server"
+                        match protocol tcp
+                            src-port 179 65535
+                        exit
+                    exit
+                    entry 698 create
+                        action accept
+                        description "VPRN BGP client accept"
+                        match protocol tcp
+                            dst-port 179 65535
+                        exit
+                    exit
+                    entry 699 create
+                        action accept
+                        description "VPRN BGP accept server"
+                        match protocol tcp
+                            src-port 179 65535
+                        exit
+                    exit
+                    entry 799 create
+                        action queue 104
+                        description "ISIS"
+                        match protocol isis
+                        exit
+                    exit
+                    entry 800 create
+                        action queue 102
+                        description "LDP"
+                        match protocol tcp
+                            dst-port 646 65535
+                        exit
+                    exit
+                    entry 801 create
+                        action queue 102
+                        description "LDP"
+                        match protocol tcp
+                            src-port 646 65535
+                        exit
+                    exit
+                    entry 802 create
+                        action queue 102
+                        description "LDP"
+                        match protocol udp
+                            dst-port 646 65535
+                        exit
+                    exit
+                    entry 803 create
+                        action queue 102
+                        description "LDP"
+                        match protocol udp
+                            src-port 646 65535
+                        exit
+                    exit
+                    entry 850 create
+                        action accept
+                        description "VRRP"
+                        match protocol vrrp
+                        exit
+                    exit
+                    entry 860 create
+                        action queue 106
+                        description "BFD"
+                        match protocol udp
+                            dst-port 3784 65535
+                        exit
+                    exit
+                    entry 861 create
+                        action queue 106
+                        description "BFD"
+                        match protocol udp
+                            src-port 3784 65535
+                        exit
+                    exit
+                    entry 900 create
+                        action queue 107
+                        description "PIM"
+                        match protocol pim
+                        exit
+                    exit
+                    entry 901 create
+                        action queue 107
+                        description "IGMP"
+                        match protocol igmp
+                        exit
+                    exit
+                    entry 930 create
+                        action queue 103
+                        description "ospf"
+                        match protocol ospf-igp
+                        exit
+                    exit
+                    entry 950 create
+                        action accept
+                        description "DHCP request"
+                        match protocol udp
+                            dst-port 67 65535
+                            src-port 68 65535
+                        exit
+                    exit
+                    entry 951 create
+                        action accept
+                        description "DHCP ack"
+                        match protocol udp
+                            dst-port 68 65535
+                            src-port 67 65535
+                        exit
+                    exit
+                    entry 952 create
+                        action accept
+                        description "DHCP relay"
+                        match protocol udp
+                            dst-port 67 65535
+                            src-port 67 65535
+                        exit
+                    exit
+                    entry 955 create
+                        action drop
+                        description "other broadcast udp port 67 drop"
+                        match protocol udp
+                            dst-ip 255.255.255.255/32
+                            dst-port 67 65535
+                        exit
+                    exit
+                    entry 960 create
+                        action accept
+                        description "multicast 224.0.0.0/4"
+                        match 
+                            dst-ip 224.0.0.0/4
+                        exit
+                    exit
+                    entry 998 create
+                        action queue 125
+                        description "other udp"
+                        match protocol udp
+                            fragment false
+                        exit
+                    exit
+                    entry 999 create
+                        action queue 124
+                        match protocol tcp
+                        exit
+                    exit
+                    entry 1000 create
+                        action queue 200
+                    exit
+                    no shutdown
+                exit
+                mac-filter
+                    entry 90 create
+                        action accept
+                        description "ISIS"
+                        match frame-type 802dot2-llc
+                        exit
+                    exit
+                    entry 233 create
+                        action accept
+                        description "0x0800/IPv4/Broadcast"
+                        match frame-type ethernet_II
+                            dst-mac ff:ff:ff:ff:ff:ff ff:ff:ff:ff:ff:ff
+                            etype 0x800
+                        exit
+                    exit
+                    entry 266 create
+                        action accept
+                        description "0x0800/IPv4/Multicast"
+                        match frame-type ethernet_II
+                            dst-mac 01:00:5e:00:00:00 ff:ff:ff:80:00:00
+                            etype 0x800
+                        exit
+                    exit
+                    entry 299 create
+                        action accept
+                        description "0x0800/IPv4/Others"
+                        match frame-type ethernet_II
+                            etype 0x800
+                        exit
+                    exit
+                    entry 333 create
+                        action accept
+                        description "0x0806/ARP/Broadcast"
+                        match frame-type ethernet_II
+                            dst-mac ff:ff:ff:ff:ff:ff ff:ff:ff:ff:ff:ff
+                            etype 0x806
+                        exit
+                    exit
+                    entry 366 create
+                        action accept
+                        description "0x0806/ARP/Multicast"
+                        match frame-type ethernet_II
+                            dst-mac 01:00:5e:00:00:00 ff:ff:ff:80:00:00
+                            etype 0x806
+                        exit
+                    exit
+                    entry 399 create
+                        action accept
+                        description "0x0806/ARP/Others"
+                        match frame-type ethernet_II
+                            etype 0x806
+                        exit
+                    exit
+                    entry 433 create
+                        action accept
+                        description "0x8809/Slow Protocols/Broadcast"
+                        match frame-type ethernet_II
+                            dst-mac ff:ff:ff:ff:ff:ff ff:ff:ff:ff:ff:ff
+                            etype 0x8809
+                        exit
+                    exit
+                    entry 466 create
+                        action accept
+                        description "0x8809/Slow Protocols/Multicast"
+                        match frame-type ethernet_II
+                            dst-mac 01:00:5e:00:00:00 ff:ff:ff:80:00:00
+                            etype 0x8809
+                        exit
+                    exit
+                    entry 499 create
+                        action accept
+                        description "0x8809/Slow Protocols/Others"
+                        match frame-type ethernet_II
+                            etype 0x8809
+                        exit
+                    exit
+                    entry 533 create
+                        action accept
+                        description "0x8847/MPLS unicast/Broadcast"
+                        match frame-type ethernet_II
+                            dst-mac ff:ff:ff:ff:ff:ff ff:ff:ff:ff:ff:ff
+                            etype 0x8847
+                        exit
+                    exit
+                    entry 566 create
+                        action accept
+                        description "0x8847/MPLS unicast/Multicast"
+                        match frame-type ethernet_II
+                            dst-mac 01:00:5e:00:00:00 ff:ff:ff:80:00:00
+                            etype 0x8847
+                        exit
+                    exit
+                    entry 599 create
+                        action accept
+                        description "0x8847/MPLS unicast/Others"
+                        match frame-type ethernet_II
+                            etype 0x8847
+                        exit
+                    exit
+                    entry 633 create
+                        action accept
+                        description "0x8848/MPLS multicast/Broadcast"
+                        match frame-type ethernet_II
+                            dst-mac ff:ff:ff:ff:ff:ff ff:ff:ff:ff:ff:ff
+                            etype 0x8848
+                        exit
+                    exit
+                    entry 666 create
+                        action accept
+                        description "0x8848/MPLS multicast/Multicast"
+                        match frame-type ethernet_II
+                            dst-mac 01:00:5e:00:00:00 ff:ff:ff:80:00:00
+                            etype 0x8848
+                        exit
+                    exit
+                    entry 699 create
+                        action accept
+                        description "0x8848/MPLS multicast/Others"
+                        match frame-type ethernet_II
+                            etype 0x8848
+                        exit
+                    exit
+                    entry 733 create
+                        action accept
+                        description "0x8863/PPPoE Discovery/PADI/Broadcast"
+                        match frame-type ethernet_II
+                            dst-mac ff:ff:ff:ff:ff:ff ff:ff:ff:ff:ff:ff
+                            etype 0x8863
+                        exit
+                    exit
+                    entry 766 create
+                        action accept
+                        description "0x8863/PPPoE Discovery/----/Multicast"
+                        match frame-type ethernet_II
+                            dst-mac 01:00:5e:00:00:00 ff:ff:ff:80:00:00
+                            etype 0x8863
+                        exit
+                    exit
+                    entry 799 create
+                        action accept
+                        description "0x8863/PPPoE Discovery/PADR/Others"
+                        match frame-type ethernet_II
+                            etype 0x8863
+                        exit
+                    exit
+                    entry 833 create
+                        action accept
+                        description "0x8864/PPPoE Session/Broadcast"
+                        match frame-type ethernet_II
+                            dst-mac ff:ff:ff:ff:ff:ff ff:ff:ff:ff:ff:ff
+                            etype 0x8864
+                        exit
+                    exit
+                    entry 866 create
+                        action accept
+                        description "0x8864/PPPoE Session/Multicast"
+                        match frame-type ethernet_II
+                            dst-mac 01:00:5e:00:00:00 ff:ff:ff:80:00:00
+                            etype 0x8864
+                        exit
+                    exit
+                    entry 899 create
+                        action accept
+                        description "0x8864/PPPoE Session/Others"
+                        match frame-type ethernet_II
+                            etype 0x8864
+                        exit
+                    exit
+                    entry 933 create
+                        action accept
+                        description "Others/Others/Broadcast"
+                        match frame-type ethernet_II
+                            dst-mac ff:ff:ff:ff:ff:ff ff:ff:ff:ff:ff:ff
+                        exit
+                    exit
+                    entry 966 create
+                        action accept
+                        description "Others/Others/Multicast"
+                        match frame-type ethernet_II
+                            dst-mac 01:00:5e:00:00:00 ff:ff:ff:80:00:00
+                        exit
+                    exit
+                    entry 999 create
+                        action accept
+                        description "Others/Others/Others"
+                        match frame-type ethernet_II
+                        exit
+                    exit
+                    no shutdown
+                exit
+            exit
+        exit
+    exit
+#--------------------------------------------------
+echo "QoS Policy Configuration"
+#--------------------------------------------------
+    qos
+        network-queue "nqNetwork" create
+            description "Network Egress Queue"
+            queue 1 create
+                rate 100 cir 20
+                mbs 100
+                cbs 20
+                high-prio-only 10
+            exit
+            queue 2 best-effort create
+                rate 100 cir 50
+                cbs 50
+                high-prio-only 10
+            exit
+            queue 3 expedite create
+                rate 100 cir 30
+                cbs 30
+                high-prio-only 10
+            exit
+            queue 9 multipoint create
+                mbs 50
+                high-prio-only 10
+            exit
+            queue 11 multipoint best-effort create
+                cbs 20
+                high-prio-only 10
+            exit
+            queue 12 multipoint best-effort create
+                rate 100 cir 50
+                cbs 50
+                high-prio-only 10
+            exit
+            queue 13 multipoint expedite create
+                rate 100 cir 30
+                cbs 30
+                high-prio-only 10
+            exit
+            fc be create
+                multicast-queue 11
+                queue 1
+                egress-hsmda
+                    queue 1
+                exit
+            exit
+            fc ef create
+                multicast-queue 12
+                queue 2
+                egress-hsmda
+                    queue 6
+                exit
+            exit
+            fc h2 create
+                multicast-queue 13
+                queue 3
+                egress-hsmda
+                    queue 5
+                exit
+            exit
+        exit
+        slope-policy "spDrop" create
+            high-slope
+                start-avg 80
+                max-avg 95
+                max-prob 10
+                no shutdown
+            exit
+            low-slope
+                start-avg 30
+                max-avg 95
+                max-prob 20
+                no shutdown
+            exit
+        exit
+    exit
+#--------------------------------------------------
+echo "Card Configuration"
+#--------------------------------------------------
+    card 2
+        card-type iom3-xp
+        mda 1
+            mda-type m2-10gb-xp-xfp
+            no shutdown
+        exit
+        mda 2
+            mda-type m2-10gb-xp-xfp
+            no shutdown
+        exit
+        no shutdown
+    exit
+    card 3
+        card-type iom2-20g
+        mda 1
+            mda-type m10-1gb-sfp-b
+            no shutdown
+        exit
+        no shutdown
+    exit
+    card 4
+        card-type iom3-xp
+        mda 1
+            mda-type m2-10gb-xp-xfp
+            no shutdown
+        exit
+        mda 2
+            mda-type m2-10gb-xp-xfp
+            no shutdown
+        exit
+        no shutdown
+    exit
+    card 5
+        card-type iom2-20g
+        mda 1
+            mda-type m10-1gb-sfp
+            no shutdown
+        exit
+        mda 2
+            mda-type m2-oc48-sfp
+            no shutdown
+        exit
+        no shutdown
+    exit
+    card 6
+        card-type iom2-20g
+        mda 1
+            mda-type m10-1gb-sfp-b
+            no shutdown
+        exit
+        mda 2
+            mda-type m1-oc192
+            no shutdown
+        exit
+        no shutdown
+    exit
+    card 7
+        card-type iom2-20g
+        mda 1
+            mda-type m1-oc192
+            no shutdown
+        exit
+        mda 2
+            mda-type m10-1gb-xp-sfp
+            no shutdown
+        exit
+        no shutdown
+    exit
+    card 8
+        card-type iom2-20g
+        mda 1
+            mda-type m10-1gb-sfp-b
+            no shutdown
+        exit
+        mda 2
+            mda-type m1-10gb-xfp
+            no shutdown
+        exit
+        no shutdown
+    exit
+    card 9
+        card-type iom2-20g
+        mda 1
+            mda-type m2-oc48-sfp
+            no shutdown
+        exit
+        no shutdown
+    exit
+    card 10
+        card-type iom3-xp
+        mda 1
+            mda-type m2-10gb-xp-xfp
+            no shutdown
+        exit
+        no shutdown
+    exit
+#--------------------------------------------------
+echo "Port Configuration"
+#--------------------------------------------------
+    port 2/1/1
+        description "uT:NB-NB-YSN-CR-1.MAN.NE5000E:(S-64N5846IP)10GE10/1/14"
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            mtu 1614
+            network
+                queue-policy "nqNetwork"
+            exit
+        exit
+        no shutdown
+    exit
+    port 2/1/2
+        description "dT:NB-CX-WS-BAS-1.MAN.E320:(Local)10GE5/0/0"
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            encap-type dot1q
+            mtu 1618
+            network
+                queue-policy "nqNetwork"
+            exit
+        exit
+        no shutdown
+    exit
+    port 2/2/1
+        description "dT:NB-CX-WS-VSW.MAN.S12508:(local)10GE1/3/0/37"
+        ethernet
+            mode access
+            encap-type qinq
+        exit
+        no shutdown
+    exit
+    port 2/2/2
+        description "dT:NB-CX-DS-IDC-9306-1.IDC:()10GE2/0/0"
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            encap-type dot1q
+            network
+                queue-policy "nqNetwork"
+            exit
+        exit
+        no shutdown
+    exit
+    port 3/1/1
+        description "dT:NB-CX-DS-IDC-12508.IDC:(F8888888888)GE2/2/0/46"
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            encap-type dot1q
+            network
+                queue-policy "nqNetwork"
+            exit
+        exit
+        no shutdown
+    exit
+    port 3/1/2
+        shutdown
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            encap-type dot1q
+            mtu 1538
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+    exit
+    port 3/1/3
+        description "dT:NB-CX-WS-ZXR-8908(DK)-1.MAN:(local)GE2/22"
+        ethernet
+            mode access
+            encap-type qinq
+            mtu 1528
+            no autonegotiate
+        exit
+        no shutdown
+    exit
+    port 3/1/4
+        description "dT:NB-CX-WS-ZXR-8908(DK)-1.MAN:(local)GE4/22"
+        ethernet
+            mode access
+            encap-type qinq
+            mtu 1528
+            no autonegotiate
+        exit
+        no shutdown
+    exit
+    port 3/1/5
+        description "dT:NB-CX-CH-DSW-5.MAN.8908(DK):(F1609220035)GE2/22"
+        ethernet
+            mode access
+            encap-type qinq
+            mtu 1528
+            no autonegotiate
+        exit
+        no shutdown
+    exit
+    port 3/1/6
+        description "dT:NB-CX-CH-DSW-5.MAN.8908(DK):(F1609220036)GE4/22"
+        ethernet
+            mode access
+            encap-type qinq
+            mtu 1528
+            no autonegotiate
+        exit
+        no shutdown
+    exit
+    port 3/1/7
+        shutdown
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            encap-type dot1q
+            mtu 1538
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+    exit
+    port 3/1/8
+        shutdown
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            encap-type dot1q
+            mtu 1538
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+    exit
+    port 3/1/9
+        shutdown
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            encap-type dot1q
+            mtu 1538
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+    exit
+    port 3/1/10
+        shutdown
+        description "dT:NB-CX-WS-ERX1400-1.MAN.WT:(Local)GE"
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            encap-type dot1q
+            mtu 1538
+            network
+                queue-policy "nqNetwork"
+            exit
+        exit
+    exit
+    port 4/1/1
+        description "uT:NB-NB-ESN-CR-1.MAN.NE5000E:(F1012080142)10GE1/1/1"
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            xgig wan
+            mtu 1614
+            network
+                queue-policy "nqNetwork"
+            exit
+        exit
+        sonet-sdh
+            path 
+            exit
+        exit
+        no shutdown
+    exit
+    port 4/1/2
+        description "uT:NB-NB-YSN-CR-1.MAN.NE5000E:(F1102240072)10GE1/1/15"
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            xgig wan
+            mtu 1614
+            network
+                queue-policy "nqNetwork"
+            exit
+        exit
+        sonet-sdh
+            path 
+            exit
+        exit
+        no shutdown
+    exit
+    port 4/2/1
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            encap-type dot1q
+            network
+                queue-policy "nqNetwork"
+            exit
+        exit
+        no shutdown
+    exit
+    port 4/2/2
+        shutdown
+        description "dT:NB-CX-WS-BAS-1.MAN.E320:(Local)10GE2/0/0"
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            encap-type dot1q
+            mtu 1618
+            network
+                queue-policy "nqNetwork"
+            exit
+        exit
+    exit
+    port 5/1/1
+        description "dT:NB-CX-DS-IDC-12508.IDC:()GE1/2/0/46"
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            encap-type dot1q
+            network
+                queue-policy "nqNetwork"
+            exit
+        exit
+        no shutdown
+    exit
+    port 5/1/2
+        shutdown
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            mtu 1538
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+    exit
+    port 5/1/3
+        shutdown
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            mtu 1538
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+    exit
+    port 5/1/4
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            encap-type dot1q
+            mtu 1538
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+        no shutdown
+    exit
+    port 5/1/5
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            encap-type dot1q
+            mtu 1538
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+        no shutdown
+    exit
+    port 5/1/6
+        shutdown
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            encap-type dot1q
+            mtu 1538
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+    exit
+    port 5/1/7
+        shutdown
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            encap-type dot1q
+            mtu 1538
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+    exit
+    port 5/1/8
+        shutdown
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            mtu 1538
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+    exit
+    port 5/1/9
+        shutdown
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            mtu 1538
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+    exit
+    port 5/1/10
+        shutdown
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            mtu 1538
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+    exit
+    port 5/2/1
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        sonet-sdh
+            framing sdh
+            path 
+                mtu 4472
+                scramble
+                network
+                    queue-policy "nqNetwork"
+                exit
+                no shutdown
+            exit
+        exit
+        no shutdown
+    exit
+    port 5/2/2
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        sonet-sdh
+            framing sdh
+            path 
+                mtu 4472
+                scramble
+                network
+                    queue-policy "nqNetwork"
+                exit
+                no shutdown
+            exit
+        exit
+        no shutdown
+    exit
+    port 6/1/1
+        description "dT:NB-CX-CH-DSW-4.9306:(F1609070013)GE6/0/18"
+        ethernet
+            mode access
+            encap-type qinq
+            mtu 1528
+            no autonegotiate
+        exit
+        no shutdown
+    exit
+    port 6/1/2
+        description "dT:NB-CX-CH-DSW-4.9306:(F1609070014)GE6/0/19"
+        ethernet
+            mode access
+            encap-type qinq
+            mtu 1528
+            no autonegotiate
+        exit
+        no shutdown
+    exit
+    port 6/1/3
+        shutdown
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            encap-type dot1q
+            mtu 1538
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+    exit
+    port 6/1/4
+        shutdown
+        description "dT:NB-CX-HS-ERX1400-1.MAN:()GE2/0"
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            mtu 1514
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+    exit
+    port 6/1/5
+        shutdown
+        description "dT:NB-CX-HS-ERX1400-1.MAN:()GE3/0"
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            mtu 1514
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+    exit
+    port 6/1/6
+        shutdown
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            encap-type dot1q
+            mtu 1538
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+    exit
+    port 6/1/7
+        shutdown
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            encap-type dot1q
+            mtu 1538
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+    exit
+    port 6/1/8
+        shutdown
+        description "dT:NB-CX-WS-BAS-5.MAN:(Local)GE1/0/0"
+        ethernet
+            mtu 1614
+            no autonegotiate
+        exit
+    exit
+    port 6/1/9
+        shutdown
+        description "dT:NB-CX-WS-BAS-6.MAN:(Local)GE1/0/0"
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            mtu 1614
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+    exit
+    port 6/1/10
+        shutdown
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            encap-type dot1q
+            mtu 1538
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+    exit
+    port 6/2/1
+        shutdown
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        sonet-sdh
+            framing sdh
+            path 
+                mtu 4472
+                scramble
+                network
+                    queue-policy "nqNetwork"
+                exit
+                no shutdown
+            exit
+        exit
+    exit
+    port 7/1/1
+        shutdown
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        sonet-sdh
+            framing sdh
+            path 
+                mtu 4472
+                scramble
+                network
+                    queue-policy "nqNetwork"
+                exit
+                no shutdown
+            exit
+        exit
+    exit
+    port 7/2/1
+        shutdown
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            mtu 1538
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+    exit
+    port 7/2/2
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            mtu 1538
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+        no shutdown
+    exit
+    port 7/2/3
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            mtu 1538
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+        no shutdown
+    exit
+    port 7/2/4
+        shutdown
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            encap-type dot1q
+            mtu 1538
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+    exit
+    port 7/2/5
+        shutdown
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            encap-type dot1q
+            mtu 1538
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+    exit
+    port 7/2/6
+        shutdown
+        ethernet
+        exit
+    exit
+    port 7/2/7
+        shutdown
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            mtu 1614
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+    exit
+    port 7/2/8
+        shutdown
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            encap-type dot1q
+            mtu 1538
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+    exit
+    port 7/2/9
+        shutdown
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            encap-type dot1q
+            mtu 1538
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+    exit
+    port 7/2/10
+        shutdown
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            encap-type dot1q
+            mtu 1538
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+    exit
+    port 8/1/1
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            encap-type dot1q
+            mtu 1538
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+        no shutdown
+    exit
+    port 8/1/2
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            encap-type dot1q
+            mtu 1538
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+        no shutdown
+    exit
+    port 8/1/3
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            encap-type dot1q
+            mtu 1538
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+        no shutdown
+    exit
+    port 8/1/4
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            encap-type dot1q
+            mtu 1538
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+        no shutdown
+    exit
+    port 8/1/5
+        shutdown
+        ethernet
+        exit
+    exit
+    port 8/1/6
+        shutdown
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            mtu 1538
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+    exit
+    port 8/1/7
+        shutdown
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            mtu 1538
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+    exit
+    port 8/1/8
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            mtu 1538
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+        no shutdown
+    exit
+    port 8/1/9
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            mtu 1538
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+        no shutdown
+    exit
+    port 8/1/10
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            mtu 1538
+            network
+                queue-policy "nqNetwork"
+            exit
+            no autonegotiate
+        exit
+        no shutdown
+    exit
+    port 8/2/1
+        description "uT:NB-NB-ESN-CR-1.MAN.NE5000E:(S-64N5848IP)10GE10/1/8"
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            mtu 1614
+            network
+                queue-policy "nqNetwork"
+            exit
+        exit
+        no shutdown
+    exit
+    port 9/1/1
+        sonet-sdh
+            framing sdh
+            path 
+                mtu 4472
+                scramble
+                no shutdown
+            exit
+        exit
+        no shutdown
+    exit
+    port 9/1/2
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        sonet-sdh
+            framing sdh
+            path 
+                mtu 4472
+                scramble
+                network
+                    queue-policy "nqNetwork"
+                exit
+                no shutdown
+            exit
+        exit
+        no shutdown
+    exit
+    port 10/1/1
+        description "dT:NB-CX-DS-IDC-9306-1.IDC:(F8888888888)10GE3/0/2"
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            encap-type dot1q
+            network
+                queue-policy "nqNetwork"
+            exit
+        exit
+        no shutdown
+    exit
+    port 10/1/2
+        shutdown
+        network
+            egress
+                pool 
+                    slope-policy "spDrop"
+                exit
+            exit
+        exit
+        ethernet
+            encap-type dot1q
+            network
+                queue-policy "nqNetwork"
+            exit
+        exit
+    exit
+#--------------------------------------------------
+echo "System Sync-If-Timing Configuration"
+#--------------------------------------------------
+    system
+        sync-if-timing
+            begin
+            commit
+        exit
+    exit
+#--------------------------------------------------
+echo "LAG Configuration"
+#--------------------------------------------------
+    lag 1
+        shutdown
+    exit
+    lag 2
+        shutdown
+    exit
+    lag 110
+        description "dT:NB-CX-WS-VSW-1.12508:BR110"
+        mode access
+        encap-type qinq
+        port 2/2/1 
+        lacp passive administrative-key 32768 
+        no shutdown
+    exit
+    lag 111
+        description "dT:NB-CX-WS-DSW-7.8908(DK):SM3"
+        mode access
+        encap-type qinq
+        port 3/1/3 
+        port 3/1/4 
+        lacp passive administrative-key 32769 
+        no shutdown
+    exit
+    lag 112
+        description "dT:NB-CX-CH-DSW-4.9306:ETH110"
+        mode access
+        encap-type qinq
+        port 6/1/1 
+        port 6/1/2 
+        lacp passive administrative-key 32770 
+        no shutdown
+    exit
+    lag 113
+        description "dT:NB-CX-CH-DSW-7.8908:SM3"
+        mode access
+        encap-type qinq
+        port 3/1/5 
+        port 3/1/6 
+        lacp passive administrative-key 32771 
+        no shutdown
+    exit
+#--------------------------------------------------
+echo "Redundancy Configuration"
+#--------------------------------------------------
+    redundancy 
+        synchronize config
+    exit 
+#--------------------------------------------------
+echo "QoS Policy Configuration"
+#--------------------------------------------------
+    qos
+        sap-ingress 2 create
+            description "2M-For-ingress"
+            queue 1 create
+                rate 2304
+            exit
+            queue 11 multipoint create
+            exit
+        exit
+        sap-ingress 4 create
+            description "4M-For-ingress"
+            queue 1 create
+                rate 4608
+            exit
+            queue 11 multipoint create
+            exit
+        exit
+        sap-ingress 6 create
+            description "6M-For-ingress"
+            queue 1 create
+                rate 6912
+            exit
+            queue 11 multipoint create
+            exit
+        exit
+        sap-ingress 8 create
+            description "8M-For-ingress"
+            queue 1 create
+                rate 9216
+            exit
+            queue 11 multipoint create
+            exit
+        exit
+        sap-ingress 10 create
+            description "10M-For-ingress"
+            queue 1 create
+                rate 14976
+            exit
+            queue 11 multipoint create
+            exit
+        exit
+        sap-ingress 20 create
+            description "20M-For-ingress"
+            queue 1 create
+                rate 29952
+            exit
+            queue 11 multipoint create
+            exit
+        exit
+        sap-ingress 30 create
+            description "30M-For-ingress"
+            queue 1 create
+                rate 44928
+            exit
+            queue 11 multipoint create
+            exit
+        exit
+        sap-ingress 40 create
+            description "40M-For-ingress"
+            queue 1 create
+                rate 59904
+            exit
+            queue 11 multipoint create
+            exit
+        exit
+        sap-ingress 44 create
+            description "For h2 Ingress_Policy "
+            queue 1 create
+            exit
+            queue 11 multipoint create
+            exit
+            fc "h2" create
+                in-remark prec 4
+                out-remark prec 4
+            exit
+            default-fc "h2"
+            default-priority high
+        exit
+        sap-ingress 50 create
+            description "50M-For-ingress"
+            queue 1 create
+                rate 74880
+            exit
+            queue 11 multipoint create
+            exit
+        exit
+        sap-ingress 55 create
+            description "For ef Ingress_Policy "
+            queue 1 create
+            exit
+            queue 11 multipoint create
+            exit
+            fc "ef" create
+                in-remark prec 5
+                out-remark prec 5
+            exit
+            default-fc "ef"
+        exit
+        sap-ingress 60 create
+            description "60M-For-ingress"
+            queue 1 create
+                rate 89856
+            exit
+            queue 11 multipoint create
+            exit
+        exit
+        sap-ingress 100 create
+            description "100M-For-ingress"
+            queue 1 create
+                rate 149760
+            exit
+            queue 11 multipoint create
+            exit
+        exit
+        sap-ingress 200 create
+            description "200M-For-ingress"
+            queue 1 create
+                rate 299520
+            exit
+            queue 11 multipoint create
+            exit
+        exit
+        sap-ingress 20001 create
+            description "1M-For-ingress"
+            queue 1 create
+                rate 1152
+            exit
+            queue 11 multipoint create
+            exit
+        exit
+        sap-ingress 20004 create
+            description "4M-For-ingress"
+            queue 1 create
+                rate 4608
+            exit
+            queue 11 multipoint create
+            exit
+        exit
+        sap-ingress 20006 create
+            description "6M-For-ingress"
+            queue 1 create
+                rate 6912
+            exit
+            queue 11 multipoint create
+            exit
+        exit
+        sap-ingress 20008 create
+            description "8M-For-ingress"
+            queue 1 create
+                rate 9216
+            exit
+            queue 11 multipoint create
+            exit
+        exit
+        sap-ingress 20010 create
+            description "10M-For-ingress"
+            queue 1 create
+                rate 14976
+            exit
+            queue 11 multipoint create
+            exit
+        exit
+        sap-ingress 20020 create
+            description "20M-For-ingress"
+            queue 1 create
+                rate 29952
+            exit
+            queue 11 multipoint create
+            exit
+        exit
+        sap-ingress 20030 create
+            description "30M-For-ingress"
+            queue 1 create
+                rate 44928
+            exit
+            queue 11 multipoint create
+            exit
+        exit
+        sap-ingress 20040 create
+            description "40M-For-ingress"
+            queue 1 create
+                rate 59904
+            exit
+            queue 11 multipoint create
+            exit
+        exit
+        sap-ingress 20050 create
+            description "50M-For-ingress"
+            queue 1 create
+                rate 74880
+            exit
+            queue 11 multipoint create
+            exit
+        exit
+        sap-ingress 20060 create
+            description "60M-For-ingress"
+            queue 1 create
+                rate 89856
+            exit
+            queue 11 multipoint create
+            exit
+        exit
+        sap-ingress 20100 create
+            description "100M-For-ingress"
+            queue 1 create
+                rate 149760
+            exit
+            queue 11 multipoint create
+            exit
+        exit
+        sap-ingress 20200 create
+            description "200M-For-ingress"
+            queue 1 create
+                rate 299520
+            exit
+            queue 11 multipoint create
+            exit
+        exit
+        sap-ingress 20300 create
+            description "300M-For-ingress"
+            queue 1 create
+                rate 449280
+            exit
+            queue 11 multipoint create
+            exit
+        exit
+        sap-ingress 20500 create
+            description "500M-For-ingress"
+            queue 1 create
+                rate 748800
+            exit
+            queue 11 multipoint create
+            exit
+        exit
+        sap-ingress 21000 create
+            description "1000M-For-ingress"
+            queue 1 create
+                rate 1497600
+            exit
+            queue 11 multipoint create
+            exit
+        exit
+        sap-egress 2 create
+            description "2M-For-egress"
+            queue 1 create
+                rate 2304
+            exit
+        exit
+        sap-egress 4 create
+            description "4M-For-egress"
+            queue 1 create
+                rate 4608
+            exit
+        exit
+        sap-egress 6 create
+            description "6M-For-egress"
+            queue 1 create
+                rate 6912
+            exit
+        exit
+        sap-egress 8 create
+            description "8M-For-egress"
+            queue 1 create
+                rate 9216
+            exit
+        exit
+        sap-egress 10 create
+            description "10M-For-egress"
+            queue 1 create
+                rate 14976
+            exit
+        exit
+        sap-egress 20 create
+            description "20M-For-egress"
+            queue 1 create
+                rate 29952
+            exit
+        exit
+        sap-egress 30 create
+            description "30M-For-egress"
+            queue 1 create
+                rate 44928
+            exit
+        exit
+        sap-egress 40 create
+            description "40M-For-egress"
+            queue 1 create
+                rate 59904
+            exit
+        exit
+        sap-egress 50 create
+            description "50M-For-egress"
+            queue 1 create
+                rate 74880
+            exit
+        exit
+        sap-egress 60 create
+            description "60M-For-egress"
+            queue 1 create
+                rate 89856
+            exit
+        exit
+        sap-egress 100 create
+            description "100M-For-egress"
+            queue 1 create
+                rate 149760
+            exit
+        exit
+        sap-egress 200 create
+            description "200M-For-egress"
+            queue 1 create
+                rate 299520
+            exit
+        exit
+        sap-egress 400 create
+            description " SAP EGRESS POLICY "
+            queue 1 create
+                rate 800000 cir 200000
+                cbs 20000
+                mbs 80000 kilobytes
+                high-prio-only 10
+            exit
+            queue 2 best-effort create
+                rate 800000 cir 500000
+                cbs 50000
+                mbs 80000 kilobytes
+                high-prio-only 10
+            exit
+            queue 3 expedite create
+                rate 800000 cir 300000
+                cbs 30000
+                mbs 80000 kilobytes
+                high-prio-only 10
+            exit
+            fc be create
+                queue 1
+            exit 
+            fc ef create
+                queue 2
+            exit 
+            fc h2 create
+                queue 3
+            exit 
+        exit
+        sap-egress 20001 create
+            description "1M-For-egress"
+            queue 1 create
+                rate 1152
+            exit
+        exit
+        sap-egress 20004 create
+            description "4M-For-egress"
+            queue 1 create
+                rate 4608
+            exit
+        exit
+        sap-egress 20006 create
+            description "6M-For-egress"
+            queue 1 create
+                rate 6912
+            exit
+        exit
+        sap-egress 20008 create
+            description "8M-For-egress"
+            queue 1 create
+                rate 9216
+            exit
+        exit
+        sap-egress 20010 create
+            description "10M-For-egress"
+            queue 1 create
+                rate 14976
+            exit
+        exit
+        sap-egress 20020 create
+            description "20M-For-egress"
+            queue 1 create
+                rate 29952
+            exit
+        exit
+        sap-egress 20030 create
+            description "30M-For-egress"
+            queue 1 create
+                rate 44928
+            exit
+        exit
+        sap-egress 20040 create
+            description "40M-For-egress"
+            queue 1 create
+                rate 59904
+            exit
+        exit
+        sap-egress 20050 create
+            description "50M-For-egress"
+            queue 1 create
+                rate 74880
+            exit
+        exit
+        sap-egress 20060 create
+            description "60M-For-egress"
+            queue 1 create
+                rate 89856
+            exit
+        exit
+        sap-egress 20100 create
+            description "100M-For-egress"
+            queue 1 create
+                rate 149760
+            exit
+        exit
+        sap-egress 20200 create
+            description "200M-For-egress"
+            queue 1 create
+                rate 299520
+            exit
+        exit
+        sap-egress 20300 create
+            description "300M-For-egress"
+            queue 1 create
+                rate 449280
+            exit
+        exit
+        sap-egress 20500 create
+            description "500M-For-egress"
+            queue 1 create
+                rate 748800
+            exit
+        exit
+        sap-egress 21000 create
+            description "1000M-For-egress"
+            queue 1 create
+                rate 1497600
+            exit
+        exit
+        network 100 create
+            description "NETWORK QoS POLICY Ingress classification,Egress remarking "
+            ingress
+                default-action fc be profile in
+                dscp be fc be profile out
+                dscp cs1 fc ef profile in
+                dscp cs2 fc ef profile in
+                dscp cs3 fc ef profile in
+                dscp cs4 fc h2 profile in
+                dscp cs5 fc ef profile in
+                dscp nc1 fc h2 profile in
+                dscp nc2 fc ef profile in
+                lsp-exp 0 fc be profile out
+                lsp-exp 1 fc ef profile in
+                lsp-exp 2 fc ef profile in
+                lsp-exp 3 fc ef profile in
+                lsp-exp 4 fc h2 profile in
+                lsp-exp 5 fc ef profile in
+                lsp-exp 6 fc h2 profile in
+                lsp-exp 7 fc ef profile in
+            exit
+            egress
+                remarking
+                fc ef
+                    dscp-in-profile cs5
+                    dscp-out-profile cs5
+                exit
+                fc h2
+                    dscp-in-profile cs4
+                    dscp-out-profile cs4
+                exit
+            exit
+        exit
+        network 200 create
+            description "Network QoS policy ingress need mark "
+            ingress
+                default-action fc ef profile in
+            exit
+            egress
+            exit
+        exit
+    exit
+#--------------------------------------------------
+echo "Filter Configuration"
+#--------------------------------------------------
+    filter 
+        ip-filter 101 create
+            default-action forward
+            entry 1 create
+                match protocol udp
+                    dst-port eq 135
+                exit 
+                action
+                    drop
+                exit
+            exit 
+            entry 2 create
+                match protocol udp
+                    dst-port eq 136
+                exit 
+                action
+                    drop
+                exit
+            exit 
+            entry 3 create
+                match protocol udp
+                    dst-port eq 137
+                exit 
+                action
+                    drop
+                exit
+            exit 
+            entry 4 create
+                match protocol udp
+                    dst-port eq 138
+                exit 
+                action
+                    drop
+                exit
+            exit 
+            entry 5 create
+                match protocol udp
+                    dst-port eq 139
+                exit 
+                action
+                    drop
+                exit
+            exit 
+            entry 6 create
+                match protocol udp
+                    dst-port eq 445
+                exit 
+                action
+                    drop
+                exit
+            exit 
+            entry 7 create
+                match protocol tcp
+                    dst-port eq 445
+                exit 
+                action
+                    drop
+                exit
+            exit 
+            entry 9 create
+                match protocol udp
+                    dst-port eq 1434
+                exit 
+                action
+                    drop
+                exit
+            exit 
+            entry 10 create
+                match protocol udp
+                    dst-port eq 1027
+                exit 
+                action
+                    drop
+                exit
+            exit 
+            entry 11 create
+                match protocol udp
+                    dst-port eq 1028
+                exit 
+                action
+                    drop
+                exit
+            exit 
+            entry 12 create
+                match protocol tcp
+                    dst-port eq 4444
+                exit 
+                action
+                    drop
+                exit
+            exit 
+            entry 13 create
+                match protocol tcp
+                    dst-port eq 5554
+                exit 
+                action
+                    drop
+                exit
+            exit 
+            entry 202 create
+                match protocol tcp
+                    dst-ip 122.227.191.158/32
+                    dst-port eq 80
+                exit 
+                action
+                    drop
+                exit
+            exit 
+            entry 203 create
+                match protocol tcp
+                    dst-ip 220.189.222.202/32
+                    dst-port eq 80
+                exit 
+                action
+                    drop
+                exit
+            exit 
+            entry 204 create
+                match protocol tcp
+                    dst-ip 60.190.50.78/32
+                    dst-port eq 80
+                exit 
+                action
+                    drop
+                exit
+            exit 
+            entry 205 create
+                match protocol tcp
+                    dst-ip 122.227.135.10/32
+                    dst-port eq 80
+                exit 
+                action
+                    drop
+                exit
+            exit 
+            entry 206 create
+                match protocol tcp
+                    dst-ip 122.227.135.11/32
+                    dst-port eq 80
+                exit 
+                action
+                    drop
+                exit
+            exit 
+            entry 207 create
+                match protocol tcp
+                    dst-ip 122.227.135.8/32
+                    dst-port eq 80
+                exit 
+                action
+                    drop
+                exit
+            exit 
+            entry 208 create
+                match protocol tcp
+                    dst-ip 122.227.135.9/32
+                    dst-port eq 80
+                exit 
+                action
+                    drop
+                exit
+            exit 
+            entry 211 create
+                match protocol tcp
+                    dst-ip 122.227.153.162/32
+                    dst-port eq 80
+                exit 
+                action
+                    drop
+                exit
+            exit 
+            entry 213 create
+                match protocol tcp
+                    dst-ip 218.75.84.218/32
+                    dst-port eq 80
+                exit 
+                action
+                    drop
+                exit
+            exit 
+            entry 214 create
+                match protocol tcp
+                    dst-ip 60.178.87.75/32
+                    dst-port eq 80
+                exit 
+                action
+                    drop
+                exit
+            exit 
+        exit 
+        ip-filter 188 create
+            default-action forward
+            description "Deny-80" 
+            entry 10 create
+                match protocol tcp
+                    dst-port eq 80
+                exit 
+                action
+                    drop
+                exit
+            exit 
+            entry 20 create
+                match protocol tcp
+                    dst-port eq 8080
+                exit 
+                action
+                    drop
+                exit
+            exit 
+        exit 
+        ip-filter 9999 create
+            description "uprf-check filter" 
+            entry 1 create
+                match protocol udp
+                    dst-port eq 135
+                exit 
+                action
+                    drop
+                exit
+            exit 
+            entry 2 create
+                match protocol udp
+                    dst-port eq 136
+                exit 
+                action
+                    drop
+                exit
+            exit 
+            entry 3 create
+                match protocol udp
+                    dst-port eq 137
+                exit 
+                action
+                    drop
+                exit
+            exit 
+            entry 4 create
+                match protocol udp
+                    dst-port eq 138
+                exit 
+                action
+                    drop
+                exit
+            exit 
+            entry 5 create
+                match protocol udp
+                    dst-port eq 139
+                exit 
+                action
+                    drop
+                exit
+            exit 
+            entry 6 create
+                match protocol udp
+                    dst-port eq 445
+                exit 
+                action
+                    drop
+                exit
+            exit 
+            entry 7 create
+                match protocol tcp
+                    dst-port eq 445
+                exit 
+                action
+                    drop
+                exit
+            exit 
+            entry 8 create
+                match protocol udp
+                    dst-port eq 1433
+                exit 
+                action
+                    drop
+                exit
+            exit 
+            entry 9 create
+                match protocol udp
+                    dst-port eq 1434
+                exit 
+                action
+                    drop
+                exit
+            exit 
+            entry 10 create
+                match protocol udp
+                    dst-port eq 1027
+                exit 
+                action
+                    drop
+                exit
+            exit 
+            entry 11 create
+                match protocol udp
+                    dst-port eq 1028
+                exit 
+                action
+                    drop
+                exit
+            exit 
+            entry 12 create
+                match protocol tcp
+                    dst-port eq 4444
+                exit 
+                action
+                    drop
+                exit
+            exit 
+            entry 13 create
+                match protocol tcp
+                    dst-port eq 5554
+                exit 
+                action
+                    drop
+                exit
+            exit 
+            entry 19 create
+                match 
+                    src-ip 115.213.0.0/17
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 20 create
+                match 
+                    src-ip 115.214.0.0/16
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 30 create
+                match 
+                    src-ip 115.215.0.0/16
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 40 create
+                match 
+                    src-ip 115.216.0.0/16
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 50 create
+                match 
+                    src-ip 115.217.0.0/16
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 60 create
+                match 
+                    src-ip 115.220.0.0/16
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 70 create
+                match 
+                    src-ip 115.233.64.0/19
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 80 create
+                match 
+                    src-ip 115.238.128.0/18
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 90 create
+                match 
+                    src-ip 122.225.252.0/22
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 100 create
+                match 
+                    src-ip 122.227.128.0/18
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 110 create
+                match 
+                    src-ip 122.227.192.0/18
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 120 create
+                match 
+                    src-ip 122.244.0.0/16
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 130 create
+                match 
+                    src-ip 122.245.0.0/16
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 140 create
+                match 
+                    src-ip 122.246.0.0/16
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 150 create
+                match 
+                    src-ip 122.247.0.0/16
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 151 create
+                match 
+                    src-ip 123.137.0.0/16
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 160 create
+                match 
+                    src-ip 125.111.0.0/16
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 170 create
+                match 
+                    src-ip 125.114.0.0/16
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 180 create
+                match 
+                    src-ip 125.115.0.0/16
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 190 create
+                match 
+                    src-ip 125.116.0.0/16
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 200 create
+                match 
+                    src-ip 183.132.0.0/16
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 210 create
+                match 
+                    src-ip 183.133.0.0/16
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 220 create
+                match 
+                    src-ip 183.134.0.0/15
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 221 create
+                match 
+                    src-ip 183.136.144.0/20
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 230 create
+                match 
+                    src-ip 202.101.167.0/24
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 240 create
+                match 
+                    src-ip 202.101.183.0/24
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 250 create
+                match 
+                    src-ip 202.101.188.0/23
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 260 create
+                match 
+                    src-ip 202.107.208.0/22
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 270 create
+                match 
+                    src-ip 202.107.212.0/24
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 280 create
+                match 
+                    src-ip 202.107.213.0/24
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 290 create
+                match 
+                    src-ip 202.96.104.0/23
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 300 create
+                match 
+                    src-ip 202.96.112.0/24
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 310 create
+                match 
+                    src-ip 202.96.124.0/24
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 320 create
+                match 
+                    src-ip 218.0.0.0/21
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 330 create
+                match 
+                    src-ip 218.0.112.0/20
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 340 create
+                match 
+                    src-ip 218.0.8.0/21
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 350 create
+                match 
+                    src-ip 218.30.139.0/25
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 360 create
+                match 
+                    src-ip 218.30.139.16/28
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 370 create
+                match 
+                    src-ip 218.30.139.232/30
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 380 create
+                match 
+                    src-ip 218.30.139.236/30
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 390 create
+                match 
+                    src-ip 218.30.139.32/29
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 400 create
+                match 
+                    src-ip 218.30.139.40/29
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 410 create
+                match 
+                    src-ip 218.30.139.48/28
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 420 create
+                match 
+                    src-ip 218.30.139.64/30
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 430 create
+                match 
+                    src-ip 218.30.139.68/30
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 440 create
+                match 
+                    src-ip 218.30.139.72/30
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 450 create
+                match 
+                    src-ip 218.30.139.76/30
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 460 create
+                match 
+                    src-ip 218.30.139.80/30
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 470 create
+                match 
+                    src-ip 218.30.139.88/29
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 480 create
+                match 
+                    src-ip 218.30.139.96/27
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 490 create
+                match 
+                    src-ip 218.71.128.0/21
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 500 create
+                match 
+                    src-ip 218.71.136.0/21
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 510 create
+                match 
+                    src-ip 218.71.144.0/20
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 520 create
+                match 
+                    src-ip 218.71.160.0/19
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 530 create
+                match 
+                    src-ip 218.71.192.0/19
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 540 create
+                match 
+                    src-ip 218.71.224.0/19
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 550 create
+                match 
+                    src-ip 218.74.192.0/18
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 560 create
+                match 
+                    src-ip 218.75.80.0/21
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 570 create
+                match 
+                    src-ip 220.188.128.0/17
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 580 create
+                match 
+                    src-ip 220.189.0.0/18
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 590 create
+                match 
+                    src-ip 220.189.192.0/21
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 600 create
+                match 
+                    src-ip 220.189.216.0/21
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 610 create
+                match 
+                    src-ip 220.191.144.0/23
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 620 create
+                match 
+                    src-ip 220.191.146.0/24
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 630 create
+                match 
+                    src-ip 220.191.168.0/22
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 640 create
+                match 
+                    src-ip 220.191.212.0/22
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 650 create
+                match 
+                    src-ip 60.178.0.0/17
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 660 create
+                match 
+                    src-ip 60.178.128.0/17
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 670 create
+                match 
+                    src-ip 60.179.0.0/16
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 680 create
+                match 
+                    src-ip 60.190.0.0/20
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 690 create
+                match 
+                    src-ip 60.190.16.0/20
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 700 create
+                match 
+                    src-ip 60.190.32.0/19
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 710 create
+                match 
+                    src-ip 61.130.100.0/24
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 720 create
+                match 
+                    src-ip 61.130.102.0/24
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 730 create
+                match 
+                    src-ip 61.130.103.0/24
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 731 create
+                match 
+                    src-ip 61.130.108.0/24
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 740 create
+                match 
+                    src-ip 61.130.112.0/22
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 750 create
+                match 
+                    src-ip 61.130.116.0/25
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 760 create
+                match 
+                    src-ip 61.130.12.0/22
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 770 create
+                match 
+                    src-ip 61.130.136.0/21
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 780 create
+                match 
+                    src-ip 61.130.16.0/22
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 790 create
+                match 
+                    src-ip 61.130.186.0/24
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 800 create
+                match 
+                    src-ip 61.130.187.0/24
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 810 create
+                match 
+                    src-ip 61.130.20.0/23
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 820 create
+                match 
+                    src-ip 61.130.44.0/24
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 830 create
+                match 
+                    src-ip 61.130.80.0/21
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 840 create
+                match 
+                    src-ip 61.130.96.0/20
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 850 create
+                match 
+                    src-ip 61.153.112.0/21
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 860 create
+                match 
+                    src-ip 61.153.140.0/22
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 870 create
+                match 
+                    src-ip 61.153.144.0/22
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 880 create
+                match 
+                    src-ip 61.153.148.0/22
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 890 create
+                match 
+                    src-ip 61.153.152.0/22
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 900 create
+                match 
+                    src-ip 61.153.156.0/23
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 910 create
+                match 
+                    src-ip 61.153.16.0/21
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 920 create
+                match 
+                    src-ip 61.153.80.0/21
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 930 create
+                match 
+                    src-ip 61.153.88.0/22
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 940 create
+                match 
+                    src-ip 61.164.64.0/19
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 950 create
+                match 
+                    src-ip 61.174.16.0/20
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 960 create
+                match 
+                    src-ip 61.174.160.0/20
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 970 create
+                match 
+                    src-ip 61.174.68.0/22
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 980 create
+                match 
+                    src-ip 61.175.0.0/19
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 990 create
+                match 
+                    src-ip 61.175.128.0/22
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 1000 create
+                match 
+                    src-ip 61.175.132.0/22
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 1010 create
+                match 
+                    src-ip 61.175.200.0/23
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 1020 create
+                match 
+                    src-ip 61.175.202.0/23
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 1030 create
+                match 
+                    src-ip 61.175.203.0/24
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 1040 create
+                match 
+                    src-ip 61.175.204.0/23
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 1050 create
+                match 
+                    src-ip 61.175.234.0/23
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 1060 create
+                match 
+                    src-ip 61.175.248.0/22
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 1070 create
+                match 
+                    src-ip 183.136.144.0/20
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 1080 create
+                match 
+                    src-ip 221.136.0.0/16
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 1090 create
+                match 
+                    src-ip 203.175.192.0/18
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 1100 create
+                match 
+                    src-ip 60.55.0.0/16
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 1110 create
+                match 
+                    src-ip 220.191.147.0/24
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 1120 create
+                match 
+                    src-ip 10.176.0.0/12
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 1130 create
+                match 
+                    src-ip 183.136.192.0/20
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 1140 create
+                match 
+                    src-ip 36.22.0.0/18
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 1150 create
+                match 
+                    src-ip 115.231.32.0/19
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 1160 create
+                match 
+                    src-ip 183.136.136.0/24
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 1170 create
+                match 
+                    src-ip 10.160.0.0/12
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 1180 create
+                match 
+                    src-ip 115.231.208.0/20
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 1190 create
+                match 
+                    src-ip 122.225.246.0/23
+                exit 
+                action
+                    forward
+                exit
+            exit 
+            entry 1200 create
+                match 
+                    src-ip 183.131.240.0/20
+                exit 
+                action
+                    forward
+                exit
+            exit 
+        exit 
+    exit 
+#--------------------------------------------------
+echo "Management Router Configuration"
+#--------------------------------------------------
+    router management
+    exit
+
+#--------------------------------------------------
+echo "Router (Network Side) Configuration"
+#--------------------------------------------------
+    router Base
+        interface "ge-3/1/10.51"
+            address 61.175.20.1/30
+            description "dT:NB-CX-WS-ERX1400-1.MAN.WT:(Local)GE"
+            cpu-protection 2
+            port 3/1/10:51
+            qos 100
+            ingress
+                filter ip 9999
+            exit
+            no shutdown
+        exit
+        interface "ge-3/1/10.52"
+            address 61.175.20.5/30
+            description "dT:NB-CX-WS-ERX1400-1.MAN.WT:(Local)GE"
+            cpu-protection 2
+            port 3/1/10:52
+            qos 100
+            ingress
+                filter ip 9999
+            exit
+            no shutdown
+        exit
+        interface "ge-3/1/1:63"
+            address 61.175.18.117/30
+            description "dT:NB-CX-DS-IDC-12508.IDC:()TEN2/2/0/46"
+            cpu-protection 2
+            port 3/1/1:63
+            ingress
+                filter ip 9999
+            exit
+            no shutdown
+        exit
+        interface "ge-5/1/1:62"
+            address 61.175.18.9/30
+            description "dT:NB-CX-DS-IDC-12508.IDC:()TEN1/2/0/46"
+            cpu-protection 2
+            port 5/1/1:62
+            ingress
+                filter ip 9999
+            exit
+            no shutdown
+        exit
+        interface "ge-6/1/4"
+            address 61.153.116.73/30
+            description "dT:NB-CX-HS-ERX1400-1.MAN:()GE2/0"
+            cpu-protection 2
+            port 6/1/4
+            qos 100
+            ingress
+                filter ip 9999
+            exit
+            no shutdown
+        exit
+        interface "ge-6/1/5"
+            address 61.153.116.61/30
+            description "dT:NB-CX-HS-ERX1400-1.MAN:()GE3/0"
+            cpu-protection 2
+            port 6/1/5
+            qos 100
+            ingress
+                filter ip 9999
+            exit
+            no shutdown
+        exit
+        interface "loopback0"
+            address 61.175.0.36/32
+            loopback
+            no shutdown
+        exit
+        interface "system"
+            address 61.175.1.19/32
+            ipv6
+                address 240e:1c:2062:1000::1/128 
+            exit
+            no shutdown
+        exit
+        interface "te-10/1/1:52"
+            address 61.175.18.113/30
+            description "dT:NB-CX-DS-SW-1.IDC.9306:10GE3/0/2.52"
+            cpu-protection 2
+            port 10/1/1:52
+            ingress
+                filter ip 9999
+            exit
+            no shutdown
+        exit
+        interface "te-2/1/1"
+            address 61.175.2.150/30
+            description "uT:NB-NB-YSN-CR-1.MAN.NE5000E:(S-64N5846IP)10GE3/14/2/2"
+            enable-ingress-stats
+            cpu-protection 2
+            port 2/1/1
+            ipv6
+                address 240e:1c:2111:1621::5/127 
+            exit
+            qos 100
+            ingress
+                filter ip 101
+            exit
+            no shutdown
+        exit
+        interface "te-2/1/2:51"
+            address 61.175.20.117/30
+            description "dT:NB-CX-WS-BAS-1.MAN.E320:(Local)10GE5/0/0.51(default)"
+            cpu-protection 2
+            port 2/1/2:51
+            ipv6
+                address 240e:1c:2162:1623::4/127 
+            exit
+            qos 100
+            ingress
+                filter ip 9999
+            exit
+            no shutdown
+        exit
+        interface "te-2/1/2:52"
+            address 61.153.116.201/30
+            description "dT:NB-CX-WS-BAS-1.MAN.E320:(Local)10GE5/0/0.52(gzcx.qy)"
+            cpu-protection 2
+            port 2/1/2:52
+            qos 100
+            ingress
+                filter ip 9999
+            exit
+            no shutdown
+        exit
+        interface "te-2/1/2:54"
+            address 61.175.31.121/30
+            description "dT:NB-CX-WS-BAS-1.MAN.E320:(Local)10GE5/0/0.54(VPN_PE)"
+            cpu-protection 2
+            port 2/1/2:54
+            qos 100
+            ingress
+                filter ip 9999
+            exit
+            no shutdown
+        exit
+        interface "te-2/1/2:55"
+            address 115.233.66.193/30
+            description "dT:NB-CX-WS-BAS-1.MAN.E320:(Local)10GE5/0/0.55(itv)"
+            cpu-protection 2
+            port 2/1/2:55
+            qos 100
+            ingress
+                filter ip 9999
+            exit
+            no shutdown
+        exit
+        interface "te-2/1/2:56"
+            address 10.20.11.109/30
+            description "dT:NB-CX-WS-BAS-1.MAN.E320:()10GE2/0/0.56(tuisong)"
+            port 2/1/2:56
+            no shutdown
+        exit
+        interface "te-2/2/2:50"
+            address 61.175.20.189/30
+            description "dT:NB-CX-DS-SW-1.IDC.9306:10GE2/0/0.50"
+            cpu-protection 2
+            port 2/2/2:50
+            ingress
+                filter ip 9999
+            exit
+            no shutdown
+        exit
+        interface "te-4/1/1"
+            address 115.233.64.106/30
+            description "uT:NB-NB-ESN-CR-1.MAN.NE5000E:()10GE1/3/2/1"
+            enable-ingress-stats
+            cpu-protection 2
+            port 4/1/1
+            ipv6
+                address 240e:1c:2112:1621::5/127 
+            exit
+            qos 100
+            ingress
+                filter ip 101
+            exit
+            no shutdown
+        exit
+        interface "te-4/1/2"
+            address 115.233.65.90/30
+            description "uT:NB-NB-YSN-CR-1.MAN.NE5000E:()10GE1/5/0/4"
+            enable-ingress-stats
+            cpu-protection 2
+            port 4/1/2
+            ipv6
+                address 240e:1c:2111:1621::3/127 
+            exit
+            qos 100
+            ingress
+                filter ip 101
+            exit
+            no shutdown
+        exit
+        interface "te-4/2/2:51"
+            address 61.175.20.229/30
+            description "dT:NB-CX-WS-BAS-1.MAN.E320:(Local)10GE2/0/0.51(default)"
+            cpu-protection 2
+            port 4/2/2:51
+            ipv6
+                address 240e:1c:2162:1623::2/127 
+            exit
+            qos 100
+            ingress
+                filter ip 9999
+            exit
+            no shutdown
+        exit
+        interface "te-4/2/2:52"
+            address 61.153.116.197/30
+            description "dT:NB-CX-WS-BAS-1.MAN.E320:(Local)10GE2/0/0.52(gzcx.gy)"
+            cpu-protection 2
+            port 4/2/2:52
+            qos 100
+            ingress
+                filter ip 9999
+            exit
+            no shutdown
+        exit
+        interface "te-4/2/2:54"
+            address 61.175.31.117/30
+            description "dT:NB-CX-WS-BAS-1.MAN.E320:(Local)10GE2/0/0.54(VPN_PE)"
+            cpu-protection 2
+            port 4/2/2:54
+            qos 100
+            ingress
+                filter ip 9999
+            exit
+            no shutdown
+        exit
+        interface "te-4/2/2:55"
+            address 115.233.66.197/30
+            description "dT:NB-CX-WS-BAS-1.MAN.E320:10GE2/0/0.55(itv)"
+            cpu-protection 2
+            port 4/2/2:55
+            qos 100
+            ingress
+                filter ip 9999
+            exit
+            no shutdown
+        exit
+        interface "te-8/2/1"
+            address 61.175.3.14/30
+            description "uT:NB-NB-ESN-CR-1.MAN.NE5000E:(S-64N5848IP)10GE3/14/2/2"
+            enable-ingress-stats
+            cpu-protection 2
+            port 8/2/1
+            ipv6
+                address 240e:1c:2112:1621::3/127 
+            exit
+            qos 100
+            ingress
+                filter ip 101
+            exit
+            no shutdown
+        exit
+        autonomous-system 64741
+        ecmp 8
+        router-id 61.175.0.36
+#--------------------------------------------------
+echo "Static Route Configuration"
+#--------------------------------------------------
+        static-route 60.178.24.0/21 next-hop 61.175.20.18 tag 100
+        static-route 61.130.21.128/26 next-hop 61.153.116.62 tag 100
+        static-route 61.153.116.14/32 next-hop 61.153.116.62 tag 100
+        static-route 61.153.116.14/32 next-hop 61.153.116.74 tag 100
+        static-route 61.174.168.0/24 next-hop 61.153.116.62 tag 100
+        static-route 61.174.168.0/24 next-hop 61.153.116.74 tag 100
+        static-route 61.174.169.0/24 next-hop 61.153.116.62 tag 100
+        static-route 61.174.169.0/24 next-hop 61.153.116.74 tag 100
+        static-route 61.174.174.0/23 next-hop 61.153.116.62 tag 100
+        static-route 61.174.174.0/23 next-hop 61.153.116.74 tag 100
+        static-route 61.175.0.105/32 next-hop 61.175.20.2 tag 100
+        static-route 61.175.0.117/32 next-hop 61.175.20.18 tag 100
+        static-route 61.175.200.128/25 next-hop 61.153.116.62 tag 100
+        static-route 61.175.200.128/25 next-hop 61.153.116.74 tag 100
+        static-route 115.214.88.0/21 next-hop 61.175.20.18 tag 100
+        static-route 115.214.104.0/21 next-hop 61.175.20.18 tag 100
+        static-route 115.220.8.0/22 next-hop 61.175.20.18 tag 100
+        static-route 115.220.120.0/21 next-hop 61.175.20.18 tag 100
+        static-route 122.245.56.0/21 next-hop 61.175.20.18 tag 100
+        static-route 122.245.168.0/21 next-hop 61.175.20.18 tag 100
+        static-route 123.137.160.0/21 next-hop 61.175.20.2 tag 100
+        static-route 123.137.168.0/22 next-hop 61.175.20.6 tag 100
+        static-route 123.137.172.0/22 next-hop 61.175.20.2 tag 100
+        static-route 183.134.8.0/21 next-hop 61.175.20.18 tag 100
+        static-route 220.188.144.0/21 next-hop 61.175.20.18 tag 100
+        static-route 220.188.232.0/22 next-hop 61.175.20.18 tag 100
+        static-route 220.189.0.0/21 next-hop 61.175.20.18 tag 100
+#--------------------------------------------------
+echo "SGT Mapping Configuration"
+#--------------------------------------------------
+        sgt-qos
+            application bgp dscp nc1
+            application ftp dscp cs5
+            application icmp dscp cs5
+            application igmp dscp cs5
+            application ldp dscp nc1
+            application msdp dscp cs5
+            application ospf dscp nc1
+            application pim dscp cs5
+            application rip dscp nc1
+            application snmp dscp cs5
+            application srrp dscp cs5
+            application ssh dscp nc1
+            application tacplus dscp cs5
+            application telnet dscp nc1
+            application tftp dscp cs5
+            application vrrp dscp cs5
+            application arp dot1p 0
+            application isis dot1p 7
+        exit
+#--------------------------------------------------
+echo "OSPFv2 Configuration"
+#--------------------------------------------------
+        ospf 0 61.175.1.19
+            asbr
+            preference 160
+            area 0.0.0.0
+                interface "system"
+                    interface-type point-to-point
+                    no shutdown
+                exit
+                interface "te-2/1/2:54"
+                    interface-type point-to-point
+                    no shutdown
+                exit
+                interface "te-2/1/2:55"
+                    interface-type point-to-point
+                    no shutdown
+                exit
+                interface "te-2/1/2:52"
+                    interface-type point-to-point
+                    no shutdown
+                exit
+                interface "loopback0"
+                    interface-type point-to-point
+                    no shutdown
+                exit
+                interface "te-4/1/1"
+                    interface-type point-to-point
+                    no shutdown
+                exit
+                interface "te-10/1/1:52"
+                    interface-type point-to-point
+                    no shutdown
+                exit
+                interface "te-4/1/2"
+                    interface-type point-to-point
+                    no shutdown
+                exit
+                interface "te-2/1/1"
+                    interface-type point-to-point
+                    no shutdown
+                exit
+                interface "te-2/1/2:51"
+                    interface-type point-to-point
+                    no shutdown
+                exit
+                interface "ge-3/1/1:63"
+                    interface-type point-to-point
+                    no shutdown
+                exit
+                interface "ge-5/1/1:62"
+                    interface-type point-to-point
+                    no shutdown
+                exit
+                interface "te-8/2/1"
+                    interface-type point-to-point
+                    no shutdown
+                exit
+            exit
+            no shutdown
+        exit
+#--------------------------------------------------
+echo "ISIS Configuration"
+#--------------------------------------------------
+        isis 0
+            level-capability level-2
+            area-id 86.4741.0574
+            lsp-lifetime 65500
+            lsp-refresh-interval 32750
+            overload-on-boot timeout 900
+            ipv6-routing native
+            level 2
+                external-preference 115
+                preference 115
+                wide-metrics-only
+            exit
+            interface "system"
+                level-capability level-2
+                passive
+                no shutdown
+            exit
+            interface "te-2/1/2:54"
+                level-capability level-2
+                interface-type point-to-point
+                level 2
+                    metric 3000
+                exit
+                no shutdown
+            exit
+            interface "te-2/1/2:55"
+                level-capability level-2
+                interface-type point-to-point
+                level 2
+                    metric 3000
+                exit
+                no shutdown
+            exit
+            interface "te-2/1/2:52"
+                level-capability level-2
+                interface-type point-to-point
+                level 2
+                    metric 3000
+                exit
+                no shutdown
+            exit
+            interface "te-2/2/2:50"
+                level-capability level-2
+                interface-type point-to-point
+                level 2
+                    metric 3000
+                exit
+                no shutdown
+            exit
+            interface "loopback0"
+                level-capability level-2
+                passive
+                no shutdown
+            exit
+            interface "te-4/1/1"
+                level-capability level-2
+                interface-type point-to-point
+                level 2
+                    metric 1500
+                exit
+                no shutdown
+            exit
+            interface "te-10/1/1:52"
+                level-capability level-2
+                interface-type point-to-point
+                level 2
+                    metric 3000
+                exit
+                no shutdown
+            exit
+            interface "te-4/1/2"
+                level-capability level-2
+                interface-type point-to-point
+                level 2
+                    metric 1500
+                exit
+                no shutdown
+            exit
+            interface "te-4/2/2:51"
+                level-capability level-2
+                interface-type point-to-point
+                level 2
+                    metric 3000
+                exit
+                no shutdown
+            exit
+            interface "te-2/1/1"
+                level-capability level-2
+                interface-type point-to-point
+                level 2
+                    metric 1500
+                exit
+                no shutdown
+            exit
+            interface "te-4/2/2:55"
+                level-capability level-2
+                interface-type point-to-point
+                level 2
+                    metric 3000
+                exit
+                no shutdown
+            exit
+            interface "te-2/1/2:51"
+                level-capability level-2
+                interface-type point-to-point
+                level 2
+                    metric 3000
+                exit
+                no shutdown
+            exit
+            interface "te-4/2/2:54"
+                level-capability level-2
+                interface-type point-to-point
+                level 2
+                    metric 3000
+                exit
+                no shutdown
+            exit
+            interface "te-4/2/2:52"
+                level-capability level-2
+                interface-type point-to-point
+                level 2
+                    metric 3000
+                exit
+                no shutdown
+            exit
+            interface "ge-3/1/1:63"
+                level-capability level-2
+                interface-type point-to-point
+                level 2
+                    metric 3000
+                exit
+                no shutdown
+            exit
+            interface "ge-5/1/1:62"
+                level-capability level-2
+                interface-type point-to-point
+                level 2
+                    metric 3000
+                exit
+                no shutdown
+            exit
+            interface "te-8/2/1"
+                level-capability level-2
+                interface-type point-to-point
+                level 2
+                    metric 1500
+                exit
+                no shutdown
+            exit
+            no shutdown
+        exit
+#--------------------------------------------------
+echo "PIM Configuration"
+#--------------------------------------------------
+        pim
+            interface "system"
+            exit
+            interface "te-2/1/2:55"
+            exit
+            interface "te-4/1/1"
+            exit
+            interface "te-4/1/2"
+            exit
+            interface "te-2/1/1"
+            exit
+            interface "te-4/2/2:55"
+            exit
+            interface "te-8/2/1"
+            exit
+            rp
+                static
+                    address 122.229.7.137
+                        group-prefix 233.50.200.0/21
+                        group-prefix 233.60.200.0/24
+                    exit
+                exit
+                bsr-candidate
+                    shutdown
+                exit
+                rp-candidate
+                    shutdown
+                exit
+            exit
+            no shutdown
+        exit
+#--------------------------------------------------
+echo "MPLS Configuration"
+#--------------------------------------------------
+        mpls
+            interface "system"
+                no shutdown
+            exit
+            interface "te-2/1/2:54"
+                no shutdown
+            exit
+            interface "te-4/1/1"
+                no shutdown
+            exit
+            interface "te-4/1/2"
+                no shutdown
+            exit
+            interface "te-2/1/1"
+                no shutdown
+            exit
+            interface "te-4/2/2:54"
+                no shutdown
+            exit
+            interface "te-8/2/1"
+                no shutdown
+            exit
+        exit
+#--------------------------------------------------
+echo "RSVP Configuration"
+#--------------------------------------------------
+        rsvp
+            interface "system"
+                no shutdown
+            exit
+            interface "te-2/1/2:54"
+                no shutdown
+            exit
+            interface "te-4/1/1"
+                no shutdown
+            exit
+            interface "te-4/1/2"
+                no shutdown
+            exit
+            interface "te-2/1/1"
+                no shutdown
+            exit
+            interface "te-4/2/2:54"
+                no shutdown
+            exit
+            interface "te-8/2/1"
+                no shutdown
+            exit
+            no shutdown
+        exit
+#--------------------------------------------------
+echo "MPLS LSP Configuration"
+#--------------------------------------------------
+        mpls
+            no shutdown
+        exit
+#--------------------------------------------------
+echo "LDP Configuration"
+#--------------------------------------------------
+        ldp
+            export "rpLDPLabelFilter"
+            import "rpLDPLabelFilter"
+            tunnel-down-damp-time 0
+            interface-parameters
+                interface "te-2/1/2:54" dual-stack
+                    ipv4
+                        fec-type-capability
+                            prefix-ipv6 disable
+                            p2mp-ipv6 disable
+                        exit
+                        no shutdown
+                    exit
+                    no shutdown
+                exit
+                interface "te-4/1/1" dual-stack
+                    ipv4
+                        fec-type-capability
+                            prefix-ipv6 disable
+                            p2mp-ipv6 disable
+                        exit
+                        no shutdown
+                    exit
+                    no shutdown
+                exit
+                interface "te-4/1/2" dual-stack
+                    ipv4
+                        fec-type-capability
+                            prefix-ipv6 disable
+                            p2mp-ipv6 disable
+                        exit
+                        no shutdown
+                    exit
+                    no shutdown
+                exit
+                interface "te-2/1/1" dual-stack
+                    ipv4
+                        fec-type-capability
+                            prefix-ipv6 disable
+                            p2mp-ipv6 disable
+                        exit
+                        no shutdown
+                    exit
+                    no shutdown
+                exit
+                interface "te-4/2/2:54" dual-stack
+                    ipv4
+                        fec-type-capability
+                            prefix-ipv6 disable
+                            p2mp-ipv6 disable
+                        exit
+                        no shutdown
+                    exit
+                    no shutdown
+                exit
+                interface "te-8/2/1" dual-stack
+                    ipv4
+                        fec-type-capability
+                            prefix-ipv6 disable
+                            p2mp-ipv6 disable
+                        exit
+                        no shutdown
+                    exit
+                    no shutdown
+                exit
+            exit
+            targeted-session
+            exit
+            no shutdown
+        exit
+    exit
+
+#--------------------------------------------------
+echo "Service Configuration"
+#--------------------------------------------------
+    service
+        customer 1 create
+            description "Default customer"
+        exit
+        customer 999 create
+            description "IP-VPN"
+        exit
+        vprn 2000005 customer 999 create
+            interface "lag-110:3509.1900" create
+            exit
+            interface "lag-110:3513.1900" create
+            exit
+        exit
+        vprn 2000006 customer 999 create
+            interface "lag-110:3504.1901" create
+            exit
+            interface "lag-112:3541.1901" create
+            exit
+            interface "lag-112:1875.1354" create
+            exit
+        exit
+        ies 121316375 customer 999 create
+        exit
+        ies 1013421434 customer 999 create
+            interface "lag-110:1342.1434" create
+            exit
+        exit
+        ies 1017071322 customer 999 create
+            interface "lag-110:1707.1322" create
+            exit
+        exit
+        ies 1018481000 customer 999 create
+        exit
+        ies 1035121902 customer 999 create
+            interface "lag-110:3512.1902" create
+            exit
+        exit
+        ies 1135231901 customer 999 create
+            interface "lag-111:3523.1901" create
+            exit
+        exit
+        ies 1135231903 customer 999 create
+            interface "lag-111:3523.1903" create
+            exit
+        exit
+        ies 1135231904 customer 999 create
+            interface "lag-111:3523.1904" create
+            exit
+        exit
+        ies 1135231905 customer 999 create
+            interface "lag-111:3523.1905" create
+            exit
+        exit
+        ies 1135231907 customer 999 create
+            interface "lag-111:3523.1907" create
+            exit
+        exit
+        ies 1135231915 customer 999 create
+            interface "lag-111:3523.1915" create
+            exit
+        exit
+        ies 1235281900 customer 999 create
+            interface "lag-112:3528.1900" create
+            exit
+        exit
+        ies 1235351900 customer 999 create
+            interface "lag-112:3535.1900" create
+            exit
+        exit
+        ies 1335451902 customer 999 create
+            interface "lag-113:3545.1902" create
+            exit
+        exit
+        ies 1335451903 customer 999 create
+            interface "lag-113:3545.1903" create
+            exit
+        exit
+        ies 1335461914 customer 999 create
+            interface "lag-113:3546.1914" create
+            exit
+        exit
+        ies 1335461918 customer 999 create
+            interface "lag-113:3546.1918" create
+            exit
+        exit
+        ies 1335461919 customer 999 create
+            interface "lag-113:3546.1919" create
+            exit
+        exit
+        ies 1335461920 customer 999 create
+            interface "lag-113:3546.1920" create
+            exit
+        exit
+        ies 1335461923 customer 999 create
+            interface "lag-113:3546.1923" create
+            exit
+        exit
+        ies 1335461924 customer 999 create
+            interface "lag-113:3546.1924" create
+            exit
+        exit
+        ies 1335461925 customer 999 create
+            interface "lag-113:3546.1925" create
+            exit
+        exit
+        ies 1335471900 customer 999 create
+            interface "lag-113:3547.1900" create
+            exit
+        exit
+        ies 1335471902 customer 999 create
+            interface "lag-113:3547.1902" create
+            exit
+        exit
+        ies 1335471904 customer 999 create
+            interface "lag-113:3547.1904" create
+            exit
+        exit
+        ies 1335481900 customer 999 create
+            interface "lag-113:3548.1900" create
+            exit
+        exit
+        ies 1335481901 customer 999 create
+            interface "lag-113:3548.1901" create
+            exit
+        exit
+        ies 1335481902 customer 999 create
+            interface "lag-113:3548.1902" create
+            exit
+        exit
+        ies 1335481903 customer 999 create
+            interface "lag-113:3548.1903" create
+            exit
+        exit
+        ies 1335481904 customer 999 create
+            interface "lag-113:3548.1904" create
+            exit
+        exit
+        ies 1335481906 customer 999 create
+            interface "lag-113:3548.1906" create
+            exit
+        exit
+        ies 1335481907 customer 999 create
+            interface "lag-113:3548.1907" create
+            exit
+        exit
+        ies 1335481908 customer 999 create
+            interface "lag-113:3548.1908" create
+            exit
+        exit
+        ies 1335481909 customer 999 create
+            interface "lag-113:3548.1909" create
+            exit
+        exit
+        vprn 2000005 customer 999 create
+            description "5741VPN08040450987096"
+            autonomous-system 64741
+            route-distinguisher 4134:647413004
+            auto-bind-tunnel
+                resolution-filter
+                    ldp
+                exit
+                resolution filter
+            exit
+            vrf-target target:4134:647413004
+            interface "lag-110:3509.1900" create
+                description "5741UBD71777746"
+                address 122.227.153.25/30
+                sap lag-110:3509.1900 create
+                    cpu-protection 10 mac-monitoring
+                    ingress
+                        qos 20020 multipoint-shared
+                    exit
+                    egress
+                        qos 20020
+                    exit
+                exit
+            exit
+            interface "lag-110:3513.1900" create
+                description "5741UBD71786657"
+                address 61.164.80.117/30
+                sap lag-110:3513.1900 create
+                    cpu-protection 10 mac-monitoring
+                    ingress
+                        qos 20020 multipoint-shared
+                    exit
+                    egress
+                        qos 20020
+                    exit
+                exit
+            exit
+            no shutdown
+        exit
+        vprn 2000006 customer 999 create
+            description "5740NBVPN-LK0068"
+            autonomous-system 64741
+            route-distinguisher 4134:647413006
+            auto-bind-tunnel
+                resolution-filter
+                    ldp
+                exit
+                resolution filter
+            exit
+            vrf-target target:4134:647413006
+            interface "lag-110:3504.1901" create
+                description "5741UBD72125012"
+                address 10.10.11.197/25
+                sap lag-110:3504.1901 create
+                    cpu-protection 10 mac-monitoring
+                    ingress
+                        qos 20020 multipoint-shared
+                    exit
+                    egress
+                        qos 20020
+                    exit
+                exit
+            exit
+            interface "lag-112:3541.1901" create
+                description "5741UBD72171711"
+                address 10.10.12.121/25
+                sap lag-112:3541.1901 create
+                    cpu-protection 10 mac-monitoring
+                    ingress
+                        qos 20020 multipoint-shared
+                    exit
+                    egress
+                        qos 20020
+                    exit
+                exit
+            exit
+            interface "lag-112:1875.1354" create
+                description "5741UBD72250973"
+                address 10.10.12.129/25
+                sap lag-112:1875.1354 create
+                    cpu-protection 10 mac-monitoring
+                    ingress
+                        qos 20020 multipoint-shared
+                    exit
+                    egress
+                        qos 20020
+                    exit
+                exit
+            exit
+            no shutdown
+        exit
+        ies 121316375 customer 999 create
+            shutdown
+            description "5741UBD70959103"
+        exit
+        ies 1013421434 customer 999 create
+            description "ben"
+            interface "lag-110:1342.1434" create
+                address 61.130.21.245/30
+                sap lag-110:1342.1434 create
+                    cpu-protection 10 mac-monitoring
+                    ingress
+                        filter ip 9999
+                    exit
+                    egress
+                        filter ip 188
+                    exit
+                exit
+                urpf-check
+                    mode loose
+                exit
+            exit
+            no shutdown
+        exit
+        ies 1017071322 customer 999 create
+            description "bd"
+            interface "lag-110:1707.1322" create
+                address 61.130.21.241/30
+                sap lag-110:1707.1322 create
+                    cpu-protection 10 mac-monitoring
+                    ingress
+                        filter ip 9999
+                    exit
+                    egress
+                        filter ip 188
+                    exit
+                exit
+                urpf-check
+                    mode loose
+                exit
+            exit
+            no shutdown
+        exit
+        ies 1018481000 customer 999 create
+            shutdown
+            description "5741UBD70959103"
+        exit
+        ies 1035121902 customer 999 create
+            description "5741UBD71777746"
+            interface "lag-110:3512.1902" create
+                description "5741UBD71777746"
+                address 122.227.153.25/30
+                sap lag-110:3512.1902 create
+                    cpu-protection 10 mac-monitoring
+                    ingress
+                        qos 20020 multipoint-shared
+                        filter ip 9999
+                    exit
+                    egress
+                        qos 20020
+                        filter ip 188
+                    exit
+                exit
+                urpf-check
+                    mode loose
+                exit
+            exit
+            no shutdown
+        exit
+        ies 1135231901 customer 999 create
+            description "5741UBD71810670"
+            interface "lag-111:3523.1901" create
+                description "5741UBD71810670"
+                urpf-check
+                    mode loose
+                exit
+            exit
+            no shutdown
+        exit
+        ies 1135231903 customer 999 create
+            description "5741UBD71851681"
+            interface "lag-111:3523.1903" create
+                description "5741UBD71851681"
+                address 122.227.178.21/30
+                sap lag-111:3523.1903 create
+                    cpu-protection 10 mac-monitoring
+                    ingress
+                        qos 20020 multipoint-shared
+                        filter ip 9999
+                    exit
+                    egress
+                        qos 20020
+                        filter ip 188
+                    exit
+                exit
+                urpf-check
+                    mode loose
+                exit
+            exit
+            no shutdown
+        exit
+        ies 1135231904 customer 999 create
+            description "5741UBD71854108"
+            interface "lag-111:3523.1904" create
+                description "5741UBD71854108"
+                address 122.227.200.173/30
+                sap lag-111:3523.1904 create
+                    cpu-protection 10 mac-monitoring
+                    ingress
+                        qos 20100 multipoint-shared
+                        filter ip 9999
+                    exit
+                    egress
+                        qos 20100
+                        filter ip 188
+                    exit
+                exit
+                urpf-check
+                    mode loose
+                exit
+            exit
+            no shutdown
+        exit
+        ies 1135231905 customer 999 create
+            description "5741UBD71931956"
+            interface "lag-111:3523.1905" create
+                description "5741UBD71931956"
+                address 61.164.88.49/30
+                secondary 183.131.252.133/30
+                sap lag-111:3523.1905 create
+                    cpu-protection 10 mac-monitoring
+                    ingress
+                        qos 20020 multipoint-shared
+                        filter ip 9999
+                    exit
+                    egress
+                        qos 20020
+                        filter ip 188
+                    exit
+                exit
+                urpf-check
+                    mode loose
+                exit
+            exit
+            no shutdown
+        exit
+        ies 1135231907 customer 999 create
+            description "5741UBD71980402"
+            interface "lag-111:3523.1907" create
+                description "5741UBD71980402"
+                address 183.136.146.81/30
+                sap lag-111:3523.1907 create
+                    cpu-protection 10 mac-monitoring
+                    ingress
+                        qos 20050 multipoint-shared
+                        filter ip 9999
+                    exit
+                    egress
+                        qos 20050
+                        filter ip 188
+                    exit
+                exit
+                urpf-check
+                    mode loose
+                exit
+            exit
+            no shutdown
+        exit
+        ies 1135231915 customer 999 create
+            description "5741UBD72189779"
+            interface "lag-111:3523.1915" create
+                description "5741UBD72189779"
+                address 183.134.248.25/30
+                sap lag-111:3523.1915 create
+                    cpu-protection 10 mac-monitoring
+                    ingress
+                        qos 20020 multipoint-shared
+                        filter ip 9999
+                    exit
+                    egress
+                        qos 20020
+                        filter ip 188
+                    exit
+                exit
+                urpf-check
+                    mode loose
+                exit
+            exit
+            no shutdown
+        exit
+        ies 1235281900 customer 999 create
+            description "5741UBD72042975"
+            interface "lag-112:3528.1900" create
+                description "5741UBD72042975"
+                address 183.136.146.109/30
+                sap lag-112:3528.1900 create
+                    cpu-protection 10 mac-monitoring
+                    ingress
+                        qos 20020 multipoint-shared
+                        filter ip 9999
+                    exit
+                    egress
+                        qos 20020
+                        filter ip 188
+                    exit
+                exit
+                urpf-check
+                    mode loose
+                exit
+            exit
+            no shutdown
+        exit
+        ies 1235351900 customer 999 create
+            description "5741UBD71848136"
+            interface "lag-112:3535.1900" create
+                description "5741UBD71848136"
+                address 122.227.191.5/30
+                sap lag-112:3535.1900 create
+                    cpu-protection 10 mac-monitoring
+                    ingress
+                        qos 20100 multipoint-shared
+                        filter ip 9999
+                    exit
+                    egress
+                        qos 20100
+                        filter ip 188
+                    exit
+                exit
+                urpf-check
+                    mode loose
+                exit
+            exit
+            no shutdown
+        exit
+        ies 1335451902 customer 999 create
+            description "5741UBD71866140"
+            interface "lag-113:3545.1902" create
+                description "5741UBD71866140"
+                address 183.136.146.89/29
+                sap lag-113:3545.1902 create
+                    cpu-protection 10 mac-monitoring
+                    ingress
+                        qos 20100 multipoint-shared
+                        filter ip 9999
+                    exit
+                    egress
+                        qos 20100
+                    exit
+                exit
+                urpf-check
+                    mode loose
+                exit
+            exit
+            no shutdown
+        exit
+        ies 1335451903 customer 999 create
+            description "5741UBD72007186"
+            interface "lag-113:3545.1903" create
+                description "5741UBD72007186"
+                address 183.136.146.169/29
+                sap lag-113:3545.1903 create
+                    cpu-protection 10 mac-monitoring
+                    ingress
+                        qos 20050 multipoint-shared
+                        filter ip 9999
+                    exit
+                    egress
+                        qos 20050
+                    exit
+                exit
+                urpf-check
+                    mode loose
+                exit
+            exit
+            no shutdown
+        exit
+        ies 1335461914 customer 999 create
+            description "5741UBD71822469"
+            interface "lag-113:3546.1914" create
+                description "5741UBD71822469"
+                address 61.174.23.181/30
+                sap lag-113:3546.1914 create
+                    cpu-protection 10 mac-monitoring
+                    ingress
+                        qos 20100 multipoint-shared
+                        filter ip 9999
+                    exit
+                    egress
+                        qos 20100
+                        filter ip 188
+                    exit
+                exit
+                urpf-check
+                    mode loose
+                exit
+            exit
+            no shutdown
+        exit
+        ies 1335461918 customer 999 create
+            description "5741UBD71860590"
+            interface "lag-113:3546.1918" create
+                description "5741UBD71860590"
+                address 60.190.3.81/30
+                sap lag-113:3546.1918 create
+                    cpu-protection 10 mac-monitoring
+                    ingress
+                        qos 20020 multipoint-shared
+                        filter ip 9999
+                    exit
+                    egress
+                        qos 20020
+                        filter ip 188
+                    exit
+                exit
+                urpf-check
+                    mode loose
+                exit
+            exit
+            no shutdown
+        exit
+        ies 1335461919 customer 999 create
+            description "5740DG3000513"
+            interface "lag-113:3546.1919" create
+                description "5740DG3000513"
+                sap lag-113:3546.1919 create
+                    cpu-protection 10 mac-monitoring
+                    ingress
+                        qos 20200 multipoint-shared
+                        filter ip 9999
+                    exit
+                    egress
+                        qos 20200
+                        filter ip 188
+                    exit
+                exit
+                urpf-check
+                    mode loose
+                exit
+            exit
+            no shutdown
+        exit
+        ies 1335461920 customer 999 create
+            description "5741UBD72004326"
+            interface "lag-113:3546.1920" create
+                description "5741UBD72004326"
+                address 183.136.146.113/30
+                sap lag-113:3546.1920 create
+                    cpu-protection 10 mac-monitoring
+                    ingress
+                        qos 20020 multipoint-shared
+                        filter ip 9999
+                    exit
+                    egress
+                        qos 20020
+                        filter ip 188
+                    exit
+                exit
+                urpf-check
+                    mode loose
+                exit
+            exit
+            no shutdown
+        exit
+        ies 1335461923 customer 999 create
+            description "5741UBD72067984"
+            interface "lag-113:3546.1923" create
+                description "5741UBD72067984"
+                address 122.227.211.193/30
+                sap lag-113:3546.1923 create
+                    cpu-protection 10 mac-monitoring
+                    ingress
+                        qos 20020 multipoint-shared
+                        filter ip 9999
+                    exit
+                    egress
+                        qos 20020
+                        filter ip 188
+                    exit
+                exit
+                urpf-check
+                    mode loose
+                exit
+            exit
+            no shutdown
+        exit
+        ies 1335461924 customer 999 create
+            description "5741UBD72096015"
+            interface "lag-113:3546.1924" create
+                description "5741UBD72096015"
+                address 122.227.197.237/30
+                sap lag-113:3546.1924 create
+                    cpu-protection 10 mac-monitoring
+                    ingress
+                        qos 20020 multipoint-shared
+                        filter ip 9999
+                    exit
+                    egress
+                        qos 20020
+                        filter ip 188
+                    exit
+                exit
+                urpf-check
+                    mode loose
+                exit
+            exit
+            no shutdown
+        exit
+        ies 1335461925 customer 999 create
+            description "5741UBD72244392"
+            interface "lag-113:3546.1925" create
+                description "5741UBD72244392"
+                address 122.227.153.229/30
+                sap lag-113:3546.1925 create
+                    cpu-protection 10 mac-monitoring
+                    ingress
+                        qos 20020 multipoint-shared
+                        filter ip 9999
+                    exit
+                    egress
+                        qos 20020
+                        filter ip 188
+                    exit
+                exit
+                urpf-check
+                    mode loose
+                exit
+            exit
+            no shutdown
+        exit
+        ies 1335471900 customer 999 create
+            description "5741UBD15251984"
+            interface "lag-113:3547.1900" create
+                description "5741UBD15251984"
+                sap lag-113:3547.1900 create
+                    cpu-protection 10 mac-monitoring
+                    ingress
+                        qos 20020 multipoint-shared
+                        filter ip 9999
+                    exit
+                    egress
+                        qos 20020
+                        filter ip 188
+                    exit
+                exit
+                urpf-check
+                    mode loose
+                exit
+            exit
+            no shutdown
+        exit
+        ies 1335471902 customer 999 create
+            description "5741UBD71866334"
+            interface "lag-113:3547.1902" create
+                description "5741UBD71866334"
+                address 61.174.23.5/30
+                sap lag-113:3547.1902 create
+                    cpu-protection 10 mac-monitoring
+                    ingress
+                        qos 20100 multipoint-shared
+                        filter ip 9999
+                    exit
+                    egress
+                        qos 20100
+                        filter ip 188
+                    exit
+                exit
+                urpf-check
+                    mode loose
+                exit
+            exit
+            no shutdown
+        exit
+        ies 1335471904 customer 999 create
+            description "5741UBD72142750"
+            interface "lag-113:3547.1904" create
+                description "5741UBD72142750"
+                address 115.238.163.17/30
+                sap lag-113:3547.1904 create
+                    cpu-protection 10 mac-monitoring
+                    ingress
+                        qos 20020 multipoint-shared
+                        filter ip 9999
+                    exit
+                    egress
+                        qos 20020
+                        filter ip 188
+                    exit
+                exit
+                urpf-check
+                    mode loose
+                exit
+            exit
+            no shutdown
+        exit
+        ies 1335481900 customer 999 create
+            description "5741UBD71896677"
+            interface "lag-113:3548.1900" create
+                description "5741UBD71896677"
+                address 60.190.18.245/30
+                sap lag-113:3548.1900 create
+                    cpu-protection 10 mac-monitoring
+                    ingress
+                        qos 20020 multipoint-shared
+                        filter ip 9999
+                    exit
+                    egress
+                        qos 20020
+                        filter ip 188
+                    exit
+                exit
+                urpf-check
+                    mode loose
+                exit
+            exit
+            no shutdown
+        exit
+        ies 1335481901 customer 999 create
+            description "5741UBD71919607"
+            interface "lag-113:3548.1901" create
+                description "5741UBD71919607"
+                address 61.164.89.233/30
+                sap lag-113:3548.1901 create
+                    cpu-protection 10 mac-monitoring
+                    ingress
+                        qos 20100 multipoint-shared
+                        filter ip 9999
+                    exit
+                    egress
+                        qos 20100
+                        filter ip 188
+                    exit
+                exit
+                urpf-check
+                    mode loose
+                exit
+            exit
+            no shutdown
+        exit
+        ies 1335481902 customer 999 create
+            description "5741UBD72016891"
+            interface "lag-113:3548.1902" create
+                description "5741UBD72016891"
+                address 183.136.146.177/29
+                sap lag-113:3548.1902 create
+                    cpu-protection 10 mac-monitoring
+                    ingress
+                        qos 20100 multipoint-shared
+                        filter ip 9999
+                    exit
+                    egress
+                        qos 20100
+                        filter ip 188
+                    exit
+                exit
+                urpf-check
+                    mode loose
+                exit
+            exit
+            no shutdown
+        exit
+        ies 1335481903 customer 999 create
+            description "5741UBD72104991"
+            interface "lag-113:3548.1903" create
+                description "5741UBD72104991"
+                address 61.164.80.1/30
+                sap lag-113:3548.1903 create
+                    cpu-protection 10 mac-monitoring
+                    ingress
+                        qos 20020 multipoint-shared
+                        filter ip 9999
+                    exit
+                    egress
+                        qos 20020
+                        filter ip 188
+                    exit
+                exit
+                urpf-check
+                    mode loose
+                exit
+            exit
+            no shutdown
+        exit
+        ies 1335481904 customer 999 create
+            description "5741UBD72159290"
+            interface "lag-113:3548.1904" create
+                description "5741UBD72159290"
+                address 115.231.54.157/30
+                sap lag-113:3548.1904 create
+                    cpu-protection 10 mac-monitoring
+                    ingress
+                        qos 20050 multipoint-shared
+                        filter ip 9999
+                    exit
+                    egress
+                        qos 20050
+                        filter ip 188
+                    exit
+                exit
+                urpf-check
+                    mode loose
+                exit
+            exit
+            no shutdown
+        exit
+        ies 1335481906 customer 999 create
+            description "5741UBD72178491"
+            interface "lag-113:3548.1906" create
+                description "5741UBD72178491"
+                address 183.134.248.21/30
+                sap lag-113:3548.1906 create
+                    cpu-protection 10 mac-monitoring
+                    ingress
+                        qos 20020 multipoint-shared
+                        filter ip 9999
+                    exit
+                    egress
+                        qos 20020
+                        filter ip 188
+                    exit
+                exit
+                urpf-check
+                    mode loose
+                exit
+            exit
+            no shutdown
+        exit
+        ies 1335481907 customer 999 create
+            description "5741UBD72195887"
+            interface "lag-113:3548.1907" create
+                description "5741UBD72195887"
+                address 183.134.248.17/30
+                sap lag-113:3548.1907 create
+                    cpu-protection 10 mac-monitoring
+                    ingress
+                        qos 20020 multipoint-shared
+                        filter ip 9999
+                    exit
+                    egress
+                        qos 20020
+                        filter ip 188
+                    exit
+                exit
+                urpf-check
+                    mode loose
+                exit
+            exit
+            no shutdown
+        exit
+        ies 1335481908 customer 999 create
+            description "5741UBD72231505"
+            interface "lag-113:3548.1908" create
+                description "5741UBD72231505"
+                address 183.134.248.93/30
+                sap lag-113:3548.1908 create
+                    cpu-protection 10 mac-monitoring
+                    ingress
+                        qos 20100 multipoint-shared
+                        filter ip 9999
+                    exit
+                    egress
+                        qos 20100
+                        filter ip 188
+                    exit
+                exit
+                urpf-check
+                    mode loose
+                exit
+            exit
+            no shutdown
+        exit
+        ies 1335481909 customer 999 create
+            description "5741UBD72291154"
+            interface "lag-113:3548.1909" create
+                description "5741UBD72291154"
+                address 183.134.248.41/30
+                sap lag-113:3548.1909 create
+                    cpu-protection 10 mac-monitoring
+                    ingress
+                        qos 20020 multipoint-shared
+                        filter ip 9999
+                    exit
+                    egress
+                        qos 20020
+                        filter ip 188
+                    exit
+                exit
+                urpf-check
+                    mode loose
+                exit
+            exit
+            no shutdown
+        exit
+    exit
+#--------------------------------------------------
+echo "CPM Filter Router and Svc-id Match Configuration"
+#--------------------------------------------------
+    system
+        security
+            cpm-filter
+                ip-filter
+                    no shutdown
+                    entry 600
+                        match protocol tcp
+                            router Base
+                        exit
+                    exit
+                    entry 601
+                        match protocol tcp
+                            router Base
+                        exit
+                    exit
+                    entry 608
+                        match protocol tcp
+                            router Base
+                        exit
+                    exit
+                    entry 609
+                        match protocol tcp
+                            router Base
+                        exit
+                    exit
+                    entry 1000
+                        match 
+                            router Base
+                        exit
+                    exit
+                exit
+                mac-filter
+                    no shutdown
+                exit
+            exit
+        exit
+    exit
+#--------------------------------------------------
+echo "Router (Service Side) Configuration"
+#--------------------------------------------------
+    router Base
+#--------------------------------------------------
+echo "OSPFv2 Configuration"
+#--------------------------------------------------
+        ospf 0 61.175.1.19
+            no shutdown
+        exit
+#--------------------------------------------------
+echo "ISIS Configuration"
+#--------------------------------------------------
+        isis 0
+            no shutdown
+        exit
+#--------------------------------------------------
+echo "PIM Configuration"
+#--------------------------------------------------
+        pim
+            no shutdown
+        exit
+#--------------------------------------------------
+echo "Policy Configuration"
+#--------------------------------------------------
+        policy-options
+            begin
+            prefix-list "rfc1918"
+                prefix 10.0.0.0/8 exact
+                prefix 10.0.0.0/8 longer
+                prefix 172.16.0.0/12 exact
+                prefix 172.16.0.0/12 longer
+                prefix 192.168.0.0/16 exact
+                prefix 192.168.0.0/16 longer
+            exit
+            prefix-list "plHostRoute"
+                prefix 0.0.0.0/0 prefix-length-range 32-32
+            exit
+            prefix-list "plLinkLocalv6"
+                prefix fe80::/10 exact
+                prefix fec0::/10 exact
+            exit
+            prefix-list "plLoopLocalv6"
+                prefix ::1/128 exact
+            exit
+            prefix-list "plDefaultRoute"
+                prefix 0.0.0.0/0 exact
+            exit
+            prefix-list "plPrivateRoute"
+                prefix 10.0.0.0/8 prefix-length-range 24-32
+                prefix 172.16.0.0/12 exact
+                prefix 172.16.0.0/12 longer
+                prefix 192.168.0.0/16 exact
+                prefix 192.168.0.0/16 longer
+            exit
+            community "cmNBMAN" members "64741:1503" "64741:13022"
+            policy-statement "rpFROMCR_INv6"
+                entry 10
+                    from
+                        protocol bgp
+                        prefix-list "plDefaultRoutev6"
+                    exit
+                    action accept
+                    exit
+                exit
+            exit
+            policy-statement "rpSET_COMM_OUT"
+                entry 10
+                    from
+                        prefix-list "plDefaultRoute"
+                    exit
+                    to
+                        protocol bgp
+                    exit
+                    action reject
+                exit
+                entry 20
+                    from
+                        prefix-list "plPrivateRoute"
+                    exit
+                    to
+                        protocol bgp
+                    exit
+                    action reject
+                exit
+                entry 30
+                    from
+                        protocol direct
+                    exit
+                    to
+                        protocol bgp
+                    exit
+                    action accept
+                        community replace "cmNBMAN"
+                    exit
+                exit
+                entry 40
+                    from
+                        protocol static
+                        tag 100
+                    exit
+                    to
+                        protocol bgp
+                    exit
+                    action accept
+                        community replace "cmNBMAN"
+                        next-hop-self
+                    exit
+                exit
+            exit
+            policy-statement "static-to-ospf"
+                entry 5
+                    from
+                        prefix-list "rfc1918"
+                    exit
+                    action reject
+                exit
+                entry 10
+                    from
+                        protocol static
+                    exit
+                    to
+                        protocol ospf
+                    exit
+                    action accept
+                        type 1
+                    exit
+                exit
+                entry 15
+                    from
+                        protocol direct
+                    exit
+                    to
+                        protocol ospf
+                    exit
+                    action accept
+                    exit
+                exit
+            exit
+            policy-statement "rpStaticToBGPv6"
+                entry 10
+                    from
+                        tag 100
+                    exit
+                    to
+                        protocol bgp
+                    exit
+                    action accept
+                    exit
+                exit
+            exit
+            policy-statement "rpLDPLabelFilter"
+                entry 10
+                    from
+                        prefix-list "plHostRoute"
+                    exit
+                    action accept
+                    exit
+                exit
+            exit
+            policy-statement "rpSET_COMM_OUTv6"
+                entry 10
+                    from
+                        prefix-list "plDefaultRoutev6"
+                    exit
+                    to
+                        protocol bgp
+                    exit
+                    action reject
+                exit
+                entry 20
+                    from
+                        prefix-list "plLoopLocalv6"
+                    exit
+                    to
+                        protocol bgp
+                    exit
+                    action reject
+                exit
+                entry 30
+                    from
+                        prefix-list "plLinkLocalv6"
+                    exit
+                    to
+                        protocol bgp
+                    exit
+                    action reject
+                exit
+            exit
+            commit
+        exit
+#--------------------------------------------------
+echo "BGP Configuration"
+#--------------------------------------------------
+        bgp
+            multipath 8
+            ibgp-multipath
+            local-as 64741
+            router-id 61.175.0.36
+            next-hop-resolution
+                use-bgp-routes
+            exit
+            group "iBGP"
+                family vpn-ipv4
+                type internal
+                peer-as 64741
+                local-address 61.175.1.19
+                neighbor 61.153.112.13
+                exit
+                neighbor 61.175.1.254
+                exit
+            exit
+            group "pgCR"
+                family ipv4
+                keepalive 60
+                hold-time 180
+                type internal
+                preference 200
+                export "rpSET_COMM_OUT" 
+                peer-as 64741
+                local-address 61.175.0.36
+                neighbor 61.175.0.1
+                    description "uT:NB-NB-YSN-CR-1.MAN.NE5000E"
+                    next-hop-self
+                exit
+                neighbor 61.175.0.2
+                    description "uT:NB-NB-ESN-CR-1.MAN.NE5000E"
+                    next-hop-self
+                exit
+            exit
+            group "pgCRv6"
+                family ipv6
+                keepalive 60
+                hold-time 180
+                damping
+                type internal
+                preference 200
+                import "rpFROMCR_INv6" 
+                export "rpStaticToBGPv6" "rpSET_COMM_OUTv6" 
+                graceful-restart
+                    stale-routes-time 10
+                exit
+                local-as 64741
+                peer-as 64741
+                local-address 240e:1c:2062:1000::1
+                neighbor 240e:1c:2011:1000::1
+                    description "uT:NB-NB-YSN-CR-1.MAN.NE5000E"
+                    next-hop-self
+                exit
+                neighbor 240e:1c:2012:1000::1
+                    description "uT:NB-NB-ESN-CR-1.MAN.NE5000E"
+                    next-hop-self
+                exit
+            exit
+            no shutdown
+        exit
+    exit
+
+#--------------------------------------------------
+echo "Source IP Address Configuration"
+#--------------------------------------------------
+    system
+        security
+            source-address
+                application syslog "system"
+            exit
+        exit
+    exit
+#--------------------------------------------------
+echo "System Time NTP Configuration"
+#--------------------------------------------------
+    system
+        time
+            ntp
+            exit
+        exit
+    exit
+
+exit all
+
+# Finished SAT OCT 14 23:00:10 2017 UTC
+A:NB-CX-WS-BR-1.MAN.7750#
+--------------------logout--------------------
+ 
+
+WARING:服务器端已经中断连接!

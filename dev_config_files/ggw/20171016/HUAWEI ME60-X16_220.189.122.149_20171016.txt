@@ -1,0 +1,921 @@
+
+#
+sysname JX-JX-QH-BAS-5.WLAN.ME60
+#
+info-center source default channel 4 log level notification
+info-center loghost source LoopBack0
+info-center loghost 115.239.131.2
+info-center loghost 220.189.120.217
+#
+router id 220.189.122.149
+#
+ user-group pre_wlan
+ user-group pre_iwifi
+ user-group pre_nat444
+ user-group nat444
+ user-group nat444-afterauth
+ slot-warning-threshold 1
+#
+undo nap slave enable
+#
+fan speed auto
+#
+ undo set power input-power
+#
+snmp-agent trap type entity-trap
+#
+ board power-on-delay 20
+#
+slot 1
+ http-reply enable
+#
+slot 2
+ http-reply enable
+#
+diffserv domain default
+diffserv domain 5p3dbas
+diffserv domain 5p3d
+#
+flow-queue default
+#
+service-template template-default0
+service-template template-default1
+service-template template-default2
+service-template template-default3
+service-template template-default4
+#
+qos-profile pppoe_qos_10m
+ car cir 1024 cbs 102400 pbs 16384 green pass yellow pass red discard inbound
+ car cir 11240 cbs 1024000 pbs 16384 green pass yellow pass red discard outbound
+qos-profile pppoe_qos_1500k
+ car cir 1536 cbs 153600 pbs 16384 green pass yellow pass red discard inbound
+ car cir 1536 cbs 153600 pbs 16384 green pass yellow pass red discard outbound
+qos-profile pppoe_qos_512k
+ car cir 512 cbs 51200 pbs 16384 green pass yellow pass red discard inbound
+ car cir 512 cbs 51200 pbs 16384 green pass yellow pass red discard outbound
+qos-profile wlan_qos_4m
+ car cir 1152 cbs 115200 pbs 16384 green pass yellow pass red discard inbound
+ car cir 4454 cbs 445400 pbs 16384 green pass yellow pass red discard outbound
+qos-profile default
+qos-profile default-1
+#
+service-location 1
+ location slot 16 engine 0
+#
+service-instance-group zjdx
+ service-location 1
+#
+nat instance 1
+nat instance nat444 id 1
+ port-range 4096
+ service-instance-group zjdx
+ nat address-group ag_nat444 group-id 1
+   section 0 115.228.20.0 mask 22
+ nat outbound 3901 address-group ag_nat444
+ nat alg ftp
+ nat alg rtsp
+ nat alg pptp
+ nat alg sip
+ nat filter mode full-cone
+#
+ radius-server source interface LoopBack0
+ radius-server dead-count 40 dead-time 5 dead-interval 5
+radius-server group wlan
+ radius-server authentication 220.191.201.18 1812 weight 0
+ radius-server authentication 220.191.201.18 ppp-user-port 1645
+ radius-server authentication 202.101.172.243 1812 weight 0
+ radius-server authentication 202.101.172.243 ppp-user-port 1645
+ radius-server accounting 220.191.201.18 1813 weight 0
+ radius-server accounting 220.191.201.18 ppp-user-port 1646
+ radius-server accounting 202.101.172.243 1813 weight 0
+ radius-server accounting 202.101.172.243 ppp-user-port 1646
+ radius-server shared-key lsxx717
+ radius-server timeout 10
+ radius-server format-attribute nas-port z8o12i12
+ radius-server attribute translate
+ radius-server user-name original
+ radius-server algorithm loading-share
+ radius-attribute disable NAS-Port-Id send
+ radius-attribute disable HW-Domain-Name receive
+ radius-attribute disable HW-Subscriber-QoS-Profile receive
+ radius-attribute disable HW-QOS-Profile-Name receive
+#
+radius-server group iwifi
+ radius-server authentication 122.229.30.49 1812 weight 0
+ radius-server accounting 122.229.30.49 1813 weight 0
+ radius-server shared-key ct10000
+ radius-server user-name original
+#
+#
+#
+#
+hwtacacs-server template zjdx
+ hwtacacs-server authentication 202.96.102.141
+ hwtacacs-server authentication 61.153.176.183 secondary
+ hwtacacs-server authorization 202.96.102.141
+ hwtacacs-server authorization 61.153.176.183 secondary
+ hwtacacs-server accounting 202.96.102.141
+ hwtacacs-server accounting 61.153.176.183 secondary
+ hwtacacs-server source-ip 220.189.122.149
+ hwtacacs-server shared-key cipher %@%@La:d%J]jX6CGN85&Ib~O`XEv%@%@
+ undo hwtacacs-server user-name domain-included
+#
+acl number 2001
+ description For-Telnet-Control
+ rule 10 permit source 61.153.224.26 0
+ rule 15 permit source 61.153.224.30 0
+ rule 20 permit source 125.123.0.161 0
+ rule 25 permit source 202.96.96.87 0
+ rule 30 permit source 122.225.48.130 0
+ rule 35 permit source 61.153.224.0 0.0.0.255
+ rule 40 permit source 202.96.102.0 0.0.1.255
+ rule 45 permit source 220.189.120.208 0.0.0.15
+ rule 50 permit source 202.101.177.32 0.0.0.15
+ rule 55 permit source 122.225.48.128 0.0.0.7
+ rule 100 deny
+ rule 130 permit source 202.96.102.139 0
+ rule 140 permit source 202.96.102.221 0
+#
+acl number 2002
+ rule 80 permit source 202.96.102.139 0
+ rule 90 permit source 202.96.102.221 0
+#
+acl number 3100
+ description For-anti-virus
+ rule 1 permit udp destination-port eq netbios-ssn
+ rule 2 permit udp destination-port eq netbios-ns
+ rule 3 permit udp destination-port eq 593
+ rule 4 permit udp destination-port eq 445
+ rule 5 permit udp destination-port eq 4444
+ rule 6 permit udp destination-port eq 135
+ rule 7 permit tcp destination-port eq 3332
+ rule 8 permit tcp destination-port eq 9996
+ rule 9 permit tcp destination-port eq 4444
+ rule 10 permit tcp destination-port eq 5554
+ rule 11 permit tcp destination-port eq 445
+ rule 12 permit tcp destination-port eq 593
+ rule 13 permit tcp destination-port eq 6669
+ rule 14 permit tcp destination-port range 137 139
+ rule 15 permit tcp destination-port eq 135
+ rule 16 permit tcp destination-port eq 1434
+ rule 17 permit tcp destination-port range 3127 3130
+ rule 18 permit tcp destination-port eq 1025
+ rule 19 permit tcp destination-port eq 42
+ rule 20 permit udp destination-port eq 1068
+ rule 21 permit udp destination-port eq 1434
+ rule 22 permit udp destination-port eq 5554
+ rule 23 permit udp destination-port eq 9996
+ rule 24 permit udp destination-port range 1026 1027
+ rule 25 permit tcp destination-port eq 1068
+#
+acl number 3500
+ description web-server_deny_out
+ rule 5 deny ip destination 122.224.127.0 0.0.0.15
+ rule 10 permit ip
+#
+acl number 3501
+ description web-server_deny_in
+ rule 5 deny ip source 122.224.127.0 0.0.0.15
+ rule 10 permit ip
+#
+acl number 3901
+ rule 10 permit ip source 100.90.0.0 0.0.255.255
+#
+acl number 6096
+ description forawifi_nat
+ rule 5 permit tcp source user-group pre_nat444 destination-port eq www
+ rule 10 permit tcp source user-group pre_nat444 destination-port eq 8080
+ rule 15 permit ip source user-group pre_nat444
+ rule 20 permit tcp source user-group pre_nat444 destination-port eq 8000
+#
+acl number 6097
+ description pre_nat_444
+ rule 5 permit ip source user-group pre_nat444 destination ip-address 122.229.31.17 0
+ rule 10 permit ip source user-group pre_nat444 destination ip-address 202.101.172.35 0
+ rule 15 permit ip source user-group pre_nat444 destination ip-address 202.101.172.47 0
+ rule 30 permit ip source user-group pre_nat444 destination ip-address 220.189.127.107 0
+ rule 35 permit ip source user-group pre_nat444 destination ip-address 220.189.127.108 0
+ rule 40 permit ip source user-group pre_nat444 destination ip-address 220.189.127.106 0
+ rule 45 permit ip source user-group pre_nat444 destination ip-address 115.239.134.129 0
+ rule 50 permit ip source user-group pre_nat444 destination ip-address 115.239.134.67 0
+ rule 55 permit ip source user-group pre_nat444 destination ip-address 202.101.72.46 0
+ rule 60 permit ip source user-group pre_nat444 destination ip-address 122.229.31.0 0.0.0.255
+#
+acl number 6098
+ description awifi_nat_permit
+ rule 5 permit ip source user-group nat444
+#
+acl number 6099
+ description wlanpermit
+ rule 1 permit ip source user-group pre_wlan destination ip-address 61.153.224.189 0
+ rule 5 permit ip source user-group pre_wlan destination ip-address 60.191.115.11 0
+ rule 6 permit ip source user-group pre_wlan destination ip-address 60.191.115.30 0
+ rule 10 permit ip source user-group pre_wlan destination ip-address 220.189.127.107 0
+ rule 14 permit ip source user-group pre_wlan destination ip-address 220.189.127.106 0
+ rule 15 permit ip source user-group pre_wlan destination ip-address 220.189.127.108 0
+ rule 20 permit ip source user-group pre_wlan destination ip-address 122.224.127.0 0.0.0.15
+ rule 25 permit ip source user-group pre_wlan destination ip-address 122.224.110.108 0
+ rule 30 permit ip source user-group pre_wlan destination ip-address 122.224.110.100 0
+ rule 35 permit ip source user-group pre_wlan destination ip-address 60.190.255.30 0
+ rule 40 permit ip source user-group pre_wlan destination ip-address 61.129.122.128 0.0.0.15
+ rule 45 permit ip source user-group pre_wlan destination ip-address 123.127.121.41 0
+ rule 50 permit ip source user-group pre_wlan destination ip-address 219.142.79.192 0
+ rule 55 permit ip source user-group pre_wlan destination ip-address 61.144.34.107 0
+ rule 60 permit ip source user-group pre_wlan destination ip-address 219.142.89.66 0
+ rule 65 permit ip source user-group pre_wlan destination ip-address 218.17.246.185 0
+ rule 70 permit ip source user-group pre_wlan destination ip-address 61.131.3.98 0
+ rule 75 permit ip source user-group pre_wlan destination ip-address 219.142.89.142 0
+ rule 80 permit ip source user-group pre_wlan destination ip-address 222.66.26.201 0
+ rule 85 permit ip source user-group pre_wlan destination ip-address 124.74.240.140 0
+ rule 90 permit ip source user-group pre_wlan destination ip-address 123.127.232.192 0
+ rule 95 permit ip source user-group pre_wlan destination ip-address 211.138.112.238 0
+ rule 100 permit ip source user-group pre_wlan destination ip-address 202.96.118.167 0
+ rule 105 permit ip source user-group pre_wlan destination ip-address 202.108.88.50 0
+ rule 110 permit ip source user-group pre_wlan destination ip-address 219.142.91.0 0.0.0.127
+ rule 115 permit ip source user-group pre_wlan destination ip-address 61.129.61.164 0
+ rule 120 permit ip source user-group pre_wlan destination ip-address 60.191.124.236 0
+ rule 125 permit ip source user-group pre_wlan destination ip-address 218.2.247.64 0.0.0.31
+ rule 130 permit ip source user-group pre_wlan destination ip-address 124.74.244.0 0.0.0.15
+ rule 140 permit ip source user-group pre_wlan destination ip-address 122.224.110.96 0.0.0.31
+ rule 145 permit ip source user-group pre_wlan destination ip-address 202.101.166.240 0.0.0.7
+ rule 150 permit ip source user-group pre_wlan destination ip-address 202.108.144.0 0.0.0.255
+ rule 155 permit ip source user-group pre_wlan destination ip-address 61.130.122.72 0.0.0.7
+ rule 165 permit ip source user-group pre_wlan destination ip-address 218.30.64.0 0.0.0.255
+ rule 170 permit ip source user-group pre_wlan destination ip-address 58.246.81.64 0.0.0.31
+ rule 175 permit ip source user-group pre_wlan destination ip-address 122.224.205.3 0
+ rule 180 permit ip source user-group pre_wlan destination ip-address 212.67.79.45 0
+ rule 185 permit ip source user-group pre_wlan destination ip-address 218.66.47.194 0
+ rule 195 permit ip source user-group pre_wlan destination ip-address 218.30.64.121 0
+ rule 200 permit ip source user-group pre_wlan destination ip-address 124.74.213.12 0
+ rule 205 permit ip source user-group pre_wlan destination ip-address 60.190.202.209 0
+ rule 210 permit ip source user-group pre_wlan destination ip-address 118.85.192.4 0
+ rule 220 permit ip source ip-address 61.153.224.189 0 destination user-group pre_wlan
+ rule 225 permit ip source ip-address 60.191.115.11 0 destination user-group pre_wlan
+ rule 230 permit ip source ip-address 60.191.115.30 0 destination user-group pre_wlan
+ rule 235 permit ip source ip-address 220.189.127.107 0 destination user-group pre_wlan
+ rule 240 permit ip source ip-address 220.189.127.106 0 destination user-group pre_wlan
+ rule 245 permit ip source ip-address 220.189.127.108 0 destination user-group pre_wlan
+ rule 250 permit ip source ip-address 122.224.127.0 0.0.0.15 destination user-group pre_wlan
+ rule 255 permit ip source ip-address 122.224.110.108 0 destination user-group pre_wlan
+ rule 260 permit ip source ip-address 122.224.110.100 0 destination user-group pre_wlan
+ rule 265 permit ip source ip-address 60.190.255.30 0 destination user-group pre_wlan
+ rule 270 permit ip source ip-address 61.129.122.128 0.0.0.15 destination user-group pre_wlan
+ rule 275 permit ip source ip-address 123.127.121.41 0 destination user-group pre_wlan
+ rule 280 permit ip source ip-address 219.142.79.192 0 destination user-group pre_wlan
+ rule 285 permit ip source ip-address 61.144.34.107 0 destination user-group pre_wlan
+ rule 290 permit ip source ip-address 219.142.89.66 0 destination user-group pre_wlan
+ rule 295 permit ip source ip-address 218.17.246.185 0 destination user-group pre_wlan
+ rule 300 permit ip source ip-address 61.131.3.98 0 destination user-group pre_wlan
+ rule 305 permit ip source ip-address 219.142.89.142 0 destination user-group pre_wlan
+ rule 310 permit ip source ip-address 222.66.26.201 0 destination user-group pre_wlan
+ rule 315 permit ip source ip-address 124.74.240.140 0 destination user-group pre_wlan
+ rule 320 permit ip source ip-address 123.127.232.192 0 destination user-group pre_wlan
+ rule 325 permit ip source ip-address 211.138.112.238 0 destination user-group pre_wlan
+ rule 330 permit ip source ip-address 202.96.118.167 0 destination user-group pre_wlan
+ rule 335 permit ip source ip-address 202.108.88.50 0 destination user-group pre_wlan
+ rule 340 permit ip source ip-address 219.142.91.0 0.0.0.127 destination user-group pre_wlan
+ rule 345 permit ip source ip-address 61.129.61.164 0 destination user-group pre_wlan
+ rule 350 permit ip source ip-address 60.191.124.236 0 destination user-group pre_wlan
+ rule 355 permit ip source ip-address 218.2.247.64 0.0.0.31 destination user-group pre_wlan
+ rule 360 permit ip source ip-address 124.74.244.0 0.0.0.15 destination user-group pre_wlan
+ rule 370 permit ip source ip-address 122.224.110.96 0.0.0.31 destination user-group pre_wlan
+ rule 375 permit ip source ip-address 202.101.166.240 0.0.0.7 destination user-group pre_wlan
+ rule 380 permit ip source ip-address 202.108.144.0 0.0.0.255 destination user-group pre_wlan
+ rule 385 permit ip source ip-address 61.130.122.72 0.0.0.7 destination user-group pre_wlan
+ rule 395 permit ip source ip-address 218.30.64.0 0.0.0.255 destination user-group pre_wlan
+ rule 400 permit ip source ip-address 58.246.81.64 0.0.0.31 destination user-group pre_wlan
+ rule 405 permit ip source ip-address 122.224.205.3 0 destination user-group pre_wlan
+ rule 410 permit ip source ip-address 212.67.79.45 0 destination user-group pre_wlan
+ rule 415 permit ip source ip-address 218.66.47.194 0 destination user-group pre_wlan
+ rule 425 permit ip source ip-address 218.30.64.121 0 destination user-group pre_wlan
+ rule 430 permit ip source ip-address 124.74.213.12 0 destination user-group pre_wlan
+ rule 435 permit ip source ip-address 60.190.202.209 0 destination user-group pre_wlan
+ rule 440 permit ip source ip-address 118.85.192.4 0 destination user-group pre_wlan
+ rule 450 permit ip source ip-address 127.0.0.1 0 destination user-group pre_wlan
+ rule 455 permit ip source user-group pre_wlan destination ip-address 127.0.0.1 0
+ rule 460 permit ip source user-group pre_wlan destination ip-address 211.100.35.132 0
+ rule 465 permit ip source ip-address 211.100.35.132 0 destination user-group pre_wlan
+ rule 470 permit ip source user-group pre_wlan destination ip-address 180.166.7.150 0
+ rule 475 permit ip source user-group pre_wlan destination ip-address 61.155.203.41 0
+ rule 480 permit ip source ip-address 180.166.7.150 0 destination user-group pre_wlan
+ rule 485 permit ip source ip-address 61.155.203.41 0 destination user-group pre_wlan
+ rule 490 permit ip source user-group pre_wlan destination ip-address 115.239.138.16 0.0.0.15
+ rule 495 permit ip source ip-address 115.239.138.16 0.0.0.15 destination user-group pre_wlan
+ rule 500 permit ip source user-group pre_wlan destination ip-address 118.85.193.3 0
+ rule 505 permit ip source ip-address 118.85.193.3 0 destination user-group pre_wlan
+ rule 510 permit ip source user-group pre_wlan destination ip-address 118.84.194.129 0
+ rule 515 permit ip source ip-address 118.84.194.129 0 destination user-group pre_wlan
+ rule 520 permit ip source user-group pre_wlan destination ip-address 42.99.16.4 0
+ rule 525 permit ip source ip-address 42.99.16.4 0 destination user-group pre_wlan
+ rule 530 permit ip source user-group pre_wlan destination ip-address 101.95.47.8 0
+ rule 535 permit ip source ip-address 101.95.47.8 0 destination user-group pre_wlan
+ rule 540 permit ip source user-group pre_wlan destination ip-address 118.85.207.65 0
+ rule 545 permit ip source ip-address 118.85.207.65 0 destination user-group pre_wlan
+ rule 550 permit ip source user-group pre_wlan destination ip-address 115.239.134.129 0
+ rule 555 permit ip source ip-address 115.239.134.129 0 destination user-group pre_wlan
+ rule 560 permit ip source user-group pre_wlan destination ip-address 42.99.0.0 0.0.0.255
+ rule 565 permit ip source ip-address 42.99.0.0 0.0.0.255 destination user-group pre_wlan
+ rule 570 permit ip source user-group pre_wlan destination ip-address 122.229.31.16 0
+ rule 575 permit ip source ip-address 122.229.31.16 0 destination user-group pre_wlan
+ rule 580 permit ip source user-group pre_wlan destination ip-address 180.166.195.2 0
+ rule 585 permit ip source ip-address 180.166.195.2 0 destination user-group pre_wlan
+ rule 590 permit ip source user-group pre_wlan destination ip-address 122.229.30.29 0
+ rule 595 permit ip source ip-address 122.229.30.29 0 destination user-group pre_wlan
+ rule 600 permit ip source user-group pre_wlan destination ip-address 183.136.239.5 0
+ rule 605 permit ip source ip-address 183.136.239.5 0 destination user-group pre_wlan
+ rule 615 permit ip source user-group pre_wlan destination ip-address 42.99.16.53 0
+ rule 620 permit ip source ip-address 42.99.16.53 0 destination user-group pre_wlan
+ rule 810 permit ip source user-group pre_iwifi destination ip-address 122.229.30.159 0
+ rule 820 permit ip source user-group pre_iwifi destination ip-address 122.229.30.160 0
+ rule 821 permit ip source ip-address 116.228.151.89 0 destination user-group pre_wlan
+ rule 822 permit ip source user-group pre_wlan destination ip-address 116.228.151.89 0
+ rule 823 permit ip source ip-address 42.99.16.6 0 destination user-group pre_wlan
+ rule 824 permit ip source user-group pre_wlan destination ip-address 42.99.16.6 0
+ rule 825 permit ip source ip-address 42.99.2.4 0 destination user-group pre_wlan
+ rule 826 permit ip source user-group pre_wlan destination ip-address 42.99.2.4 0
+ rule 827 permit ip source ip-address 180.168.41.175 0 destination user-group pre_wlan
+ rule 828 permit ip source user-group pre_wlan destination ip-address 180.168.41.175 0
+ rule 829 permit ip source ip-address 101.95.47.0 0.0.0.31 destination user-group pre_wlan
+ rule 830 permit ip source user-group pre_wlan destination ip-address 101.95.47.0 0.0.0.31
+#
+acl number 6100
+ description forwlan
+ rule 5 permit tcp source user-group pre_wlan destination-port eq www
+ rule 10 permit tcp source user-group pre_wlan destination-port eq 8080
+ rule 15 permit ip source user-group pre_wlan
+#
+acl number 6101
+ rule 5 permit ip destination user-group pre_wlan
+#
+acl number 6102
+ description forawifi_nat
+ rule 5 permit tcp source user-group nat444 destination-port eq www
+ rule 10 permit tcp source user-group nat444 destination-port eq 8080
+ rule 15 permit ip source user-group nat444
+ rule 20 permit tcp source user-group nat444 destination-port eq 8000
+#
+acl number 6120
+ rule 5 permit ip source user-group pre_iwifi destination ip-address 115.239.134.129 0
+ rule 10 permit ip source user-group pre_iwifi destination ip-address 115.239.134.67 0
+ rule 15 permit ip source user-group pre_iwifi destination ip-address 202.101.172.35 0
+ rule 20 permit ip source user-group pre_iwifi destination ip-address 202.101.72.46 0
+ rule 25 permit ip source user-group pre_iwifi destination ip-address 122.229.31.0 0.0.0.255
+ rule 30 permit ip source user-group pre_iwifi destination ip-address 220.189.127.107 0
+ rule 35 permit ip source user-group pre_iwifi destination ip-address 220.189.127.108 0
+ rule 40 permit ip source user-group pre_iwifi destination ip-address 220.189.127.106 0
+#
+acl number 6121
+ rule 5 permit tcp source user-group pre_iwifi destination-port eq www
+ rule 10 permit tcp source user-group pre_iwifi destination-port eq 8080
+ rule 15 permit ip source user-group pre_iwifi
+#
+acl number 9001
+ description For-NAT444
+ rule 5 permit ip source user-group nat444
+#
+traffic classifier tc_awifi_nat operator or
+ if-match acl 6102
+traffic classifier web_deny operator or
+ if-match acl 6101
+traffic classifier iwifi_pre_redirect operator or
+ if-match acl 6121
+traffic classifier anti-virus operator or
+ if-match acl 3100
+traffic classifier wlan_permit operator or
+ if-match acl 6099
+traffic classifier tc_awifi_nat_permit operator or
+ if-match acl 6098
+traffic classifier tc_pre_nat_444_permit operator or
+ if-match acl 6097
+traffic classifier tc_nat444 operator or
+ if-match acl 9001
+traffic classifier iwifi_pre_permit operator or
+ if-match acl 6120
+traffic classifier tc_pre_nat_444_redirect operator or
+ if-match acl 6096
+traffic classifier wlan_deny operator or
+ if-match acl 6100
+#
+traffic behavior tb_nat444
+ nat bind instance nat444
+traffic behavior web_in
+traffic behavior iwifi_redirect
+ http-redirect plus
+traffic behavior wlan_permit
+traffic behavior iwifi_permit
+traffic behavior tb_pre_nat_redirect
+ http-redirect
+traffic behavior wlan_redirect
+ http-redirect plus
+traffic behavior permit
+traffic behavior tb_awifi_nat
+traffic behavior web_out
+ deny
+traffic behavior deny
+ deny
+#
+traffic policy wlan_control
+ share-mode
+ classifier iwifi_pre_permit behavior iwifi_permit
+ classifier iwifi_pre_redirect behavior iwifi_redirect
+ classifier wlan_permit behavior wlan_permit precedence 10
+ classifier tc_awifi_nat_permit behavior tb_nat444 precedence 15
+ classifier wlan_deny behavior wlan_redirect precedence 20
+ classifier tc_nat444 behavior tb_nat444 precedence 24
+ classifier tc_pre_nat_444_permit behavior tb_nat444 precedence 25
+ classifier tc_pre_nat_444_redirect behavior tb_pre_nat_redirect precedence 30
+traffic policy web_out
+ share-mode
+ classifier wlan_permit behavior wlan_permit precedence 10
+ classifier web_deny behavior deny precedence 20
+ classifier tc_awifi_nat behavior tb_awifi_nat precedence 30
+#
+ip pool nat-awifi bas local
+ gateway 100.90.0.1 255.255.0.0
+ section 0 100.90.0.2 100.90.254.254
+ dns-server 220.189.127.107 220.189.127.108
+ lease 0 0 10
+#
+ip pool wlan bas local
+ gateway 115.228.16.1 255.255.252.0
+ section 0 115.228.16.2 115.228.19.254
+ dns-server 220.189.127.107 220.189.127.108
+ lease 0 0 10
+#
+dot1x-template 1
+#
+aaa
+ nas-serial JX-JX-QH-BAS-5.WLAN.ME60
+ http-redirect enable
+ default-user-name include mac-address -
+ default-password simple 51MAC
+ local-user zjnoc password cipher %$%$~K~&$0P#V2{RO"0p.PU7`XJr%$%$
+ local-user zjnoc service-type telnet
+ local-user zjnoc level 3
+ local-user zjnoc state block fail-times 3 interval 5
+ authentication-scheme default0
+ authentication-scheme default1
+ authentication-scheme default
+  authentication-mode local radius
+ authentication-scheme wlan
+  authentication-mode radius none
+ authentication-scheme local
+  authentication-mode local
+ authentication-scheme zjdx
+  authentication-mode local hwtacacs
+  authentication-super hwtacacs super
+ authentication-scheme pre_mac_iwifi
+  authening authen-fail online authen-domain pre_iwifi
+ authentication-scheme pre_nat444
+  authening authen-fail online authen-domain pre_nat444
+ authentication-scheme pre_mac_nat444
+  authening authen-fail online authen-domain pre_nat444
+ #
+ authorization-scheme default
+ authorization-scheme zjdx
+  authorization-mode local hwtacacs
+ #
+ accounting-scheme default0
+ accounting-scheme default1
+ accounting-scheme wlan
+  accounting start-fail online
+ accounting-scheme zjdx
+  accounting-mode hwtacacs
+  accounting start-fail online
+ #
+ domain default0
+ domain default1
+ domain default_admin
+  authentication-scheme zjdx
+  authorization-scheme zjdx
+  accounting-scheme zjdx
+  hwtacacs-server zjdx
+ domain pre_wlan
+  authentication-scheme default0
+  accounting-scheme default0
+  ip-pool wlan
+  qos-profile pppoe_qos_512k inbound
+  qos-profile pppoe_qos_512k outbound
+  user-group pre_wlan
+  idle-cut 10 zero-rate
+  web-server url https://portal.wifi.189.cn/zj
+  web-server url-parameter
+  web-server redirect-key user-location userlocation
+  web-server redirect-key mscg-ip mscgip
+  http-hostcar enable
+ domain wlan
+  authentication-scheme wlan
+  accounting-scheme wlan
+  ip-pool wlan
+  radius-server group wlan
+  qos-profile pppoe_qos_10m inbound
+  qos-profile pppoe_qos_10m outbound
+ domain default
+  authentication-scheme zjdx
+  authorization-scheme zjdx
+  accounting-scheme zjdx
+  hwtacacs-server zjdx
+ domain test
+  authentication-scheme wlan
+  accounting-scheme wlan
+  ip-pool wlan
+  radius-server group wlan
+ domain pre_waln
+ domain free
+  authentication-scheme default0
+  accounting-scheme default0
+  ip-pool wlan
+  qos-profile pppoe_qos_10m inbound
+  qos-profile pppoe_qos_10m outbound
+ domain roamwlan
+  authentication-scheme wlan
+  accounting-scheme wlan
+  ip-pool wlan
+  radius-server group wlan
+  qos-profile pppoe_qos_10m inbound
+  qos-profile pppoe_qos_10m outbound
+ domain pre_iwifi
+  authentication-scheme default0
+  accounting-scheme default0
+  ip-pool nat-awifi
+  user-group pre_iwifi
+  idle-cut 10 zero-rate
+  web-server url http://portal.51iwifi.com:80/aci10/login
+  web-server url-parameter
+  web-server redirect-key user-location nasid
+  web-server redirect-key user-mac-address usermac simple
+  web-server redirect-key mscg-ip wlanacip
+  web-server redirect-key user-ip-address userip
+  web-server redirect-key mscg-name wlanacname
+  http-hostcar enable
+ domain 51iwifi.com
+  authentication-scheme wlan
+  accounting-scheme wlan
+  ip-pool nat-awifi
+  radius-server group iwifi
+ domain pre_mac_iwifi
+  authentication-scheme pre_mac_iwifi
+  accounting-scheme default0
+  ip-pool nat-awifi
+  mac-authentication enable
+  radius-server group iwifi
+  idle-cut 10 zero-rate
+  web-server redirect-key user-mac-address usermac simple
+ domain pre_nat444
+  authentication-scheme default0
+  accounting-scheme default0
+  ip-pool nat-awifi
+  radius-server group iwifi
+  user-group pre_nat444 bind nat instance nat444
+  web-server 122.229.31.17
+  web-server url http://portal.51iwifi.com:80/aci10/login
+  web-server url-parameter
+  web-server redirect-key user-location nasid
+  web-server redirect-key user-mac-address usermac simple
+  web-server redirect-key mscg-ip wlanacip
+  web-server redirect-key user-ip-address userip
+  web-server redirect-key mscg-name wlanacname
+  http-hostcar enable
+ domain pre_mac_nat444
+  authentication-scheme pre_mac_nat444
+  accounting-scheme default0
+  ip-pool nat-awifi
+  mac-authentication enable
+  radius-server group iwifi
+  idle-cut 10 zero-rate
+  web-server redirect-key user-mac-address usermac simple
+ domain nat444
+  authentication-scheme wlan
+  accounting-scheme wlan
+  radius-server group iwifi
+  user-group nat444 bind nat instance nat444
+ #
+ recording-scheme zjdx
+  recording-mode hwtacacs zjdx
+ #
+ system recording-scheme zjdx
+ outbound recording-scheme zjdx
+ cmd recording-scheme zjdx
+ #
+ domain-list s
+#
+multicastbandwidth
+#
+isis 100
+ is-level level-2
+ cost-style wide
+ circuit-cost 100000 level-2
+ network-entity 86.4753.0573.2201.8912.2149.00
+ is-name JX-JX-QH-BAS-5.WLAN.ME60
+ preference 155
+ log-peer-change
+ maximum load-balancing 16
+#
+ntp-service source-interface LoopBack0
+ntp-service unicast-server 125.123.0.1 source-interface LoopBack0 preference
+ntp-service unicast-server 125.123.0.2 source-interface LoopBack0
+#
+interface Aux0/0/1
+ link-protocol ppp
+ undo shutdown
+#
+interface Eth-Trunk1
+ description dT:JX-JX-QH-WLAN-DSW-1.MAN.9303:Eth-Trunk4(GE1/0/8,GE1/0/9)
+#
+interface Eth-Trunk1.1
+ description wlan
+ user-vlan any-other
+ bas
+ #
+  access-type layer2-subscriber default-domain pre-authentication pre_wlan authentication wlan
+  nas-port-type 802.11
+  roam-domain roamwlan
+  dhcp session-mismatch action offline
+  authentication-method web
+ #
+#
+interface Eth-Trunk1.2
+ pppoe-server bind Virtual-Template 1
+ description pppoe wlan
+ user-vlan 62 qinq 1001
+ user-vlan 300 qinq 1001
+ user-vlan 500 qinq 1002
+ bas
+ #
+  access-type layer2-subscriber default-domain pre-authentication pre_wlan authentication wlan
+  nas-port-type 802.11
+  roam-domain roamwlan
+  authentication-method web
+ #
+#
+interface Eth-Trunk1.3
+ pppoe-server bind Virtual-Template 1
+ description pppoe wlan
+ user-vlan 283 qinq 1001
+ bas
+ #
+  access-type layer2-subscriber default-domain pre-authentication pre_wlan authentication test
+  nas-port-type 802.11
+  roam-domain roamwlan
+  authentication-method web
+ #
+#
+interface Eth-Trunk1.4
+ description wlan-free
+ shutdown
+ user-vlan 615
+ bas
+ #
+  access-type layer2-subscriber default-domain authentication free
+  nas-port-type 802.11
+  roam-domain roamwlan
+  authentication-method bind
+ #
+#
+interface Eth-Trunk1.5
+ description iwifi
+ user-vlan 616
+ user-vlan 3984 3985
+ user-vlan 600 3350 qinq 1061 1067
+ user-vlan 600 723 qinq 1068
+ user-vlan 725 799 qinq 1068
+ user-vlan 801 3350 qinq 1068
+ user-vlan 600 3350 qinq 1069 1081
+ bas
+ #
+  access-type layer2-subscriber default-domain pre-authentication pre_nat444 authentication force nat444
+  nas-port-type 802.11
+  roam-domain roamwlan
+  dhcp session-mismatch action offline
+  authentication-method web
+ #
+#
+interface Eth-Trunk1.6
+ description mac_iwifi
+ user-vlan 724 qinq 1068
+ user-vlan 800 qinq 1068
+ bas
+ #
+  access-type layer2-subscriber default-domain pre-authentication pre_mac_nat444 authentication force nat444
+  roam-domain roamwlan
+  dhcp session-mismatch action offline
+  authentication-method web
+  user detect retransmit 3 interval 30
+ #
+#
+interface Virtual-Template0
+ ppp authentication-mode auto
+#
+interface Virtual-Template1
+ ppp authentication-mode pap
+#
+interface GigabitEthernet0/0/0
+ speed auto
+ duplex auto
+ undo shutdown
+ ip address 10.10.10.10 255.255.255.252
+#
+interface GigabitEthernet1/0/0
+ description uT:JX-JX-QH-CR-1.MAN.NE5000E:(local)10GE1/5/1/0
+ undo shutdown
+ ip address 115.233.128.141 255.255.255.254
+ isis enable 100
+ isis circuit-level level-2
+ isis cost 3000 level-2
+ isis small-hello
+#
+interface GigabitEthernet1/1/0
+ negotiation auto
+ description dT:JX-JX-QH-WLAN-DSW-1.MAN.9303:(local)GE1/0/9
+ undo shutdown
+ eth-trunk 1
+#
+interface GigabitEthernet1/1/1
+ undo shutdown
+#
+interface GigabitEthernet1/1/2
+ undo shutdown
+#
+interface GigabitEthernet1/1/3
+ undo shutdown
+#
+interface GigabitEthernet1/1/4
+ undo shutdown
+#
+interface GigabitEthernet1/1/5
+ undo shutdown
+#
+interface GigabitEthernet1/1/6
+ undo shutdown
+#
+interface GigabitEthernet1/1/7
+ undo shutdown
+#
+interface GigabitEthernet1/1/8
+ undo shutdown
+#
+interface GigabitEthernet1/1/9
+ undo shutdown
+#
+interface GigabitEthernet2/0/0
+ description uT:JX-JX-ZS-CR-1.MAN.NE5000E:(local)10GE1/5/2/1
+ undo shutdown
+ ip address 115.233.128.234 255.255.255.252
+ isis enable 100
+ isis circuit-level level-2
+ isis cost 3000 level-2
+ isis small-hello
+#
+interface GigabitEthernet2/1/0
+ negotiation auto
+ description dT:JX-JX-QH-WLAN-DSW-1.MAN.9303:(local)GE1/0/8
+ undo shutdown
+ eth-trunk 1
+#
+interface GigabitEthernet2/1/1
+ negotiation auto
+ undo shutdown
+#
+interface GigabitEthernet2/1/2
+ undo shutdown
+#
+interface GigabitEthernet2/1/3
+ undo shutdown
+#
+interface GigabitEthernet2/1/4
+ undo shutdown
+#
+interface GigabitEthernet2/1/5
+ undo shutdown
+#
+interface GigabitEthernet2/1/6
+ undo shutdown
+#
+interface GigabitEthernet2/1/7
+ undo shutdown
+#
+interface GigabitEthernet2/1/8
+ undo shutdown
+#
+interface GigabitEthernet2/1/9
+ undo shutdown
+#
+interface NULL0
+#
+interface LoopBack0
+ ip address 220.189.122.149 255.255.255.255
+ isis enable 100
+ isis circuit-level level-2
+#
+l2tp-group default-lac
+ tunnel name JX-JX-QH-BAS-5.MAN
+#
+l2tp-group default-lns
+ tunnel name JX-JX-QH-BAS-5.MAN
+#
+bgp 64753
+ group pgCR internal
+ peer pgCR connect-interface LoopBack0
+ peer 125.123.0.1 as-number 64753
+ peer 125.123.0.1 group pgCR
+ peer 125.123.0.1 description JX-JX-ZS-CR-1.MAN.NE5000E
+ peer 125.123.0.2 as-number 64753
+ peer 125.123.0.2 group pgCR
+ peer 125.123.0.2 description To JX-JX-QH-CR-1.MAN.NE5000E
+ #
+ ipv4-family unicast
+  undo synchronization
+  dampening
+  preference 20 200 200
+  import-route static route-policy rpStaticToBGP
+  import-route unr route-policy rpUnrToBGP
+  maximum load-balancing 8
+  peer pgCR enable
+  peer pgCR route-policy rpFROMCR_IN import
+  peer pgCR route-policy rpSET_COMM_OUT export
+  peer 125.123.0.1 enable
+  peer 125.123.0.1 group pgCR
+  peer 125.123.0.2 enable
+  peer 125.123.0.2 group pgCR
+#
+route-policy rpSET_COMM_OUT deny node 10
+ if-match ip-prefix plDefaultRoute
+#
+route-policy rpSET_COMM_OUT deny node 20
+ if-match ip-prefix plPrivateRoute
+#
+route-policy rpSET_COMM_OUT permit node 50
+ if-match ip-prefix plWLAN
+ apply community 64740:13044 64740:1304
+#
+route-policy rpFROMCR_IN permit node 10
+ if-match ip-prefix plDefaultRoute
+#
+route-policy rpStaticToBGP permit node 10
+ if-match tag 100
+#
+route-policy rpUnrToBGP permit node 10
+ if-match ip-prefix plnat444
+#
+ dhcp-decline ip-address-status idle
+#
+ip ip-prefix plDefaultRoute index 10 permit 0.0.0.0 0
+ip ip-prefix plPrivateRoute index 10 permit 10.0.0.0 8
+ip ip-prefix plPrivateRoute index 20 permit 172.16.0.0 12
+ip ip-prefix plPrivateRoute index 30 permit 192.168.0.0 16
+ip ip-prefix plWlan index 20 permit 115.228.16.0 22
+ip ip-prefix plnat444 index 10 permit 115.228.20.0 22
+#
+ip route-static 115.228.16.0 255.255.252.0 NULL0 tag 100
+#
+snmp-agent
+snmp-agent local-engineid 000007DB7FFFFFFF00002B30
+snmp-agent community read cipher %$%$PjqE;Ov>M(:'a76b\AI9`XOwa_N%N"8y\#MSRL#l[y:SXOz`H<zLBIF)SM~-4F;RX=6!O&`X%$%$
+snmp-agent sys-info version all
+snmp-agent trap source LoopBack0
+#
+header login information "WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!"
+#
+ traffic-policy wlan_control inbound
+ traffic-policy web_out outbound
+#
+ web-auth-server source interface LoopBack0
+ web-auth-server listening-port 3288
+ web-auth-server 115.239.138.17 port 50100 key simple huawei
+ web-auth-server 122.224.127.7 port 50100 key simple huawei
+ web-auth-server 122.224.127.8 port 50100 key simple huawei
+ web-auth-server 122.224.127.9 port 50100 key simple huawei
+ web-auth-server 122.224.127.4 port 50100 key simple huawei
+ web-auth-server 122.224.127.13 port 50100 key simple huawei
+ web-auth-server 122.229.31.17 port 50100
+#
+slot 1
+ hostcar cir 32
+#
+slot 2
+ hostcar cir 32
+#
+user-interface maximum-vty 10
+user-interface con 0
+ authentication-mode password
+ set authentication password cipher %@%@'#!J3wDjqM<PgY7yJ{oR]i;}!m-M6Z>O!)igS7/Z(UP#i;#]%@%@
+user-interface aux 0
+user-interface vty 0 4
+ acl 2001 inbound
+ authentication-mode aaa
+ user privilege level 3
+ screen-length 40
+user-interface vty 5 9
+ acl 2001 inbound
+ authentication-mode aaa
+ user privilege level 3
+user-interface vty 16 20
+#
+local-aaa-server
+#
+license
+ active nat session-table size 10 slot 16 engine 0
+ active nat bandwidth-enhance slot 16 engine 0
+#
+return
+<JX-JX-QH-BAS-5.WLAN.ME60>

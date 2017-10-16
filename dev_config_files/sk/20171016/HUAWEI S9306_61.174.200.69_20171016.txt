@@ -1,0 +1,483 @@
+
+!Software Version V200R008C00SPC500
+#
+sysname JH-DY-BJ-DSW-S9306-1.MAN
+#
+info-center source IP channel 3 log level error trap level warning
+info-center loghost source Vlanif49
+info-center loghost 220.188.118.249 facility local3
+#
+vlan batch 2 30 32 to 33 36 44 47 to 49 1044 1301 1311 to 1314 1317 to 1320
+vlan batch 1344 to 1346 1350 to 1351 1353 to 1354 1356 to 1359 1364 to 1367 1382 to 1385 1397 to 1400 1403 1442 1444
+vlan batch 1460 to 1464 1508 1535 1537 1543 1569 1571 to 1578 1601 1663 1711
+vlan batch 1738 1762 1768 to 1770 1778 to 1779 1790 2297 to 2298 2306 2320 2395 2657
+vlan batch 2678 to 2680 2763 2791 2799 2824 2850 3210
+#
+undo authentication unified-mode
+#
+telnet server enable
+telnet ipv6 server enable
+#
+undo http server enable
+#
+undo management-port isolate enable
+undo management-plane isolate enable
+#
+clock timezone UTC add 00:00:00
+#
+diffserv domain default
+#
+radius-server template telnet
+ radius-server shared-key cipher %^%#gH)!8ufPM!wthB$q;5UYVmqa)#QicM+|dWN:K%T7%^%#
+ undo radius-server user-name domain-included
+#
+hwtacacs-server template telnet
+ hwtacacs-server authentication 61.175.255.41
+ hwtacacs-server authorization 61.175.255.41
+ hwtacacs-server accounting 61.175.255.41
+ hwtacacs-server source-ip 172.31.88.141
+ hwtacacs-server shared-key cipher %^%#:o-M<tSvX)xA{[K!/d1%/OnyYmk~<"@/0">et#J:%^%#
+ undo hwtacacs-server user-name domain-included
+#
+drop-profile default
+#
+vlan 2
+ description DSLAM-NetManagement(old)
+vlan 32
+ description DSLAM-NetManagement
+vlan 33
+ description WJ-HuaWei_epon_manage
+vlan 36
+ description WLAN-Manager
+vlan 44
+ description SWITCH-NetManagement
+vlan 48
+ description SWITCH-NetManagement
+vlan 49
+ description switch-management
+vlan 1044
+ description JH-DY-BJ-EPON-0/1(wlan)
+vlan 1301
+ description test
+vlan 1460
+ description DY-BeiJiang-1-UT-DSLAM
+vlan 1461
+ description DY-ShuangPai-2-ACL-DSLAM
+vlan 1462
+ description DY-ZhenGan-MA5600
+vlan 1463
+ description DY-YuanGan-2-UT-DSLAM
+vlan 1768
+ description FTTH
+vlan 1769
+ description FTTH
+vlan 1770
+ description FTTH
+vlan 1790
+ description DYBeiJiang-EPON-0/1
+vlan 2395
+ description fttn-yuyin
+vlan 2680
+ description JH-DY-BJ-EPON-0/1
+vlan 2824
+ description AG_Manger_vlan
+vlan 2850
+ description BingJiangAG_vlan
+#
+aaa
+ authentication-scheme default
+ authentication-scheme telent
+  authentication-mode hwtacacs local
+ authorization-scheme default
+ authorization-scheme telnet
+  authorization-mode  hwtacacs local
+ accounting-scheme default
+ accounting-scheme telnet
+  accounting start-fail online
+ domain default
+ domain default_admin
+  authentication-scheme telent
+  accounting-scheme telnet
+  authorization-scheme telnet
+  hwtacacs-server telnet
+ local-user admin password irreversible-cipher %^%#[W-AI}j%4#..l~//rq5DE(|T7'%sr"M[G<F.PjNJyydz/s6/A#p=crI{-)uH%^%#
+ local-user admin privilege level 3
+ undo local-user admin service-type
+ local-user aaa@huawei.com password cipher %^%#G{UCFQ^D;UAp(=4r1x\PfHTD.5D9O;r<EpFCKVXV%^%#
+ local-user aaa@huawei.com service-type telnet terminal ssh ftp ppp web x25-pad bind 8021x http
+#
+interface Vlanif48
+ description SWITCH-NetManagement
+ ip address 61.174.200.69 255.255.255.224
+#
+interface Vlanif49
+ description switch-management
+ ip address 172.31.88.141 255.255.255.224
+#
+interface Eth-Trunk1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 33 36 44 47 1044 1311 to 1314 1317 to 1320 1344 to 1346 1350 to 1351 1353 to 1354
+ port trunk allow-pass vlan 1601 1663 1711 1738 1762 1768 to 1770 1778 to 1779 1790 2306 2320
+ port trunk allow-pass vlan 2395 2678 to 2680 2799 3210
+ mode lacp
+#
+interface Eth-Trunk2
+ description uT:JH-DY-WJ-DSW-S9306-1.MAN::eth-6
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 2 30 32 to 33 36 44 47 to 49 1044 1301 1311 to 1314 1317 to 1320
+ port trunk allow-pass vlan 1344 to 1346 1350 to 1351 1353 to 1354 1356 to 1359 1364 to 1367 1382 to 1385 1397 to 1400 1403 1442 1444
+ port trunk allow-pass vlan 1460 to 1464 1508 1535 1537 1543 1569 1571 to 1578 1601 1663 1711
+ port trunk allow-pass vlan 1738 1762 1768 to 1770 1778 to 1779 1790 2297 to 2298 2306 2320 2395 2657
+ port trunk allow-pass vlan 2678 to 2680 2763 2791 2799 2824 2850 3210
+ mode lacp
+#
+interface Eth-Trunk3
+ description uT:JH-DY-BeiJing-OLT-MA5680T-2.MAN:(local)GE0/19/0,GE0/19/1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 33 1356 to 1359 1364 to 1367 1382 to 1385 1397 to 1400 1403 1442 1444 1463 to 1464 1508
+ port trunk allow-pass vlan 1535 1537 1543 1569 1571 to 1578 2320 2657 2791 3210
+ mode lacp
+#
+interface Eth-Trunk4
+ description dT:JH-DY-BeiJiang-OLT-MA5680-3.MAN:(local)GE0/19/0
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 33 2297 to 2298 2763
+ mode lacp
+#
+interface Eth-Trunk5
+ description uT:JH-DY-WJ-DSW-S9306-1.MAN::ETH20(10GE2/0/4,10GE2/0/5)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 2 30 32 to 33 36 44 47 to 49 1044 1301 1311 to 1314 1317 to 1320
+ port trunk allow-pass vlan 1344 to 1346 1350 to 1351 1353 to 1354 1356 to 1359 1364 to 1367 1382 to 1385 1397 to 1400 1403 1442 1444
+ port trunk allow-pass vlan 1460 to 1464 1508 1535 1537 1543 1569 1571 to 1578 1601 1663 1711
+ port trunk allow-pass vlan 1738 1762 1768 to 1770 1778 to 1779 1790 2297 to 2298 2306 2320 2395 2657
+ port trunk allow-pass vlan 2678 to 2680 2763 2791 2799 2824 2850 3210
+ mode lacp
+#
+interface Eth-Trunk6
+ description uT:JH-DY-BeiJiang-OLT-MA5680-1.MAN:(local)GE0/19/0
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 33 36 44 47 1044 1311 to 1314 1317 to 1320 1344 to 1346 1350 to 1351 1353 to 1354
+ port trunk allow-pass vlan 1601 1663 1711 1738 1762 1768 to 1770 1778 to 1779 1790 2306 2320
+ port trunk allow-pass vlan 2395 2678 to 2680 2799 3210
+ mode lacp
+#
+interface Eth-Trunk7
+ description uT:JH-DY-BeiJing-OLT-MA5680T-2.MAN:(local)GE0/19/0
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 33 1356 to 1359 1364 to 1367 1382 to 1385 1397 to 1400 1403 1442 1444 1463 to 1464 1508
+ port trunk allow-pass vlan 1535 1537 1543 1569 1571 to 1578 2320 2657 2791 3210
+ mode lacp
+#
+interface Eth-Trunk8
+ description dT:JH-DY-BeiJiang-OLT-MA5680-3.MAN:(local)GE0/19/0
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 33 2297 to 2298 2763 3210
+ mode lacp
+#
+interface Ethernet0/0/0
+#
+interface GigabitEthernet3/0/0
+#
+interface GigabitEthernet3/0/1
+ undo negotiation auto
+ speed 100
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 2 30 32
+ port hybrid untagged vlan 1461
+ port vlan-stacking vlan 101 to 900 stack-vlan 1461
+ port vlan-stacking vlan 3600 stack-vlan 1461
+#
+interface GigabitEthernet3/0/2
+#
+interface GigabitEthernet3/0/3
+#
+interface GigabitEthernet3/0/4
+#
+interface GigabitEthernet3/0/5
+#
+interface GigabitEthernet3/0/6
+#
+interface GigabitEthernet3/0/7
+#
+interface GigabitEthernet3/0/8
+#
+interface GigabitEthernet3/0/9
+#
+interface GigabitEthernet3/0/10
+#
+interface GigabitEthernet3/0/11
+#
+interface GigabitEthernet3/0/12
+#
+interface GigabitEthernet3/0/13
+#
+interface GigabitEthernet3/0/14
+#
+interface GigabitEthernet3/0/15
+#
+interface GigabitEthernet3/0/16
+#
+interface GigabitEthernet3/0/17
+#
+interface GigabitEthernet3/0/18
+#
+interface GigabitEthernet3/0/19
+#
+interface GigabitEthernet3/0/20
+#
+interface GigabitEthernet3/0/21
+#
+interface GigabitEthernet3/0/22
+#
+interface GigabitEthernet3/0/23
+#
+interface GigabitEthernet3/0/24
+#
+interface GigabitEthernet3/0/25
+#
+interface GigabitEthernet3/0/26
+#
+interface GigabitEthernet3/0/27
+#
+interface GigabitEthernet3/0/28
+#
+interface GigabitEthernet3/0/29
+#
+interface GigabitEthernet3/0/30
+#
+interface GigabitEthernet3/0/31
+#
+interface GigabitEthernet3/0/32
+#
+interface GigabitEthernet3/0/33
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 2850
+#
+interface GigabitEthernet3/0/34
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 2850
+#
+interface GigabitEthernet3/0/35
+#
+interface GigabitEthernet3/0/36
+#
+interface GigabitEthernet3/0/37
+#
+interface GigabitEthernet3/0/38
+#
+interface GigabitEthernet3/0/39
+#
+interface GigabitEthernet3/0/40
+#
+interface GigabitEthernet3/0/41
+#
+interface GigabitEthernet3/0/42
+#
+interface GigabitEthernet3/0/43
+#
+interface GigabitEthernet3/0/44
+#
+interface GigabitEthernet3/0/45
+#
+interface GigabitEthernet3/0/46
+ description KangDaDongLiJianKong::kehu
+ port link-type access
+ port default vlan 47
+#
+interface GigabitEthernet3/0/47
+ description KangDaDongLiJianKong::kehu
+ port link-type access
+ port default vlan 47
+#
+interface GigabitEthernet6/0/0
+#
+interface GigabitEthernet6/0/1
+#
+interface GigabitEthernet6/0/2
+#
+interface GigabitEthernet6/0/3
+#
+interface GigabitEthernet6/0/4
+#
+interface GigabitEthernet6/0/5
+ undo negotiation auto
+#
+interface GigabitEthernet6/0/6
+ undo negotiation auto
+#
+interface GigabitEthernet6/0/7
+#
+interface GigabitEthernet6/0/8
+#
+interface GigabitEthernet6/0/9
+ undo negotiation auto
+#
+interface GigabitEthernet6/0/10
+ undo negotiation auto
+#
+interface GigabitEthernet6/0/11
+ undo negotiation auto
+#
+interface GigabitEthernet6/0/12
+#
+interface GigabitEthernet6/0/13
+#
+interface GigabitEthernet6/0/14
+ eth-trunk 3
+#
+interface GigabitEthernet6/0/15
+ eth-trunk 1
+#
+interface GigabitEthernet6/0/16
+ eth-trunk 1
+#
+interface GigabitEthernet6/0/17
+ eth-trunk 4
+#
+interface GigabitEthernet6/0/18
+#
+interface GigabitEthernet6/0/19
+#
+interface GigabitEthernet6/0/20
+#
+interface GigabitEthernet6/0/21
+#
+interface GigabitEthernet6/0/22
+#
+interface GigabitEthernet6/0/23
+#
+interface GigabitEthernet6/0/24
+#
+interface GigabitEthernet6/0/25
+#
+interface GigabitEthernet6/0/26
+#
+interface GigabitEthernet6/0/27
+#
+interface GigabitEthernet6/0/28
+#
+interface GigabitEthernet6/0/29
+#
+interface GigabitEthernet6/0/30
+#
+interface GigabitEthernet6/0/31
+#
+interface GigabitEthernet6/0/32
+#
+interface GigabitEthernet6/0/33
+#
+interface GigabitEthernet6/0/34
+#
+interface GigabitEthernet6/0/35
+#
+interface GigabitEthernet6/0/36
+#
+interface GigabitEthernet6/0/37
+#
+interface GigabitEthernet6/0/38
+#
+interface GigabitEthernet6/0/39
+#
+interface GigabitEthernet6/0/40
+#
+interface GigabitEthernet6/0/41
+#
+interface GigabitEthernet6/0/42
+#
+interface GigabitEthernet6/0/43
+#
+interface GigabitEthernet6/0/44
+#
+interface GigabitEthernet6/0/45
+#
+interface GigabitEthernet6/0/46
+#
+interface GigabitEthernet6/0/47
+#
+interface XGigabitEthernet4/0/0
+ description uT:JH-DY-WJ-S9306-1.MAN:(F1412150007)10GE2/0/4
+ eth-trunk 5
+#
+interface XGigabitEthernet4/0/1
+ description uT:JH-DY-WJ-DSW-S9306-1.MAN:(F1412150005)10GE2/0/5
+ eth-trunk 5
+#
+interface XGigabitEthernet4/0/2
+ description dT:JH-DY-BJ-OLT-MA5680-1.MAN:(local)10GE0/19/0
+ eth-trunk 6
+#
+interface XGigabitEthernet4/0/3
+ description dT:JH-DY-BJ-OLT-MA5680-2.MAN:(local)10GE0/19/0
+ eth-trunk 7
+#
+interface XGigabitEthernet4/0/4
+ description dT:JH-DY-BJ-OLT-MA5680-3.MAN:(local)10GE0/19/0
+ eth-trunk 8
+#
+interface XGigabitEthernet4/0/5
+#
+interface XGigabitEthernet4/0/6
+#
+interface XGigabitEthernet4/0/7
+#
+interface XGigabitEthernet4/0/8
+#
+interface XGigabitEthernet4/0/9
+#
+interface XGigabitEthernet4/0/10
+#
+interface XGigabitEthernet4/0/11
+#
+interface XGigabitEthernet4/0/12
+#
+interface XGigabitEthernet4/0/13
+#
+interface XGigabitEthernet4/0/14
+#
+interface XGigabitEthernet4/0/15
+#
+interface NULL0
+#
+ip route-static 0.0.0.0 0.0.0.0 172.31.88.129
+#
+snmp-agent
+snmp-agent local-engineid 800007DB03D4B110ABEF00
+snmp-agent community read cipher %^%#vR-9"&#pyF9ga_(eA;.(4\v<;4Ur;C'}kF;(^XsTT!iK!v0\S<ZT9KBRfy):l0JI8&z&9>$*erDRTx}M%^%#
+snmp-agent sys-info version all
+#
+ssh server compatible-ssh1x enable
+#
+user-interface maximum-vty 15
+user-interface con 0
+ authentication-mode password
+ set authentication password cipher %^%#bk74<!wjn.6z~&,.KV<Np_{K&22uk/O8!MUf,ogT(iP+"Ll,)Jsfx^P5^;22%^%#
+ idle-timeout 0 0
+ screen-length 25
+user-interface vty 0 4
+ authentication-mode aaa
+ user privilege level 1
+ idle-timeout 0 0
+ screen-length 25
+ protocol inbound telnet
+user-interface vty 5 14
+ authentication-mode aaa
+ user privilege level 3
+ idle-timeout 0 0
+ screen-length 0
+ protocol inbound telnet
+user-interface vty 16 20
+ protocol inbound telnet
+#
+return
+<JH-DY-BJ-DSW-S9306-1.MAN>

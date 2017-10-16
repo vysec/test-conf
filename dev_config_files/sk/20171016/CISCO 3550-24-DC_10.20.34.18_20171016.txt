@@ -1,0 +1,324 @@
+
+Building configuration...
+
+Current configuration : 6507 bytes
+!
+version 12.2
+no service pad
+service timestamps debug datetime localtime
+service timestamps log datetime localtime
+service password-encryption
+!
+hostname QZ-JS-NongMCh-ASW-1.MAN.C3550
+!
+enable secret 5 $1$BAXP$iyKkv6gc5KkXQ6giq.rEu/
+!
+no aaa new-model
+mls qos
+ip subnet-zero
+ip routing
+ip name-server 202.107.245.11
+!
+vtp mode transparent
+!
+!
+!
+no file verify auto
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+vlan access-map drop_udp_1434 10
+ action drop
+ match ip address udp_1434
+vlan access-map drop_udp_1434 20
+ action forward
+ match ip address ip_match
+vlan filter drop_udp_1434 vlan-list 1-99
+!
+vlan 22
+ name ZTE_admin
+!
+vlan 23
+ name JieDian_admin
+!
+vlan 26
+ name LaoDao_admin
+!
+vlan 27,1164 
+!
+vlan 1304
+ name P_NongMaocheng_ZTE
+!
+vlan 3193
+ name local_JS_HaoLingJu_To_Shasta
+!
+vlan 3198
+ name local_HongTaChaoShi_VPN
+!
+vlan 3535
+ name NetBar_XinYu
+!
+vlan 3557 
+!
+vlan 3567
+ name HaoLinJu_WaiWang
+!
+vlan 3569
+ name TengLong_WangLuo
+!
+vlan 3601,3681 
+!
+vlan 3682
+ name yanyegongsi
+!
+vlan 3683
+ name hongloufenglvbinguan
+!
+vlan 3687
+ name hualihaoshanmao
+!
+vlan 3689,3693 
+!
+vlan 3704
+ name WangQuBo
+!
+vlan 3751
+ name xuxiangming
+!
+vlan 3857,3861 
+!
+class-map match-all XianSu
+  match ip dscp default 
+!
+!
+policy-map 80M
+  class XianSu
+    police 82000000 1000000 exceed-action drop
+policy-map 50M
+  class XianSu
+    police 53000000 1000000 exceed-action drop
+policy-map 40M
+  class XianSu
+    police 42000000 1000000 exceed-action drop
+policy-map 10M
+  class XianSu
+    police 11000000 1000000 exceed-action drop
+policy-map 30M
+  class XianSu
+    police 32000000 1000000 exceed-action drop
+policy-map 20M
+  class XianSu
+    police 21000000 1000000 exceed-action drop
+policy-map 8M
+  class XianSu
+    police 8400000 800000 exceed-action drop
+policy-map 4M
+  class XianSu
+    police 4200000 300000 exceed-action drop
+policy-map 6M
+  class XianSu
+    police 6296000 600000 exceed-action drop
+policy-map 450M
+  class XianSu
+    police 450000000 1000000 exceed-action drop
+policy-map 650M
+  class XianSu
+    police 650000000 1000000 exceed-action drop
+policy-map 300M
+  class XianSu
+    police 300000000 1000000 exceed-action drop
+policy-map policy2M
+  class XianSu
+    police 2096000 200000 exceed-action drop
+!
+!
+interface FastEthernet0/1
+ description To_NongMaocheng_ZTE-10.20.33.60
+ switchport access vlan 22
+ switchport mode access
+!
+interface FastEthernet0/2
+ description ::kehu   
+ switchport access vlan 3569
+ switchport mode access
+!
+interface FastEthernet0/3
+ description TO-hongtachaoshi
+ switchport access vlan 3198
+ switchport mode access
+ duplex full
+!
+interface FastEthernet0/4
+ description To_zuolinYaoShe::kehu   
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 26,512,3193,3567
+ switchport mode trunk
+!
+interface FastEthernet0/5
+ description HUAI
+ switchport access vlan 3198
+ switchport mode access
+!
+interface FastEthernet0/6
+ description to-yanyegongsi::kehu   
+ switchport access vlan 3682
+ switchport mode access
+!
+interface FastEthernet0/7
+ switchport access vlan 3601
+ switchport mode access
+ service-policy input 50M
+ service-policy output 50M
+ shutdown
+!
+interface FastEthernet0/8
+ description to-hongtachaoshi::kehu   
+ switchport access vlan 3681
+ switchport mode access
+!
+interface FastEthernet0/9
+ description to-xuxiangming
+ switchport access vlan 3751
+ switchport mode access
+ service-policy input policy2M
+ service-policy output policy2M
+!
+interface FastEthernet0/10
+ description ::kehu   
+ switchport access vlan 27
+ switchport mode access
+!
+interface FastEthernet0/11
+ switchport mode access
+!
+interface FastEthernet0/12
+ description to-hualihaoshanmao
+ switchport access vlan 3687
+ switchport mode access
+ service-policy input policy2M
+ service-policy output policy2M
+ shutdown
+!
+interface FastEthernet0/13
+ description to-henglianfengchangpin::kehu   
+ switchport access vlan 3689
+ switchport mode access
+ service-policy input policy2M
+ service-policy output policy2M
+!
+interface FastEthernet0/14
+ description ::kehu   
+ switchport access vlan 3557
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/15
+ description to-wufumenye
+ switchport access vlan 3857
+ switchport mode access
+ service-policy input policy2M
+ service-policy output policy2M
+!
+interface FastEthernet0/16
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/17
+ description to-WLAN-YiDaiJiangShang
+ switchport access vlan 1164
+ switchport mode dot1q-tunnel
+ no cdp enable
+!
+interface FastEthernet0/18
+ description "WangQuBo"::kehu   
+ switchport access vlan 3704
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/19
+ switchport mode access
+!
+interface FastEthernet0/20
+ switchport access vlan 1304
+ switchport mode dot1q-tunnel
+ shutdown
+ duplex full
+ speed 100
+!
+interface FastEthernet0/21
+ description HongLouFengLvBinGuan::kehu   
+ switchport access vlan 3683
+ switchport mode access
+!
+interface FastEthernet0/22
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/23
+ description ::kehu   
+ switchport access vlan 22
+ switchport mode access
+!
+interface FastEthernet0/24
+ description To_NongMaocheng_8220-10.20.33.60
+ switchport access vlan 1304
+ switchport mode dot1q-tunnel
+ duplex full
+ speed 100
+ no cdp enable
+!
+interface GigabitEthernet0/1
+ description uT:QZ-JS-HS-DSW-1.MAN.S9306:(F0101010001)GE6/0/16
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 22,23,26,27,1164,1304,3193,3198,3470,3535,3557
+ switchport trunk allowed vlan add 3567,3569,3601,3681-3683,3689,3704,3751,3763
+ switchport trunk allowed vlan add 3857,3861
+ switchport mode trunk
+ flowcontrol send off
+!
+interface GigabitEthernet0/2
+ description To_NongMaocheng_8220-10.20.33.60::kehu   
+ switchport access vlan 1304
+ switchport mode dot1q-tunnel
+ speed nonegotiate
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan23
+ ip address 10.20.34.18 255.255.255.0
+!
+interface Vlan700
+ description management
+ ip address 10.0.64.8 255.255.248.0
+ shutdown
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 10.20.34.1
+ip http server
+!
+ip access-list extended ip_match
+ permit ip any any
+ip access-list extended udp_1434
+ permit udp any any eq 1434
+!
+access-list 1 permit 61.174.90.0 0.0.1.255
+access-list 1 permit 10.10.8.0 0.0.0.31
+access-list 1 permit 10.11.44.224 0.0.0.31
+snmp-server community qzptt2001 RO
+snmp-server community qzdxkd2001 RW
+snmp-server host 10.192.0.11 qzptt2001 
+!
+control-plane
+!
+!
+line con 0
+line vty 0 4
+ password 7 01100F175804
+ login
+line vty 5 15
+ no login
+!
+!
+end
+
+QZ-JS-NongMCh-ASW-1.MAN.C3550#

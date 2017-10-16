@@ -1,0 +1,1929 @@
+
+!Software Version V200R008C00SPC500
+#
+sysname TZ-YH-KANMEN-SW2-S9312-1.MAN
+#
+super password level 3 cipher %$%$BI@wP'!KhK5*Y>&0e.=2"SUFQZ'[QA)D'6jS1TMj.`q=SUI"%$%$
+#
+vlan batch 11 to 20 22 24 31 51 to 54 199 259 to 260 396 398 491 to 548
+vlan batch 1424 2801 to 2816 2900 to 2901 3001 3021 3031 3202 to 3270 3280 3401 3963 to 3964
+vlan batch 3974 3989 3999 4001
+#
+undo authentication unified-mode
+#
+set save-configuration interval 1440
+#
+telnet server enable
+#
+undo http server enable
+undo http secure-server enable
+#
+undo management-port isolate enable
+undo management-plane isolate enable
+#
+clock timezone BeiJing add 08:00:00
+#
+diffserv domain default
+#
+hwtacacs-server template hwtac
+ hwtacacs-server authentication 60.191.150.82
+ hwtacacs-server authorization 60.191.150.82
+ hwtacacs-server accounting 60.191.150.82
+ hwtacacs-server shared-key cipher %^%#=v,;Gfq7OU`Pp#+l41z~1!*w2*z{PE)};d&-Y(97%^%#
+ undo hwtacacs-server user-name domain-included
+#
+acl number 2000  
+ rule 1 permit source 218.75.11.82 0 
+ rule 2 permit source 218.73.91.66 0 
+ rule 3 permit source 218.73.91.67 0 
+ rule 4 permit source 61.175.95.0 0.0.0.255 
+ rule 5 permit source 60.191.145.38 0 
+ rule 6 permit source 218.73.91.64 0.0.0.15 
+ rule 7 permit source 10.135.84.0 0.0.0.15 
+ rule 8 permit source 61.153.40.26 0 
+ rule 10 permit source 60.191.187.54 0 
+ rule 15 permit source 10.31.255.0 0.0.0.31 
+#
+acl number 3001  
+ rule 0 permit ip source 60.191.145.34 0 
+ rule 1 permit ip source 61.153.40.64 0.0.0.63 
+ rule 2 permit ip source 10.131.29.0 0.0.0.255 
+ rule 3 permit ip source 60.191.145.38 0 
+ rule 4 permit ip source 60.191.145.202 0 
+ rule 5 permit ip source 61.153.204.36 0 
+ rule 6 permit ip source 60.191.144.242 0 
+ rule 7 permit ip source 61.175.95.0 0.0.0.255 
+ rule 8 permit ip source 61.175.79.0 0.0.0.255 
+ rule 9 permit ip source 61.175.80.0 0.0.0.255 
+ rule 10 permit ip source 61.175.89.225 0 
+ rule 11 permit ip source 218.75.11.82 0 
+ rule 12 permit ip source 61.153.40.24 0 
+ rule 13 permit ip source 61.175.95.64 0.0.0.7 
+ rule 14 permit ip source 122.226.157.0 0.0.0.255 
+ rule 15 permit ip source 218.73.91.64 0.0.0.15 
+ rule 16 permit ip source 61.175.219.240 0.0.0.15 
+ rule 20 permit ip source 10.135.84.0 0.0.0.15 
+ rule 25 permit ip source 10.31.255.0 0.0.0.31 
+ rule 30 permit ip source 183.131.126.0 0.0.0.255 
+#
+traffic classifier 100M operator or precedence 20
+ if-match any
+traffic classifier 10M operator and precedence 15
+ if-match any
+traffic classifier 20M operator or precedence 30
+ if-match any
+traffic classifier 4M operator and precedence 10
+ if-match any
+traffic classifier 6M operator and precedence 6
+ if-match any
+traffic classifier 8M operator or precedence 25
+ if-match any
+traffic classifier tcCritical operator or precedence 5
+ if-match vlan-id 3599 to 3600
+#
+traffic behavior 100M
+ permit
+ car cir 102400 pir 102400 cbs 1000000 pbs 1000000 mode color-blind green pass yellow pass red discard
+traffic behavior 10M
+ permit
+ car cir 10240 pir 10240 cbs 100000 pbs 100000 mode color-blind green pass yellow pass red discard
+traffic behavior 20M
+ permit
+ car cir 20480 pir 20480 cbs 200000 pbs 200000 mode color-blind green pass yellow pass red discard
+traffic behavior 4M
+ permit
+ car cir 4096 pir 4096 cbs 40000 pbs 40000 mode color-blind green pass yellow pass red discard
+traffic behavior 6M
+ permit
+ car cir 6144 pir 6144 cbs 60000 pbs 60000 mode color-blind green pass yellow pass red discard
+traffic behavior 8M
+ permit
+ car cir 8192 pir 8192 cbs 1540096 pbs 2564096 mode color-blind green pass yellow pass red discard
+traffic behavior tbCritical
+ permit
+ remark 8021p 4
+#
+traffic policy 100M match-order auto
+ classifier 100M behavior 100M
+traffic policy 10M match-order auto
+ classifier 10M behavior 10M
+traffic policy 20M match-order auto
+ classifier 20M behavior 20M
+traffic policy 4M match-order auto
+ classifier 4M behavior 4M
+traffic policy 6M match-order auto
+ classifier 6M behavior 6M
+traffic policy 8M match-order auto
+ classifier 8M behavior 8M
+traffic policy tpCritical match-order auto
+ classifier tcCritical behavior tbCritical
+#
+drop-profile default
+#
+vlan 11
+ description MNG-YH-L-UT-1
+vlan 12
+ description MNG-YH-L-UT-2
+vlan 13
+ description MNG-YH-L-UT-3
+vlan 14
+ description MNG-YH-L-ZTE-1
+vlan 15
+ description MNG-YH-L-ZTE-2
+vlan 16
+ description MNG-YH-L-ZTE-3
+vlan 17
+ description MNG-YH-L-TZ-1
+vlan 18
+ description MNG-YH-L-TZ-2
+vlan 19
+ description MNG-YH-L-TZ-3
+vlan 20
+ description HUAWEI-SWITCH-NetManagement-20
+vlan 22
+ description HUAWEI-SWITCH-NetManagement-22
+vlan 24
+ description WLAN-Management-AP
+vlan 31
+ description Huawei_Olt_Management_km
+vlan 51
+ description MNG-WLAN-H3C-EPON
+vlan 52
+ description MNG-WLAN-H3C-SWITCH
+vlan 53
+ description MNG-WLAN-WANGJIAN-EPON
+vlan 54
+ description MNG-WLAN-WANGJIAN-SWITCH
+vlan 199
+ description MNG-YH-G-FengHuo-1
+vlan 259
+ description SRV-VLAN-YHKM.QiXiangJu
+vlan 260
+ description SRV-VLAN-YHKM.SiYouGongSi
+vlan 396
+ description SRV-VLAN-YHKM.Hbj.YuHuanWuShuiChiLiChang
+vlan 398
+ description SRV-VLAN-YHKM.GangWuJuYingDongMaTou
+vlan 491
+ description YHKM.HaiGang4-3550-MA
+vlan 492
+ description YHKM-L-ZTE9210-2.1-MA-16/7
+vlan 493
+ description YHKM.HaiGang4-L-ZTE9210-1.1-MA
+vlan 494
+ description YHKM.HaiGang3-L-ZTE9210-1-MA
+vlan 495
+ description YHKM.XinShiJi-L-ZTE9210-1.1-MA
+vlan 496
+ description YHKM-L-ZTE9210-2.2-MA-16/7
+vlan 497
+ description YHKM-L-ZTE9210-3.1-MA-16/7
+vlan 498
+ description YHKM-L-ZTE9210-3.2-MA-16/7
+vlan 499
+ description YHKM-L-ZTE8220-5.1-MA
+vlan 500
+ description YHKM-L-ZTE8220-5.2-MA
+vlan 501
+ description YHKM-L-ZTE8220-2.1-MA
+vlan 502
+ description YHKM-L-ZTE8220-6.2-MA
+vlan 503
+ description YHKM.ShuangLong-L-ZTE8220-1-MA
+vlan 504
+ description YHKM.YuHui-L-ZTE9210-1.1-MA
+vlan 505
+ description YHKM-L-ZTE9210-4.1-MA-16/7
+vlan 506
+ description YHKM-L-ZTE9210-4.2-MA-16/7
+vlan 507
+ description YHKM.YuHui-L-ZTE9210-1.2-MA
+vlan 508
+ description YHKM-L-ZTE9210-5.1-MA-16/7
+vlan 509
+ description YHKM-S-3226P-1-0/24
+vlan 510
+ description YHKM-S-3226P-2-0/27
+vlan 511
+ description YHKM-L-ZTE8210-1.2-MA
+vlan 512
+ description YHKM-L-ZTE8210-1.1-MA
+vlan 513
+ description YHKM-L-ZTE8210-2.1-MA
+vlan 514
+ description YHKM-L-ZTE8210-2.2-MA
+vlan 515
+ description YHKM-L-ZTE8210-3.1-MA
+vlan 516
+ description YHKM-L-ZTE8210-3.2-MA
+vlan 517
+ description YHKM-L-ZTE8210-3.3-MA
+vlan 518
+ description MNG-YHKM-L-ZTE8210-4.1-MA
+vlan 519
+ description YHKM-L-ZTE8210-4.2-MA
+vlan 520
+ description YHKM-L-ZTE9210-5.2-MA-16/7
+vlan 521
+ description YH-LiAo-SW2-S6502-1.G0/0/5
+vlan 522
+ description YHKM.ShuangLong-L-ZTE9210-2-MA
+vlan 523
+ description YHKM.ZhaoShanWang-S-3928-1-MA
+vlan 524
+ description YHKM.DiaoChao-L-UTB800-1-MA
+vlan 525
+ description YHKM.SanSengMiao-L-ZTE8220-1.1-MA
+vlan 526
+ description YHKM-L-ZTE9210-1.1-MA-1
+vlan 527
+ description YHKM-L-ZTE9210-1.2-MA-16/1
+vlan 528
+ description YHKM.HaiGang2-L-ZTE8220-1-MA
+vlan 529
+ description YHKM.HaiGang1-L-ZTE8220-1-MA
+vlan 530
+ description YHKM.QianTai-L-ZTE9210-1-MA
+vlan 531
+ description YHKM.HuaYanJiao-L-ZTE9210-1-MA
+vlan 532
+ description YHKM.KanMenDaSha-L-ZTE9210-1-MA
+vlan 533
+ description YHKM.SuiLong-L-ZTE9210-1.1-MA
+vlan 534
+ description YHKM.DongFeng2-L-ZTE9210-1-MA
+vlan 535
+ description YHKM-S-S3928-1-MA-G1/1/1
+vlan 536
+ description YHKM-S-S3928-2-MA-E1/0/24
+vlan 537
+ description YHKM.DongFeng1-L-UTB800-1-MA
+vlan 538
+ description YHKM.LiAoHuangMeng-L-ZTE9210-1-MA
+vlan 539
+ description YHKM.LiAoNanSha-L-ZTE9210-1-MA
+vlan 540
+ description YHKM.HaiGang1-L-TongzeS-1-MA
+vlan 541
+ description YHKM.DongSha-L-ZTE9203-1.1-MA
+vlan 542
+ description YHKM.ShuangFeng-L-ZTE9210-1.1-MA
+vlan 543
+ description YHKM.HaiGang4-L-TongzeS-1-MA
+vlan 544
+ description YHKM.HongXing-L-ZTE8220-1.1-MA
+vlan 545
+ description YHKM.DiaoChao-L-TongzeS-1-MA
+vlan 546
+ description YHKM.ShuangFeng-L-ZTE9210-1.1-MA
+vlan 547
+ description YHKM.HaiGang4-L-ZTE9210-1.2-MA
+vlan 548
+ description DT:YHKM.ShuangLong-L-ZTE9210-J1K1-MA
+vlan 1424
+ description SRV-MPLS-YH.HongFuTang
+vlan 2801
+ description neiceng-vlan
+vlan 2814
+ description SRV-PPPoE-YHKM.TZ-ZhengPengDangXianQi
+vlan 2815
+ description XuLiangWen-ZheJiangZhenBangShuiDian
+vlan 2900
+ description SRV-YH.WuSuiChuLiChang
+vlan 2901
+ description SRV-IPTV-YHKM.KaiMenDianxin2901
+ statistic enable
+vlan 3001
+ description SRV-MPLS-YH.RenShouNongYiBao
+vlan 3021
+ description MPLS-VPN-YuHuanXianJianSheWeiYuanHui
+vlan 3031
+ description SRV-MPLS-KM.LaoDongJiuYe
+vlan 3216
+ description SRV-LL-YHKM.ZhongXinXiaoXue
+vlan 3217
+ description SRV-LL-YHKM.ZhongXue
+vlan 3218
+ description SRV-LL-YHKM.ZhengYiZhong
+vlan 3219
+ description SRV-LL-YHKM.ChenRenJiXiao
+vlan 3220
+ description SRV-NETBAR-YHKM.XingLang
+vlan 3221
+ description SRV-LL-YHKM.KanMenLiHuanXiaoXue
+vlan 3222
+ description SRV-NETBAR-YHKM.YeYing
+vlan 3224
+ description SRV-NETBAR-YHKM.ZiXing
+vlan 3225
+ description SRV-LL-YHKM.ShuangLongXiaoXue
+vlan 3226
+ description SRV-LL-YHKM.XiTaiXiaoXue
+vlan 3227
+ description SRV-NETBAR-YHKM.SaKeSi
+vlan 3228
+ description SRV-NETBAR-YHKM.SiHai
+vlan 3229
+ description SRV-NETBAR-YHKM.FeiYu
+vlan 3230
+ description SRV-NETBAR-YHKM.XinLong
+vlan 3232
+ description SRV-NETBAR-YHCG.XiWang
+vlan 3233
+ description SRV-LL-YHKM.TZ-PuLouQiCheBuJian
+vlan 3235
+ description SRV-LL-YHKM.PaiChuSuo
+vlan 3236
+ description SRV-NETBAR-YHKM.LeYuan
+vlan 3237
+ description SRV-NETBAR-YHKM.XinYuan
+vlan 3238
+ description SRV-LL-YHKM.KanMengErZhong
+vlan 3239
+ description SRV-NETBAR-YHKM.QiXing
+vlan 3240
+ description SRV-LL-YHKM.HuanMenXiaoXue
+vlan 3241
+ description SRV-LL-YHKM.DiaoChaoXiaoXue
+vlan 3242
+ description SRV-NETBAR-YHKM.ZiJianYuan
+vlan 3243
+ description SRV-LL-YHKM.GuChenXiaoXue
+vlan 3245
+ description SRV-NETBAR-YHKM.WeiDuoLiYa
+vlan 3247
+ description SRV-NETBAR-YHKM.AFu
+vlan 3250
+ description SRV-NETBAR-YHKM.JinXin
+vlan 3253
+ description SRV-NETBAR-YHKM.FengZeng
+vlan 3254
+ description SRV-NETBAR-YHKM.ZhongXin
+vlan 3258
+ description SRV-LL-YHKM.ZheJiangJinQiaoShenWuYouXianGongSi
+vlan 3401
+ description VPN-SiFa-KMBanShiChu
+vlan 3963
+ description huanbao-longshengshuichangongsi
+vlan 3964
+ description SRV-LL-HBJ-KanMenDianDuYouXianGongSi
+vlan 3974
+ description SRV-LL-HBJ-XiongPengJiXie
+vlan 3989
+ description SRV-LL-YHKM.YaoQianDianDu
+vlan 3999
+ description SRV-LL-YHKM.YuKanLu-WuShuiChuLiBu
+#
+aaa
+ authentication-scheme default
+ authentication-scheme hwtac
+  authentication-mode hwtacacs
+  authentication-super none
+ authorization-scheme default
+ authorization-scheme hwtacacs
+  authorization-mode  hwtacacs
+ accounting-scheme default
+ accounting-scheme hwtacacs
+  accounting-mode hwtacacs
+  accounting realtime 3
+ domain default
+ domain default_admin
+  authentication-scheme hwtac
+  accounting-scheme hwtacacs
+  authorization-scheme hwtacacs
+  hwtacacs-server hwtac
+ local-user zjdx password irreversible-cipher %^%#aJU4)oxQE!sXE`Ub>"96#`B/,:;<x#O/[M(]s0o<0W)j2[*{l@u/[YW289%Y%^%#
+ local-user zjdx privilege level 1
+ local-user zjdx service-type telnet
+ local-user admin password cipher %^%#hok5P>X$j>O-dF1_2CX,SZxM%:v]*0mWj@8;.Dk;%^%#
+ undo local-user admin service-type
+ local-user backup password irreversible-cipher %^%#7m2SFnmEjCb6.y&7[M^701^iUn+h5'xN@3&@R1cXh'^OJ^IX.Qocg#4"$RPH%^%#
+ local-user backup privilege level 3
+ local-user backup service-type telnet
+ local-user huawei password irreversible-cipher %^%#RSvq#l'_JVmGA[>;dv$-}:Em%kcq2+8L1.Amumn4&G\Y(Kt/f72+:fPrMV<9%^%#
+ local-user huawei privilege level 3
+ local-user huawei service-type telnet
+ local-user zhanghh password irreversible-cipher %^%#x+Dx/i5:u,UTQRYlpBn;8_9C*_6E=E^$):K(oEJ(hB}g@n`xm!1CzfC=yS4=%^%#
+ local-user zhanghh privilege level 3
+ local-user zhanghh service-type telnet
+#
+ntp-service server disable
+ntp-service ipv6 server disable
+ntp-service source-interface Vlanif20
+ntp-service unicast-server 61.175.70.70 preference
+ntp-service unicast-server 61.175.90.90
+#
+interface Vlanif20
+ description HUAWEI-SWITCH-NetManagement
+ ip address 61.175.87.226 255.255.255.240
+#
+interface Vlanif3218
+#
+interface Vlanif3247
+#
+interface Vlanif3257
+#
+interface Vlanif3280
+#
+interface Eth-Trunk0
+#
+interface Eth-Trunk1
+ undo port hybrid vlan 1
+ mode lacp
+#
+interface Eth-Trunk2
+ shutdown
+ undo port hybrid vlan 1
+ stp disable
+#
+interface Eth-Trunk3
+ description UT:TZ-YH-LJ-BAS-2.MAN.7750:LAG8
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 491 to 599
+#
+interface Ethernet0/0/0
+ ip address 10.78.10.12 255.255.255.0
+#
+interface GigabitEthernet1/0/0
+ undo negotiation auto
+#
+interface GigabitEthernet1/0/1
+ undo negotiation auto
+ shutdown
+#
+interface GigabitEthernet1/0/2
+ undo negotiation auto
+#
+interface GigabitEthernet1/0/3
+ undo negotiation auto
+#
+interface GigabitEthernet1/0/4
+ shutdown
+ stp disable
+#
+interface GigabitEthernet1/0/5
+ undo negotiation auto
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 15 19
+ port hybrid untagged vlan 491
+ port vlan-stacking vlan 101 to 1300 stack-vlan 491
+ port vlan-stacking vlan 3600 stack-vlan 491
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet1/0/6
+ undo negotiation auto
+ description YHKM-L-ZTE9210-2.1-MA-16/7:local
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 15
+ port hybrid untagged vlan 492
+ port vlan-stacking vlan 101 to 599 stack-vlan 492
+ port vlan-stacking vlan 3600 stack-vlan 492
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet1/0/7
+ undo negotiation auto
+ description YHKM.HaiGang4-L-ZTE9210-1.1-MA16/1:F0608162034
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 15
+ port hybrid untagged vlan 493
+ port vlan-stacking vlan 101 to 599 stack-vlan 493
+ port vlan-stacking vlan 3600 stack-vlan 493
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet1/0/8
+ undo negotiation auto
+ description YHKM.HaiGang3-L-ZTE9210-1-MA16/7:F0608162028
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 12 15
+ port hybrid untagged vlan 494
+ port vlan-stacking vlan 101 to 599 stack-vlan 494
+ port vlan-stacking vlan 3600 stack-vlan 494
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet1/0/9
+ undo negotiation auto
+ description YHKM.XinShiJi-L-ZTE9210-1.1-MA:F0608162032
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 15 2900
+ port hybrid untagged vlan 495
+ port vlan-stacking vlan 101 to 1060 stack-vlan 495
+ port vlan-stacking vlan 3600 stack-vlan 495
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet1/0/10
+ undo negotiation auto
+ description YHKM-L-ZTE9210-2.2-MA-16/7:local
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 15
+ port hybrid untagged vlan 496
+ port vlan-stacking vlan 101 to 599 stack-vlan 496
+ port vlan-stacking vlan 3600 stack-vlan 496
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet1/0/11
+ undo negotiation auto
+ description YHKM-L-ZTE9210-3.1-MA-16/7:local
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 15
+ port hybrid untagged vlan 497
+ port vlan-stacking vlan 101 to 599 stack-vlan 497
+ port vlan-stacking vlan 3600 stack-vlan 497
+ traffic-policy tpCritical inbound
+ broadcast-suppression 5
+#
+interface GigabitEthernet1/0/12
+ undo negotiation auto
+ description YHKM-L-ZTE9210-3.2-MA-16/7:local
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 15
+ port hybrid untagged vlan 498
+ port vlan-stacking vlan 101 to 599 stack-vlan 498
+ port vlan-stacking vlan 3600 stack-vlan 498
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet1/0/13
+ undo negotiation auto
+ description YHKM.DongFeng1-L-UTB800-1-MA
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 12
+ port hybrid untagged vlan 537
+ port vlan-stacking vlan 101 to 599 stack-vlan 537
+ port vlan-stacking vlan 3600 stack-vlan 537
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet1/0/14
+ undo negotiation auto
+ description YHKM-L-ZTE8220-5.1-MA
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 14 to 16
+ port hybrid untagged vlan 499
+ port vlan-stacking vlan 101 to 599 stack-vlan 499
+ port vlan-stacking vlan 3600 stack-vlan 499
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet1/0/15
+ undo negotiation auto
+ description YHKM-L-ZTE8220-5.2-MA:local
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 14 to 16
+ port hybrid untagged vlan 500
+ port vlan-stacking vlan 101 to 599 stack-vlan 500
+ port vlan-stacking vlan 3600 stack-vlan 500
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet1/0/16
+ undo negotiation auto
+ description YHKM-L-ZTE8220-2.1-MA:local
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 14 to 16
+ port hybrid untagged vlan 501
+ port vlan-stacking vlan 101 to 599 stack-vlan 501
+ port vlan-stacking vlan 3600 stack-vlan 501
+ traffic-policy tpCritical inbound
+ broadcast-suppression 5
+#
+interface GigabitEthernet1/0/17
+ undo negotiation auto
+ description YHKM-L-ZTE8220-6.2-MA:local
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 14 to 16
+ port hybrid untagged vlan 502
+ port vlan-stacking vlan 101 to 599 stack-vlan 502
+ port vlan-stacking vlan 3600 stack-vlan 502
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet1/0/18
+ undo negotiation auto
+ description YHKM.ShuangLong-L-ZTE8220-1-MA:F0608162038
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 14 to 15
+ port hybrid untagged vlan 503
+ port vlan-stacking vlan 101 to 1100 stack-vlan 503
+ port vlan-stacking vlan 3600 stack-vlan 503
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet1/0/19
+ undo negotiation auto
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 15
+ port hybrid untagged vlan 504
+ port vlan-stacking vlan 101 to 1100 stack-vlan 504
+ port vlan-stacking vlan 3600 stack-vlan 504
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet1/0/20
+ undo negotiation auto
+ description YHKM-L-ZTE9210-4.1-MA-16/7:local
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 15
+ port hybrid untagged vlan 505
+ port vlan-stacking vlan 101 to 599 stack-vlan 505
+ port vlan-stacking vlan 3600 stack-vlan 505
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet1/0/21
+ undo negotiation auto
+ description YHKM-L-ZTE9210-4.2-MA-16/7:local
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 15
+ port hybrid untagged vlan 506
+ port vlan-stacking vlan 101 to 599 stack-vlan 506
+ port vlan-stacking vlan 3600 stack-vlan 506
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet1/0/22
+ undo negotiation auto
+ description DSL-YHKM.YuHui-L-ZTE9210-1.2-MA16/1:F1002220004
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 15
+ port hybrid untagged vlan 507
+ port vlan-stacking vlan 101 to 1100 stack-vlan 507
+ port vlan-stacking vlan 3600 stack-vlan 507
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet1/0/23
+ undo negotiation auto
+ description YHKM-L-ZTE9210-5.1-MA-16/7:local
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 15
+ port hybrid untagged vlan 508
+ port vlan-stacking vlan 101 to 599 stack-vlan 508
+ port vlan-stacking vlan 3600 stack-vlan 508
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet3/0/0
+ undo negotiation auto
+#
+interface GigabitEthernet3/0/1
+ undo negotiation auto
+#
+interface GigabitEthernet3/0/2
+ undo negotiation auto
+#
+interface GigabitEthernet3/0/3
+ undo negotiation auto
+#
+interface GigabitEthernet3/0/4
+ undo negotiation auto
+ description uT:TZ-YH-CN-12510:(F0904220010)GE1/8/0/33
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 11 to 22 24 31 51 to 54 259 to 260 396 398 2801 to 3001 3021 3201 to 3270
+ port hybrid tagged vlan 3280 3401 3963 to 3964 3974 3989 3999
+ stp disable
+#
+interface GigabitEthernet3/0/5
+ undo negotiation auto
+ description YHKM-L-ZTE9210-5.2-MA-16/7:local
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 15
+ port hybrid untagged vlan 520
+ port vlan-stacking vlan 101 to 599 stack-vlan 520
+ port vlan-stacking vlan 3600 stack-vlan 520
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet3/0/6
+ shutdown
+#
+interface GigabitEthernet3/0/7
+ description YuHuanXianHongShiZiYiYuan-IPTV:(F1103300018)::kehu
+ port hybrid pvid vlan 2813
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 2813
+#
+interface GigabitEthernet3/0/8
+ undo negotiation auto
+ description dT:TZ-YH-LiAo-SW-S9303-1:(F0608162049)GE1/0/0
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 13 15 19 to 20
+ port hybrid untagged vlan 521
+ port vlan-stacking vlan 101 to 1100 stack-vlan 521
+ port vlan-stacking vlan 3600 stack-vlan 521
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet3/0/9
+ undo negotiation auto
+ description DT:YHKM.ShuangLong-L-ZTE9210-J1K2-MA:F1110280076
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 15
+ port hybrid untagged vlan 522
+ port vlan-stacking vlan 101 to 1100 stack-vlan 522
+ port vlan-stacking vlan 3600 stack-vlan 522
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet3/0/10
+ undo negotiation auto
+ description YHKM.ZhaoShanWang-S-3928-1-g1/1/1:F0608162044
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 15 19
+ port hybrid untagged vlan 523
+ port vlan-stacking vlan 101 to 1100 stack-vlan 523
+ port vlan-stacking vlan 3600 stack-vlan 523
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet3/0/11
+ undo negotiation auto
+ description YHKM.DiaoChao-L-UTB800-1-MA:F0608162033
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 12 17
+ port hybrid untagged vlan 524
+ port vlan-stacking vlan 101 to 599 stack-vlan 524
+ port vlan-stacking vlan 3600 stack-vlan 524
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet3/0/12
+ undo negotiation auto
+ description YHKM.SanSengMiao-L-ZTE8220-1.1-MA:F0608162044
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 14
+ port hybrid untagged vlan 525
+ port vlan-stacking vlan 101 to 599 stack-vlan 525
+ port vlan-stacking vlan 3600 stack-vlan 525
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet3/0/13
+ undo negotiation auto
+ description YHKM-L-ZTE9210-1.1-MA-1:local
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 14
+ port hybrid untagged vlan 526
+ port vlan-stacking vlan 101 to 599 stack-vlan 526
+ port vlan-stacking vlan 3600 stack-vlan 526
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet3/0/14
+ undo negotiation auto
+ description YHKM-L-ZTE9210-1.2-MA-16/1:local
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 14
+ port hybrid untagged vlan 527
+ port vlan-stacking vlan 101 to 599 stack-vlan 527
+ port vlan-stacking vlan 3600 stack-vlan 527
+ traffic-policy tpCritical inbound
+ broadcast-suppression 5
+#
+interface GigabitEthernet3/0/15
+ undo negotiation auto
+ description YHKM.HaiGang2-L-ZTE8220-1-MA:F0608162035
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 14
+ port hybrid untagged vlan 528
+ port vlan-stacking vlan 101 to 599 stack-vlan 528
+ port vlan-stacking vlan 3600 stack-vlan 528
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet3/0/16
+ undo negotiation auto
+ description YHKM.HaiGang1-L-ZTE8220-1-MA:F0608162036
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 15
+ port hybrid untagged vlan 529
+ port vlan-stacking vlan 101 to 599 stack-vlan 529
+ port vlan-stacking vlan 3600 stack-vlan 529
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet3/0/17
+ undo negotiation auto
+ description YHKM.QianTai-L-ZTE9210-1-MA:F0608162031
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 12 15
+ port hybrid untagged vlan 530
+ port vlan-stacking vlan 101 to 599 stack-vlan 530
+ port vlan-stacking vlan 3600 stack-vlan 530
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet3/0/18
+ undo negotiation auto
+ description YHKM.HuaYanJiao-L-ZTE9210-1-MA
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 12 15
+ port hybrid untagged vlan 531
+ port vlan-stacking vlan 101 to 599 stack-vlan 531
+ port vlan-stacking vlan 3600 stack-vlan 531
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet3/0/19
+ undo negotiation auto
+ description DSL-YHKM.KanMenDaSha-L-ZTE9210-1-MA:F0608162029
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 12 15 1424
+ port hybrid untagged vlan 532
+ port vlan-stacking vlan 101 to 599 stack-vlan 532
+ port vlan-stacking vlan 3600 stack-vlan 532
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet3/0/20
+ undo negotiation auto
+ description YHKM.SuiLong-L-ZTE9210-1.1-MA:F0608162039
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 15
+ port hybrid untagged vlan 533
+ port vlan-stacking vlan 101 to 800 stack-vlan 533
+ port vlan-stacking vlan 3600 stack-vlan 533
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet3/0/21
+ undo negotiation auto
+ description YHKM.DongFeng2-L-ZTE9210-1-MA
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 14 to 15 17 3001
+ port hybrid untagged vlan 534
+ port vlan-stacking vlan 101 to 1100 stack-vlan 534
+ port vlan-stacking vlan 3600 stack-vlan 534
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet3/0/22
+ undo negotiation auto
+ description YHKM-S-S3928-1-MA-G1/1/1:local
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 19
+ port hybrid untagged vlan 535
+ port vlan-stacking vlan 101 to 1100 stack-vlan 535
+ port vlan-stacking vlan 3600 stack-vlan 535
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet3/0/23
+ undo negotiation auto
+ description YHKM-S-S3928-2-MA-G1/1/1:local
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 19
+ port hybrid untagged vlan 536
+ port vlan-stacking vlan 101 to 1100 stack-vlan 536
+ port vlan-stacking vlan 2801 to 3000 stack-vlan 536
+ port vlan-stacking vlan 3600 stack-vlan 536
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet5/0/0
+ undo negotiation auto
+ shutdown
+ eth-trunk 2
+#
+interface GigabitEthernet5/0/1
+ undo negotiation auto
+ shutdown
+ eth-trunk 2
+#
+interface GigabitEthernet5/0/2
+ undo negotiation auto
+ shutdown
+#
+interface GigabitEthernet5/0/3
+ undo negotiation auto
+ shutdown
+ eth-trunk 2
+#
+interface GigabitEthernet5/0/4
+ undo negotiation auto
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 13 15
+ port hybrid untagged vlan 538
+ port vlan-stacking vlan 101 to 599 stack-vlan 538
+ port vlan-stacking vlan 3600 stack-vlan 538
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet5/0/5
+ undo negotiation auto
+ description YHKM.DongFeng1-L-UTB800-1-MA:F0608162026
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 12
+ port hybrid untagged vlan 537
+ port vlan-stacking vlan 101 to 599 stack-vlan 537
+ port vlan-stacking vlan 3600 stack-vlan 537
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet5/0/6
+ undo negotiation auto
+ description YHKM.ShuangFeng-L-ZTE9210-1.1-MA:F0608162040
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 15 17
+ port hybrid untagged vlan 546
+ port vlan-stacking vlan 101 to 800 stack-vlan 546
+ port vlan-stacking vlan 3600 stack-vlan 546
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet5/0/7
+ undo negotiation auto
+ description YHKM.HaiGang4-L-ZTE9210-1.2-MA:F1107280004
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 15
+ port hybrid untagged vlan 547
+ port vlan-stacking vlan 101 to 1300 stack-vlan 547
+ port vlan-stacking vlan 3600 stack-vlan 547
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet5/0/8
+ undo negotiation auto
+ description DT:YHKM.ShuangLong-L-ZTE9210-J1K1-MA-16/7:F1207250059
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 14 to 15 1424
+ port hybrid untagged vlan 548
+ port vlan-stacking vlan 101 to 1100 stack-vlan 548
+ port vlan-stacking vlan 3600 stack-vlan 548
+ traffic-policy tpCritical inbound
+#
+interface GigabitEthernet5/0/9
+ undo negotiation auto
+ description YHKM.LiAoHuangMeng-L-ZTE9210-1-MA-16/7:F0608162050
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 13 15
+ port hybrid untagged vlan 538
+ port vlan-stacking vlan 101 to 599 stack-vlan 538
+ port vlan-stacking vlan 3600 stack-vlan 538
+ traffic-policy tpCritical inbound
+ broadcast-suppression 5
+#
+interface GigabitEthernet5/0/10
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet5/0/11
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet5/0/12
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet5/0/13
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet5/0/14
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet5/0/15
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet5/0/16
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet5/0/17
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet5/0/18
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet5/0/19
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet5/0/20
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet5/0/21
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet5/0/22
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet5/0/23
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet7/0/0
+ undo negotiation auto
+ speed 100
+ description SRV-IPTV-YHKM.KaiMenDianxin2901:(local)::kehu
+ port hybrid pvid vlan 2901
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 2901
+#
+interface GigabitEthernet7/0/1
+ undo negotiation auto
+ speed 100
+ description SRV-NETBAR-YHKM.feiyuwangba:(F1311260120)::kehu
+ port link-type access
+ port default vlan 3218
+#
+interface GigabitEthernet7/0/2
+ undo negotiation auto
+ speed 100
+ description SRV-NETBAR-YHKM.YeYing:(F0609212029)::kehu
+ port link-type access
+ port default vlan 3222
+#
+interface GigabitEthernet7/0/3
+ undo negotiation auto
+ speed 100
+ description SRV-VLAN-YHKM.SiYouGongSi:(F0708102001)::kehu
+ port link-type access
+ port default vlan 260
+#
+interface GigabitEthernet7/0/4
+ undo negotiation auto
+ speed 100
+ description SRV-NETBAR-YHKM.SiHai:(F0609192004)::kehu
+ port link-type access
+ port default vlan 3228
+#
+interface GigabitEthernet7/0/5
+ undo negotiation auto
+ speed 100
+ description SRV-YHKM.QianDuWangBa:(F1506150052)::kehu
+ port link-type access
+ port default vlan 3238
+#
+interface GigabitEthernet7/0/6
+ undo negotiation auto
+ speed 100
+ description SRV-NETBAR-YHKM.XinLong:(F0512010004)::kehu
+ port link-type access
+ port default vlan 3230
+#
+interface GigabitEthernet7/0/7
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet7/0/8
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet7/0/9
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet7/0/10
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet7/0/11
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet7/0/12
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet7/0/13
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet7/0/14
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet7/0/15
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet7/0/16
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet7/0/17
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet7/0/18
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet7/0/19
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet7/0/20
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet7/0/21
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet7/0/22
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet7/0/23
+ shutdown
+ undo port hybrid vlan 1
+#
+interface GigabitEthernet8/0/0
+ undo negotiation auto
+ speed 100
+ description TaiZhouYiHongShiYeGongSi:F0610202011
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 535
+ port vlan-stacking untagged stack-vlan 535 stack-inner-vlan 126
+#
+interface GigabitEthernet8/0/1
+ undo negotiation auto
+ speed 100
+ description YuHuanXiongJiXie:(F0612312010)::kehu
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 535
+ port vlan-stacking untagged stack-vlan 535 stack-inner-vlan 127
+#
+interface GigabitEthernet8/0/2
+ undo negotiation auto
+ speed 100
+ description ZheJianPuWangTeJiXie:(F0612302022)::kehu
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 535
+ port vlan-stacking untagged stack-vlan 535 stack-inner-vlan 128
+#
+interface GigabitEthernet8/0/3
+ undo negotiation auto
+ speed 100
+ description GongAnJu(KanMenBianFanPaiChuShou):(F0606162100)::kehu
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 535
+ port vlan-stacking untagged stack-vlan 535 stack-inner-vlan 129
+#
+interface GigabitEthernet8/0/4
+ undo negotiation auto
+ speed 100
+ description KanMenDiaoChaoSheQu:(F0605102093)::kehu
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 535
+ port vlan-stacking untagged stack-vlan 535 stack-inner-vlan 130
+#
+interface GigabitEthernet8/0/5
+ undo negotiation auto
+ speed 100
+ description ZheJianJinHuiJiXie:(F0701042010)::kehu
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 535
+ port vlan-stacking untagged stack-vlan 535 stack-inner-vlan 131
+#
+interface GigabitEthernet8/0/6
+ undo negotiation auto
+ speed 100
+ description SRV-PPPoE-YHkM.TaiZhouJiaXianGongYe
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 535
+ port vlan-stacking untagged stack-vlan 535 stack-inner-vlan 136
+#
+interface GigabitEthernet8/0/7
+ undo negotiation auto
+ speed 100
+ description YH-KM-KaiDiQiCheLingBuJianChang
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 535
+ port vlan-stacking untagged stack-vlan 535 stack-inner-vlan 140
+#
+interface GigabitEthernet8/0/8
+ undo negotiation auto
+ speed 100
+ description SRV-PPPoE-YHkM.YH-AoPoJieJu:F0705252065
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 535
+ port vlan-stacking untagged stack-vlan 535 stack-inner-vlan 142
+#
+interface GigabitEthernet8/0/9
+ undo negotiation auto
+ speed 100
+ description SRV-PPPoE-YHkM.YH-JiaYongDianQiZongChang:(F0704022005)::kehu
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 535
+ port vlan-stacking untagged stack-vlan 535 stack-inner-vlan 143
+#
+interface GigabitEthernet8/0/10
+ undo negotiation auto
+ speed 100
+ description KM-HouShaJianSheGongSi:(F0712012009)::kehu
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 535
+ port vlan-stacking untagged stack-vlan 535 stack-inner-vlan 144
+#
+interface GigabitEthernet8/0/11
+ undo negotiation auto
+ speed 100
+ description SRV-PPPoE-YHkM.YH-JinHuiGangYe:(F0704022013)::kehu
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 535
+ port vlan-stacking untagged stack-vlan 535 stack-inner-vlan 145
+#
+interface GigabitEthernet8/0/12
+ undo negotiation auto
+ speed 100
+ description SRV-PPPoE-YHKM.TaiZhouSanYuanQiCheLingBuJian:(F0701232002)::kehu
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 536
+ port vlan-stacking untagged stack-vlan 536 stack-inner-vlan 2802
+#
+interface GigabitEthernet8/0/13
+ undo negotiation auto
+ speed 100
+ description SRV-PPPoE-YHKM.QQY_ZhaoSanHuanShuiDaoKou:F0712032013
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 536
+ port vlan-stacking untagged stack-vlan 536 stack-inner-vlan 2803
+#
+interface GigabitEthernet8/0/14
+ undo negotiation auto
+ speed 100
+ description SRV-PPPoE-YHKM.HongYinJiXieShiYang:(F0703212005)::kehu
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 536
+ port vlan-stacking untagged stack-vlan 536 stack-inner-vlan 2804
+#
+interface GigabitEthernet8/0/15
+ undo negotiation auto
+ speed 100
+ description SRV-PPPoE-YHKM.TaiZhouLiZongBangYeZhiZhao:(F0703262010)::kehu
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 536
+ port vlan-stacking untagged stack-vlan 536 stack-inner-vlan 2805
+#
+interface GigabitEthernet8/0/16
+ undo negotiation auto
+ speed 100
+ description SRV-PPPoE-YHKM.TaiZhouFenRunShengWuHuaXue
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 536
+ port vlan-stacking untagged stack-vlan 536 stack-inner-vlan 2807
+#
+interface GigabitEthernet8/0/17
+ undo negotiation auto
+ speed 100
+ description SRV-PPPoE-YHKM.YH-HaoDuoDuoChaoShi-kanMen:(F1107210001)::kehu
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 536
+ port vlan-stacking untagged stack-vlan 536 stack-inner-vlan 2808
+#
+interface GigabitEthernet8/0/18
+ undo negotiation auto
+ speed 100
+ description SRV-PPPoE-YHKM.KanMenZhaoYanMinGongZiDiXiaoXue:F1105170009
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 536
+ port vlan-stacking untagged stack-vlan 536 stack-inner-vlan 2809
+#
+interface GigabitEthernet8/0/19
+ undo negotiation auto
+ speed 100
+ description SRV-PPPoE-YHKM.TaiZhouYiHongZhuangXianJi:(F0704022007)::kehu
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 536
+ port vlan-stacking untagged stack-vlan 536 stack-inner-vlan 2810
+#
+interface GigabitEthernet8/0/20
+ undo negotiation auto
+ speed 100
+ description SRV-PPPoE-YHKM.ZheJianYuHuiZhiYe:F0704022004
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 536
+ port vlan-stacking untagged stack-vlan 536 stack-inner-vlan 2813
+#
+interface GigabitEthernet8/0/21
+ undo negotiation auto
+ speed 100
+ description SRV-PPPoE-YHKM.DengTaSheQu:(F0906300007)::kehu
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 536
+ port vlan-stacking untagged stack-vlan 536 stack-inner-vlan 2814
+#
+interface GigabitEthernet8/0/22
+ undo negotiation auto
+ speed 100
+ description SRV-PPPoE-YHkM.ZJ-HuanFanQiCheDianQi
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 536
+ port vlan-stacking untagged stack-vlan 536 stack-inner-vlan 2816
+#
+interface GigabitEthernet8/0/23
+ undo negotiation auto
+ speed 100
+ description SRV-PPPoE-YHkM.ShuiLiJuSangFanZhiHuiBu--SuangMiaoShuiKu:F0903230023
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 536
+ port vlan-stacking untagged stack-vlan 536 stack-inner-vlan 2818
+#
+interface GigabitEthernet8/0/24
+ port media type fiber
+  undo negotiation auto
+  speed 100
+ description SRV-PPPoE-YHKM.QQY(KanMenJu---E-JianKong):(F0906020006)::kehu
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 536
+ port vlan-stacking untagged stack-vlan 536 stack-inner-vlan 2821
+#
+interface GigabitEthernet8/0/25
+ undo negotiation auto
+ speed 100
+ description SRV-PPPoE-YHKM.YH-YuKanLuWuShuiChuLiZhiHuiBu
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 536
+ port vlan-stacking untagged stack-vlan 536 stack-inner-vlan 2823
+#
+interface GigabitEthernet8/0/26
+ undo negotiation auto
+ speed 100
+ description SRV-PPPoE-YHkM.YuHuanPuTianDangXianQi
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 535
+ port vlan-stacking untagged stack-vlan 535 stack-inner-vlan 134
+#
+interface GigabitEthernet8/0/27
+ description SRV-VLAN-YHKM.GangWuJuYingDongMaTou:F0711082010
+#
+interface GigabitEthernet8/0/28
+#
+interface GigabitEthernet8/0/29
+#
+interface GigabitEthernet8/0/30
+#
+interface GigabitEthernet8/0/31
+ description SRV-PPPoE-YHKM.TZ-ZhengPengDanXianQi:F0712192002
+#
+interface GigabitEthernet8/0/32
+#
+interface GigabitEthernet8/0/33
+ undo negotiation auto
+ speed 100
+ description SRV-PPPoE-YHkM.YH-XianXingJiDianChang
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 510
+ port vlan-stacking untagged stack-vlan 510 stack-inner-vlan 127
+#
+interface GigabitEthernet8/0/34
+ undo negotiation auto
+ speed 100
+ description SRV-PPPoE-YHkM.HangGuanJuYingDongMaTou
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 510
+ port vlan-stacking untagged stack-vlan 510 stack-inner-vlan 128
+#
+interface GigabitEthernet8/0/35
+ undo negotiation auto
+ speed 100
+ description SRV-PPPoE-YHkM.YingDuBingGuan::kehu
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 510
+ port vlan-stacking untagged stack-vlan 510 stack-inner-vlan 131
+#
+interface GigabitEthernet8/0/36
+ undo negotiation auto
+ speed 100
+ description SRV-PPPoE-KanMenDianXinJu
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 510
+ port vlan-stacking untagged stack-vlan 510 stack-inner-vlan 133
+#
+interface GigabitEthernet8/0/37
+ undo negotiation auto
+ speed 100
+ description description SRV-PPPoE-ZJZhenBangShuiDian
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 510
+ port vlan-stacking untagged stack-vlan 510 stack-inner-vlan 137
+#
+interface GigabitEthernet8/0/38
+ undo negotiation auto
+ speed 100
+ description SRV-PPPoE-YuanDongLingBuJian::kehu
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 510
+ port vlan-stacking untagged stack-vlan 510 stack-inner-vlan 142
+#
+interface GigabitEthernet8/0/39
+ undo negotiation auto
+ speed 100
+ description SRV-PPPoE-YongGuoJiXie::kehu
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 510
+ port vlan-stacking untagged stack-vlan 510 stack-inner-vlan 144
+#
+interface GigabitEthernet8/0/40
+ shutdown
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet8/0/41
+ shutdown
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet8/0/42
+ shutdown
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet8/0/43
+ shutdown
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet8/0/44
+ shutdown
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet8/0/45
+ shutdown
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet8/0/46
+ shutdown
+ port hybrid tagged vlan 1023
+#
+interface GigabitEthernet8/0/47
+#
+interface GigabitEthernet9/0/0
+ port media type copper
+  undo negotiation auto
+  speed 100
+ description YHKM-S-3226P-2-0/27:local
+ shutdown
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 19
+ port hybrid untagged vlan 510
+ port vlan-stacking vlan 101 to 1100 stack-vlan 510
+ port vlan-stacking vlan 3600 stack-vlan 510
+#
+interface GigabitEthernet9/0/1
+ undo negotiation auto
+ speed 100
+ description SRV-IPTV-YHKM.YongTaiBinGuan-1:(F0910300024)::kehu
+ port hybrid pvid vlan 2802
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 2802
+#
+interface GigabitEthernet9/0/2
+ undo negotiation auto
+ speed 100
+ description SRV-IPTV-YHKM.YongTaiBinGuan-2:(F0910300025)::kehu
+ port hybrid pvid vlan 2803
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 2803
+#
+interface GigabitEthernet9/0/3
+ undo negotiation auto
+ speed 100
+ description SRV-IPTV-YHKM.HaiShangHuaBinGuan-1:F0911060023
+ port hybrid pvid vlan 2804
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 2804
+#
+interface GigabitEthernet9/0/4
+ description SRV-IPTV-YHKM.HaiShangHuaBinGuan-2:F0911060024
+ port hybrid pvid vlan 2805
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 2805
+#
+interface GigabitEthernet9/0/5
+ undo negotiation auto
+ speed 100
+ description SRV-PPPoE-YHkM.KaiLiQiPei:F0806230013
+ port hybrid pvid vlan 2808
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 2808
+ traffic-policy 20M inbound
+ traffic-policy 20M outbound
+#
+interface GigabitEthernet9/0/6
+ undo negotiation auto
+ speed 100
+ description SRV-IPTV-YHKM.LiuQiaoYun-IPTV-1:F1008310019
+ port hybrid pvid vlan 2809
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 2809
+#
+interface GigabitEthernet9/0/7
+ undo negotiation auto
+ speed 100
+ description SRV-IPTV-YHKM.LiuQiaoYun-IPTV-2:F1008310020
+ port hybrid pvid vlan 2810
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 2810
+#
+interface GigabitEthernet9/0/8
+ port media type fiber
+  undo negotiation auto
+  speed 100
+ description SRV-PPPoE-YHkM.DianXingZhiJu-3GYanShi:(F1108220075)::kehu
+ port hybrid pvid vlan 2812
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 2812
+#
+interface GigabitEthernet9/0/9
+ port media type fiber
+  undo negotiation auto
+  speed 100
+ description WLAN-YHKM.YingYeTing:(local)::kehu
+ undo port hybrid vlan 1
+ port hybrid tagged vlan 24 54
+#
+interface GigabitEthernet9/0/10
+ undo negotiation auto
+ speed 100
+ description SRV-LL-HBJ-XiongPengJiXie:(F1003310013)::kehu
+ port link-type access
+ port default vlan 3974
+#
+interface GigabitEthernet9/0/11
+ undo negotiation auto
+ speed 100
+ description VPN-SiFa-KMBanShiChu:(F1211150016)::kehu
+ port link-type access
+ port default vlan 3401
+#
+interface GigabitEthernet9/0/12
+ undo negotiation auto
+ speed 100
+ description SRV-LL-YHKM.ZheJiangJinQiaoShenWuYouXianGongSi:F1405130001
+ port hybrid pvid vlan 3258
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 3258
+#
+interface GigabitEthernet9/0/13
+ undo negotiation auto
+ speed 100
+ description huanbao-longshengshuichangongsi:(F0606192100)::kehu
+ port link-type access
+ port default vlan 3963
+#
+interface GigabitEthernet9/0/14
+ undo negotiation auto
+ speed 100
+ description SRV-LL-YHKM.ZheJiangJinQiaoShenWuYouXianGongSi:F1405130001
+ port hybrid pvid vlan 3258
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 3258
+#
+interface GigabitEthernet9/0/15
+#
+interface GigabitEthernet9/0/16
+#
+interface GigabitEthernet9/0/17
+#
+interface GigabitEthernet9/0/18
+#
+interface GigabitEthernet9/0/19
+#
+interface GigabitEthernet9/0/20
+#
+interface GigabitEthernet9/0/21
+#
+interface GigabitEthernet9/0/22
+#
+interface GigabitEthernet9/0/23
+#
+interface GigabitEthernet9/0/24
+#
+interface GigabitEthernet9/0/25
+#
+interface GigabitEthernet9/0/26
+#
+interface GigabitEthernet9/0/27
+#
+interface GigabitEthernet9/0/28
+#
+interface GigabitEthernet9/0/29
+#
+interface GigabitEthernet9/0/30
+#
+interface GigabitEthernet9/0/31
+#
+interface GigabitEthernet9/0/32
+#
+interface GigabitEthernet9/0/33
+#
+interface GigabitEthernet9/0/34
+#
+interface GigabitEthernet9/0/35
+#
+interface GigabitEthernet9/0/36
+#
+interface GigabitEthernet9/0/37
+#
+interface GigabitEthernet9/0/38
+#
+interface GigabitEthernet9/0/39
+#
+interface GigabitEthernet9/0/40
+#
+interface GigabitEthernet9/0/41
+#
+interface GigabitEthernet9/0/42
+#
+interface GigabitEthernet9/0/43
+#
+interface GigabitEthernet9/0/44
+#
+interface GigabitEthernet9/0/45
+#
+interface GigabitEthernet9/0/46
+#
+interface GigabitEthernet9/0/47
+#
+interface GigabitEthernet10/0/0
+ undo negotiation auto
+ speed 100
+ description SRV-LL-YHKM.KanMenHongShiZiYingYuan:(F0703092010)::kehu
+ port link-type access
+ port default vlan 3231
+#
+interface GigabitEthernet10/0/1
+#
+interface GigabitEthernet10/0/2
+ undo negotiation auto
+ speed 100
+ description SRV-LL-YHKM.TZ-PuLouQiCheBuJian:(F1105230094)::kehu
+ port link-type access
+ port default vlan 3233
+#
+interface GigabitEthernet10/0/3
+#
+interface GigabitEthernet10/0/4
+ undo negotiation auto
+ speed 100
+ description SRV-PPPOE-YHKM.PaiChuSuo:(F0606092011)::kehu
+ port link-type access
+ port default vlan 2816
+#
+interface GigabitEthernet10/0/5
+#
+interface GigabitEthernet10/0/6
+ undo negotiation auto
+ speed 100
+ description SRV-NETBAR-YHKM.XinYuan:(F0610240005)::kehu
+ port link-type access
+ port default vlan 3237
+ broadcast-suppression 15
+#
+interface GigabitEthernet10/0/7
+#
+interface GigabitEthernet10/0/8
+ undo negotiation auto
+ speed 100
+ description SRV-NETBAR-YHKM.QiXing:(F0910200030)::kehu
+ port link-type access
+ port default vlan 3239
+#
+interface GigabitEthernet10/0/9
+#
+interface GigabitEthernet10/0/10
+#
+interface GigabitEthernet10/0/11
+ undo negotiation auto
+ speed 100
+ description SRV-NETBAR-YHKM.ZiJianYuan:(F0610240006)::kehu
+ port link-type access
+ port default vlan 3242
+#
+interface GigabitEthernet10/0/12
+#
+interface GigabitEthernet10/0/13
+#
+interface GigabitEthernet10/0/14
+ undo negotiation auto
+ speed 100
+ description SRV-NETBAR-YHKM.WeiDuoLiYa:F0609192003
+ port link-type access
+ port default vlan 3245
+#
+interface GigabitEthernet10/0/15
+#
+interface GigabitEthernet10/0/16
+ undo negotiation auto
+ speed 100
+ description SRV-NETBAR-YHKM.AFu:(F0608142022)::kehu
+ port link-type access
+ port default vlan 3247
+#
+interface GigabitEthernet10/0/17
+ undo negotiation auto
+ speed 100
+ description SRV-LL-YHKM.YuKanLu-WuShuiChuLiBu::kehu
+ port link-type access
+ port default vlan 3999
+#
+interface GigabitEthernet10/0/18
+ undo negotiation auto
+ speed 100
+ description SRV-VLAN-YHKM.Hbj.YuHuanYaoQianDianDu:F0701112006
+ port link-type access
+ port default vlan 396
+#
+interface GigabitEthernet10/0/19
+#
+interface GigabitEthernet10/0/20
+ undo negotiation auto
+ speed 100
+ description MPLS-VPN-YuHuanXianJianSheWeiYuanHui:F0912160023
+ port link-type access
+ port default vlan 3021
+#
+interface GigabitEthernet10/0/21
+ undo negotiation auto
+ speed 100
+ description SRV-MPLS-ZJ-RuiRenTan-YiYao:F1406260122
+ port link-type access
+ port default vlan 3252
+#
+interface GigabitEthernet10/0/22
+ undo negotiation auto
+ speed 100
+ description SRV-NETBAR-YHKM.FengZeng:(F0511180211)::kehu
+ port link-type access
+ port default vlan 3253
+#
+interface GigabitEthernet10/0/23
+ undo negotiation auto
+ speed 100
+ description SRV-NETBAR-YHKM.ZhongXin:(F0810200024)::kehu
+ port link-type access
+ port default vlan 3254
+#
+interface GigabitEthernet10/0/24
+ undo negotiation auto
+ speed 100
+ description SRV-LL-YHKM.YaoQianDianDu::kehu
+ port link-type access
+ port default vlan 3989
+#
+interface GigabitEthernet10/0/25
+ undo negotiation auto
+ description SRV-VLAN-YHKM.QiXiangJu:F0605290027
+ port link-type access
+ port default vlan 259
+#
+interface GigabitEthernet10/0/26
+ undo negotiation auto
+ speed 100
+ description SRV-LL-YHKM.SuiLongCunXinXiHua:(F0607040054)::kehu
+ port link-type access
+ port default vlan 3257
+#
+interface GigabitEthernet10/0/27
+ undo negotiation auto
+ speed 100
+ description SRV-VLAN-YHKM.GangWuJuYingDongMaTou:(F0711082010)::kehu
+ port link-type access
+ port default vlan 398
+#
+interface GigabitEthernet10/0/28
+#
+interface GigabitEthernet10/0/29
+#
+interface GigabitEthernet10/0/30
+#
+interface GigabitEthernet10/0/31
+ undo negotiation auto
+ speed 100
+ description SRV-PPPoE-YHKM.TZ-ZhengPengDanXianQi:(F0712192002)::kehu
+ port link-type access
+ port default vlan 2814
+ traffic-policy 20M inbound
+ traffic-policy 20M outbound
+#
+interface GigabitEthernet10/0/32
+#
+interface GigabitEthernet10/0/33
+#
+interface GigabitEthernet10/0/34
+#
+interface GigabitEthernet10/0/35
+#
+interface GigabitEthernet10/0/36
+#
+interface GigabitEthernet10/0/37
+#
+interface GigabitEthernet10/0/38
+#
+interface GigabitEthernet10/0/39
+#
+interface GigabitEthernet10/0/40
+#
+interface GigabitEthernet10/0/41
+#
+interface GigabitEthernet10/0/42
+#
+interface GigabitEthernet10/0/43
+#
+interface GigabitEthernet10/0/44
+#
+interface GigabitEthernet10/0/45
+#
+interface GigabitEthernet10/0/46
+#
+interface GigabitEthernet10/0/47
+#
+interface XGigabitEthernet6/0/0
+ description uT:TZ-YH-CN-BAS-6.MAN.E320-TE13/0/0
+ undo port hybrid vlan 1
+ stp disable
+#
+interface XGigabitEthernet6/0/1
+ description UT:TZ-YH-LJ-BARS-2.MAN.7750:(F0904220039)10GE7/1/1
+ eth-trunk 3
+#
+interface XGigabitEthernet6/0/2
+ shutdown
+ undo port hybrid vlan 1
+#
+interface XGigabitEthernet6/0/3
+ description uT:TZ-YH-CN-BAS-6.MAN.E320-TE13/0/0 backup
+ undo port hybrid vlan 1
+#
+interface XGigabitEthernet11/0/0
+#
+interface XGigabitEthernet11/0/1
+#
+interface XGigabitEthernet11/0/2
+#
+interface XGigabitEthernet11/0/3
+#
+interface XGigabitEthernet12/0/0
+#
+interface XGigabitEthernet12/0/1
+ description UT:TZ-YH-LJ-BARS-2.MAN.7750:(F1307050092)10GE8/1/1
+ eth-trunk 3
+#
+interface XGigabitEthernet12/0/2
+#
+interface XGigabitEthernet12/0/3
+#
+interface NULL0
+#
+smart-link group 1
+ protected-vlan reference-instance 0
+ restore enable 
+ smart-link enable 
+ port GigabitEthernet1/0/4 master
+ port GigabitEthernet3/0/4 slave
+ timer wtr 30 
+#
+ip route-static 0.0.0.0 0.0.0.0 61.175.87.238
+#
+snmp-agent
+snmp-agent local-engineid 000007DB7FFFFFFF00002F46
+snmp-agent community read cipher %^%#9$4!X"IA&Zk2S<H"7FxVgcSi(k~S'P!O~P.0=A3LiKoe8-q@0.n&r:>;*V'F[Z\-H]%+1SE\;<#$(J4P%^%# acl 2000
+snmp-agent community complexity-check disable
+snmp-agent sys-info contact HUAWEI 8008302118
+snmp-agent sys-info location TZ.MAN
+snmp-agent sys-info version all
+snmp-agent target-host trap address udp-domain 60.191.145.38 params securityname cipher %^%#~U[_~Wq@\Uf15cH!(]:IdGn6=9BvgAEhkHO5kxR~%^%# v2c
+snmp-agent trap enable feature-name bgp
+snmp-agent trap enable feature-name IFNET trap-name linkDown
+snmp-agent trap enable feature-name IFNET trap-name linkUp
+snmp-agent trap enable feature-name CONFIGURATION
+snmp-agent trap enable feature-name SNMP trap-name authenticationFailure
+undo snmp-agent trap enable feature-name DLDP
+undo snmp-agent trap enable feature-name LDTTRAP
+undo snmp-agent trap enable feature-name LLDPTRAP
+snmp-agent trap enable feature-name VFS
+snmp-agent trap enable feature-name BASETRAP
+#
+ssh server compatible-ssh1x enable
+#
+user-interface maximum-vty 10
+user-interface con 0
+ authentication-mode password
+ user privilege level 3
+ set authentication password cipher $1a$c:k$P2/p/X$7-~^:m0[,/aO#JCV>Mj95FM+!OlfD"SI.EWA9uPP$
+ idle-timeout 8 0
+user-interface vty 0 9
+ acl 3001 inbound
+ authentication-mode aaa
+ user privilege level 3
+ idle-timeout 8 0
+ protocol inbound telnet
+user-interface vty 16 20
+ protocol inbound telnet
+#
+return
+<TZ-YH-KANMEN-SW2-S9312-1.MAN>

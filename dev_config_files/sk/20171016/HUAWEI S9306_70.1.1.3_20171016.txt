@@ -1,0 +1,759 @@
+
+!Software Version V200R008C00SPC500
+#
+sysname QZ-QZ-NJEL-DSW-1.MAN.S9306
+#
+super password level 3 cipher %$%$;O(zWJA<^:lA3mO97W\#Pg&.#Wr7D!WCc:2\1.T:W1M%g&1P%$%$
+#
+info-center source default channel 2 log level warning trap level warning
+info-center source default channel 4 log level notification
+info-center source SHELL channel 4 log level notification
+info-center source NTP channel 4 log state off 
+info-center loghost source Vlanif20
+info-center loghost 10.192.0.11 facility local4
+info-center loghost 10.192.0.12 facility local4
+#
+vlan batch 20 to 23 25 29 496 531 813 1307 to 1308 1310 to 1312 1314 to 1326 1335
+vlan batch 1381 to 1383 1500 to 1512 1531 to 1541 1547 to 1549 1602 1707 to 1722 1771 1792 to 1794 1800 2501 to 2503
+vlan batch 2635 to 2652 2699 to 2700 3099 to 3100 3207 3273 3800 to 3802 3805 3809 to 3811 3820
+#
+undo authentication unified-mode
+#
+set save-configuration interval 43200 delay 30
+#
+telnet server enable
+#
+lldp enable
+#
+undo http server enable
+undo http secure-server enable
+#
+undo management-port isolate enable
+undo management-plane isolate enable
+#
+clock timezone GMT add 08:00:00
+#
+observe-port 2 interface GigabitEthernet1/0/23 vlan 10
+#
+diffserv domain default
+#
+hwtacacs-server template zjdx
+ hwtacacs-server authentication 70.0.0.32
+ hwtacacs-server authorization 70.0.0.32
+ hwtacacs-server accounting 70.0.0.32
+ hwtacacs-server source-ip 70.1.1.3
+ hwtacacs-server shared-key cipher %^%#5!!7N>ZI!:uFh6)xsBSUr$yp7CO-o<;JSF=.,Lo4%^%#
+ hwtacacs-server timer response-timeout 30
+ undo hwtacacs-server user-name domain-included
+#
+acl number 2000  
+ description SNMP
+ rule 10 permit source 10.192.0.0 0.0.0.255 
+ rule 20 permit source 10.31.255.0 0.0.0.255 
+ rule 30 permit source 70.0.1.0 0.0.0.127 
+ rule 100 deny 
+acl number 2001  
+ description Telnet
+ rule 10 permit source 10.10.0.0 0.0.1.255 
+ rule 20 permit source 10.192.0.0 0.0.0.31 
+ rule 30 permit source 70.1.1.0 0.0.0.255 
+ rule 40 permit source 10.31.255.0 0.0.0.255 
+ rule 50 permit source 70.0.0.0 0.0.3.255 
+ rule 100 deny 
+acl number 2002  
+ description NTP
+ rule 10 permit source 70.0.0.32 0 
+ rule 100 deny 
+#
+traffic classifier c1 operator or precedence 30
+ if-match vlan-id 1531 cvlan-id 704
+ if-match vlan-id 1511 cvlan-id 196
+traffic classifier tcAny operator or precedence 25
+ if-match any
+traffic classifier tcIAD operator or precedence 20
+ if-match cvlan-id 3599 to 3600
+#
+traffic behavior b1
+ permit
+ mirroring to observe-port 2 
+traffic behavior tb100m
+ permit
+ car cir 102400 pir 102400 cbs 12800000 pbs 12800000 mode color-blind green pass yellow pass red discard
+traffic behavior tb10m
+ permit
+ car cir 10240 pir 10240 cbs 1280000 pbs 1280000 mode color-blind green pass yellow pass red discard
+traffic behavior tb1m
+ permit
+ car cir 1024 pir 1024 cbs 128000 pbs 128000 mode color-blind green pass yellow pass red discard
+traffic behavior tb20m
+ permit
+ car cir 20480 pir 20480 cbs 2560000 pbs 2560000 mode color-blind green pass yellow pass red discard
+traffic behavior tb2m
+ permit
+ car cir 2048 pir 2048 cbs 256000 pbs 256000 mode color-blind green pass yellow pass red discard
+traffic behavior tb4m
+ permit
+ car cir 4096 pir 4096 cbs 512000 pbs 512000 mode color-blind green pass yellow pass red discard
+traffic behavior tb50m
+ permit
+ car cir 51200 pir 51200 cbs 6400000 pbs 6400000 mode color-blind green pass yellow pass red discard
+traffic behavior tb6m
+ permit
+ car cir 6144 pir 6144 cbs 768000 pbs 768000 mode color-blind green pass yellow pass red discard
+traffic behavior tb8m
+ permit
+ car cir 8192 pir 8192 cbs 1024000 pbs 1024000 mode color-blind green pass yellow pass red discard
+traffic behavior tbIAD
+ permit
+ remark 8021p 4
+traffic behavior v1531
+ permit
+#
+traffic policy 100m match-order auto
+ classifier tcAny behavior tb100m
+traffic policy 10m match-order auto
+ classifier tcAny behavior tb10m
+traffic policy 1m match-order auto
+ classifier tcAny behavior tb1m
+traffic policy 20m match-order auto
+ classifier tcAny behavior tb20m
+traffic policy 2m match-order auto
+ classifier tcAny behavior tb2m
+traffic policy 4m match-order auto
+ classifier tcAny behavior tb4m
+traffic policy 50m match-order auto
+ classifier tcAny behavior tb50m
+traffic policy 6m match-order auto
+ classifier tcAny behavior tb6m
+traffic policy 8m match-order auto
+ classifier tcAny behavior tb8m
+traffic policy mirror_v1531 match-order auto
+traffic policy p1 match-order auto
+ classifier c1 behavior b1
+traffic policy tpIAD match-order auto
+ classifier tcIAD behavior tbIAD
+#
+drop-profile default
+#
+vlan 20
+ description For-Management
+vlan 21
+ description Manager_UT_ADSL-XDL
+vlan 22
+ description Manager_ZTE_ADSL-XDL
+vlan 23
+ description Manager_Node_Switch-XDL
+vlan 29
+ description Manager_HuaWei_OLT_NJ
+vlan 496
+ description DCN
+vlan 1307
+ description GW3550-UT-1
+vlan 1308
+ description GW3550-UT-2
+vlan 1310
+ description ZTE8220-1-2
+vlan 1311
+ description NJ_UT_2_2-2#
+vlan 1312
+ description GW3550UT-3
+vlan 1314
+ description ZTE8220-2-1
+vlan 1315
+ description ZTE8220-1-1
+vlan 1316
+ description ZTE8220-3-1
+vlan 1317
+ description ZTE8220-3-2
+vlan 1318
+ description ZTE9210-1
+vlan 1319
+ description NJ2L-9210_2_1
+vlan 1320
+ description NJ_8220_1_1-3#
+vlan 1321
+ description NJ_8220_1_1-4#
+vlan 1322
+ description NJ_8220_1_1-5#
+vlan 1323
+ description NJ_8220_1_2-1#
+vlan 1324
+ description NJ-9210-4-2
+vlan 1325
+ description NJ-9210-5-1
+vlan 1326
+ description NJ-9210-5-2
+vlan 1381
+ description NJ-OLT-7.GB5680T-PPP-1#
+vlan 1382
+ description NJ-OLT-7.GB5680T-PPP-2#
+vlan 1383
+ description NJ-OLT-7.GB5680T-PPP-3#
+vlan 1501
+ description NJ-BELL-GPON-1-1-FTTH-1#
+vlan 1502
+ description NJ-BELL-GPON-1-1-FTTH-2#
+vlan 1503
+ description NJ-BELL-GPON-1-1-FTTH-3#
+vlan 1504
+ description NJ-BELL-GPON-1-1-FTTH-4#
+vlan 1505
+ description NJ-BELL-GPON-1-1-FTTH-5#
+vlan 1506
+ description NJ-BELL-GPON-1-1-FTTH-6#
+vlan 1507
+ description NJ-OLT-5-HW-GPON-FTTh-1#
+vlan 1508
+ description NJ-OLT-5-HW-GPON-FTTh-2#
+vlan 1509
+ description NJ-OLT-5-HW-GPON-FTTh-3#
+vlan 1510
+ description NJ-OLT-5-HW-GPON-FTTh-4#
+vlan 1511
+ description NJ-OLT-5-HW-GPON-FTTh-5#
+vlan 1512
+ description NJ-OLT-5-HW-GPON-FTTh-6#
+vlan 1531
+ description NJ_OLT2_FTTH-1#
+vlan 1532
+ description NJ_OLT2_FTTH-2#
+vlan 1533
+ description NJ_OLT2_FTTH-3#
+vlan 1534
+ description NJ_OLT2_FTTH-4#
+vlan 1535
+ description NJ_OLT2_FTTH-5#
+vlan 1536
+ description NJ_OLT2_FTTH-6#
+vlan 1537
+ description QZ-Z-NJ-OLT-6.MAN.GH5680T-1#
+vlan 1538
+ description QZ-Z-NJ-OLT-6.MAN.GH5680T-2#
+vlan 1539
+ description QZ-Z-NJ-OLT-6.MAN.GH5680T-3#
+vlan 1540
+ description QZ-Z-NJ-OLT-6.MAN.GH5680T-4#
+vlan 1541
+ description QZ-Z-NJ-OLT-6.MAN.GH5680T-5#
+vlan 1547
+ description QZ-QZ-NJ2L-OLT-9.MAN.GH5516-1#
+vlan 1548
+ description QZ-QZ-NJ2L-OLT-9.MAN.GH5516-2#
+vlan 1549
+ description QZ-QZ-NJ2L-OLT-9.MAN.GH5516-3#
+vlan 1602
+ description NJ-EPON-FTTH-PPPoE
+vlan 1707
+ description NJ-EPON-PPPoE-1#
+vlan 1708
+ description NJ-EPON-PPPoE-2#
+vlan 1709
+ description NJ-EPON-PPPoE-3#
+vlan 1710
+ description NJ-EPON-PPPoE-4#
+vlan 1711
+ description NJ-EPON-PPPoE-5#
+vlan 1712
+ description NJ-EPON-PPPoE-6#
+vlan 1713
+ description NJ-EPON-PPPoE-7#
+vlan 1714
+ description NJ-EPON-PPPoE-8#
+vlan 1715
+ description NJ-EPON-PPPoE-9#
+vlan 1716
+ description NJ-EPON-PPPoE-10#
+vlan 1717
+ description NJ-EPON-PPPoE-11#
+vlan 1718
+ description NJ-EPON-PPPoE-12#
+vlan 1719
+ description NJ-EPON-PPPoE-13#
+vlan 1720
+ description NJ-EPON-PPPoE-14#
+vlan 1721
+ description NJ-EPON-PPPoE-15#
+vlan 1722
+ description NJ-EPON-PPPoE-16#
+vlan 1771
+ description NJ-OLT-7.GB5680T-PSTN
+vlan 1792
+ description NJ-OLT-5-HW-GPON-PSTN
+vlan 1794
+ description NJ-EPON-2-YY
+vlan 1800
+ description NanJie-EPON-YuYin-FengHuo
+vlan 2501
+ description NJ-OLT-7.GB5680T-LAN-1#
+vlan 2502
+ description NJ-OLT-7.GB5680T-LAN-2#
+vlan 2503
+ description NJ-OLT-7.GB5680T-LAN-3#
+vlan 2635
+ description NJ-EPON-LAN-0#
+vlan 2636
+ description NJ-EPON-LAN-1#
+vlan 2637
+ description NJ-EPON-LAN-2#
+vlan 2638
+ description NJ-EPON-LAN-3#
+vlan 2639
+ description NJ-EPON-LAN-4#
+vlan 2640
+ description NJ-EPON-LAN-5#
+vlan 2641
+ description NJ-EPON-LAN-6#
+vlan 2642
+ description NJ-EPON-LAN-7#
+vlan 2643
+ description NJ-EPON-LAN-8#
+vlan 2644
+ description NJ-EPON-LAN-9#
+vlan 2645
+ description NJ-EPON-LAN-10#
+vlan 2646
+ description NJ-EPON-LAN-11#
+vlan 2647
+ description NJ-EPON-LAN-12#
+vlan 2648
+ description NJ-EPON-LAN-13#
+vlan 2649
+ description NJ-EPON-LAN-14#
+vlan 2650
+ description NJ-EPON-LAN-15#
+vlan 2651
+ description NJ-EPON-LAN-16#
+vlan 2652
+ description NJ-EPON-LAN-17#
+vlan 3207
+ description TO-XDL_NOC
+vlan 3802
+ description XiaoDaiKuan
+vlan 3805
+ description GongAnNanJieJiFang3Lou_QuanQiuYan
+vlan 3809
+ description Temp_Yao
+vlan 3810
+ description Temp_Lin
+vlan 3811
+ description temp_Yao
+vlan 3820
+ description GuoAn_Temp
+#
+aaa
+ authentication-scheme default
+ authentication-scheme zjdx
+  authentication-mode hwtacacs local
+ authorization-scheme default
+ authorization-scheme zjdx
+  authorization-mode  hwtacacs local
+ accounting-scheme default
+ accounting-scheme zjdx
+  accounting-mode hwtacacs
+  accounting start-fail online
+ recording-scheme zjdx
+  recording-mode hwtacacs zjdx
+ cmd recording-scheme zjdx
+ outbound recording-scheme zjdx
+ system recording-scheme zjdx
+ domain default
+ domain default_admin
+  authentication-scheme zjdx
+  accounting-scheme zjdx
+  authorization-scheme zjdx
+  hwtacacs-server zjdx
+ local-user admin password irreversible-cipher %^%#9rs0;(*<s<S*66)@Nu0Dy{pPX`k@Z(Pglk%g::Q-3r\#!d+rb>EYl}"yRWI7%^%#
+ local-user admin service-type http
+ local-user local password irreversible-cipher %^%#}>5n8X@G`$CXZ18$c$f9b`:j*tJ|aUO(b+N}*((D2A:/260owR6N4+DEEaaM%^%#
+ local-user local privilege level 3
+ local-user local service-type telnet terminal
+ local-user zjnoc password irreversible-cipher %^%#I^S1Hg\VfY!0#C7-t0!0~XRx:yZyEOb9fcIDV+-I){1rLoCx-NLE-_3T=Dq*%^%#
+ local-user zjnoc privilege level 3
+ local-user zjnoc service-type telnet terminal
+#
+ntp-service access peer 2002
+ntp-service unicast-server 70.0.0.32 version 2 source-interface Vlanif20 preference
+#
+interface Vlanif20
+ description For-Management
+ ip address 70.1.1.3 255.255.255.0
+#
+interface Vlanif1547
+#
+interface Eth-Trunk1
+ description uT:QZ-QZ-NJ-SR-2.MAN.7750:lag3(GE5/1/2)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 2501 to 2503 2637 2639 2643 3273
+#
+interface Eth-Trunk2
+ description uT:QZ-QZ-NJ-BAS-2.MAN.7750:lag1(10GE5/1/2,10GE8/1/2)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 1307 to 1308 1310 to 1312 1314 to 1326 1381 to 1383 1500 to 1512 1531 to 1541 1547 to 1549 1602 1707 1710 to 1712
+ port trunk allow-pass vlan 1771 1792 to 1794 1800
+ traffic-policy p1 inbound
+ mode lacp
+#
+interface Eth-Trunk3
+ description dT:QZ-QZ-NJ-OLT-2.MAN.EB5680T:LAG1(10GE0/20/0)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 25 29 496 531 1531 to 1533 1602 1707 to 1712 1794 2637 to 2639 2643
+ port trunk allow-pass vlan 3273
+ traffic-policy p1 inbound
+ mode lacp
+#
+interface Eth-Trunk9
+ description dT:QZ-QZ-NJ-OLT-3.MAN.7360:lag1(GE9/1,GE9/2,GE10/1,GE10/2)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 25 1501 to 1506 1794 3802
+#
+interface Eth-Trunk14
+ description dT:QZ-QZ-NJ-OLT-6.MAN.GH5680T:LAG1(10GE0/19/0)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 25 1537 to 1541 1793
+ traffic-policy tpIAD inbound
+ mode lacp
+#
+interface Eth-Trunk100
+ description uT:QZ-QZ-NJ-SR-1.MAN.7750:lag4(GE5/2/4)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 29 496 531 813 1321 1335 1500 to 1501 2699 to 2700 3099 to 3100 3207
+ port trunk allow-pass vlan 3800 to 3802 3805 3809 to 3811 3820
+#
+interface Ethernet0/0/0
+ shutdown
+#
+interface Ethernet3/0/0
+#
+interface Ethernet3/0/1
+#
+interface Ethernet3/0/2
+#
+interface Ethernet3/0/3
+#
+interface Ethernet3/0/4
+#
+interface Ethernet3/0/5
+#
+interface Ethernet3/0/6
+#
+interface Ethernet3/0/7
+#
+interface Ethernet3/0/8
+#
+interface Ethernet3/0/9
+#
+interface Ethernet3/0/10
+#
+interface Ethernet3/0/11
+#
+interface Ethernet3/0/12
+#
+interface Ethernet3/0/13
+#
+interface Ethernet3/0/14
+#
+interface Ethernet3/0/15
+#
+interface Ethernet3/0/16
+#
+interface Ethernet3/0/17
+#
+interface Ethernet3/0/18
+#
+interface Ethernet3/0/19
+#
+interface Ethernet3/0/20
+#
+interface Ethernet3/0/21
+#
+interface Ethernet3/0/22
+#
+interface Ethernet3/0/23
+#
+interface Ethernet3/0/24
+#
+interface Ethernet3/0/25
+#
+interface Ethernet3/0/26
+#
+interface Ethernet3/0/27
+#
+interface Ethernet3/0/28
+#
+interface Ethernet3/0/29
+#
+interface Ethernet3/0/30
+#
+interface Ethernet3/0/31
+#
+interface Ethernet3/0/32
+#
+interface Ethernet3/0/33
+#
+interface Ethernet3/0/34
+#
+interface Ethernet3/0/35
+#
+interface Ethernet3/0/36
+ port link-type access
+ port default vlan 25
+#
+interface Ethernet3/0/37
+#
+interface Ethernet3/0/38
+#
+interface Ethernet3/0/39
+#
+interface Ethernet3/0/40
+#
+interface Ethernet3/0/41
+#
+interface Ethernet3/0/42
+#
+interface Ethernet3/0/43
+#
+interface Ethernet3/0/44
+#
+interface Ethernet3/0/45
+#
+interface Ethernet3/0/46
+#
+interface Ethernet3/0/47
+#
+interface GigabitEthernet1/0/0
+ undo negotiation auto
+ description uT:QZ-QZ-NJ-SR-1.MAN.7750:(F1001250011)GE5/2/4
+ eth-trunk 100
+#
+interface GigabitEthernet1/0/1
+ shutdown
+#
+interface GigabitEthernet1/0/2
+ undo negotiation auto
+ description uT:QZ-QZ-NJ-SR-2.MAN.7750:(F1101170006)GE5/1/2
+ eth-trunk 1
+#
+interface GigabitEthernet1/0/3
+ shutdown
+#
+interface GigabitEthernet1/0/4
+ description uT:QZ-QZ-NJ-DSW-1.MAN.S9306:(F0910140034)GE6/0/17
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 20 25 1708 to 1712 1771
+#
+interface GigabitEthernet1/0/5
+ shutdown
+#
+interface GigabitEthernet1/0/6
+ shutdown
+#
+interface GigabitEthernet1/0/7
+ shutdown
+#
+interface GigabitEthernet1/0/8
+ undo negotiation auto
+ description dT:QZ-QZ-NJ-OLT-3.MAN.7360:(local)GE9/1
+ eth-trunk 9
+#
+interface GigabitEthernet1/0/9
+ undo negotiation auto
+ description dT:QZ-QZ-NJ-OLT-3.MAN.7360:(local)GE9/2
+ eth-trunk 9
+#
+interface GigabitEthernet1/0/10
+ undo negotiation auto
+ description dT:QZ-QZ-NJ-OLT-3.MAN.7360:(local)GE10/1
+ eth-trunk 9
+#
+interface GigabitEthernet1/0/11
+ undo negotiation auto
+ description dT:QZ-QZ-NJ-OLT-3.MAN.7360:(local)GE10/2
+ eth-trunk 9
+#
+interface GigabitEthernet1/0/12
+ shutdown
+#
+interface GigabitEthernet1/0/13
+ shutdown
+#
+interface GigabitEthernet1/0/14
+#
+interface GigabitEthernet1/0/15
+#
+interface GigabitEthernet1/0/16
+#
+interface GigabitEthernet1/0/17
+ shutdown
+#
+interface GigabitEthernet1/0/18
+ shutdown
+#
+interface GigabitEthernet1/0/19
+ shutdown
+#
+interface GigabitEthernet1/0/20
+ shutdown
+#
+interface GigabitEthernet1/0/21
+ shutdown
+#
+interface GigabitEthernet1/0/22
+ shutdown
+#
+interface GigabitEthernet1/0/23
+ description dT:QZ-QZ-NJEL-ASW-1.MAN.S5328:(Local)GE0/0/20
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 20 22 to 23 25 1310 to 1311 1314 1317 to 1319 1324 to 1326 3805 3809 3811
+#
+interface XGigabitEthernet5/0/0
+ description uT:QZ-QZ-NJ-BAS-2.MAN.7750:(F1301300002)10GE5/1/2
+ eth-trunk 2
+#
+interface XGigabitEthernet5/0/1
+ shutdown
+#
+interface XGigabitEthernet5/0/2
+ shutdown
+#
+interface XGigabitEthernet5/0/3
+ shutdown
+#
+interface XGigabitEthernet5/0/4
+ shutdown
+#
+interface XGigabitEthernet5/0/5
+ shutdown
+#
+interface XGigabitEthernet5/0/6
+ shutdown
+#
+interface XGigabitEthernet5/0/7
+ shutdown
+#
+interface XGigabitEthernet5/0/8
+ shutdown
+#
+interface XGigabitEthernet5/0/9
+ shutdown
+#
+interface XGigabitEthernet5/0/10
+ shutdown
+#
+interface XGigabitEthernet5/0/11
+ shutdown
+#
+interface XGigabitEthernet5/0/12
+ shutdown
+#
+interface XGigabitEthernet5/0/13
+ description dT:QZ-QZ-NJ-OLT-9.MAN.GH5516:(Local)10GE19/3
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 25 1547 to 1549
+#
+interface XGigabitEthernet5/0/14
+ description dT:QZ-QZ-NJ-OLT-6.MAN.GH5680T:(local)10GE0/19/0
+ eth-trunk 14
+#
+interface XGigabitEthernet5/0/15
+ description dT:QZ-QZ-NJ-OLT-2.MAN.EB5680T:(local)10GE0/20/0
+ eth-trunk 3
+#
+interface XGigabitEthernet6/0/0
+ description uT:QZ-QZ-NJ-BAS-2.MAN.7750:(F1108110002)10GE8/1/2
+ eth-trunk 2
+#
+interface XGigabitEthernet6/0/1
+ shutdown
+#
+interface XGigabitEthernet6/0/2
+ shutdown
+#
+interface XGigabitEthernet6/0/3
+ shutdown
+#
+interface XGigabitEthernet6/0/4
+ shutdown
+#
+interface XGigabitEthernet6/0/5
+ shutdown
+#
+interface XGigabitEthernet6/0/6
+ shutdown
+#
+interface XGigabitEthernet6/0/7
+ shutdown
+#
+interface XGigabitEthernet6/0/8
+ shutdown
+#
+interface XGigabitEthernet6/0/9
+ shutdown
+#
+interface XGigabitEthernet6/0/10
+ shutdown
+#
+interface XGigabitEthernet6/0/11
+ shutdown
+#
+interface XGigabitEthernet6/0/12
+ shutdown
+#
+interface XGigabitEthernet6/0/13
+ shutdown
+#
+interface XGigabitEthernet6/0/14
+ description dT:QZ-QZ-NJ-OLT-5.MAN.GH5680T:(Local)10GE0/20/0
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 25 1507 to 1512 1792
+ traffic-policy p1 inbound
+#
+interface XGigabitEthernet6/0/15
+ description dT:QZ-QZ-NJ-OLT-7.MAN.GB5680T:(local)10GE0/20/0
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 25 29 531 1381 to 1383 1771 2501 to 2503
+#
+interface NULL0
+#
+ip route-static 0.0.0.0 0.0.0.0 70.1.1.1
+#
+snmp-agent
+snmp-agent local-engineid 000007DB7FFFFFFF000003FD
+snmp-agent community read cipher %^%#c]+#:'wY<Ckw%VV{OvH<gt^[+l<'zB/U}+E:,ya#!yfQ#];fb$~'PzSk|wrJM/gRK`Gkf)IkVH%eR&@J%^%# acl 2000
+snmp-agent sys-info contact QZ-QZ-NQ
+snmp-agent sys-info location QZ-QZ-NJ2L
+snmp-agent sys-info version all
+snmp-agent target-host trap address udp-domain 10.192.0.11 params securityname cipher %^%#n"O~Vz>(%(rvsQC4CLAI2>qzLb!9@@0}h(@=WF/1%^%# v2c
+snmp-agent target-host trap address udp-domain 10.192.0.12 params securityname cipher %^%#>#oF-YI%}OUE6|Ua7,q$>ZQD.z/cpOPuXfB`.3-'%^%# v2c
+snmp-agent trap source Vlanif20
+snmp-agent trap enable
+#
+ssh server compatible-ssh1x enable
+#
+header login information " WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!"
+#
+user-interface con 0
+user-interface vty 0 4
+ acl 2001 inbound
+ authentication-mode aaa
+ idle-timeout 5 0
+ protocol inbound telnet
+user-interface vty 16 20
+ protocol inbound telnet
+#
+assistant task savelogfile
+ if-match timer cron * 0 0/1 * * * *
+ perform 1 batch-file savelogfile.bat
+#
+return
+<QZ-QZ-NJEL-DSW-1.MAN.S9306>

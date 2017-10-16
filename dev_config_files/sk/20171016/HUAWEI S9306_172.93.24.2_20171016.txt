@@ -1,0 +1,1130 @@
+
+!Software Version V200R008C00SPC500
+#
+sysname NB-CX-DS-DSW-3.MAN.9306-1
+#
+super password level 3 cipher %$%$SwO#$UP3hVp:,$%=OqWK(;A4U$TT-ImOA"hM{{Rk>5N(;A7(%$%$
+#
+info-center source default channel 2 log level warning trap level warning
+info-center source SHELL channel 4 log level informational
+info-center loghost source Vlanif50
+info-center loghost 10.254.0.1 facility local4
+info-center loghost 122.224.79.2 facility local4
+#
+vlan batch 22 40 42 50 78 to 80 93 212 344 349 361
+vlan batch 366 to 367 376 379 394 403 514 to 515 540 556 589 666
+vlan batch 775 1207 1211 1286 1292 to 1295 1297 to 1335 1339 to 1343 1346 to 1371 1374 to 1399 1508 to 1509
+vlan batch 1580 1602 1617 1623 to 1624 1626 1630 1635 to 1637 1643 1700 to 1703 1705
+vlan batch 1727 1741 to 1742 1744 1746 1748 to 1749 1751 to 1752 1755 1759 1762 1764 to 1765
+vlan batch 1768 1772 1775 1777 1781 1783 1785 1787 1800 1900
+vlan batch 2004 2023 2566 2671 2674 2677 2680 3020 3050 to 3053 3055 to 3059
+vlan batch 3061 3063 to 3064 3066 3073 3078 to 3079 3081 3101 to 3102 3105 3109 3112 to 3116
+vlan batch 3118 3213 3222 3230 to 3231 3240 3244 3248 3250 to 3255 3259 to 3260 3265 to 3266
+vlan batch 3269 3272 3275 to 3277 3298 3333 3500 3525 3544 3605 3608
+vlan batch 3622 3641 3646 3673 3676 3685 3729 to 3730 3798 3811 3848
+vlan batch 3870 3890 3898 3913 to 3914 3916 to 3917 3920 to 3921 3924 3926 to 3929 3947 3949
+vlan batch 3958 to 3959 3966 3973 3980
+#
+undo authentication unified-mode
+#
+telnet server enable
+telnet ipv6 server enable
+#
+dot1x enable
+#
+undo http server enable
+undo http secure-server enable
+#
+undo management-port isolate enable
+undo management-plane isolate enable
+#
+clock timezone BJ add 08:00:00
+#
+observe-port 1 interface GigabitEthernet5/0/1
+#
+diffserv domain default
+#
+hwtacacs-server template nbdx
+ hwtacacs-server authentication 172.200.100.249
+ hwtacacs-server authorization 172.200.100.249
+ hwtacacs-server accounting 172.200.100.249
+ hwtacacs-server source-ip 172.93.24.2
+ hwtacacs-server shared-key cipher %^%#s|mK2F'A^B]5}aA4>O\!!s]g9#-h&L=rCf@M=7eU%^%#
+ undo hwtacacs-server user-name domain-included
+#
+acl number 2000  
+ description For_Telnet
+ rule 5 permit source 61.153.82.90 0 
+ rule 10 permit source 202.96.102.247 0 
+ rule 15 permit source 202.96.102.0 0.0.1.255 
+ rule 20 permit source 202.101.167.192 0.0.0.63 
+ rule 25 permit source 61.153.112.128 0.0.0.31 
+ rule 30 permit source 172.93.0.0 0.0.255.255 
+ rule 35 permit source 172.200.100.0 0.0.0.255 
+ rule 40 permit source 202.96.112.0 0.0.0.31 
+ rule 45 permit source 61.130.21.96 0.0.0.7 
+ rule 50 permit source 61.175.19.0 0.0.0.255 
+ rule 55 permit source 218.75.80.0 0.0.0.255 
+ rule 60 permit source 61.175.200.64 0.0.0.15 
+acl number 2015  
+ description For-SNMP
+ rule 10 permit source 172.200.100.12 0 
+ rule 20 permit source 172.200.100.6 0 
+ rule 30 permit source 172.200.100.13 0 
+ rule 40 permit source 172.200.100.7 0 
+ rule 50 permit source 172.200.100.8 0 
+ rule 60 permit source 172.200.100.9 0 
+ rule 70 permit source 172.200.100.10 0 
+ rule 80 permit source 172.200.100.11 0 
+ rule 90 permit source 172.200.100.14 0 
+ rule 100 permit source 172.200.100.15 0 
+ rule 110 permit source 172.200.100.5 0 
+ rule 120 permit source 172.200.100.4 0 
+ rule 130 permit source 172.200.100.3 0 
+ rule 1500 deny 
+#
+acl number 3000  
+ rule 0 permit udp source-port eq 2944 destination-port eq 2944 
+ rule 1 permit udp source-port eq snmp 
+ rule 2 permit udp destination-port eq snmp 
+acl number 3999  
+ rule 5 permit icmp source 172.182.251.161 0 destination 172.182.251.163 0 
+ rule 10 permit icmp source 172.182.251.163 0 destination 172.182.251.161 0 
+#
+acl number 4000  
+ rule 0 permit
+#
+traffic classifier 1 operator or precedence 5
+ if-match cvlan-id 3599
+traffic classifier c1 operator or precedence 10
+ if-match cvlan-id 400
+traffic classifier icmp operator or precedence 15
+ if-match acl 3999
+#
+traffic behavior b1
+ permit
+ nest top-most vlan-id 1387 
+traffic behavior icmp
+ permit
+ statistic enable
+#
+traffic policy icmp match-order auto
+ classifier icmp behavior icmp
+traffic policy policy-name match-order auto
+ classifier c1 behavior b1
+#
+drop-profile default
+#
+vlan 42
+ description HuaWei_OLT_Manager
+vlan 93
+ description WH-GK93manager
+vlan 514
+ description xinhaidianzi_vpn
+vlan 666
+ description HuaDe_QiCheLingBuJian_VPN
+vlan 775
+ description DiShuiSuo
+vlan 1304
+ description CX-HZWDQ-MA5680T-GPON-01.VLAN4
+vlan 1305
+ description CX-HZWDQ-MA5680T-GPON-01.VLAN3
+vlan 1306
+ description CX-HZWDQ-MA5680T-GPON-01.VLAN2
+vlan 1307
+ description CX-HZWDQ-MA5680T-GPON-01.VLAN1
+vlan 1322
+ description KY-MA5680T-GPON-01
+vlan 1327
+ description CX-KD-MA5680T(GPON-1).VLAN
+vlan 1339
+ description CX-HZWDQ-MA5680T-02.VLAN
+vlan 1348
+ description TO-NB-CX-DS-MA5680T-05.VLAN
+vlan 1349
+ description TO-NB-CX-DS-MA5680T-05.VLAN
+vlan 1350
+ description TO-NB-CX-DS-MA5680T-05.VLAN
+vlan 1351
+ description TO-NB-CX-DS-MA5680T-05.VLAN
+vlan 1352
+ description CX-KD-MA5680T-01.VLAN
+vlan 1353
+ description CX-KD-MA5680T-01.VLAN
+vlan 1354
+ description CX-KD-MA5680T-01.VLAN
+vlan 1355
+ description CX-KD-MA5680T-01.VLAN
+vlan 1356
+ description NB-CX-KY-MA5680T-01.VLAN
+vlan 1357
+ description NB-CX-KY-MA5680T-01.VLAN
+vlan 1358
+ description NB-CX-KY-MA5680T-01.VLAN
+vlan 1359
+ description NB-CX-KY-MA5680T-01.VLAN
+vlan 1360
+ description NB-CX-XP-MA5680T-02.VLAN
+vlan 1361
+ description NB-CX-XP-MA5680T-02.VLAN
+vlan 1362
+ description NB-CX-XP-MA5680T-02.VLAN
+vlan 1363
+ description NB-CX-XP-MA5680T-02.VLAN
+vlan 1364
+ description NB-CX-SS-MA5680T-01.VLAN
+vlan 1365
+ description NB-CX-SS-MA5680T-01.VLAN
+vlan 1366
+ description NB-CX-SS-MA5680T-01.VLAN
+vlan 1367
+ description NB-CX-SS-MA5680T-01.VLAN
+vlan 1368
+ description CX-CS-MA5680T-02.VLAN
+vlan 1369
+ description CX-CS-MA5680T-02.VLAN
+vlan 1371
+ description NB-CX-CS-5680T-02.VLAN
+vlan 1374
+ description CX-DS-MA5680T-04.VLAN
+vlan 1375
+ description CX-DS-MA5680T-04.VLAN
+vlan 1376
+ description NB-CX-DS-MA5680T-03-VLAN
+vlan 1377
+ description NB-CX-DS-MA5680T-03-VLAN
+vlan 1378
+ description NB-CX-DS-MA5680T-03-VLAN
+vlan 1379
+ description NB-CX-DS-MA5680T-03-VLAN
+vlan 1380
+ description XL_MA5680T-01_VLAN
+vlan 1381
+ description XL_MA5680T-01_VLAN
+vlan 1382
+ description XL_MA5680T-01_VLAN
+vlan 1384
+ description DS-MA5680T-02_vlan
+vlan 1388
+ description DS_MA5680T-01_VLAN2
+vlan 1389
+ description CX-DS-MA5680T-01.VLAN
+vlan 1390
+ description XP_MA5680T-01_VLAN
+vlan 1391
+ description XP_MA5680T-01_VLAN
+vlan 1396
+ description NB-CX-CX-MA5680T-01.VLAN
+vlan 1397
+ description CX-DS-MA5680T-01.VLAN
+vlan 1399
+ description DS_MA5680T-01_VLAN1
+vlan 1508
+ description XingZhengShenPiZhongXin_MA5600_DSLAM
+vlan 1755
+ description CX-CS-C220-2.VLAN
+vlan 1762
+ description CX-CS-C220-02.VLAN
+vlan 1764
+ description NB-CX-XP-C220-1.VLAN
+vlan 1768
+ description XP-C220-1.vlan
+vlan 1775
+ description CX-CS-C220-2.VLAN
+vlan 1900
+ description ceshi
+vlan 3056
+ description XP_DangZhengWang.VLAN
+vlan 3057
+ description XP_NongJingWang.VLAN
+vlan 3079
+ description HangZhouWan_XinQu_DangZhengWang
+vlan 3102
+ description KjuanDun_DangZhenWang
+vlan 3230
+ description XL_GaoSong_DianZi_GS.VPN
+vlan 3244
+ description Shunchuangdianqi_VPN
+vlan 3252
+ description Shuijiju_VPN
+vlan 3255
+ description nb_zijiarendayaofang_vpn
+vlan 3265
+ description CunZhengWuWang-NongJingWang_vpn
+vlan 3266
+ description CunZhengWuWang-DangZhengWang_vpn
+vlan 3926
+ description YiBao.VLAN
+vlan 3949
+ description KanDongCun-NongJingWang
+#
+aaa
+ authentication-scheme default
+ authentication-scheme nbdx
+  authentication-mode hwtacacs local
+ authorization-scheme default
+ authorization-scheme nbdx
+  authorization-mode  hwtacacs local
+ accounting-scheme default
+ accounting-scheme nbdx
+  accounting-mode hwtacacs
+  accounting realtime 3
+  accounting start-fail online
+ recording-scheme scheme0
+  recording-mode hwtacacs nbdx
+ cmd recording-scheme scheme0
+ outbound recording-scheme scheme0
+ domain default
+ domain default_admin
+  authentication-scheme nbdx
+  accounting-scheme nbdx
+  authorization-scheme nbdx
+  hwtacacs-server nbdx
+ local-user ftp password cipher %^%##lRoXHRCD1!QDbI[Q0yV,l/GS5e3'1TW\^-TMR>9%^%#
+ local-user ftp service-type telnet terminal ssh ftp ppp web x25-pad bind 8021x http
+ local-user admin password irreversible-cipher %^%#UPR9X$fs~T.3gWU2{'%Qa9J;6w%a9+Y(W&0S<ihBB$hkF8n%|P1IIzQfuFnE%^%#
+ local-user admin privilege level 1
+ local-user admin service-type telnet
+ local-user zjnoc password irreversible-cipher %^%#FX_}@+G8.4!w+,,9f$+Mb1*)(P/V|Qbj4uMFFTn3Ukkb>r1{;)bSl>;GC%vG%^%#
+ local-user zjnoc privilege level 3
+ local-user zjnoc service-type telnet terminal
+#
+ntp-service source-interface Vlanif93
+ntp-service unicast-server 172.93.1.125 preference
+ntp-service unicast-server 172.93.1.126
+#
+interface Vlanif93
+ description WH-GK93manager
+ ip address 172.93.24.2 255.255.255.240
+#
+load-balance-profile enhanced
+ l2 field smac dmac vlan
+#
+interface Eth-Trunk0
+ description uT:NB-CX-BAS-6.MAN.7750:LAG3
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 40 50 1352 to 1354 1368 to 1369 1375 1377 1382 to 1383 1389 1394 to 1399 1741 to 1742
+ port trunk allow-pass vlan 1749 1751 to 1752 1762 1765 1775 1783 1785 1787
+ mode lacp
+#
+interface Eth-Trunk2
+ description uT:NB-CX-DS-BAS-4.MAN.ME60:Eth-Trunk3
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 42 80 93 1286 1292 to 1295 1297 1299 to 1301 1304 to 1308 1313 to 1314 1316 to 1322
+ port trunk allow-pass vlan 1324 to 1326 1329 to 1332 1339 1343 1350 to 1351 1355 to 1359 1361 to 1363 1365 to 1368 1377 to 1378 1380 to 1383
+ port trunk allow-pass vlan 1388 1394 to 1395 1508 to 1509 1602 1617 1623 to 1624 1626 1630 1635 to 1637 1643
+ port trunk allow-pass vlan 1700 to 1701 1752 1755 1764 1768 1772
+ mode lacp
+#
+interface Eth-Trunk4
+ description uT:NB-CX-DS-BAS-5.MAN.ME60:Eth-Trunk1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 1286 1292 to 1295 1297 1299 1301 1304 to 1312 1319 1322 to 1329 1339 to 1343 1350 to 1351
+ port trunk allow-pass vlan 1355 to 1367 1370 to 1371 1374 1376 1378 1382 to 1385 1388 1394 to 1395 1399 1580
+ port trunk allow-pass vlan 1701 1726 1742 1744 1746 1748 to 1749 1759 1900
+ mode lacp
+#
+interface Eth-Trunk5
+ description pT:NB-CX-DS-DSW-5.MAN.8912-1:(LOCAL)smartgroup5(G2/24,G4/24)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 22 42 50 1207 1332 1707 1727 1800 2677 2680
+ port trunk allow-pass vlan 3050 to 3053 3055 to 3056 3058 3061 3063 3081 3112 to 3113 3115 to 3116 3118 3240
+ port trunk allow-pass vlan 3265 to 3266 3298 3920 to 3921 3924 3926 to 3928 3947 3959 3980
+#
+interface Eth-Trunk6
+ description pT:NB-CX-DS-DSW-2.MAN.S9312-2:(LOCAL):eth-trunk101
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 42 79 403 1348 1386 2674 2677 3056 to 3057 3066 3109
+ port trunk allow-pass vlan 3116 3118 3231 3244 3250 3252 3260 3265 to 3266 3272 3333
+ port trunk allow-pass vlan 3500 3525 3730 3924
+ mode lacp
+#
+interface Eth-Trunk9
+ description pT:NB-CX-DS-DSW-10.MAN.8908-2(DaKe):smartgroup9
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 42 50 376 403 2671 3112 3248 3259 to 3260 3265 to 3266 3269
+ port trunk allow-pass vlan 3272 3277 3298 3605 3608 3622 3641 3646 3673 3676
+ port trunk allow-pass vlan 3811 3890 3920
+ mode lacp
+#
+interface Eth-Trunk10
+ description dT:NB-CX-DS-OLT-4.MA5680T(EPON-1):(LOCAL)link-agg0/19 0(GE19/0~1,GE20/0~1)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 22 42 79 344 379 1388 to 1389 1397 1399 3050 3052
+ port trunk allow-pass vlan 3112 3115 3260 3265 to 3266 3333 3685 3730 3848 3921 3924
+ port trunk allow-pass vlan 3926 3958 3980
+#
+interface Eth-Trunk11
+ description dT:NB-CX-DS-OLT-5.MA5680T(EPON-2):(LOCAL)link-agg0/19 0(GE19/0~1,GE20/0~1)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 42 79 349 394 1384 to 1385 3115 3213 3251 to 3252 3254 3260
+ port trunk allow-pass vlan 3265 to 3266 3333 3730 3870 3926
+#
+interface Eth-Trunk12
+ description dT:NB-CX-DS-OLT-6.MA5680T(EPON-3):(LOCAL)link-agg0/19 0(GE19/0~1,GE20/0~1)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 42 556 1376 to 1378 3050 3061 3063 3260 3265 to 3266 3921 3959
+ port trunk allow-pass vlan 3980
+#
+interface Eth-Trunk13
+ description dT:NB-CX-DS-OLT-7..MA5680T(EPON-4):(LOCAL)link-agg0/19 0(GE19/0~1,GE20/0~1)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 42 79 361 366 666 1374 to 1375 1759 3061 3063 3102
+ port trunk allow-pass vlan 3255 3265 to 3266 3928 3947
+#
+interface Eth-Trunk14
+ description dT:NB-CX-DS-OLT-8.MA5680T(EPON-5):(LOCAL)link-agg0/19 0(GE19/0~1,GE20/0~1)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 42 394 1350 to 1351 1800 1900 3055 3061 3063 3102 3255
+ port trunk allow-pass vlan 3260 3265 to 3266 3276 to 3277 3920 3947 3949 3980
+#
+interface Eth-Trunk16
+ description dT:NB-CX-XL-OLT-1.MA5680T(EPON-1):link-agg0/19 0(GE19/0~1,GE20/0~1)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 22 42 79 366 1382 to 1383 3058 to 3059 3113 3115 3213 3230
+ port trunk allow-pass vlan 3254 3260 3265 to 3266 3730 3848 3926 3980
+#
+interface Eth-Trunk17
+ description dT:NB-CX-XP-OLT-1.C220-1:SM1(GE2/1~2,GE9/1~2)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 40 1749 1752 1764 1768 1772 1775 1783 1787
+#
+interface Eth-Trunk20
+ description dT:NB-CX-CS-OLT-2.C220-2:SM1(GE2/1~2,GE9/1~2)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 40 1741 to 1742 1744 1746 1748 1751 1755 1762 1765 1785
+#
+interface Eth-Trunk22
+ description dT:NB-CX-CS-OLT-4.MA5680T(EPON-2):link-agg0/19 0(GE19/0~1,GE20/0~1)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 22 42 79 1368 to 1371 3115 3213 3260 3265 to 3266 3275 3848
+ port trunk allow-pass vlan 3914 3916
+#
+interface Eth-Trunk23
+ description dT:NB-CX-HZW(DQ)-OLT-1.MA5680T(EPON-1(DaKe)):link-agg 0/19 0(GE19/0,GE20/0)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 42 80 361 366 to 367 376 540 589 775 1346 to 1347 2566
+ port trunk allow-pass vlan 2671 2674 3231 3248 3252 to 3253 3259 3265 to 3266 3269 3275 3277
+ port trunk allow-pass vlan 3544 3605 3608 3622 3641 3646 3673 3676 3729 3811
+ port trunk allow-pass vlan 3890 3926
+#
+interface Eth-Trunk25
+ description dT:NB-CX-XP-OLT-3.MA5680T(EPON-2):link-agg 0/19 0(GE19/0~1,GE20/0~1)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 42 1360 to 1363 3056 to 3057 3250 3265 to 3266
+#
+interface Eth-Trunk26
+ description dT:NB-CX-KY-OLT-1.MA5680T(EPON-1):Link-agg 0/19 0(GE19/0,GE20/0)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 42 1356 to 1359 3113 3115 3255 3265 to 3266 3848 3926 3947
+#
+interface Eth-Trunk27
+ description dT:NB-CX-KD-OLT-1.MA5680T(EPON-1):link-aggr 0/19 0(GE19/0,GE20/0)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 42 666 1352 to 1355 1580 3102 3260 3265 to 3266 3926 3949
+#
+interface Eth-Trunk29
+ description dT:NB-CX-XL-OLT-2.MA5680T(EPON-2):Link-aggr 0/19 0(GE19/0,GE20/0)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 22 42 367 515 1340 to 1343 3050 3059 3115 3265 to 3266 3272
+#
+interface Eth-Trunk30
+ description dT:NB-CX-HZW(DQ)-OLT-2.MA5680T(EPON-2):Link-agg 0/19 0(GE19/0,GE20/0)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 22 42 1339
+ traffic-policy icmp inbound
+ traffic-policy icmp outbound
+#
+interface Eth-Trunk43
+ description dT:NB-CX-XL-OLT-4.MA5680T(GPON-1):Link-agg 0/19 0(GE19/0,GE20/0)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 42 79 1293 1302 1328 to 1331 3050 3058 to 3059 3115 3298 3525
+ port trunk allow-pass vlan 3921 3924 3926 3947 3980
+#
+interface Eth-Trunk100
+ description dT:NB-CX-CS-DSW-2.MAN.8908:SM1(GE3/1~2)
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 50 78 to 79 93 212 1643 3222 3914 3916 3947
+#
+interface Eth-Trunk101
+ description uT:NB-CX-DS-SR-1.MAN.7750:(local)lag23(GE7/1/15,GE5/1/4)
+ port link-type trunk
+ port trunk allow-pass vlan 1332 1346 to 1347 1374 to 1375 1382 to 1383 1399 2680
+#
+interface Ethernet0/0/0
+ ip address 192.168.1.1 255.255.255.0
+#
+interface GigabitEthernet1/0/0
+ undo negotiation auto
+ description dT:NB-CX-DS-OLT-4.MA5680T(EPON-1):(local)GE19/0
+ eth-trunk 10
+ qos burst-mode enhanced
+#
+interface GigabitEthernet1/0/1
+ undo negotiation auto
+ description dT:NB-CX-DS-OLT-5.MA5680T(EPON-2):(local)GE19/0
+ eth-trunk 11
+ qos burst-mode enhanced
+#
+interface GigabitEthernet1/0/2
+ undo negotiation auto
+ description dT:NB-CX-DS-OLT-6..MA5680T(EPON-3):(local)GE19/0
+ eth-trunk 12
+ qos burst-mode enhanced
+#
+interface GigabitEthernet1/0/3
+ undo negotiation auto
+ description dT:NB-CX-DS-OLT-7.MA5680T(EPON-4):(local)GE19/0
+ eth-trunk 13
+ qos burst-mode enhanced
+#
+interface GigabitEthernet1/0/4
+ undo negotiation auto
+ description dT:NB-CX-DS-OLT-8.MA5680T(EPON-5):(local)GE19/0
+ eth-trunk 14
+ qos burst-mode enhanced
+#
+interface GigabitEthernet1/0/5
+ undo negotiation auto
+ description dT:NB-CX-DS-OLT-8.MA5680T(EPON-5):(local)GE19/1
+ eth-trunk 14
+ qos burst-mode enhanced
+#
+interface GigabitEthernet1/0/6
+ undo negotiation auto
+ description dT:NB-CX-XL-OLT-1.MA5680T-01:(F1102210030)GE19/0
+ eth-trunk 16
+ qos burst-mode enhanced
+#
+interface GigabitEthernet1/0/7
+ undo negotiation auto
+ description dT:NB-CX-XP-OLT-1.C220-1:(F1202140009)GE2/1
+ eth-trunk 17
+ qos burst-mode enhanced
+#
+interface GigabitEthernet1/0/8
+ description pT:NB-CX-DS-DSW-2.M2N.S9306:(local)GE2/0/19
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 50 93
+ qos burst-mode enhanced
+#
+interface GigabitEthernet1/0/9
+ undo negotiation auto
+ description dT:NB-CX-CS-OLT-4.MA5680T-02:(local)GE20/1
+ eth-trunk 22
+ qos burst-mode enhanced
+#
+interface GigabitEthernet1/0/10
+ undo negotiation auto
+ description dT:NB-CX-CS-OLT-2.C220-2:(F1108240058)GE2/1
+ eth-trunk 20
+ qos burst-mode enhanced
+#
+interface GigabitEthernet1/0/11
+ undo negotiation auto
+ description dT:NB-CX-CS-OLT-4.MA5680T-02:(local)GE19/1
+ eth-trunk 22
+ qos burst-mode enhanced
+#
+interface GigabitEthernet1/0/12
+ undo negotiation auto
+ description dT:NB-CX-CS-OLT-4.MA5680T-02:(F1112270042)GE19/0
+ eth-trunk 22
+ qos burst-mode enhanced
+#
+interface GigabitEthernet1/0/13
+ undo negotiation auto
+ description dT:NB-CX-KY-OLT-1.MA5680T-01:(F1203220179)GE19/0
+ eth-trunk 26
+ qos burst-mode enhanced
+#
+interface GigabitEthernet1/0/14
+ undo negotiation auto
+ description uT:NB-CX-DS-SR-1.MAN.7750:(local)GE5/1/4
+ eth-trunk 101
+ qos burst-mode enhanced
+#
+interface GigabitEthernet1/0/15
+ undo negotiation auto
+ description dT:NB-CX-XP-OLT-1.C220-1:(F1202140008)GE2/3
+ eth-trunk 17
+ qos burst-mode enhanced
+#
+interface GigabitEthernet1/0/16
+ undo negotiation auto
+ description pT:NB-CX-DS-DSW-10.MAN.8908-2(DaKe):(local)GE2/24
+ eth-trunk 9
+#
+interface GigabitEthernet1/0/17
+ undo negotiation auto
+ description dT:dT:NB-CX-CS-OLT-2.C220-2:(F1402180024)GE9/1
+ eth-trunk 20
+ qos burst-mode enhanced
+#
+interface GigabitEthernet1/0/18
+ shutdown
+#
+interface GigabitEthernet1/0/19
+ shutdown
+#
+interface GigabitEthernet1/0/20
+ shutdown
+#
+interface GigabitEthernet1/0/21
+ shutdown
+#
+interface GigabitEthernet1/0/22
+ undo negotiation auto
+ shutdown
+ port link-type trunk
+ qos burst-mode enhanced
+#
+interface GigabitEthernet1/0/23
+ undo negotiation auto
+ shutdown
+ port link-type trunk
+ qos burst-mode enhanced
+#
+interface GigabitEthernet2/0/0
+ undo negotiation auto
+ description dT:NB-CX-DS-OLT-4.MA5680T(EPON-1):(local)GE20/0
+ eth-trunk 10
+ qos burst-mode enhanced
+#
+interface GigabitEthernet2/0/1
+ undo negotiation auto
+ description dT:NB-CX-DS-OLT-5.MA5680T(EPON-2):(local)GE20/0
+ eth-trunk 11
+ qos burst-mode enhanced
+#
+interface GigabitEthernet2/0/2
+ undo negotiation auto
+ description dT:NB-CX-DS-OLT-6..MA5680T(EPON-3):(local)GE20/0
+ eth-trunk 12
+ qos burst-mode enhanced
+#
+interface GigabitEthernet2/0/3
+ undo negotiation auto
+ description dT:NB-CX-DS-OLT-7.MA5680T(EPON-4):(local)GE20/0
+ eth-trunk 13
+ qos burst-mode enhanced
+#
+interface GigabitEthernet2/0/4
+ undo negotiation auto
+ description dT:NB-CX-DS-OLT-8.MA5680T(EPON-5):(local)GE20/0
+ eth-trunk 14
+ qos burst-mode enhanced
+#
+interface GigabitEthernet2/0/5
+ undo negotiation auto
+ description dT:NB-CX-DS-OLT-8.MA5680T(EPON-5):(local)GE20/1
+ eth-trunk 14
+ qos burst-mode enhanced
+#
+interface GigabitEthernet2/0/6
+ undo negotiation auto
+ description dT:NB-CX-XL-OLT-1.MA5680T-01:(F1102230036)GE20/0
+ eth-trunk 16
+ qos burst-mode enhanced
+#
+interface GigabitEthernet2/0/7
+ undo negotiation auto
+ description dT:NB-CX-XP-OLT-1.C220-1:(local)GE2/2
+ eth-trunk 17
+ qos burst-mode enhanced
+#
+interface GigabitEthernet2/0/8
+ description uT:NB-CX-DS-BAS-4.MAN.ME60-1:(local)GE2/0/0
+ eth-trunk 2
+ qos burst-mode enhanced
+#
+interface GigabitEthernet2/0/9
+ description uT:NB-CX-DS-BAS-4.MAN.ME60-1:(local)GE2/0/1
+ eth-trunk 2
+ qos burst-mode enhanced
+#
+interface GigabitEthernet2/0/10
+ undo negotiation auto
+ description dT:NB-CX-CS-OLT-2.C220-2:(F1108240051)GE2/2
+ eth-trunk 20
+ qos burst-mode enhanced
+#
+interface GigabitEthernet2/0/11
+ description uT:NB-CX-DS-BAS-4.MAN.ME60-1:(Local)GE2/0/2
+ eth-trunk 2
+ qos burst-mode enhanced
+#
+interface GigabitEthernet2/0/12
+ undo negotiation auto
+ description dT:NB-CX-CS-OLT-4.MA5680T-02:(F1112270062)GE20/0
+ eth-trunk 22
+ qos burst-mode enhanced
+#
+interface GigabitEthernet2/0/13
+ undo negotiation auto
+ description dT:NB-CX-KY-OLT-1.MA5680T-01:(F1203220180)GE20/0
+ eth-trunk 26
+ qos burst-mode enhanced
+#
+interface GigabitEthernet2/0/14
+ description uT:NB-CX-DS-BAS-4.MAN.ME60:(local)GE2/0/3
+ eth-trunk 2
+ qos burst-mode enhanced
+#
+interface GigabitEthernet2/0/15
+ undo negotiation auto
+ description dT:NB-CX-XP-OLT-1.C220-1:(F1202140010)GE2/4
+ eth-trunk 17
+ qos burst-mode enhanced
+#
+interface GigabitEthernet2/0/16
+ description pT:NB-CX-DS-DSW-5.MAN.8912-1:(local)GE2/24
+ eth-trunk 5
+#
+interface GigabitEthernet2/0/17
+ undo negotiation auto
+ description dT:NB-CX-CS-OLT-2.C220-2:(F1402180025)GE9/2
+ eth-trunk 20
+ qos burst-mode enhanced
+#
+interface GigabitEthernet2/0/18
+ shutdown
+#
+interface GigabitEthernet2/0/19
+ shutdown
+#
+interface GigabitEthernet2/0/20
+ undo negotiation auto
+ description pT:NB-CX-DS-DSW-6.M2N.8908-1:(local)GE2/24
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 50 1800
+ qos burst-mode enhanced
+#
+interface GigabitEthernet2/0/21
+ undo negotiation auto
+ shutdown
+ port link-type trunk
+ qos burst-mode enhanced
+#
+interface GigabitEthernet2/0/22
+ shutdown
+#
+interface GigabitEthernet2/0/23
+ description pT:NB-CX-DS-DSW-1.MAN.S9312-1:(local)GE10/0/23
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 22 40 42 78 to 79 212 361 379 514 775 1395 to 1396
+ port trunk allow-pass vlan 1398 1785 3051 to 3053 3055 to 3057 3061 3063 to 3064 3078 to 3079 3081 3101 3113 to 3116
+ port trunk allow-pass vlan 3222 3251 to 3253 3260 3265 to 3266 3730 3798 3848 3898 3913 to 3914 3916 to 3917
+ port trunk allow-pass vlan 3920 to 3921 3924 3926 to 3929 3947 3958 to 3959 3966 3973 3980 3991
+ qos burst-mode enhanced
+#
+interface GigabitEthernet3/0/0
+ shutdown
+#
+interface GigabitEthernet3/0/1
+ shutdown
+#
+interface GigabitEthernet3/0/2
+ shutdown
+#
+interface GigabitEthernet3/0/3
+ shutdown
+#
+interface GigabitEthernet3/0/4
+ shutdown
+#
+interface GigabitEthernet3/0/5
+ shutdown
+#
+interface GigabitEthernet3/0/6
+ shutdown
+#
+interface GigabitEthernet3/0/7
+ undo negotiation auto
+ description uT:NB-CX-DS-SR-1.MAN.7750:(local)GE7/1/15
+ eth-trunk 101
+ qos burst-mode enhanced
+#
+interface GigabitEthernet3/0/8
+ description uT:NB-CX-DS-BAS-4.MAN.ME60:(Local)GE3/0/0
+ eth-trunk 2
+ qos burst-mode enhanced
+#
+interface GigabitEthernet3/0/9
+ description uT:NB-CX-DS-BAS-4.MAN.ME60:(Local)GE3/0/1
+ eth-trunk 2
+ qos burst-mode enhanced
+#
+interface GigabitEthernet3/0/10
+ description uT:NB-CX-DS-BAS-4.MAN.ME60:(Local)GE3/0/2
+ eth-trunk 2
+ qos burst-mode enhanced
+#
+interface GigabitEthernet3/0/11
+ description uT:NB-CX-DS-BAS-4.MAN.ME60:(Local)GE3/0/3
+ eth-trunk 2
+ qos burst-mode enhanced
+#
+interface GigabitEthernet3/0/12
+ shutdown
+#
+interface GigabitEthernet3/0/13
+ shutdown
+#
+interface GigabitEthernet3/0/14
+ shutdown
+#
+interface GigabitEthernet3/0/15
+ description dT:NB-CX-XP-OLT-3.MA5680T-2:(F1203160007)GE19/0
+ eth-trunk 25
+ qos burst-mode enhanced
+#
+interface GigabitEthernet3/0/16
+ undo negotiation auto
+ description dT:NB-CX-KD-OLT-1.MA5680T-1:(F1203220184)GE19/0
+ eth-trunk 27
+ qos burst-mode enhanced
+#
+interface GigabitEthernet3/0/17
+ undo negotiation auto
+ description uT:NB-CX-DS-SR-1.7750:(local)GE6/1/5
+ port link-type trunk
+ port trunk allow-pass vlan 1207 1331 1339 to 1343 1348 1350 to 1351 1361 1365 1367 to 1371 1376 1378
+ port trunk allow-pass vlan 1384 to 1386 1388 1394 1399 1707 1727 1741 1749 1752 1755
+ port trunk allow-pass vlan 1762 1764 1768 1772 1775 1783 1787 3252 3870
+ qos burst-mode enhanced
+#
+interface GigabitEthernet3/0/18
+ undo negotiation auto
+ description pT:NB-CX-DS-DSW-8.7609-1:(local)GE3/16(L2VPN-TRUNK)
+ port link-type trunk
+ port trunk allow-pass vlan 42 93 344 349 366 to 367 379 394 515 540 556
+ port trunk allow-pass vlan 589 666 2004 2566 3050 3058 to 3059 3102 3105 3112 3213
+ port trunk allow-pass vlan 3230 to 3231 3240 3254 to 3255 3259 3276 3685 3729 3949
+ qos burst-mode enhanced
+#
+interface GigabitEthernet3/0/19
+ description pT:NB-CX-DS-DSW-2.MAN.S9312-2:(local)GE10/0/23
+ eth-trunk 6
+#
+interface GigabitEthernet3/0/20
+ undo negotiation auto
+ shutdown
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet3/0/21
+ undo negotiation auto
+ shutdown
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet3/0/22
+ undo negotiation auto
+ description dT:NB-CX-CS-DSW-2.MAN.8908:(F1110100069)GE3/1
+ eth-trunk 100
+ qos burst-mode enhanced
+#
+interface GigabitEthernet3/0/23
+ undo negotiation auto
+ description dT:NB-CX-CS-DSW-2.MAN.8908:(F1110100070)GE3/2
+ eth-trunk 100
+ qos burst-mode enhanced
+#
+interface GigabitEthernet5/0/0
+ undo negotiation auto
+#
+interface GigabitEthernet5/0/1
+ undo negotiation auto
+#
+interface GigabitEthernet5/0/2
+ undo negotiation auto
+ description dT:NB-CX-DS-OLT-5.MA5680T(EPON-2):(local)GE19/1
+ eth-trunk 11
+ qos burst-mode enhanced
+#
+interface GigabitEthernet5/0/3
+ undo negotiation auto
+ description dT:NB-CX-DS-OLT-5.MA5680T(EPON-2):(local)GE20/1
+ eth-trunk 11
+ qos burst-mode enhanced
+#
+interface GigabitEthernet5/0/4
+ undo negotiation auto
+ description dT:NB-CX-HZW(DQ)-OLT-1.MA5680T-01(DaKe):(F1202140025)GE19/0
+ eth-trunk 23
+ qos burst-mode enhanced
+#
+interface GigabitEthernet5/0/5
+ undo negotiation auto
+ description dT:NB-CX-HZW(DQ)-OLT-1.MA5680T-01(DaKe):(F1202140024)GE20/0
+ eth-trunk 23
+ qos burst-mode enhanced
+#
+interface GigabitEthernet5/0/6
+ shutdown
+#
+interface GigabitEthernet5/0/7
+ shutdown
+#
+interface GigabitEthernet5/0/8
+ description dT:NB-CX-XP-OLT-3.MA5680T-2:(F1210250016)GE19/1
+ eth-trunk 25
+ qos burst-mode enhanced
+#
+interface GigabitEthernet5/0/9
+ description dT:NB-CX-XP-OLT-3.MA5680T-2:(F1210250017)GE20/1
+ eth-trunk 25
+ qos burst-mode enhanced
+#
+interface GigabitEthernet5/0/10
+ undo negotiation auto
+ description dT:NB-CX-XL-OLT-2.MA5680T-2:(F1208270033)GE19/0
+ eth-trunk 29
+ qos burst-mode enhanced
+#
+interface GigabitEthernet5/0/11
+ undo negotiation auto
+ description dT:NB-CX-XL-OLT-2.MA5680T-2:(F1208270032)GE20/0
+ eth-trunk 29
+ qos burst-mode enhanced
+#
+interface GigabitEthernet5/0/12
+ undo negotiation auto
+ description dT:NB-CX-HZW(DQ)-OLT-2.MA5680T-2:(F1202140021)GE19/0
+ eth-trunk 30
+ qos burst-mode enhanced
+#
+interface GigabitEthernet5/0/13
+ undo negotiation auto
+ description dT:NB-CX-HZW(DQ)-OLT-2.MA5680T-2:(F1202140018)GE20/0
+ eth-trunk 30
+ qos burst-mode enhanced
+#
+interface GigabitEthernet5/0/14
+ description dT:NB-CX-XL-OLT-1.MA5680T-01:(F1205030078)GE19/1
+ eth-trunk 16
+ qos burst-mode enhanced
+#
+interface GigabitEthernet5/0/15
+ description dT:NB-CX-XP-OLT-3.MA5680T-2:(F1203160004)GE20/0
+ eth-trunk 25
+ qos burst-mode enhanced
+#
+interface GigabitEthernet5/0/16
+ undo negotiation auto
+ description dT:NB-CX-KD-OLT-1.MA5680T-1:(F1203220185)GE20/0
+ eth-trunk 27
+ qos burst-mode enhanced
+#
+interface GigabitEthernet5/0/17
+ description dT:NB-CX-XL-OLT-1.MA5680T-01:(F1205030080)GE20/1
+ eth-trunk 16
+ qos burst-mode enhanced
+#
+interface GigabitEthernet5/0/18
+ shutdown
+#
+interface GigabitEthernet5/0/19
+ shutdown
+#
+interface GigabitEthernet5/0/20
+ shutdown
+#
+interface GigabitEthernet5/0/21
+ shutdown
+#
+interface GigabitEthernet5/0/22
+ undo negotiation auto
+ shutdown
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet5/0/23
+ undo negotiation auto
+ shutdown
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet6/0/0
+ undo negotiation auto
+ description dT:NB-CX-DS-OLT-6..MA5680T(EPON-3):(local)GE19/1
+ eth-trunk 12
+ qos burst-mode enhanced
+#
+interface GigabitEthernet6/0/1
+ undo negotiation auto
+ description dT:NB-CX-DS-OLT-6..MA5680T(EPON-3):(local)GE20/1
+ eth-trunk 12
+ qos burst-mode enhanced
+#
+interface GigabitEthernet6/0/2
+ undo negotiation auto
+ description dT:NB-CX-DS-OLT-7.MA5680T(EPON-4):(LOCAL)GE19/1
+ eth-trunk 13
+ qos burst-mode enhanced
+#
+interface GigabitEthernet6/0/3
+ undo negotiation auto
+ description dT:NB-CX-DS-OLT-7.MA5680T(EPON-4):(LOCAL)GE20/1
+ eth-trunk 13
+ qos burst-mode enhanced
+#
+interface GigabitEthernet6/0/4
+ shutdown
+#
+interface GigabitEthernet6/0/5
+ shutdown
+#
+interface GigabitEthernet6/0/6
+#
+interface GigabitEthernet6/0/7
+#
+interface GigabitEthernet6/0/8
+#
+interface GigabitEthernet6/0/9
+#
+interface GigabitEthernet6/0/10
+ description dT:NB-CX-XL-OLT-3.MA5680T(GPON-1):(F1208080091)GE19/0
+ eth-trunk 43
+ qos burst-mode enhanced
+#
+interface GigabitEthernet6/0/11
+ undo negotiation auto
+ description dT:NB-CX-XL-OLT-3.MA5680T(GPON-1):(F1208080090)GE20/0
+ eth-trunk 43
+ qos burst-mode enhanced
+#
+interface GigabitEthernet6/0/12
+#
+interface GigabitEthernet6/0/13
+#
+interface GigabitEthernet6/0/14
+#
+interface GigabitEthernet6/0/15
+#
+interface GigabitEthernet6/0/16
+ undo negotiation auto
+ description pT:NB-CX-DS-DSW-10.MAN.8908-2(DaKe):(local)GE4/24
+ eth-trunk 9
+#
+interface GigabitEthernet6/0/17
+#
+interface GigabitEthernet6/0/18
+ description pT:NB-CX-DS-DSW-5.MAN.8912-1:(local)GE4/24
+ eth-trunk 5
+#
+interface GigabitEthernet6/0/19
+ undo negotiation auto
+ shutdown
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet6/0/20
+ undo negotiation auto
+ shutdown
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+#
+interface GigabitEthernet6/0/21
+ undo negotiation auto
+ description dT:NB-CX-DS-OLT-4.MA5680T(EPON-1):(local)GE19/1
+ eth-trunk 10
+ qos burst-mode enhanced
+#
+interface GigabitEthernet6/0/22
+ undo negotiation auto
+ description dT:NB-CX-DS-OLT-4.MA5680T(EPON-1):(local)GE20/1
+ eth-trunk 10
+ qos burst-mode enhanced
+#
+interface GigabitEthernet6/0/23
+ shutdown
+#
+interface XGigabitEthernet4/0/0
+ shutdown
+#
+interface XGigabitEthernet4/0/1
+ description uT:NB-CX-DS-BAS-5.MAN.ME60:(local)GE2/0/1
+ eth-trunk 4
+#
+interface XGigabitEthernet4/0/2
+ description uT:NB-CX-DS-BAS-5.MAN.ME60:(local)GE1/0/1
+ eth-trunk 4
+#
+interface XGigabitEthernet4/0/3
+ description uT:NB-CX-DS-BAS-6.MAN.7750:(local)10GE6/1/2
+ eth-trunk 0
+#
+interface NULL0
+#
+cpu-defend policy 1
+ auto-port-defend protocol arp-request arp-reply dhcp icmp ip-fragment
+#
+ip route-static 0.0.0.0 0.0.0.0 61.175.19.62
+ip route-static 172.0.0.0 255.0.0.0 172.93.24.1
+ip route-static 172.182.0.0 255.255.0.0 172.182.251.161
+#
+snmp-agent
+snmp-agent local-engineid 000007DB7FFFFFFF0000700C
+snmp-agent community read cipher %^%#mRPA*vBXrSf`\H=}D"rV1ELD=[xgh")G&a,/mI;,T2~&$pE/+W#c+X7`_X%#r;`{:F*nU$PPq"X]E%x'%^%# acl 2015
+snmp-agent sys-info contact R&D Nanjing, Huawei Technologies co.,Ltd.
+snmp-agent sys-info location Nanjing China
+snmp-agent sys-info version all
+snmp-agent target-host trap address udp-domain 172.200.100.12 udp-port 161 params securityname cipher %^%#+V={:+~U{"b;&p4A5.j9#m$z4vj*W-mgRz3@,x-X%^%#
+snmp-agent target-host trap address udp-domain 172.200.100.13 udp-port 161 params securityname cipher %^%#>Q9,GL)[sY`z,DLrI2@2sRO`>K@'^(r8Tr!{fF|!%^%#
+snmp-agent target-host trap address udp-domain 172.200.100.5 udp-port 161 params securityname cipher %^%#kP:!$rZfP)2F`:='_Q1FOBeq~\*P01=5F`#Z;ssO%^%#
+snmp-agent target-host trap address udp-domain 172.200.100.6 udp-port 161 params securityname cipher %^%#~HB96dA_b6q;nlW4[Q>AEv@t1;V@%&iH#E,A!WSC%^%#
+snmp-agent target-host trap address udp-domain 61.153.112.134 udp-port 161 params securityname cipher %^%#1di($(;YOOfigZ1zDI"6)Y[$$}pk],e&d`7PBVj/%^%#
+undo snmp-agent trap enable feature-name L2IFPPI trap-name hwMacFlappingAlarm
+undo snmp-agent trap enable feature-name DLDP
+undo snmp-agent trap enable feature-name LDTTRAP
+undo snmp-agent trap enable feature-name LLDPTRAP
+snmp-agent trap enable feature-name BASETRAP
+#
+ssh server compatible-ssh1x enable
+#
+header login information " WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!"
+#
+cpu-defend-policy 1 global
+cpu-defend-policy 1
+#
+user-interface con 0
+user-interface vty 0 4
+ acl 2000 inbound
+ authentication-mode aaa
+ idle-timeout 5 0
+ protocol inbound all
+user-interface vty 16 20
+ protocol inbound telnet
+#
+port-group switch
+#
+return
+<NB-CX-DS-DSW-3.MAN.9306-1>

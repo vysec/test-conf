@@ -1,0 +1,348 @@
+
+Building configuration...
+
+Current configuration : 8047 bytes
+!
+version 12.1
+no service pad
+service tcp-keepalives-in
+service tcp-keepalives-out
+service timestamps debug datetime
+service timestamps log datetime
+service password-encryption
+!
+hostname LS-LQ-QinXi-SW2-C3550-1
+!
+logging buffered 16384 debugging
+no logging console
+aaa new-model
+aaa authentication login default group tacacs+ local
+aaa authentication login telnet group tacacs+ local
+aaa authentication enable default group tacacs+ enable
+aaa authorization config-commands
+aaa authorization exec default group tacacs+ local
+aaa authorization exec telnet group tacacs+ local
+aaa authorization commands 0 telnet group tacacs+ local
+aaa authorization commands 1 telnet group tacacs+ local
+aaa authorization commands 15 default group tacacs+ local
+aaa authorization commands 15 telnet group tacacs+ local
+aaa authorization network default group tacacs+ local
+aaa accounting exec default start-stop group tacacs+
+aaa accounting commands 15 default start-stop group tacacs+
+enable secret 5 $1$cg89$X0gVYFDORh2juzACaCcJD0
+!
+username admin privilege 15 password 7 10591A4802151A010806
+clock timezone Beijing 8
+ip subnet-zero
+no ip source-route
+ip routing
+no ip gratuitous-arps
+!
+no ip domain-lookup
+vtp domain lsptt
+vtp mode transparent
+mls qos
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+!
+!
+!
+vlan 29
+ name Cisco-Manager
+!
+vlan 1317
+ name Vlan-QinXi-DSLAM
+!
+vlan 1321
+ name PPPOE-XiaoMei-HuaWei
+!
+vlan 1322
+ name PPPOE-DaMei-hwadsl
+!
+vlan 2327
+ name PPPOE-EDU-XiaoMeiZhongxinXiaoXue
+!
+vlan 2331
+ name QinXiXiaoXue
+!
+vlan 2382
+ name PPPOE-ZhongTieShiWuJuSiHeTongDua
+!
+vlan 2394
+ name PPPOE-XiaoMeiWeiShengYuan
+!
+vlan 2401
+ name XiaoMeiMuCaiJianChaZhan(LinYeJu)
+!
+vlan 3301
+ name VPN-JJY-XiaoMei
+!
+vlan 3329
+ name JYW-QinXiXiaoXue
+!
+vlan 3406
+ name Vpn-Gov-XiaoMeiZhengFu
+!
+vlan 3473
+ name Gov-Vpn-switch-manager
+!
+vlan 3479
+ name Gov-Vpn-ShiPinHuiYiXiTong
+!
+vlan 3741
+ name JinCun-DianZhan
+!
+vlan 3770
+ name Ge-XiaoMeiMuCaiJianChaZhan-2-IP
+!
+vlan 3779
+ name NetBar-YiZhiYuan(XiaoQin)-IP
+!
+vlan 3856
+ name VPN-JK-SheQuPan
+!
+class-map match-all limitspeed
+  match ip dscp 0
+!
+!
+policy-map 10M
+  class limitspeed
+    police 10000000 200000 exceed-action drop
+policy-map 30M
+  class limitspeed
+    police 30384000 2000000 exceed-action drop
+policy-map 20M
+  class limitspeed
+    police 20000000 2000000 exceed-action drop
+policy-map 8M
+  class limitspeed
+    police 8192000 200000 exceed-action drop
+policy-map 4M
+  class limitspeed
+    police 4096000 200000 exceed-action drop
+policy-map 2M
+  class limitspeed
+    police 2048000 200000 exceed-action drop
+!
+!
+!
+interface Loopback0
+ ip address 10.10.250.23 255.255.255.255
+!
+interface Port-channel1
+ description DSLAM-LS-LQ-QinXi-MA5600-2/A
+ switchport access vlan 1317
+ switchport mode dot1q-tunnel
+ speed 100
+ duplex full
+ spanning-tree bpdufilter enable
+!
+interface FastEthernet0/1
+ description To DSLAM-QinXi-HW-MA5605-1
+ switchport access vlan 1317
+ switchport mode dot1q-tunnel
+ speed 100
+ duplex full
+ no cdp enable
+ spanning-tree bpdufilter enable
+!
+interface FastEthernet0/2
+ description QinXiXiaoXue
+ switchport access vlan 3329
+ switchport mode access
+!
+interface FastEthernet0/3
+ description To DSLAM-LiDong-HW-MA5105-1
+ switchport access vlan 1317
+ switchport mode dot1q-tunnel
+ speed 100
+ duplex full
+ spanning-tree bpdufilter enable
+!
+interface FastEthernet0/4
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/5
+ switchport access vlan 1317
+ switchport mode dot1q-tunnel
+ spanning-tree bpdufilter enable
+!
+interface FastEthernet0/6
+ switchport access vlan 2331
+ switchport mode access
+ service-policy input 4M
+ service-policy output 4M
+!
+interface FastEthernet0/7
+ description DSLAM-LS-LQ-QinXi-MA5600-2/A
+ switchport access vlan 1317
+ switchport mode dot1q-tunnel
+ speed 100
+ duplex full
+ channel-group 1 mode on
+!
+interface FastEthernet0/8
+ description DSLAM-LS-LQ-QinXi-MA5600-2/A
+ switchport access vlan 1317
+ switchport mode dot1q-tunnel
+ speed 100
+ duplex full
+ channel-group 1 mode on
+!
+interface FastEthernet0/9
+ description DSLAM-LS-LQ-QinXi-MA5600-2/A
+ switchport access vlan 1317
+ switchport mode dot1q-tunnel
+ speed 100
+ duplex full
+ channel-group 1 mode on
+!
+interface FastEthernet0/10
+ description DSLAM-LS-LQ-QinXi-MA5600-2/A
+ switchport access vlan 1317
+ switchport mode dot1q-tunnel
+ speed 100
+ duplex full
+ channel-group 1 mode on
+!
+interface FastEthernet0/11
+ description VPN-GongLuDuanJK-SheQuPan
+ switchport access vlan 3856
+ switchport mode access
+!
+interface FastEthernet0/12
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/13
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/14
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/15
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/16
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/17
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/18
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/19
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/20
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/21
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/22
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/23
+ switchport mode dynamic desirable
+!
+interface FastEthernet0/24
+ switchport mode dynamic desirable
+!
+interface GigabitEthernet0/1
+ description uT:LS-LQ-ChaTian-SW2-Z8905-1.MAN GE3/5
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 29,1317,2331,3329,3856
+ switchport mode trunk
+ speed nonegotiate
+!
+interface GigabitEthernet0/2
+ switchport mode dynamic desirable
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan29
+ description Cisco-Manager                                 
+ ip address 10.10.74.23 255.255.255.128
+ no ip redirects
+ no ip unreachables
+ no ip proxy-arp
+ no ip route-cache
+ no ip mroute-cache
+!
+ip default-gateway 134.105.35.177
+ip classless
+ip route 0.0.0.0 0.0.0.0 10.10.74.1
+no ip http server
+!
+ip access-list extended worm
+ deny   tcp any any eq 445
+ deny   tcp any eq 135 any
+ deny   udp any any eq 135
+ deny   tcp any eq 139 any
+ deny   tcp any any eq 139
+ deny   udp any any eq 1434
+ deny   tcp any any eq 4444
+ deny   udp any any eq netbios-ns
+ deny   udp any any eq netbios-dgm
+ deny   tcp any eq 137 any
+ deny   tcp any any eq 135
+ deny   tcp any any eq 593
+ deny   tcp any eq 4444 any
+ deny   tcp any eq 593 any
+ deny   udp any eq 135 any
+ deny   udp any eq netbios-ns any
+ deny   udp any eq netbios-dgm any
+ permit ip any any
+!
+logging trap debugging
+logging source-interface Loopback0
+logging 218.74.120.198
+logging 10.10.1.130
+access-list 98 permit 218.74.120.198
+access-list 100 permit tcp 218.74.120.0 0.0.0.255 any eq telnet
+access-list 100 permit tcp 218.74.121.0 0.0.0.255 any eq telnet
+access-list 100 permit tcp 218.74.123.0 0.0.0.255 any eq telnet
+access-list 100 permit tcp 218.74.126.0 0.0.0.255 any eq telnet
+access-list 100 permit tcp 61.174.94.0 0.0.0.255 any eq telnet
+access-list 100 permit tcp 202.96.114.0 0.0.0.255 any eq telnet
+access-list 100 permit tcp 61.174.95.0 0.0.0.255 any eq telnet
+access-list 100 permit tcp 218.74.127.128 0.0.0.127 any eq telnet
+access-list 100 deny   tcp any any eq telnet
+access-list 100 permit ip any any
+snmp-server community ls-cw2000-ro RO 98
+snmp-server community ls578@zjnoc RO
+tacacs-server host 10.10.1.238
+tacacs-server key ws1gblzlbx
+banner login ^C WARNING!!! Authorised access only, all of your done will be recorded! disconnect IMMEDIATELY if you are not an authorised user!  ^C
+!
+line con 0
+ password 7 110A1016141D
+line vty 0 4
+ exec-timeout 15 0
+ password 7 141B0317151D3B7B7D
+ authorization commands 0 telnet
+ authorization commands 1 telnet
+ authorization commands 15 telnet
+ authorization exec telnet
+ login authentication telnet
+line vty 5 15
+ access-class 99 in
+ password 7 07152B4344294956421E1A
+ authorization commands 0 telnet
+ authorization commands 1 telnet
+ authorization commands 15 telnet
+ authorization exec telnet
+ login authentication telnet
+!
+ntp clock-period 17180655
+ntp server 218.74.120.83
+ntp server 10.10.1.138
+!
+end
+
+LS-LQ-QinXi-SW2-C3550-1#

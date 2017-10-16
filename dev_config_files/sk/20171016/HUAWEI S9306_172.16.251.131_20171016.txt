@@ -1,0 +1,1832 @@
+
+#
+!Software Version V100R006C00SPC800
+ sysname ZS-PT-SJM-DSW-1.DZZWW.9306
+#
+ router id 172.16.251.131
+#
+ vlan batch 3 to 5 8 to 11 48 to 49 55 80 to 81 93 97 100 to 163 179 to 180 200 to 231
+ vlan batch 501 to 511 513 515 517 519 521 600 700 to 704 803 806 to 812
+ vlan batch 814 816 820 to 822 824 830 832 to 833 900 1000 1024 1777
+#
+ assign resource-mode 2 slot 3
+ assign resource-mode 2 slot 4
+ assign resource-mode 2 slot 5
+ assign resource-mode 2 slot 6
+#
+ observe-port 1 interface GigabitEthernet3/0/23
+#
+ dhcp enable
+#
+ undo http server enable
+#
+ dba-profile default0 type3 assure 40000 max 80000
+#
+ arp anti-attack rate-limit enable
+#
+ arp speed-limit source-ip maximum 100
+ arp-miss speed-limit source-ip maximum 60
+#
+diffserv domain default
+#
+ip vpn-instance SWDX
+ route-distinguisher 1000:430
+ apply-label per-instance
+ vpn-target 1000:430 export-extcommunity
+ vpn-target 1000:430 import-extcommunity
+ip vpn-instance gtt
+ route-distinguisher 64666:150
+ apply-label per-instance
+ vpn-target 64666:150 export-extcommunity
+ vpn-target 64666:150 import-extcommunity
+ip vpn-instance kjt
+ route-distinguisher 64666:50
+ apply-label per-instance
+ vpn-target 64666:50 export-extcommunity
+ vpn-target 64666:50 import-extcommunity
+ip vpn-instance public
+ route-distinguisher 1000:2
+ apply-label per-instance
+ vpn-target 1000:2 export-extcommunity
+ vpn-target 1000:2 import-extcommunity
+ip vpn-instance resource
+ route-distinguisher 1000:1
+ import route-policy From_BGP
+ apply-label per-instance
+ vpn-target 1000:1 export-extcommunity
+ vpn-target 1000:1 import-extcommunity
+ip vpn-instance sjt
+ route-distinguisher 1000:260
+ apply-label per-instance
+ vpn-target 1000:260 export-extcommunity
+ vpn-target 1000:260 import-extcommunity
+ip vpn-instance zjj
+ route-distinguisher 1000:350
+ apply-label per-instance
+ vpn-target 1000:350 export-extcommunity
+ vpn-target 1000:350 import-extcommunity
+#
+ line-profile default0
+#
+ service-profile default0
+   undo fec-switch enable
+#
+ mpls lsr-id 172.16.251.131
+ mpls
+  lsp-trigger all
+#
+mpls ldp
+#
+#
+ time-range test_a 13:30 to 17:30 working-day
+ time-range test_m 08:30 to 11:30 working-day
+#
+acl number 2001
+ rule 10 permit source 0.0.0.0 0
+#
+acl number 2998
+ rule 0 permit source 172.16.148.254 0
+ rule 1 permit source 172.25.120.128 0.0.0.31
+ rule 2 permit source 172.25.160.64 0.0.0.63
+ rule 3 permit source 172.16.146.0 0.0.0.255
+ rule 4 permit source 172.16.149.0 0.0.0.255
+ rule 5 permit source 172.16.168.0 0.0.0.255
+ rule 30 permit source 172.25.129.0 0.0.0.63
+ rule 35 permit source 172.25.143.192 0.0.0.63
+ rule 45 permit source 10.208.0.0 0.0.0.255
+ rule 50 deny
+#
+acl number 2999
+ rule 0 permit source 172.16.148.254 0
+ rule 1 permit source 172.16.146.2 0
+ rule 2 permit source 172.16.148.200 0
+ rule 3 permit source 172.16.146.104 0.0.0.7
+ rule 4 permit source 10.208.0.0 0.0.0.255
+ rule 10 deny
+#
+acl number 3012
+ rule 0 deny ip destination 220.189.205.28 0 time-range test_m
+ rule 1 deny ip destination 220.189.205.29 0 time-range test_m
+ rule 20 permit ip
+acl number 3051
+acl number 3333
+ rule 0 permit tcp source 172.25.64.0 0.0.63.255
+ rule 1 permit tcp source 172.25.128.0 0.0.127.255
+ rule 2 permit tcp destination 172.25.0.0 0.0.63.255
+ rule 3 permit tcp destination 172.16.0.0 0.0.255.255
+ rule 4 permit tcp destination 172.29.0.0 0.0.255.255
+ rule 5 permit tcp destination 10.29.0.0 0.0.255.255
+ rule 6 permit tcp destination 172.30.0.0 0.1.255.255
+ rule 7 permit tcp destination 10.16.0.0 0.1.255.255
+ rule 8 permit tcp destination 10.30.0.0 0.1.255.255
+ rule 9 permit tcp destination 172.16.0.0 0.15.255.255 destination-port eq 23456
+ rule 10 permit tcp destination 10.16.0.0 0.15.255.255 destination-port eq 23456
+ rule 11 deny tcp destination 172.16.0.0 0.15.255.255
+ rule 12 deny tcp destination 10.16.0.0 0.15.255.255
+acl number 3501
+ rule 20 permit icmp source 172.25.172.18 0 destination 172.25.30.1 0
+ rule 30 permit icmp source 172.25.172.18 0 destination 172.25.167.33 0
+acl number 3502
+ rule 20 permit icmp source 172.25.30.1 0 destination 172.25.172.18 0
+ rule 30 permit icmp source 172.25.167.33 0 destination 172.25.172.18 0
+acl number 3860
+ rule 10 deny tcp destination 220.191.203.125 0 destination-port eq www
+ rule 100 permit ip
+acl number 3999
+ rule 0 deny tcp destination-port eq 135
+ rule 1 deny udp destination-port eq 135
+ rule 2 deny tcp destination-port eq 139
+ rule 3 deny udp destination-port eq netbios-ssn
+ rule 4 deny tcp destination-port eq 445
+ rule 5 deny udp destination-port eq 445
+ rule 6 deny tcp destination-port eq 593
+ rule 7 deny udp destination-port eq 593
+ rule 8 deny tcp destination-port eq 136
+ rule 9 deny udp destination-port eq 136
+ rule 10 deny tcp destination-port eq 137
+ rule 11 deny udp destination-port eq netbios-ns
+ rule 12 deny tcp destination-port eq 138
+ rule 13 deny udp destination-port eq netbios-dgm
+ rule 14 deny tcp destination-port eq 4444
+ rule 15 deny udp destination-port eq 4444
+ rule 16 deny udp destination-port eq 1434
+ rule 19 deny tcp destination-port eq 1999
+ rule 20 deny tcp destination-port eq 5554
+ rule 21 deny tcp destination-port eq 9995
+ rule 22 deny tcp destination-port eq 9996
+ rule 23 deny tcp destination-port eq 5800
+ rule 24 deny tcp destination-port eq 5900
+ rule 25 deny udp destination-port eq 6667
+ rule 26 deny udp destination-port eq 7626
+ rule 27 deny udp destination-port eq 12345
+ rule 30 deny tcp destination-port eq 1434
+ rule 35 permit ip
+#
+traffic classifier 3501 operator or precedence 25
+ if-match acl 3501
+traffic classifier 3502 operator or precedence 30
+ if-match acl 3502
+traffic classifier Deny_WWW3860 operator or precedence 20
+ if-match acl 3860
+traffic classifier acl3012 operator or precedence 10
+ if-match acl 3012
+traffic classifier acl3999 operator or precedence 5
+ if-match acl 3999
+traffic classifier vlan80 operator or precedence 15
+ if-match acl 3333
+#
+traffic behavior 3501
+ statistic enable
+traffic behavior 3502
+ statistic enable
+traffic behavior Deny_WWW3860
+traffic behavior acl3012
+traffic behavior acl3999
+ deny
+traffic behavior vlan80
+#
+traffic policy 3501
+ classifier 3501 behavior 3501
+traffic policy 3502
+ classifier 3502 behavior 3502
+traffic policy Deny_WWW3860
+ classifier Deny_WWW3860 behavior Deny_WWW3860
+traffic policy acl3012
+ classifier acl3012 behavior acl3012
+traffic policy acl3999
+ classifier acl3999 behavior acl3999
+traffic policy vlan80
+ classifier vlan80 behavior vlan80
+#
+ drop-profile default
+#
+vlan 4
+ description to_dinghai_85
+vlan 5
+ description TEST
+vlan 8
+ description to_lingchen_NE80
+vlan 9
+ description to_shengsi_85
+vlan 10
+ description to_daishan_85
+vlan 11
+ description to_to_DG_XZZX_93
+vlan 48
+ description To-PT-NE80E
+vlan 55
+ description LanYian-YinJiLianDong
+vlan 80
+ description internet_ip
+vlan 81
+ description DGSWZX-internet-ip-2
+vlan 93
+ description uT:ZS-PT-SJM7F-Eud1000
+vlan 97
+ description uT:ZS-PT-SJM7F-Eud1000
+vlan 100
+ description LH-ZF
+vlan 101
+ description LH-ZF(QZF-DZZWW)
+vlan 102
+ description zhujiajian
+vlan 103
+ description DG-HaiYunGongZhengChu
+vlan 104
+ description PT-DiShui
+vlan 105
+ description RenMinYiYuan(DG)
+vlan 106
+ description ZJJ-GuoTu
+vlan 107
+ description YiDongGongSi
+vlan 108
+ description FeiJiChang
+vlan 109
+ description GongAnJv
+vlan 110
+ description ZhouYuWenHuaGong5louDangAnChu
+vlan 111
+ description LH-DaQiaoZhiHuiBu
+vlan 112
+ description XiaZhi
+vlan 113
+ description DengBu
+vlan 114
+ description QunDaoGuoJiYouLunGS
+vlan 115
+ description BaiSha
+vlan 116
+ description FoDu
+vlan 117
+ description PT-JiuYeGuanLiChu-JSJPeiXun(CaiZhengJu)
+vlan 118
+ description GongShangYinHang
+vlan 119
+ description DiPu-GL
+vlan 120
+ description LH-GuanLiWeiYuanHuiDangQunGongZuoBu
+vlan 121
+ description PT-SheHuiBaoXianShiYeZX
+vlan 122
+ description KeXueJiShuJu(zjj-JingMaoJu)
+vlan 123
+ description ZJJ-JingChaShu
+vlan 124
+ description PTS-GongLu&YunShuGuanLiJu
+vlan 125
+ description PTS-GongAnJu(JianChaYuan)
+vlan 126
+ description ZJJ-JianChaYuan
+vlan 127
+ description DG-ZXWeiShengYuan
+vlan 128
+ description ZJJ-JingChaShu
+vlan 129
+ description ZJJ-WeiShengYuan
+vlan 130
+ description ZS-XinXiJiShuZX
+vlan 131
+ description ZJJ-WenHuaZX
+vlan 132
+ description PT-XinHuaShuDian
+vlan 133
+ description DianXinJv
+vlan 134
+ description ZJ-TaiLong-Bank
+vlan 135
+ description JiaoTongTouZiGS
+vlan 136
+ description QinShaoNianGong
+vlan 137
+ description SJM-WeiShengYuan
+vlan 138
+ description MaoDunJiuFenTiaoJie
+vlan 139
+ description GuoYouLiangShiShouChuGS
+vlan 140
+ description ShuZiChengGuan
+vlan 141
+ description ZJJ-ZXYouErYuan
+vlan 142
+ description ZJJ-LvYou&JianKangXueYuan
+vlan 143
+ description PTS_LvYouFanZhanGS
+vlan 144
+ description GongJiJing
+vlan 145
+ description LH-HaiShiChu
+vlan 146
+ description ZJJ-XiaoXue
+vlan 147
+ description ZJJ-ZhongXue
+vlan 148
+ description LH-YiYuan
+vlan 149
+ description ZJJ-JieDao
+vlan 150
+ description JiuChengGaiZao
+vlan 151
+ description YingJiZhiHuiZhongXi(PaiDanZhuanYong)
+vlan 152
+ description PTS-FaZhanHeGaiGeWeiYuanHui
+vlan 153
+ description PTS-GongAnJu
+vlan 154
+ description PTS-HaiShiChu
+vlan 155
+ description ChuRuJingBanZhengDaTing
+vlan 156
+ description TH-ZhongXinXueXiao
+vlan 157
+ description TH-ZXWeiShengYuan
+vlan 158
+ description LianHuaSQ
+vlan 159
+ description ZJJ-HangKongChanYeBoYin
+vlan 160
+ description YuanLinLvHuaGS
+vlan 161
+ description TaoHuaZhen
+vlan 162
+ description SJM-JieDaoWeiShengYuan
+vlan 163
+ description ZJJ-JieDao2
+vlan 179
+ description PT_ZhiJianJu_VPN
+vlan 200
+ description JiaoShiJinXiuXueXiao
+vlan 201
+ description GongGongWeiShengDaLou
+vlan 202
+ description DGJT-TouZiFaZhanGS
+vlan 203
+ description DG-JiaoJingDaDui
+vlan 204
+ description RenMinYinHang
+vlan 205
+ description GuoShuiJu
+vlan 206
+ description FaYuan
+vlan 207
+ description XiaoFangDui
+vlan 208
+ description JianChaYuan
+vlan 209
+ description DangAnJv
+vlan 210
+ description LianTong
+vlan 211
+ description TuShuGuan
+vlan 212
+ description MingTai-YingHang
+vlan 213
+ description ZhuFangGongJiJin
+vlan 214
+ description DongGangJieDao
+vlan 215
+ description ZhanMao
+vlan 216
+ description GongShangLian
+vlan 217
+ description HaiJinErZhiDui
+vlan 218
+ description GuangDianJv
+vlan 219
+ description HangZhouShangYe-Bank
+vlan 220
+ description DongJi
+vlan 221
+ description ChouZhouYinHang
+vlan 222
+ description GouShanJieDao
+vlan 223
+ description PTDX-LuHuaCangKu
+vlan 224
+ description PX-ChengGuanZhongDui
+vlan 225
+ description ChengShiFaZhangTouZi-GS
+vlan 226
+ description ZhouYu-GS
+vlan 227
+ description XingYeJiTuan
+vlan 228
+ description HaiYanYianJiuSuo
+vlan 229
+ description BeiTouShiYeTouZiGS(ZM)
+vlan 230
+ description ZM-WeiShengYuan
+vlan 231
+ description DG-JieDao
+vlan 502
+ description To-PuTuoJiang3552-public
+vlan 504
+ description BanZhengZhongXin-PUB
+vlan 505
+ description Ospf_HULIan_Vlan
+vlan 506
+ description PT_DiShui_PUB
+vlan 507
+ description GE_HuLian_Vlan_To_DongGang
+vlan 508
+ description LaoDongJu-pub
+vlan 509
+ description CE_HuLian_Vlan_XinJie
+vlan 510
+ description XiaoGan-KaiFaZhiHuiBu
+vlan 511
+ description CE_HuLian_Vlan_BanZhengZhongxin
+vlan 513
+ description CE_HuLian_Vlan_TO_LianHuan
+vlan 515
+ description CE_HuLian_Vlan_TO_PuXi
+vlan 517
+ description resource_HuLian_PuTuoShan
+vlan 519
+ description CE_HuLian_Vlan_TO_BinJiangJiFang
+vlan 521
+ description GE_HuLian_Vlan_To_TaoHua
+vlan 600
+ description to_DGXZZX_resource
+vlan 700
+ description SJM-GuoTuYingYeSuo
+vlan 701
+ description LH-GuoTuYingYeSuo
+vlan 702
+ description ZJJ-GuoTuYingYeSuo
+vlan 703
+ description TH-GuoTuYingYeSuo
+vlan 704
+ description HaiLianLu-GuoTu
+vlan 803
+ description PT_Qu_ShenJiJu_VPN
+vlan 806
+ description DianLiGS
+vlan 807
+ description PuTuoDangXiaoVPN
+vlan 808
+ description YouZhengSuDi
+vlan 809
+ description ChengGuanBan(LuJiaZhi)
+vlan 810
+ description QuWeiZhuZhiBu_vlan
+vlan 811
+ description ZhouYuGongSi
+vlan 812
+ description PT_GuoTuZhiYuanJu(gtt)
+vlan 814
+ description QuWeiTongZhanBu_vlan
+vlan 816
+ description QuTaiban_vlan
+vlan 820
+ description QuZiXunWei_vlan
+vlan 821
+ description ChengGuanBan
+vlan 822
+ description qutuanwei
+vlan 824
+ description qufulian
+vlan 830
+ description QuGongHui_vlan
+vlan 832
+ description DHCP-TEST
+vlan 833
+ description test
+vlan 900
+ description test
+vlan 1000
+ description To_ce_Manager_CE_Vlan
+vlan 1024
+ description CaiZhengjv
+vlan 1777
+ description test
+#
+aaa
+ authentication-scheme default
+ authorization-scheme default
+ accounting-scheme default
+ domain default
+ domain default_admin
+ local-user admin password simple admin
+ local-user admin service-type http
+ local-user zsadm password simple jdzh321
+ local-user zsadm privilege level 15
+ local-user zsadm service-type telnet
+ local-user zsdx_dzzww password cipher XP:GJC'BTROQ=^Q`MAF4<1!!
+ local-user zsdx_dzzww privilege level 15
+ local-user zsdx_dzzww service-type telnet
+#
+interface Vlanif3
+ description To-ZSPT_SJM7F_W_NE40E-GE1/0/2
+ ip address 172.16.146.34 255.255.255.252
+ ospf cost 100
+ ospf authentication-mode md5 1 cipher 5LJ!VK;YG_[Q=^Q`MAF4<1!!
+ mpls
+ mpls ldp
+#
+interface Vlanif4
+ description to_dinghaiS8508
+ shutdown
+ ip address 172.16.146.42 255.255.255.252
+ ospf cost 200
+ ospf authentication-mode md5 1 cipher 5LJ!VK;YG_[Q=^Q`MAF4<1!!
+ mpls
+ mpls ldp
+#
+interface Vlanif5
+ ip address 172.16.146.74 255.255.255.252
+#
+interface Vlanif8
+ description To-DH-NE40E-GE1/0/8
+ ip address 172.16.146.53 255.255.255.252
+ ospf cost 100
+ ospf authentication-mode md5 1 cipher 5LJ!VK;YG_[Q=^Q`MAF4<1!!
+ mpls
+ mpls ldp
+#
+interface Vlanif9
+ description to_shengsi_85
+ shutdown
+ ospf cost 170
+ ospf authentication-mode md5 1 cipher 5LJ!VK;YG_[Q=^Q`MAF4<1!!
+ mpls
+ mpls ldp
+#
+interface Vlanif10
+ description to_daishan_85
+ shutdown
+ ip address 172.16.146.57 255.255.255.252
+ ospf cost 100
+ ospf authentication-mode md5 1 cipher 5LJ!VK;YG_[Q=^Q`MAF4<1!!
+ mpls
+ mpls ldp
+#
+interface Vlanif11
+ description to_DG_XZZX_9512
+ ip address 172.16.146.101 255.255.255.252
+ ospf authentication-mode md5 1 cipher I#$"(Na4]LQ;K7aTH4%:RA!!
+ mpls
+ mpls ldp
+#
+interface Vlanif48
+ description To-PT-NE80E
+ ip binding vpn-instance resource
+ ip address 172.25.161.129 255.255.255.252
+#
+interface Vlanif55
+ description LanYanRanQiGS(YingJiLianDong)
+ ip binding vpn-instance resource
+ ip address 172.25.187.225 255.255.255.248
+#
+interface Vlanif80
+ description internet_ip
+ ip binding vpn-instance public
+ ip address 220.191.203.73 255.255.255.248
+ ip address 220.191.203.65 255.255.255.248 sub
+#
+interface Vlanif81
+ ip binding vpn-instance public
+ ip address 220.191.203.81 255.255.255.240
+#
+interface Vlanif93
+ description uT:ZS-PT-SJM7F-Eud1000
+ ip binding vpn-instance public
+ ip address 172.16.146.93 255.255.255.252
+#
+interface Vlanif97
+ description uT:ZS-PT-SJM7F-Eud1000
+ ip binding vpn-instance public
+ ip address 172.16.146.97 255.255.255.252
+#
+interface Vlanif100
+ description LH-ZF
+ ip binding vpn-instance resource
+ ip address 172.25.178.1 255.255.255.0
+#
+interface Vlanif101
+ description LH-ZF(QZF-DZZWW)
+ ip binding vpn-instance resource
+ ip address 172.25.160.1 255.255.255.240
+#
+interface Vlanif102
+ description zhujiajian
+ ip binding vpn-instance resource
+ ip address 172.25.179.1 255.255.255.0
+#
+interface Vlanif103
+ ip binding vpn-instance resource
+ ip address 172.25.160.33 255.255.255.224
+#
+interface Vlanif104
+ description PT-DiShui
+ ip binding vpn-instance resource
+ ip address 172.25.191.1 255.255.255.0
+#
+interface Vlanif105
+ description RenMinYiYuan(DG)
+ ip binding vpn-instance resource
+ ip address 172.25.189.1 255.255.255.240
+#
+interface Vlanif107
+ description YiDongGongSi
+ ip binding vpn-instance resource
+ ip address 172.25.174.193 255.255.255.192
+#
+interface Vlanif108
+ description FeiJiChang
+ ip binding vpn-instance resource
+ ip address 172.25.189.209 255.255.255.240
+#
+interface Vlanif109
+ description GongAnJv
+ ip binding vpn-instance resource
+ ip address 172.25.163.1 255.255.255.0
+#
+interface Vlanif110
+ ip binding vpn-instance resource
+ ip address 172.25.187.217 255.255.255.248
+#
+interface Vlanif111
+ description LH-DaQiaoZhiHuiBu
+ ip binding vpn-instance resource
+ ip address 172.25.46.129 255.255.255.128
+#
+interface Vlanif112
+ description Xia Zhi
+ ip binding vpn-instance resource
+ ip address 172.25.180.129 255.255.255.128
+#
+interface Vlanif113
+ description DenBu
+ ip binding vpn-instance resource
+ ip address 172.25.183.1 255.255.255.128
+#
+interface Vlanif114
+ description QunDaoGuoJiYouLunGS
+ ip binding vpn-instance resource
+ ip address 172.25.190.33 255.255.255.224
+#
+interface Vlanif115
+ ip binding vpn-instance resource
+ ip address 172.25.183.129 255.255.255.128
+#
+interface Vlanif116
+ ip binding vpn-instance resource
+ ip address 172.25.182.129 255.255.255.128
+#
+interface Vlanif117
+ description PT-JiuYeGuanLiChu-JSJPeiXun(CaiZhengJu)
+ ip binding vpn-instance resource
+ ip address 172.25.45.1 255.255.255.192
+#
+interface Vlanif118
+ description GongShangYinHang
+ ip binding vpn-instance resource
+ ip address 172.25.175.129 255.255.255.192
+#
+interface Vlanif119
+ description DiPu-GL
+ ip binding vpn-instance resource
+ ip address 172.25.189.129 255.255.255.248
+#
+interface Vlanif120
+ description LH-GuanLiWeiYuanHuiDangQunGongZuoBu
+ ip binding vpn-instance resource
+ ip address 172.25.167.193 255.255.255.224
+#
+interface Vlanif121
+ description PT-SheHuiBaoXianShiYeZX
+ shutdown
+ ip binding vpn-instance resource
+#
+interface Vlanif122
+ description KeXueJiShuJu(zjj-JingMaoJu)
+ ip binding vpn-instance resource
+ ip address 10.25.162.33 255.255.255.240
+#
+interface Vlanif123
+ description ZJJ-JingChaShu
+ ip binding vpn-instance resource
+ ip address 172.25.187.49 255.255.255.248
+#
+interface Vlanif124
+ description PTS-GongLu&YunShuGuanLiJu
+ ip binding vpn-instance resource
+ ip address 172.25.187.57 255.255.255.248
+#
+interface Vlanif125
+ description PTS-GongAnJu(JianChaYuan)
+ ip binding vpn-instance resource
+ ip address 10.25.162.185 255.255.255.248
+#
+interface Vlanif126
+ ip binding vpn-instance resource
+ ip address 172.25.173.129 255.255.255.224
+#
+interface Vlanif127
+ description DG-ZXWeiShengYuan
+ ip binding vpn-instance resource
+ ip address 10.25.171.17 255.255.255.240
+#
+interface Vlanif128
+ description ZJJ-JingChaShu
+ ip binding vpn-instance resource
+ ip address 172.25.161.137 255.255.255.248
+#
+interface Vlanif129
+ description ZJJ-WeiShengYuan
+ ip binding vpn-instance resource
+ ip address 10.25.171.33 255.255.255.240
+#
+interface Vlanif130
+ description ZS-XinXiJiShuZX
+ ip binding vpn-instance resource
+ ip address 172.25.160.161 255.255.255.224
+#
+interface Vlanif131
+ description ZJJ-WenHuaZX
+ ip binding vpn-instance resource
+ ip address 10.25.166.1 255.255.255.224
+#
+interface Vlanif132
+ description PT-XinHuaShuDian
+ ip binding vpn-instance resource
+ ip address 172.25.170.193 255.255.255.224
+#
+interface Vlanif133
+ description DianXinJv
+ ip binding vpn-instance resource
+ ip address 172.25.172.17 255.255.255.240
+#
+interface Vlanif134
+ description ZJ-TaiLong-Bank
+ ip binding vpn-instance resource
+ ip address 172.25.169.65 255.255.255.192
+#
+interface Vlanif135
+ description JiaoTongTouZiGS
+ ip binding vpn-instance resource
+ ip address 172.25.46.17 255.255.255.248
+#
+interface Vlanif136
+ description QinShaoNianGong
+ ip binding vpn-instance resource
+ ip address 172.25.190.65 255.255.255.224
+#
+interface Vlanif137
+ description SJM-WeiShengYuan
+ ip binding vpn-instance resource
+ ip address 10.25.171.1 255.255.255.240
+#
+interface Vlanif138
+ description MaoDunJiuFenTiaoJie
+ ip binding vpn-instance resource
+ ip address 10.25.166.65 255.255.255.192
+#
+interface Vlanif139
+ description GuoYouLiangShiShouChuGS
+ ip binding vpn-instance resource
+ ip address 10.25.177.33 255.255.255.240
+#
+interface Vlanif140
+ description ShuZhiChengGuan
+ ip binding vpn-instance resource
+ ip address 172.25.189.161 255.255.255.240
+#
+interface Vlanif141
+ description ZJJ-ZXYouErYuan
+ ip binding vpn-instance resource
+ ip address 10.25.166.33 255.255.255.248
+#
+interface Vlanif142
+ description ZJJ-LvYou&JianKangXueYuan
+ ip binding vpn-instance resource
+ ip address 10.25.162.177 255.255.255.248
+#
+interface Vlanif143
+ description PTS_LvYouFanZhanGS
+ ip binding vpn-instance resource
+ ip address 172.25.172.1 255.255.255.240
+#
+interface Vlanif144
+ description GongJiJing
+ ip binding vpn-instance resource
+ ip address 10.25.178.145 255.255.255.248
+#
+interface Vlanif145
+ description LH-HaiShiChu
+ ip binding vpn-instance resource
+ ip address 10.25.162.169 255.255.255.248
+#
+interface Vlanif146
+ description ZJJ-XiaoXue
+ ip binding vpn-instance resource
+ ip address 10.25.166.41 255.255.255.248
+#
+interface Vlanif147
+ description ZJJ-ZhongXue
+ ip binding vpn-instance resource
+ ip address 10.25.166.49 255.255.255.248
+#
+interface Vlanif148
+ description LH-YiYuan
+ ip binding vpn-instance resource
+ ip address 10.25.177.1 255.255.255.240
+#
+interface Vlanif149
+ description ZJJ-JieDao-ZhongZiBan
+ ip binding vpn-instance resource
+ ip address 10.25.176.1 255.255.255.240
+#
+interface Vlanif150
+ ip binding vpn-instance resource
+ ip address 172.25.190.193 255.255.255.192
+ ip address 172.25.42.193 255.255.255.224 sub
+#
+interface Vlanif151
+ description YingJiZhiHuiZhongXi(PaiDanZhuanYong)
+ ip binding vpn-instance resource
+ ip address 172.25.187.209 255.255.255.248
+#
+interface Vlanif152
+ description PTS-FaZhanHeGaiGeWeiYuanHui
+ ip binding vpn-instance resource
+ ip address 172.25.169.9 255.255.255.248
+#
+interface Vlanif153
+ description PTS-GongAnJu
+ ip binding vpn-instance resource
+ ip address 10.25.162.57 255.255.255.248
+#
+interface Vlanif154
+ description PTS-HaiShiChu
+ ip binding vpn-instance resource
+ ip address 10.25.162.161 255.255.255.248
+#
+interface Vlanif155
+ description ChuRuJingBanZhengDaTing
+ ip binding vpn-instance resource
+ ip address 10.25.178.153 255.255.255.248
+#
+interface Vlanif156
+ description TH-ZhongXinXueXiao
+ ip binding vpn-instance resource
+ ip address 172.25.169.25 255.255.255.248
+#
+interface Vlanif157
+ description TH-ZXWeiShengYuan
+ ip binding vpn-instance resource
+ ip address 10.25.162.225 255.255.255.240
+#
+interface Vlanif158
+ description LianHuaSQ
+ ip binding vpn-instance resource
+ ip address 10.25.176.25 255.255.255.248
+#
+interface Vlanif159
+ ip binding vpn-instance resource
+ ip address 10.25.176.33 255.255.255.240
+#
+interface Vlanif160
+ description YuanLinLvHuaGS
+ ip binding vpn-instance resource
+ ip address 10.25.177.17 255.255.255.240
+#
+interface Vlanif161
+ ip binding vpn-instance resource
+ ip address 172.25.181.1 255.255.255.128
+#
+interface Vlanif162
+ description SJM-JieDaoWeiShengYuan
+ ip binding vpn-instance resource
+ ip address 172.25.160.193 255.255.255.224
+#
+interface Vlanif163
+ ip binding vpn-instance resource
+ ip address 10.25.178.129 255.255.255.240
+#
+interface Vlanif179
+ ip binding vpn-instance zjj
+ ip address 10.12.1.254 255.255.255.0
+#
+interface Vlanif180
+ description HaiYanYuYeJv
+ ip binding vpn-instance resource
+ ip address 172.25.169.193 255.255.255.192
+ ip address 172.25.43.193 255.255.255.192 sub
+#
+interface Vlanif200
+ description JiaoShiJinXiuXueXiao
+ ip binding vpn-instance resource
+ ip address 10.25.164.129 255.255.255.192
+#
+interface Vlanif201
+ description GongGongWeiShengDaLou
+ ip binding vpn-instance resource
+ ip address 172.25.165.97 255.255.255.240
+#
+interface Vlanif202
+ description DGJT-TouZiFaZhanGS
+ ip binding vpn-instance resource
+ ip address 172.25.177.129 255.255.255.128
+#
+interface Vlanif203
+ ip binding vpn-instance resource
+ ip address 10.25.177.145 255.255.255.240
+#
+interface Vlanif204
+ description RenMinYinHang
+ ip binding vpn-instance resource
+ ip address 172.25.175.65 255.255.255.192
+#
+interface Vlanif205
+ description GuoShuiJu
+ ip binding vpn-instance resource
+ ip address 172.25.166.1 255.255.255.128
+#
+interface Vlanif206
+ description FaYuan
+ ip binding vpn-instance resource
+ ip address 172.25.166.193 255.255.255.192
+#
+interface Vlanif207
+ description XiaoFangDui
+ ip binding vpn-instance resource
+ ip address 172.25.174.33 255.255.255.224
+#
+interface Vlanif208
+ description JianChaYuan
+ ip binding vpn-instance resource
+ ip address 172.25.188.1 255.255.255.192
+#
+interface Vlanif209
+ description DangAnJv
+ ip binding vpn-instance resource
+ ip address 172.25.171.65 255.255.255.224
+#
+interface Vlanif210
+ description LianTong
+ ip binding vpn-instance resource
+ ip address 172.25.174.161 255.255.255.224
+#
+interface Vlanif211
+ description TuShuGuan
+ ip binding vpn-instance resource
+ ip address 172.25.165.17 255.255.255.240
+#
+interface Vlanif212
+ description MingTai-YingHang
+ ip binding vpn-instance resource
+ ip address 172.25.189.113 255.255.255.240
+#
+interface Vlanif213
+ ip binding vpn-instance resource
+ ip address 172.25.190.129 255.255.255.224
+#
+interface Vlanif214
+ description DongGangJieDao
+ ip binding vpn-instance resource
+ ip address 172.25.185.1 255.255.255.0
+#
+interface Vlanif215
+ description ZhanMao
+ ip binding vpn-instance resource
+ ip address 172.25.180.1 255.255.255.128
+ ip address 10.25.160.1 255.255.255.128 sub
+#
+interface Vlanif216
+ ip binding vpn-instance resource
+ ip address 172.25.171.193 255.255.255.224
+#
+interface Vlanif217
+ description HaiJinErZhiDui
+ ip binding vpn-instance resource
+ ip address 172.25.174.65 255.255.255.224
+#
+interface Vlanif218
+ description GuangDianJv
+ ip binding vpn-instance resource
+ ip address 172.25.170.1 255.255.255.224
+#
+interface Vlanif219
+ description HangZhouShangYe-Bank
+ ip binding vpn-instance resource
+ ip address 172.25.189.81 255.255.255.240
+#
+interface Vlanif220
+ description DongJi
+ ip binding vpn-instance resource
+ ip address 172.25.181.129 255.255.255.128
+#
+interface Vlanif221
+ ip binding vpn-instance resource
+ ip address 172.25.190.169 255.255.255.248
+#
+interface Vlanif222
+ description GouShanJieDao
+ ip binding vpn-instance resource
+ ip address 172.25.186.1 255.255.255.0
+#
+interface Vlanif223
+ description PTDX-LuHuaCangKu
+ ip binding vpn-instance resource
+ ip address 172.25.46.33 255.255.255.248
+#
+interface Vlanif224
+ description puxichengguanzhongdui
+ ip binding vpn-instance resource
+ ip address 172.25.167.1 255.255.255.240
+#
+interface Vlanif225
+ description ChengShiFaZhanTouZi-GS
+ ip binding vpn-instance resource
+ ip address 172.25.189.65 255.255.255.240
+#
+interface Vlanif226
+ description ZhouYuGS
+ ip binding vpn-instance resource
+ ip address 172.25.189.193 255.255.255.248
+#
+interface Vlanif227
+ description XingYeJiTuan
+ ip binding vpn-instance resource
+ ip address 172.25.189.177 255.255.255.240
+#
+interface Vlanif228
+ description HaiYanYianJiuSuo
+ ip binding vpn-instance resource
+ ip address 172.25.190.97 255.255.255.224
+#
+interface Vlanif229
+ description BeiTouShiYeTouZiGS(ZM)
+ ip binding vpn-instance resource
+ ip address 172.25.169.17 255.255.255.248
+#
+interface Vlanif230
+ description ZM-WeiShengYuan
+ ip binding vpn-instance resource
+ ip address 10.25.162.241 255.255.255.240
+#
+interface Vlanif231
+ ip binding vpn-instance resource
+ ip address 172.25.42.225 255.255.255.224
+#
+interface Vlanif501
+ ip binding vpn-instance resource
+ ip address 172.16.154.5 255.255.255.252
+#
+interface Vlanif502
+ ip binding vpn-instance public
+ ip address 172.16.155.5 255.255.255.252
+#
+interface Vlanif504
+ ip binding vpn-instance public
+ ip address 220.191.203.97 255.255.255.240
+#
+interface Vlanif505
+ ip binding vpn-instance resource
+ ip address 172.16.154.13 255.255.255.252
+#
+interface Vlanif506
+ ip binding vpn-instance public
+ ip address 220.191.203.113 255.255.255.248
+#
+interface Vlanif507
+ ip binding vpn-instance resource
+ ip address 172.16.154.17 255.255.255.252
+#
+interface Vlanif508
+ ip binding vpn-instance public
+ ip address 220.191.203.121 255.255.255.248
+#
+interface Vlanif509
+ ip binding vpn-instance resource
+ ip address 172.16.154.21 255.255.255.252
+#
+interface Vlanif510
+ ip binding vpn-instance resource
+ ip address 10.25.178.1 255.255.255.128
+#
+interface Vlanif511
+ ip binding vpn-instance resource
+ ip address 172.16.154.25 255.255.255.252
+#
+interface Vlanif513
+ ip binding vpn-instance resource
+ ip address 172.16.154.29 255.255.255.252
+#
+interface Vlanif515
+ ip binding vpn-instance resource
+ ip address 172.16.154.33 255.255.255.252
+#
+interface Vlanif517
+ ip binding vpn-instance resource
+ ip address 172.16.154.37 255.255.255.252
+#
+interface Vlanif519
+ ip binding vpn-instance resource
+ ip address 172.16.154.41 255.255.255.252
+#
+interface Vlanif521
+ ip binding vpn-instance resource
+ ip address 172.16.154.45 255.255.255.252
+#
+interface Vlanif600
+#
+interface Vlanif700
+ ip binding vpn-instance gtt
+ ip address 10.131.103.1 255.255.255.240
+#
+interface Vlanif701
+ ip binding vpn-instance gtt
+ ip address 10.131.103.17 255.255.255.240
+#
+interface Vlanif702
+ ip binding vpn-instance gtt
+ ip address 10.131.103.33 255.255.255.240
+#
+interface Vlanif703
+ ip binding vpn-instance gtt
+ ip address 10.131.103.49 255.255.255.240
+#
+interface Vlanif704
+ description HaiLianLu-GuoTu
+ ip binding vpn-instance gtt
+ ip address 10.131.103.65 255.255.255.192
+#
+interface Vlanif803
+ ip binding vpn-instance sjt
+#
+interface Vlanif806
+ description DianLiGS
+ ip binding vpn-instance resource
+ ip address 172.25.188.97 255.255.255.224
+#
+interface Vlanif807
+ ip binding vpn-instance SWDX
+ ip address 10.140.128.1 255.255.255.0
+#
+interface Vlanif808
+ description YouZhengSuDi
+ ip binding vpn-instance resource
+ ip address 10.25.166.57 255.255.255.248
+#
+interface Vlanif809
+ ip binding vpn-instance resource
+ ip address 172.25.189.97 255.255.255.240
+#
+interface Vlanif810
+ ip binding vpn-instance resource
+ ip address 10.25.164.193 255.255.255.192
+#
+interface Vlanif811
+ description ZhouYuGongSi
+ ip binding vpn-instance resource
+ ip address 10.25.162.49 255.255.255.248
+#
+interface Vlanif812
+#
+interface Vlanif816
+ ip binding vpn-instance resource
+ dhcp select relay
+ dhcp relay server-ip 172.25.189.242
+#
+interface Vlanif820
+ ip binding vpn-instance resource
+ ip address 172.25.161.161 255.255.255.224
+ dhcp select relay
+#
+interface Vlanif821
+ description ChengGuanBan
+ ip binding vpn-instance resource
+ ip address 10.25.179.1 255.255.255.128
+ ip address 172.25.172.193 255.255.255.192 sub
+#
+interface Vlanif830
+ ip binding vpn-instance resource
+ dhcp select relay
+ dhcp relay server-ip 172.25.189.242
+#
+interface Vlanif833
+ ip binding vpn-instance public
+ ip address 10.80.5.254 255.255.255.252
+#
+interface Vlanif1000
+ ip address 172.16.149.1 255.255.255.0
+#
+interface Vlanif1024
+ description CaiZhengJv
+ shutdown
+ ip binding vpn-instance resource
+ ip address 172.25.164.129 255.255.255.128
+#
+interface Vlanif1777
+ ip binding vpn-instance resource
+ ip address 172.25.171.25 255.255.255.248
+#
+ load-balance-profile lbp1
+  ipv4 field protocol
+#
+interface Eth-Trunk0
+ description uT:uT:ZSPT_SJM7F_W_NE40E-ETK0
+ port link-type access
+ port default vlan 3
+ mode lacp-static
+#
+interface Ethernet0/0/0
+ ip address 10.11.104.2 255.255.255.0
+#
+interface GigabitEthernet3/0/0
+ description To_ShengS_S8505
+ port link-type access
+ port default vlan 9
+ traffic-policy acl3012 inbound
+ undo negotiation auto
+ speed 100
+#
+interface GigabitEthernet3/0/1
+ description GongAnJv
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 109 151
+#
+interface GigabitEthernet3/0/2
+ description LanYian-YinJiLianDong
+ port link-type access
+ port default vlan 55
+#
+interface GigabitEthernet3/0/3
+ description To-PTXZZX
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 11
+#
+interface GigabitEthernet3/0/4
+ port link-type access
+ port default vlan 832
+#
+interface GigabitEthernet3/0/5
+ description ShuZhiChengGuan
+ port link-type access
+ port default vlan 140
+#
+interface GigabitEthernet3/0/6
+ description test
+ port link-type access
+ port default vlan 1777
+#
+interface GigabitEthernet3/0/7
+ description ICT-JD
+ port link-type access
+ port default vlan 133
+#
+interface GigabitEthernet3/0/8
+#
+interface GigabitEthernet3/0/9
+ description DianXinJv
+ port link-type access
+ port default vlan 133
+#
+interface GigabitEthernet3/0/10
+ description 7F-AnBaoLianFang
+ port link-type access
+ port default vlan 133
+ traffic-policy 3501 inbound
+ traffic-policy 3502 outbound
+#
+interface GigabitEthernet3/0/11
+ description 8F-HangYeYingYongZhongXin
+ port link-type access
+ port default vlan 133
+#
+interface GigabitEthernet3/0/12
+ description XiaZhi
+ port link-type access
+ port default vlan 112
+#
+interface GigabitEthernet3/0/13
+ description DenBu
+ port link-type access
+ port default vlan 113
+#
+interface GigabitEthernet3/0/14
+ shutdown
+ port link-type access
+#
+interface GigabitEthernet3/0/15
+ description BaiSha
+ port link-type access
+ port default vlan 115
+#
+interface GigabitEthernet3/0/16
+ description FoDu
+ port link-type access
+ port default vlan 116
+#
+interface GigabitEthernet3/0/17
+ description DiPu-1
+ port link-type access
+ port default vlan 119
+#
+interface GigabitEthernet3/0/18
+ description DiPu-2
+ port link-type access
+ port default vlan 119
+#
+interface GigabitEthernet3/0/19
+ description DJ
+ port link-type access
+ port default vlan 220
+#
+interface GigabitEthernet3/0/20
+ description PT-JiuYeGuanLiChu-JSJPeiXun(CaiZhengJu)
+ port link-type access
+ port default vlan 117
+ undo negotiation auto
+ speed 10
+#
+interface GigabitEthernet3/0/21
+ description PT-SheHuiBaoXianShiYeZX(SheBaoJiuYeDaLou)
+ port link-type access
+ port default vlan 121
+ undo negotiation auto
+ speed 100
+#
+interface GigabitEthernet3/0/22
+ description PT-XinHuaShuDian
+ port link-type access
+ port default vlan 132
+ undo negotiation auto
+ speed 10
+#
+interface GigabitEthernet3/0/23
+ description SJM-WeiShengYuan
+ port link-type access
+ port default vlan 137
+#
+interface GigabitEthernet3/0/24
+#
+interface GigabitEthernet3/0/25
+ port link-type access
+ port default vlan 160
+#
+interface GigabitEthernet3/0/26
+ port link-type access
+ port default vlan 112
+#
+interface GigabitEthernet3/0/27
+#
+interface GigabitEthernet3/0/28
+ port link-type access
+ port default vlan 180
+#
+interface GigabitEthernet3/0/29
+#
+interface GigabitEthernet3/0/30
+ description PT-JiaoTongTouZiGS
+ port link-type access
+ port default vlan 135
+ undo negotiation auto
+ speed 10
+#
+interface GigabitEthernet3/0/31
+#
+interface GigabitEthernet3/0/32
+ port link-type access
+ port default vlan 206
+#
+interface GigabitEthernet3/0/33
+#
+interface GigabitEthernet3/0/34
+ port link-type access
+ port default vlan 154
+#
+interface GigabitEthernet3/0/35
+#
+interface GigabitEthernet3/0/36
+#
+interface GigabitEthernet3/0/37
+#
+interface GigabitEthernet3/0/38
+#
+interface GigabitEthernet3/0/39
+#
+interface GigabitEthernet3/0/40
+ port link-type access
+ port default vlan 153
+#
+interface GigabitEthernet3/0/41
+ port link-type access
+ port default vlan 161
+#
+interface GigabitEthernet3/0/42
+#
+interface GigabitEthernet3/0/43
+#
+interface GigabitEthernet3/0/44
+#
+interface GigabitEthernet3/0/45
+#
+interface GigabitEthernet3/0/46
+#
+interface GigabitEthernet3/0/47
+ port link-type access
+ port default vlan 833
+#
+interface GigabitEthernet5/0/0
+ description To-PT-NE80E-3/0/3
+ port link-type trunk
+ port trunk allow-pass vlan 48
+ undo negotiation auto
+#
+interface GigabitEthernet5/0/1
+ description uT:ZS-PT-SJM-SR-1.DZZWW.NE40E:()G1/1/2
+ eth-trunk 0
+ undo negotiation auto
+#
+interface GigabitEthernet5/0/2
+#
+interface GigabitEthernet5/0/3
+#
+interface GigabitEthernet5/0/4
+#
+interface GigabitEthernet5/0/5
+#
+interface GigabitEthernet5/0/6
+#
+interface GigabitEthernet5/0/7
+#
+interface GigabitEthernet5/0/8
+#
+interface GigabitEthernet5/0/9
+#
+interface GigabitEthernet5/0/10
+#
+interface GigabitEthernet5/0/11
+#
+interface GigabitEthernet5/0/12
+#
+interface GigabitEthernet5/0/13
+#
+interface GigabitEthernet5/0/14
+#
+interface GigabitEthernet5/0/15
+#
+interface GigabitEthernet5/0/16
+#
+interface GigabitEthernet5/0/17
+#
+interface GigabitEthernet5/0/18
+#
+interface GigabitEthernet5/0/19
+#
+interface GigabitEthernet5/0/20
+#
+interface GigabitEthernet5/0/21
+#
+interface GigabitEthernet5/0/22
+#
+interface GigabitEthernet5/0/23
+#
+interface GigabitEthernet6/0/0
+ description TO_PuTuoJiFang_S3552F:GE7/1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 55 80 133 150 to 154 501 to 502 517 702 830 1000
+ undo negotiation auto
+#
+interface GigabitEthernet6/0/1
+ description uT:ZS-PT-SJM-SR-1.DZZWW.NE40E:()G1/0/2
+ eth-trunk 0
+ undo negotiation auto
+#
+interface GigabitEthernet6/0/2
+ description To-LiuH-SW
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 100 to 101 111 120 145 148 179 701 1000
+#
+interface GigabitEthernet6/0/3
+ description To_PuTuo_YuShi_S3552F_GE7/1
+ shutdown
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 180 504 to 505 806 808 to 811 1000
+ traffic-policy acl3999 inbound
+ undo negotiation auto
+#
+interface GigabitEthernet6/0/4
+ description To_LianHua_S3552F_GE:7/1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 80 144 155 179 203 513 704 807 1000
+ undo negotiation auto
+#
+interface GigabitEthernet6/0/5
+ description To_PuXi_S3552F_GE:7/1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 110 127 130 139 222 to 228 231 515 1000
+ undo negotiation auto
+#
+interface GigabitEthernet6/0/6
+ description To_ChangZheng3900
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 103 to 105 107 118 134 136 138 200 to 202 204 to 221 506 812
+ port trunk allow-pass vlan 1000
+#
+interface GigabitEthernet6/0/7
+ description TO_BanZhengZhongXin_S3552F_GE 7/1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 80 504 511 803 1000
+ undo negotiation auto
+#
+interface GigabitEthernet6/0/8
+ description To_PuTuo_YuShi_S3552F_GE7/1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 180 504 to 505 510 806 808 to 811 821 1000
+ undo negotiation auto
+#
+interface GigabitEthernet6/0/9
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ undo negotiation auto
+#
+interface GigabitEthernet6/0/10
+ description TO_XinJie_S3553F_GE 7/1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 160 162 509 1000
+ undo negotiation auto
+#
+interface GigabitEthernet6/0/11
+ description TO_BinJiangJiFang_S3552F_GE7/1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 519 600 1000
+ undo negotiation auto
+#
+interface GigabitEthernet6/0/12
+ description To_TaoHua_S3552f_GE7/1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 156 to 157 161 179 506 521 703 1000
+ undo negotiation auto
+#
+interface GigabitEthernet6/0/13
+ description To-PTXZZX
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 11 49 80 to 81 508
+ port-mirroring to observe-port 1 inbound
+#
+interface GigabitEthernet6/0/14
+ description To_DingHai_S9306_GE:6/0/19
+ port link-type access
+ port default vlan 4
+ undo negotiation auto
+#
+interface GigabitEthernet6/0/15
+ description To-ZJJ2326
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 102 106 108 114 122 to 126 128 to 129 131 141 to 143 146 to 147 149
+ port trunk allow-pass vlan 158 to 159 163 702 1000
+#
+interface GigabitEthernet6/0/16
+ description uT:ZS-DH-NZ-SR-1.DZZWW.NE40E:(F0906040011)G1/0/8
+ port link-type access
+ port default vlan 8
+ undo negotiation auto
+#
+interface GigabitEthernet6/0/17
+ description To_DaiShan_S8505_2/1/1
+ shutdown
+ port link-type access
+ port default vlan 10
+ undo negotiation auto
+#
+interface GigabitEthernet6/0/18
+ description To-ZhanMao3328
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 215 229 to 230 1000
+#
+interface GigabitEthernet6/0/19
+#
+interface GigabitEthernet6/0/20
+#
+interface GigabitEthernet6/0/21
+#
+interface GigabitEthernet6/0/22
+#
+interface GigabitEthernet6/0/23
+#
+interface XGigabitEthernet4/0/0
+ description pT:ZS-PT-DG-S9512-1:()TG9/0/1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 11 49 80 to 81 121 504 508 812 1024
+#
+interface XGigabitEthernet4/0/1
+#
+interface XGigabitEthernet4/0/2
+#
+interface XGigabitEthernet4/0/3
+#
+interface NULL0
+#
+monitor-link group 1
+#
+interface LoopBack0
+ ip address 172.16.251.131 255.255.255.255
+#
+interface LoopBack2
+ ip binding vpn-instance resource
+ ip address 172.16.154.1 255.255.255.255
+#
+interface LoopBack3
+ ip binding vpn-instance public
+ ip address 172.16.155.1 255.255.255.255
+#
+interface LoopBack832
+ ip binding vpn-instance resource
+ ip address 172.25.189.241 255.255.255.240
+#
+bgp 64666
+ group 1 internal
+ peer 1 connect-interface LoopBack0
+ peer 172.16.251.135 as-number 64666
+ peer 172.16.251.135 group 1
+ peer 172.16.251.139 as-number 64666
+ peer 172.16.251.139 group 1
+ #
+ ipv4-family unicast
+  undo synchronization
+  peer 1 enable
+  peer 172.16.251.135 enable
+  peer 172.16.251.135 group 1
+  peer 172.16.251.139 enable
+  peer 172.16.251.139 group 1
+ #
+ ipv4-family vpnv4
+  policy vpn-target
+  peer 1 enable
+  peer 172.16.251.135 enable
+  peer 172.16.251.135 group 1
+  peer 172.16.251.139 enable
+  peer 172.16.251.139 group 1
+ #
+ ipv4-family vpn-instance SWDX
+  import-route direct
+  import-route static
+ #
+ ipv4-family vpn-instance gtt
+  import-route direct
+  import-route static
+ #
+ ipv4-family vpn-instance kjt
+  import-route direct
+  import-route static
+ #
+ ipv4-family vpn-instance public
+  import-route direct
+  import-route static
+ #
+ ipv4-family vpn-instance resource
+  import-route direct
+  import-route static
+ #
+ ipv4-family vpn-instance sjt
+  import-route direct
+  import-route static
+ #
+ ipv4-family vpn-instance zjj
+  import-route direct
+#
+ospf 1
+ import-route direct type 1
+ import-route static type 1
+ silent-interface LoopBack0
+ area 0.0.2.68
+  authentication-mode md5
+  network 172.16.146.32 0.0.0.3
+  network 172.16.146.40 0.0.0.3
+  network 172.16.146.52 0.0.0.3
+  network 172.16.146.56 0.0.0.3
+  network 172.16.146.100 0.0.0.3
+  network 172.16.251.131 0.0.0.0
+#
+route-policy PT-Output permit node 10
+ apply cost 100
+#
+route-policy From_BGP permit node 10
+ if-match acl 2001
+#
+ ip route-static 172.25.169.32 255.255.255.224 172.16.154.30
+ ip route-static 172.25.187.224 255.255.255.248 172.16.154.6
+ ip route-static 172.25.190.128 255.255.255.224 172.16.154.22
+ ip route-static vpn-instance SWDX 10.140.129.0 255.255.255.0 10.140.128.2
+ ip route-static vpn-instance SWDX 10.140.130.0 255.255.255.0 10.140.128.2
+ ip route-static vpn-instance SWDX 10.140.131.0 255.255.255.0 10.140.128.2
+ ip route-static vpn-instance kjt 192.168.160.0 255.255.255.0 172.16.42.2
+ ip route-static vpn-instance resource 10.25.162.0 255.255.255.240 172.16.154.6
+ ip route-static vpn-instance resource 10.25.162.128 255.255.255.224 172.16.154.30
+ ip route-static vpn-instance resource 10.25.162.192 255.255.255.224 172.16.154.30
+ ip route-static vpn-instance resource 10.25.168.0 255.255.255.0 172.25.161.130
+ ip route-static vpn-instance resource 10.25.174.0 255.255.255.0 172.25.161.130
+ ip route-static vpn-instance resource 10.25.177.16 255.255.255.240 172.16.154.22
+ ip route-static vpn-instance resource 10.25.178.144 255.255.255.248 172.16.149.2
+ ip route-static vpn-instance resource 172.25.16.192 255.255.255.192 172.16.154.14
+ ip route-static vpn-instance resource 172.25.46.0 255.255.255.240 172.16.154.14
+ ip route-static vpn-instance resource 172.25.46.24 255.255.255.248 172.16.154.42
+ ip route-static vpn-instance resource 172.25.46.64 255.255.255.192 172.16.154.30
+ ip route-static vpn-instance resource 172.25.161.144 255.255.255.240 172.16.154.6
+ ip route-static vpn-instance resource 172.25.165.0 255.255.255.240 172.16.154.14
+ ip route-static vpn-instance resource 172.25.165.32 255.255.255.224 172.16.154.6
+ ip route-static vpn-instance resource 172.25.165.64 255.255.255.248 172.16.154.46
+ ip route-static vpn-instance resource 172.25.165.80 255.255.255.248 172.16.154.6
+ ip route-static vpn-instance resource 172.25.165.192 255.255.255.192 172.16.154.26
+ ip route-static vpn-instance resource 172.25.166.128 255.255.255.224 172.16.154.6
+ ip route-static vpn-instance resource 172.25.166.160 255.255.255.224 172.16.154.30
+ ip route-static vpn-instance resource 172.25.167.128 255.255.255.192 172.16.154.22
+ ip route-static vpn-instance resource 172.25.168.192 255.255.255.224 172.16.154.26
+ ip route-static vpn-instance resource 172.25.169.0 255.255.255.248 172.16.154.14
+ ip route-static vpn-instance resource 172.25.169.32 255.255.255.248 172.16.154.30
+ ip route-static vpn-instance resource 172.25.170.96 255.255.255.224 172.16.154.26
+ ip route-static vpn-instance resource 172.25.170.128 255.255.255.224 172.16.154.22
+ ip route-static vpn-instance resource 172.25.170.176 255.255.255.240 172.16.154.30
+ ip route-static vpn-instance resource 172.25.171.128 255.255.255.224 172.16.154.6
+ ip route-static vpn-instance resource 172.25.171.160 255.255.255.224 172.16.154.6
+ ip route-static vpn-instance resource 172.25.171.224 255.255.255.224 172.16.154.6
+ ip route-static vpn-instance resource 172.25.172.32 255.255.255.224 172.16.154.22
+ ip route-static vpn-instance resource 172.25.172.64 255.255.255.224 172.16.154.14
+ ip route-static vpn-instance resource 172.25.172.128 255.255.255.224 172.16.154.42
+ ip route-static vpn-instance resource 172.25.173.0 255.255.255.224 172.16.154.30
+ ip route-static vpn-instance resource 172.25.173.32 255.255.255.224 172.16.154.14
+ ip route-static vpn-instance resource 172.25.173.96 255.255.255.224 172.16.154.14
+ ip route-static vpn-instance resource 172.25.173.192 255.255.255.224 172.16.154.14
+ ip route-static vpn-instance resource 172.25.173.224 255.255.255.224 172.16.154.30
+ ip route-static vpn-instance resource 172.25.174.96 255.255.255.224 172.16.154.14
+ ip route-static vpn-instance resource 172.25.175.0 255.255.255.192 172.16.154.22
+ ip route-static vpn-instance resource 172.25.175.192 255.255.255.192 172.16.154.42
+ ip route-static vpn-instance resource 172.25.176.0 255.255.255.192 172.16.154.22
+ ip route-static vpn-instance resource 172.25.176.64 255.255.255.192 172.16.154.6
+ ip route-static vpn-instance resource 172.25.176.128 255.255.255.192 172.16.154.22
+ ip route-static vpn-instance resource 172.25.176.192 255.255.255.224 172.16.154.6
+ ip route-static vpn-instance resource 172.25.176.224 255.255.255.224 172.16.154.42
+ ip route-static vpn-instance resource 172.25.177.0 255.255.255.224 172.16.154.14
+ ip route-static vpn-instance resource 172.25.177.32 255.255.255.224 172.16.154.14
+ ip route-static vpn-instance resource 172.25.177.96 255.255.255.224 172.16.154.6
+ ip route-static vpn-instance resource 172.25.182.0 255.255.255.128 172.16.154.46
+ ip route-static vpn-instance resource 172.25.184.0 255.255.255.0 172.16.154.14
+ ip route-static vpn-instance resource 172.25.187.32 255.255.255.240 172.16.154.42
+ ip route-static vpn-instance resource 172.25.187.128 255.255.255.192 172.16.154.6
+ ip route-static vpn-instance resource 172.25.187.224 255.255.255.248 172.16.154.6
+ ip route-static vpn-instance resource 172.25.187.232 255.255.255.248 172.16.154.14
+ ip route-static vpn-instance resource 172.25.188.192 255.255.255.224 172.16.154.22
+ ip route-static vpn-instance resource 172.25.188.224 255.255.255.224 172.16.154.42
+ ip route-static vpn-instance resource 172.25.189.16 255.255.255.240 172.16.154.30
+ ip route-static vpn-instance resource 172.25.189.32 255.255.255.224 172.16.154.6
+ ip route-static vpn-instance resource 172.25.189.136 255.255.255.248 172.16.154.42
+ ip route-static vpn-instance resource 172.25.189.144 255.255.255.240 172.16.154.30
+ ip route-static vpn-instance resource 172.25.189.200 255.255.255.248 172.16.154.6
+ ip route-static vpn-instance resource 172.25.190.160 255.255.255.252 172.16.154.6
+#
+ snmp-agent
+ snmp-agent local-engineid 000007DB7FFFFFFF0000762C
+ snmp-agent community read  V2zsdx@dzzww acl 2999
+ snmp-agent community read  V2zsdx_dzzww acl 2999
+ snmp-agent sys-info contact Huawei_Support:800-8302118
+ snmp-agent sys-info location DaiShan-GaoTing
+ snmp-agent sys-info version all
+ snmp-agent target-host trap address udp-domain 172.16.148.254 params securityname V2zsdx_dzzww
+ snmp-agent trap source LoopBack0
+#
+user-interface maximum-vty 15
+user-interface con 0
+ idle-timeout 0 0
+ screen-length 30
+user-interface vty 0 4
+ acl 2998 inbound
+ authentication-mode aaa
+ user privilege level 15
+ idle-timeout 0 0
+ screen-length 30
+user-interface vty 5 14
+ acl 2998 inbound
+ authentication-mode none
+ user privilege level 3
+ idle-timeout 0 0
+ screen-length 0
+user-interface vty 16 20
+#
+port-group tru
+#
+port-group trunk
+#
+return
+<ZS-PT-SJM-DSW-1.DZZWW.9306>
